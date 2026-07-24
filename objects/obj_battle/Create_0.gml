@@ -302,7 +302,7 @@ function enemy_subwave_summon(){
             var new_enemy = instance_create_depth(grid_pos.x+30, grid_pos.y + 38, 0, enemy_obj);
 		
 			// 服务端广播产生敌人
-			if(global.network.mode="server"){
+			if(global.network.mode=="server"){
 				add_net_id(new_enemy.id);
 				var _net_id = global.network.map_instance_id_net_id[? new_enemy.id];
 				var _list = global.network.connected_clients;

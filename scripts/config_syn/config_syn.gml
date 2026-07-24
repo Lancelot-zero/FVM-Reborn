@@ -144,4 +144,6 @@ global.boss_spawn_sync_list = [
 	obj_in_water_effect,
 	obj_mummy_mouse,
 	obj_apple_football_fan_mouse,
+	// 小怪灰烬
+	obj_mouse_ash_death,
 ];

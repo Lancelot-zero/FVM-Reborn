@@ -575,8 +575,12 @@ function parse_network_message(buf, _sock) {
 						refresh_task_progress();
 					}
 					if (array_get_index(global.save_data.completed_levels, global.level_data.id) == -1) {
+						if (global.level_file.rewards[1].player_level >= global.save_data.player.level) {
+							global.save_data.player.level = global.level_file.rewards[1].player_level;
+						}
 						complete_level(global.level_data.id);
-						if (array_get_index(slot_unlock_level_id_list, global.level_data.id) != -1) {
+						var _bpm = instance_find(obj_battle_pause_manager, 0);
+						if (_bpm != noone && array_get_index(_bpm.slot_unlock_level_id_list, global.level_data.id) != -1) {
 							if (global.save_data.unlocked_items.max_slot < 21) {
 								global.save_data.unlocked_items.max_slot += 1;
 								show_notice("你解锁了一个新的卡槽", 60);
@@ -593,9 +597,6 @@ function parse_network_message(buf, _sock) {
 						}
 						if (global.level_data.id == "snowcap_volcano") {
 							global.save_data.unlocked_items.shovel = "gold";
-						}
-						if (global.level_file.rewards[1].player_level >= global.save_data.player.level) {
-							global.save_data.player.level = global.level_file.rewards[1].player_level;
 						}
 						if (global.level_file.rewards[1].skill_level >= global.save_data.unlocked_items.max_skill_level) {
 							global.save_data.unlocked_items.max_skill_level = global.level_file.rewards[1].skill_level;

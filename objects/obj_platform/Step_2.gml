@@ -213,14 +213,14 @@ else if (state == "moving") {
                         plant.y += visual_delta_y;
                         if (variable_instance_exists(plant, "target_x")) plant.target_x += visual_delta_x;
                         if (variable_instance_exists(plant, "target_y")) plant.target_y += visual_delta_y;
-                        
+                        /*
                         var grid_pos = get_grid_position_from_world(plant.x, plant.y);
                         plant.grid_col = grid_pos.col;
                         plant.grid_row = grid_pos.row;
                         if (variable_instance_exists(plant, "plant_type")) {
                             plant.depth = calculate_plant_depth(plant.grid_col, plant.grid_row, plant.plant_type);
                         }
-                        
+						*/
                         if (variable_instance_exists(plant, "banding_star_obj") && instance_exists(plant.banding_star_obj)) {
                             plant.banding_star_obj.x += visual_delta_x;
                             plant.banding_star_obj.y += visual_delta_y;

@@ -200,7 +200,7 @@ function get_sprite_or_create(_path, _path_prefix) {
         }
         return new Result().success(_spr)
     }
-    return new Result().success(asset_get_index(_path))
+    return new Result().success(get_load_sprite(_path))
 }
 
 

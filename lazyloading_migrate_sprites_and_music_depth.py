@@ -49,7 +49,7 @@ SKIP_SPRITES = {
     'spr_salad_island_land',
 }
 
-SKIP_AUDIO = set()
+SKIP_AUDIO = {'mus_menu'}
 
 MAX_STRIP_WIDTH = 16384  # GPU 纹理上限，超出则不迁移（sprite_add 单行条带限制）
 SPRITES_JOIN = 'sprites_join'            # 合并后 PNG 输出目录

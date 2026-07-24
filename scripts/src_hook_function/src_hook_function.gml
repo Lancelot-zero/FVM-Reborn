@@ -89,6 +89,22 @@ function instance_destroy_define() {
 
 
 
+#macro audio_play_sound_origfunc		audio_play_sound
+#macro audio_play_sound				audio_play_sound_define
+
+function audio_play_sound_define(_index, _priority, _loop) {
+	var _ret = audio_play_sound_origfunc(_index, _priority, _loop);
+	if (ds_map_exists(global._audio_reverse, _index)) {
+		var _name = global._audio_reverse[? _index];
+		if (string_pos("mus_", _name) == 1) {
+			audio_sound_gain(_ret, global.music_volume);
+		} else {
+			audio_sound_gain(_ret, global.sound_volume);
+		}
+	}
+	return _ret;
+}
+
 #macro draw_self_origfunc				draw_self
 #macro draw_self						draw_self_define
 

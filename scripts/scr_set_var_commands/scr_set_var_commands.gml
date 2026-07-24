@@ -57,7 +57,7 @@ function spawn_plant(col, row, plant_obj, props) {
     }
 	
 	
-	if(global.network.mode="server"){
+	if(global.network.mode=="server"){
 		// 替换逻辑：如果格子中有同类型植物，先销毁旧的
 		var _plant_list = ds_grid_get(global.grid_plants, col, row);
 		for (var _i = 0; _i < ds_list_size(_plant_list); _i++) {
