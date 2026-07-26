@@ -2,7 +2,7 @@ image_xscale = 1.8
 image_yscale = 1.8
 instance_create_depth(x+380,y-400,depth-1,obj_closeinfo_btn)
 info_cols = 4 //防御卡信息行列数
-info_rows = 20
+info_rows = 25
 info_button_select = 1
 //package_button_select = 1
 is_submenu_opened = false
@@ -32,3 +32,12 @@ surface_width = 900
 surface_height = 780
 
 y_offset = 0
+
+// 滚动条状态
+scrollbar_dragging = false
+scrollbar_drag_start_y = 0
+scrollbar_drag_start_offset = 0
+scrollbar_x = 0
+scrollbar_y = 0
+scrollbar_w = 17
+scrollbar_h = 0

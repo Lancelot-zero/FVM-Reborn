@@ -7,6 +7,7 @@ global._boss_spawn_queue = []
 global._boss_client_cleanup = []
 global._move_instance_pre_arr = []
 global._move_instance_map = ds_map_create()
+global._last_platform = -1
 global._is_in_battle=false;
 
 
@@ -47,6 +48,9 @@ function instance_create_depth_define(_x, _y, _depth, _obj) {
 	var _inst = instance_create_depth_origfunc(_x, _y, _depth, _obj);
 	if (_inst >= 0) {
 		array_push(global._move_instance_pre_arr, _inst);
+	}
+	if (_inst >= 0 && _obj == obj_platform) {
+		global._last_platform = _inst;
 	}
 
 

@@ -1,16 +1,22 @@
-	// 修改后的僵尸Step事件
-	if global.is_paused{
-		exit
-	}
-	// 记录本帧初始状态，用于检测技能切换
-	_state_prev = state;
-	// 客户端：直接死亡，不等待服务端
-	if (hp <= 0 && state != ENEMY_STATE.DEAD) {
-		timer = 0;
-		state = ENEMY_STATE.DEAD;
-		target_plant = noone;
-	}
-	if ice_timer > 0{
+// 修改后的僵尸Step事件
+if global.is_paused{
+	exit
+}
+// 记录本帧初始状态，用于检测技能切换
+_state_prev = state;
+// 客户端：直接死亡，不等待服务端
+if (hp <= 0 && state != ENEMY_STATE.DEAD) {
+	timer = 0;
+	state = ENEMY_STATE.DEAD;
+	target_plant = noone;
+}
+
+// 保持网格位置更新
+var zombie_grid = get_grid_position_from_world(x, y);
+grid_col = zombie_grid.col;
+grid_row = zombie_grid.row;
+
+if ice_timer > 0{
 	ice_timer--
 	is_slowdown = true
 }
@@ -65,12 +71,14 @@ else{
 if left_move_flashs > 0{
 	y += y_move
 	left_move_flashs--
+	if (y <= get_world_position_from_grid(0,0).y + 38 && y_move < 0) || (y >= get_world_position_from_grid(0,global.grid_rows-1).y + 38 && y_move > 0){
+		left_move_flashs = 0
+		y_move = 0
+	}
 }
 if is_frozen || is_scare || is_stun{
 	exit
 }
-
-var zombie_grid = get_grid_position_from_world(x, y);
 
 timer++;
 
@@ -371,10 +379,6 @@ if (image_alpha <= 0 && state == ENEMY_STATE.DEAD) {
 
 var base_depth = -10 - (zombie_grid.row * 45) - (9 * 5);
 depth = base_depth; // 僵尸比植物稍微靠后一点（在护罩外侧和咖啡豆之间）
-
-// 保持网格位置更新
-grid_col = zombie_grid.col;
-grid_row = zombie_grid.row;
 
 if x < global.grid_offset_x-150 && hp > 0 && not place_meeting(x,y,obj_cat) && array_get_index(block_mouse_id_list,mouse_id) == -1{
 	if global.network.mode == "server"{
