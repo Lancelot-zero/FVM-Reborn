@@ -8,10 +8,12 @@ if b_type == 0{
 	x += move_speed
 	with obj_card_parent{
 		if abs(x-other.x) <= 50 && grid_row == other.grid_row{
-			var inst = instance_create_depth(x,y-35,-800,obj_arno_bullet_effect)
-			inst.sprite_index = spr_mouse_train_1_bullet_effect
-			instance_destroy(other)
-			if plant_id != "player" && plant_type != "coffee" && !invincible{
+			if plant_id != "cotton_candy" && plant_type != "coffee"{
+				var inst = instance_create_depth(x,y-35,-800,obj_arno_bullet_effect)
+				inst.sprite_index = spr_mouse_train_1_bullet_effect
+				instance_destroy(other)
+			}
+			if plant_id != "player" && plant_type != "coffee" && !invincible && plant_id != "cotton_candy"{
 				if hp >= max_hp{
 					obj_task_manager.card_loss++
 				}
@@ -24,10 +26,12 @@ else if b_type == 1{
 	y += move_speed
 	with obj_card_parent{
 		if abs(y-other.y) <= 50 && grid_col == other.grid_col{
-			var inst = instance_create_depth(x,y-35,-800,obj_arno_bullet_effect)
-			inst.sprite_index = spr_mouse_train_1_bullet_effect
-			instance_destroy(other)
-			if plant_id != "player" && plant_type != "coffee" && !invincible{
+			if plant_id != "cotton_candy" && plant_type != "coffee"{
+				var inst = instance_create_depth(x,y-35,-800,obj_arno_bullet_effect)
+				inst.sprite_index = spr_mouse_train_1_bullet_effect
+				instance_destroy(other)
+			}
+			if plant_id != "player" && plant_type != "coffee" && !invincible && plant_id != "cotton_candy"{
 				if hp >= max_hp{
 					obj_task_manager.card_loss++
 				}
@@ -41,9 +45,11 @@ else if b_type == 2{
 	y -= move_speed * sin(degtorad(image_angle))
 	with obj_card_parent{
 		if place_meeting(x,y,other){
-			var inst = instance_create_depth(x,y-35,-800,obj_arno_bullet_effect)
-			inst.sprite_index = spr_mouse_train_1_bullet_effect
-			instance_destroy(other)
+			if plant_id != "cotton_candy" && plant_type != "coffee"{
+				var inst = instance_create_depth(x,y-35,-800,obj_arno_bullet_effect)
+				inst.sprite_index = spr_mouse_train_1_bullet_effect
+				instance_destroy(other)
+			}
 			if plant_id != "player" && plant_type != "coffee" && !invincible && plant_id != "cotton_candy"{
 				if hp >= max_hp{
 					obj_task_manager.card_loss++
