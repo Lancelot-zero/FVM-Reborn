@@ -511,7 +511,8 @@ function maps_init(){
 					"boss_music":mus_volcanic_tower_boss,
 					"pre_level":"tower_cake_17_1",
 					"rewards":[
-						{"card_id":"coffee_grounds","target_shape":2}
+						{"card_id":"coffee_grounds","target_shape":2},
+						{"card_id":"chili_powder","target_shape":1}
 					]
 				},
 				{
@@ -555,7 +556,8 @@ function maps_init(){
 					"boss_music":mus_volcanic_tower_boss,
 					"pre_level":"tower_cake_18_2",
 					"rewards":[
-						{"card_id":"coffee_pot","target_shape":2}
+						{"card_id":"coffee_pot","target_shape":2},
+						{"card_id":"oden_pot","target_shape":2}
 					]
 				},
 				{
@@ -597,7 +599,298 @@ function maps_init(){
 					"boss_music":mus_volcanic_tower_boss,
 					"pre_level":"tower_cake_20_1",
 					"rewards":[
-						{"card_id":"large_fire","target_shape":2}
+						{"card_id":"large_fire","target_shape":2},
+						{"card_id":"tang_hu_lu","target_shape":1}
+					]
+				},
+				{
+					"id":"tower_cake_21_1",
+					"name":"魔塔21层-先锋",
+					"level_file":"tower/tower-21-1.json",
+					"hard_level_file":"tower/tower-21-1_hard.json",
+					"level_sprite":spr_fennel_raft_daytime,
+					"pre_music":mus_floating_island_daytime_pre,
+					"elite_music":mus_floating_island_daytime_elite,
+					"boss_music":mus_floating_island_daytime_boss,
+					"pre_level":"tower_cake_20_2",
+					"rewards":[
+						{"card_id":"takoyaki","target_shape":2}
+					]
+				},
+				{
+					"id":"tower_cake_21_2",
+					"name":"魔塔21层-精英",
+					"level_file":"tower/tower-21-2.json",
+					"hard_level_file":"tower/tower-21-2_hard.json",
+					"level_sprite":spr_fennel_raft_daytime,
+					"pre_music":mus_floating_island_daytime_pre,
+					"elite_music":mus_floating_island_daytime_elite,
+					"boss_music":mus_floating_island_daytime_boss,
+					"pre_level":"tower_cake_21_1",
+					"rewards":[
+						{"card_id":"aquarius_elve","target_shape":2}
+					]
+				},
+				{
+					"id":"tower_cake_22_1",
+					"name":"魔塔22层-先锋",
+					"level_file":"tower/tower-22-1.json",
+					"hard_level_file":"tower/tower-22-1_hard.json",
+					"level_sprite":spr_fennel_raft_night,
+					"pre_music":mus_floating_island_night_pre,
+					"elite_music":mus_floating_island_night_elite,
+					"boss_music":mus_floating_island_night_boss,
+					"pre_level":"tower_cake_21_2",
+					"rewards":[
+						{"card_id":"chocolate_pult","target_shape":2}
+					]
+				},
+				{
+					"id":"tower_cake_22_2",
+					"name":"魔塔22层-精英",
+					"level_file":"tower/tower-22-2.json",
+					"hard_level_file":"tower/tower-22-2_hard.json",
+					"level_sprite":spr_fennel_raft_night,
+					"pre_music":mus_floating_island_night_pre,
+					"elite_music":mus_floating_island_night_elite,
+					"boss_music":mus_floating_island_night_boss,
+					"pre_level":"tower_cake_22_1",
+					"rewards":[
+						{"card_id":"salad_pult","target_shape":2},
+						{"card_id":"flour_sack","target_shape":2}
+					]
+				},
+				{
+					"id":"tower_cake_23_1",
+					"name":"魔塔23层-先锋",
+					"level_file":"tower/tower-23-1.json",
+					"hard_level_file":"tower/tower-23-1_hard.json",
+					"level_sprite":spr_cumin_bridge_daytime,
+					"pre_music":mus_floating_island_daytime_pre,
+					"elite_music":mus_floating_island_daytime_elite,
+					"boss_music":mus_floating_island_daytime_boss,
+					"pre_level":"tower_cake_22_2",
+					"rewards":[
+						{"card_id":"hotdog_cannon","target_shape":2}
+					]
+				},
+				{
+					"id":"tower_cake_23_2",
+					"name":"魔塔23层-精英",
+					"level_file":"tower/tower-23-2.json",
+					"hard_level_file":"tower/tower-23-2_hard.json",
+					"level_sprite":spr_cumin_bridge_daytime,
+					"pre_music":mus_floating_island_daytime_pre,
+					"elite_music":mus_floating_island_daytime_elite,
+					"boss_music":mus_floating_island_daytime_boss,
+					"pre_level":"tower_cake_23_1",
+					"rewards":[
+						{"card_id":"stinky_tofu_pult","target_shape":2}
+					]
+				},
+				{
+					"id":"tower_cake_24_1",
+					"name":"魔塔24层-先锋",
+					"level_file":"tower/tower-24-1.json",
+					"hard_level_file":"tower/tower-24-1_hard.json",
+					"level_sprite":spr_cumin_bridge_night,
+					"pre_music":mus_floating_island_night_pre,
+					"elite_music":mus_floating_island_night_elite,
+					"boss_music":mus_floating_island_night_boss,
+					"pre_level":"tower_cake_23_2",
+					"rewards":[
+						{"card_id":"king_long_bao","target_shape":2}
+					]
+				},
+				{
+					"id":"tower_cake_24_2",
+					"name":"魔塔24层-精英",
+					"level_file":"tower/tower-24-2.json",
+					"hard_level_file":"tower/tower-24-2_hard.json",
+					"level_sprite":spr_cumin_bridge_night,
+					"pre_music":mus_floating_island_night_pre,
+					"elite_music":mus_floating_island_night_elite,
+					"boss_music":mus_floating_island_night_boss,
+					"pre_level":"tower_cake_24_1",
+					"rewards":[
+						{"card_id":"goblet_lamp","target_shape":2},
+						{"card_id":"egg_boiler_pult","target_shape":2}
+					]
+				},
+				{
+					"id":"tower_cake_25_1",
+					"name":"魔塔25层-先锋",
+					"level_file":"tower/tower-25-1.json",
+					"hard_level_file":"tower/tower-25-1_hard.json",
+					"level_sprite":spr_marinade_garden,
+					"pre_music":mus_floating_island_crown_pre,
+					"elite_music":mus_floating_island_crown_elite,
+					"boss_music":mus_floating_island_daytime_boss,
+					"pre_level":"tower_cake_24_2",
+					"rewards":[
+						{"card_id":"xinjiang_fried_noodles","target_shape":2},
+						{"card_id":"firework_dragon","target_shape":2}
+					]
+				},
+				{
+					"id":"tower_cake_25_2",
+					"name":"魔塔25层-精英",
+					"level_file":"tower/tower-25-2.json",
+					"hard_level_file":"tower/tower-25-2_hard.json",
+					"level_sprite":spr_marinade_garden,
+					"pre_music":mus_floating_island_crown_pre,
+					"elite_music":mus_floating_island_crown_elite,
+					"boss_music":mus_floating_island_daytime_boss,
+					"pre_level":"tower_cake_25_1",
+					"rewards":[
+						{"card_id":"cotton_candy","target_shape":2},
+						{"card_id":"small_fire","target_shape":2}
+					]
+				},
+				{
+					"id":"tower_cake_26_1",
+					"name":"魔塔26层-先锋",
+					"level_file":"tower/tower-26-1.json",
+					"hard_level_file":"tower/tower-26-1_hard.json",
+					"level_sprite":spr_laurel_sky_daytime,
+					"pre_music":mus_floating_island_daytime_pre,
+					"elite_music":mus_floating_island_daytime_elite,
+					"boss_music":mus_floating_island_daytime_boss,
+					"pre_level":"tower_cake_25_2",
+					"rewards":[
+						{"card_id":"double_water_pipe","target_shape":2},
+					]
+				},
+				{
+					"id":"tower_cake_26_2",
+					"name":"魔塔26层-精英",
+					"level_file":"tower/tower-26-2.json",
+					"hard_level_file":"tower/tower-26-2_hard.json",
+					"level_sprite":spr_laurel_sky_daytime,
+					"pre_music":mus_floating_island_daytime_pre,
+					"elite_music":mus_floating_island_daytime_elite,
+					"boss_music":mus_floating_island_daytime_boss,
+					"pre_level":"tower_cake_26_1",
+					"rewards":[
+						{"card_id":"coke_bomb","target_shape":2},
+						{"card_id":"pineapple_explosive_bread","target_shape":2}
+					]
+				},
+				{
+					"id":"tower_cake_27_1",
+					"name":"魔塔27层-先锋",
+					"level_file":"tower/tower-27-1.json",
+					"hard_level_file":"tower/tower-27-1_hard.json",
+					"level_sprite":spr_laurel_sky_night,
+					"pre_music":mus_floating_island_night_pre,
+					"elite_music":mus_floating_island_night_elite,
+					"boss_music":mus_floating_island_night_boss,
+					"pre_level":"tower_cake_26_2",
+					"rewards":[
+						{"card_id":"triple_wine_rack","target_shape":2}
+					]
+				},
+				{
+					"id":"tower_cake_27_2",
+					"name":"魔塔27层-精英",
+					"level_file":"tower/tower-27-2.json",
+					"hard_level_file":"tower/tower-27-2_hard.json",
+					"level_sprite":spr_laurel_sky_night,
+					"pre_music":mus_floating_island_night_pre,
+					"elite_music":mus_floating_island_night_elite,
+					"boss_music":mus_floating_island_night_boss,
+					"pre_level":"tower_cake_27_1",
+					"rewards":[
+						{"card_id":"wine_bottle_bomb","target_shape":2}
+					]
+				},
+				{
+					"id":"tower_cake_28_1",
+					"name":"魔塔28层-先锋",
+					"level_file":"tower/tower-28-1.json",
+					"hard_level_file":"tower/tower-28-1_hard.json",
+					"level_sprite":spr_bayleaf_airport_daytime,
+					"pre_music":mus_floating_island_daytime_pre,
+					"elite_music":mus_floating_island_daytime_elite,
+					"boss_music":mus_floating_island_daytime_boss,
+					"pre_level":"tower_cake_27_2",
+					"rewards":[
+						{"card_id":"gatlin_long_bao","target_shape":2}
+					]
+				},
+				{
+					"id":"tower_cake_28_2",
+					"name":"魔塔28层-精英",
+					"level_file":"tower/tower-28-2.json",
+					"hard_level_file":"tower/tower-28-2_hard.json",
+					"level_sprite":spr_bayleaf_airport_daytime,
+					"pre_music":mus_floating_island_daytime_pre,
+					"elite_music":mus_floating_island_daytime_elite,
+					"boss_music":mus_floating_island_daytime_boss,
+					"pre_level":"tower_cake_28_1",
+					"rewards":[
+						{"card_id":"kettle_bomb","target_shape":2},
+						{"card_id":"chili_powder","target_shape":2}
+					]
+				},
+				{
+					"id":"tower_cake_29_1",
+					"name":"魔塔29层-先锋",
+					"level_file":"tower/tower-29-1.json",
+					"hard_level_file":"tower/tower-29-1_hard.json",
+					"level_sprite":spr_bayleaf_airport_night,
+					"pre_music":mus_floating_island_night_pre,
+					"elite_music":mus_floating_island_night_elite,
+					"boss_music":mus_floating_island_night_boss,
+					"pre_level":"tower_cake_28_2",
+					"rewards":[
+						{"card_id":"king_triple_long_bao","target_shape":2},
+						{"card_id":"tar_sprayer","target_shape":2}
+					]
+				},
+				{
+					"id":"tower_cake_29_2",
+					"name":"魔塔29层-精英",
+					"level_file":"tower/tower-29-2.json",
+					"hard_level_file":"tower/tower-29-2_hard.json",
+					"level_sprite":spr_bayleaf_airport_night,
+					"pre_music":mus_floating_island_night_pre,
+					"elite_music":mus_floating_island_night_elite,
+					"boss_music":mus_floating_island_night_boss,
+					"pre_level":"tower_cake_29_1",
+					"rewards":[
+						{"card_id":"ice_cream","target_shape":2},
+						{"card_id":"hamburger","target_shape":2}
+					]
+				},
+				{
+					"id":"tower_cake_30_1",
+					"name":"魔塔30层-先锋",
+					"level_file":"tower/tower-30-1.json",
+					"hard_level_file":"tower/tower-30-1_hard.json",
+					"level_sprite":spr_spice_airship,
+					"pre_music":mus_floating_island_crown_pre,
+					"elite_music":mus_floating_island_crown_elite,
+					"boss_music":mus_floating_island_night_boss,
+					"pre_level":"tower_cake_29_2",
+					"rewards":[
+						{"card_id":"lightning_baguette","target_shape":2},
+						{"card_id":"rotating_coffee_pot","target_shape":2}
+					]
+				},
+				{
+					"id":"tower_cake_30_2",
+					"name":"魔塔30层-精英",
+					"level_file":"tower/tower-30-2.json",
+					"hard_level_file":"tower/tower-30-2_hard.json",
+					"level_sprite":spr_spice_airship,
+					"pre_music":mus_floating_island_crown_pre,
+					"elite_music":mus_floating_island_crown_elite,
+					"boss_music":mus_floating_island_night_boss,
+					"pre_level":"tower_cake_30_1",
+					"rewards":[
+						{"card_id":"ventilation_fan","target_shape":2},
+						{"card_id":"tang_hu_lu","target_shape":2}
 					]
 				},
 			]
@@ -969,7 +1262,7 @@ function maps_init(){
 					"pre_music":mus_floating_island_daytime_pre,
 					"elite_music":mus_floating_island_daytime_elite,
 					"boss_music":mus_floating_island_daytime_boss,
-					"player_level_require":99,
+					"player_level_require":46,
 					"pre_level_require":[]
 				},
 				{
@@ -985,7 +1278,7 @@ function maps_init(){
 					"pre_music":mus_floating_island_night_pre,
 					"elite_music":mus_floating_island_night_elite,
 					"boss_music":mus_floating_island_night_boss,
-					"player_level_require":99,
+					"player_level_require":47,
 					"pre_level_require":[]
 				},
 				{
@@ -1001,7 +1294,7 @@ function maps_init(){
 					"pre_music":mus_floating_island_daytime_pre,
 					"elite_music":mus_floating_island_daytime_elite,
 					"boss_music":mus_floating_island_daytime_boss,
-					"player_level_require":99,
+					"player_level_require":48,
 					"pre_level_require":[]
 				},
 				{
@@ -1017,7 +1310,7 @@ function maps_init(){
 					"pre_music":mus_floating_island_night_pre,
 					"elite_music":mus_floating_island_night_elite,
 					"boss_music":mus_floating_island_night_boss,
-					"player_level_require":99,
+					"player_level_require":49,
 					"pre_level_require":[]
 				},
 				{
@@ -1033,7 +1326,7 @@ function maps_init(){
 					"pre_music":mus_floating_island_crown_pre,
 					"elite_music":mus_floating_island_crown_elite,
 					"boss_music":mus_floating_island_night_boss,
-					"player_level_require":99,
+					"player_level_require":50,
 					"pre_level_require":[]
 				},
 				{

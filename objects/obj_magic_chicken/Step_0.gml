@@ -49,8 +49,8 @@ if attack_timer == 15 * current_flash_speed - 1{
 		    if (grid_pos_dir.col >= p_start_c && grid_pos_dir.col < p_start_c + width &&
 		        grid_pos_dir.row >= p_start_r && grid_pos_dir.row < p_start_r + length) {
 		        found_plat = id;
-		        logical_col = grid_pos_dir.col;
-		        logical_row = grid_pos_dir.row;
+		        logical_col = grid_pos_adj.col;
+		        logical_row = grid_pos_adj.row;
 		        platform_shift_x = shift_x;
 		        platform_shift_y = shift_y;
 		        break;
@@ -64,8 +64,12 @@ if attack_timer == 15 * current_flash_speed - 1{
 		}
 		
 		var logical_world = get_world_position_from_grid(logical_col, logical_row);
-		var new_card = instance_create_depth(logical_world.x + platform_shift_x, logical_world.y + platform_shift_y, 0, card_slot_data[? "obj"])	
+		var new_card = instance_create_depth(logical_world.x + platform_shift_x, logical_world.y + platform_shift_y, 0, card_slot_data[? "obj"])
 		card_created(new_card, logical_col, logical_row)
+		// 平台移动期间放置时锁定逻辑网格位置，防止视觉位置覆盖grid_col/grid_row
+		if (found_plat != noone && variable_instance_exists(found_plat, "state") && found_plat.state == "moving") {
+			new_card.platform_grid_lock = true;
+		}
 	}
 }
 

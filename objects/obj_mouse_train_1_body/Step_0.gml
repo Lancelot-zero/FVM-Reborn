@@ -6,6 +6,15 @@ if flash_value > 0 {
 	flash_value -= 10
 }
 
+if !instance_exists(train_head){
+	instance_destroy()
+}
+else{
+	if !variable_instance_exists(train_head,"hp") || !variable_instance_exists(self,"maxhp") || !variable_instance_exists(self,"hurt_rate"){
+		exit
+	}
+}
+
 // 死亡处理
 if (hp <= 0 && state != BOSS_STATE.DEATH) {
     timer = 0;

@@ -34,4 +34,9 @@ function level_info_island_init(){
 	register_level_info_island("cumin_bridge_daytime",{"name":"孜然断桥（日）","icon":spr_levelselect_button_floating,"spr":spr_cumin_bridge_daytime,"description":"前后移动的板块让卡片更容易受伤，记得及时套上瓜皮。","spr_index":2})
 	register_level_info_island("cumin_bridge_night",{"name":"孜然断桥（夜）","icon":spr_levelselect_button_floating,"spr":spr_cumin_bridge_night,"description":"小号手鼠会让相邻行的鼠军聚集，需要优先处理。\n可以给第一列卡片套上瓜皮来防范闪亮Baby。","spr_index":3})
 	register_level_info_island("marinade_garden",{"name":"卤料花园","icon":spr_levelselect_button_floating,"spr":spr_marinade_garden,"description":"尽量多套瓜皮来防范列车释放的机器铁锅鼠。","spr_index":4})
+	register_level_info_island("laurel_sky_daytime",{"name":"月桂天空（日）","icon":spr_levelselect_button_floating,"spr":spr_laurel_sky_daytime,"description":"本关同时有云层和移动板块，记得带上棉花糖。\n使用换气扇对付神风滑翔鼠，旋转咖啡喷壶对付机械投弹鼠。","spr_index":5})
+	register_level_info_island("laurel_sky_night",{"name":"月桂天空（夜）","icon":spr_levelselect_button_floating,"spr":spr_laurel_sky_night,"description":"鼠国队长出场后会立即扔出盾牌，注意防范。","spr_index":6})
+	register_level_info_island("bayleaf_airport_daytime",{"name":"香叶空港（日）","icon":spr_levelselect_button_floating,"spr":spr_bayleaf_airport_daytime,"description":"空中航母的血量非常高，使用糖葫芦来摧毁它。","spr_index":7})
+	register_level_info_island("bayleaf_airport_night",{"name":"香叶空港（夜）","icon":spr_levelselect_button_floating,"spr":spr_bayleaf_airport_night,"description":"钢铁侠鼠的破坏力极强，需要快速补阵。","spr_index":8})
+	register_level_info_island("spice_airship",{"name":"香料飞船","icon":spr_levelselect_button_floating,"spr":spr_spice_airship,"description":"鼠国列车二态的激光技能需要及时打断，否则会严重破坏阵型。","spr_index":9})
 }
