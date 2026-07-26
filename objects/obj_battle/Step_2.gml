@@ -150,3 +150,21 @@ if (!global.save_data.unlocked_items.elite_unlocked && current_wave >= global.le
 		}
 	}
 }
+// 渲染前以x/y为锚点，统一更新所有卡片的grid_col/grid_row和depth
+with (obj_card_parent) {
+    var grid_pos = get_grid_position_from_world(x, y)
+    grid_col = grid_pos.col
+    grid_row = grid_pos.row
+    if (variable_instance_exists(id, "plant_type")) {
+        var _type = plant_type
+        if (object_index == obj_cotton_candy) _type = "lilypad"
+        depth = calculate_plant_depth(grid_col, grid_row, _type)
+    }
+}
+
+with (obj_melon_shield_inner) {
+    if (instance_exists(parent_plant)) {
+        depth = parent_plant.depth + 2
+    }
+}
+
