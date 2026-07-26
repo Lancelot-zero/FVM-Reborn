@@ -455,7 +455,7 @@ if is_real(global.level_file.version){
 						for(var c_row = 0 ; c_row < global.grid_rows  ; c_row ++){
 							if array_get_index(event_list[i].cloud_rows,c_row+1) != -1{
 								var cloud_pos = get_world_position_from_grid(c_col,c_row)
-								var cloud_inst = instance_create_depth(cloud_pos.x,cloud_pos.y-10,10,obj_cloud)
+								var cloud_inst = instance_create_depth(cloud_pos.x,cloud_pos.y-10,30,obj_cloud)
 								cloud_inst.image_index = cloud_count mod 2
 								cloud_inst.depth += cloud_count mod 2
 								cloud_inst.image_alpha = 1
