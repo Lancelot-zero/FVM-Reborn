@@ -8,7 +8,7 @@ if instance_exists(parent_plant){
 	else{
 		image_index = 0
 	}
-	depth = calculate_plant_depth(parent_plant.grid_col,parent_plant.grid_row,"shield_inner")
+	depth = parent_plant.depth+2
 }
 else{
 	instance_destroy()

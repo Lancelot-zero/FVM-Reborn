@@ -53,3 +53,7 @@ if shape >= 2 && attack_timer mod heal_wait == 0{
 	current_hp = hp
 	attack_timer = 0
 }
+
+if instance_exists(inner_inst){
+	inner_inst.depth = depth + 2
+}
