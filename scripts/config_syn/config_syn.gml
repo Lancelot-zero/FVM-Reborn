@@ -95,6 +95,9 @@ global.boss_spawn_sync_list = [
 	// mouse_train
 	obj_mouse_train_1_bullet,
 	obj_mouse_train_1_body,
+	obj_mouse_train_2_body,
+	// iron_man
+	obj_iron_man,
 	// machine
 	obj_machine_iron_pan_mouse,
 	// xiaoming
