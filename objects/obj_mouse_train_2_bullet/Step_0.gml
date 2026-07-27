@@ -14,10 +14,8 @@ if b_type == 0{
 				instance_destroy(other)
 			}
 			if plant_id != "player" && plant_type != "coffee" && !invincible && plant_id != "cotton_candy"{
-				if hp >= max_hp{
-					obj_task_manager.card_loss++
-				}
-				instance_destroy()
+				hp -= 0.5 * max_hp
+				event_user(2)
 			}
 		}
 	}
@@ -32,10 +30,8 @@ else if b_type == 1{
 				instance_destroy(other)
 			}
 			if plant_id != "player" && plant_type != "coffee" && !invincible && plant_id != "cotton_candy"{
-				if hp >= max_hp{
-					obj_task_manager.card_loss++
-				}
-				instance_destroy()
+				hp -= 0.5 * max_hp
+				event_user(2)
 			}
 		}
 	}
@@ -51,10 +47,8 @@ else if b_type == 2{
 				instance_destroy(other)
 			}
 			if plant_id != "player" && plant_type != "coffee" && !invincible && plant_id != "cotton_candy"{
-				if hp >= max_hp{
-					obj_task_manager.card_loss++
-				}
-				instance_destroy()
+				hp -= 0.5 * max_hp
+				event_user(2)
 			}
 		}
 	}
