@@ -116,7 +116,6 @@ if (keyboard_check_pressed(vk_space)) {
 				
 			}
 			if obj_battle.battle_time != 0 && !global.game_over{
-				if(global.network.mode !="client")
 				global.is_paused = false;
 			}
 			if (global.network.mode == "server") { 
