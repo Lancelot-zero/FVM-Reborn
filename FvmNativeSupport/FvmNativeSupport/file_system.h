@@ -242,6 +242,24 @@ class FileSystem {
     return utf16_str;
   }
 
+  static auto Utf16ToUtf8(const wchar_t* utf16_str) -> std::string {
+    if (!utf16_str) return "";
+
+    int size_needed =
+        WideCharToMultiByte(CP_UTF8, 0, utf16_str, -1, NULL, 0, NULL, NULL);
+    if (size_needed <= 0) return "";
+
+    std::string utf8_str(size_needed, 0);
+    WideCharToMultiByte(CP_UTF8, 0, utf16_str, -1, &utf8_str[0], size_needed,
+                        NULL, NULL);
+
+    if (!utf8_str.empty() && utf8_str.back() == '\0') {
+      utf8_str.pop_back();
+    }
+
+    return utf8_str;
+  }
+
  private:
   FileSystem() = default;
 

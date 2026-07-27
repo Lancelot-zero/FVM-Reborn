@@ -55,14 +55,16 @@ GmlCallable auto StartBackupWithTargetFile(const char* saves_dir,
   namespace fs = std::filesystem;
   std::wstring w_saves_dir = FileSystem::Utf8ToUtf16(saves_dir);
 
+  std::error_code ec;
   if (!fs::exists(w_saves_dir)) {
-    return 0.0;
+    if (!fs::create_directories(saves_dir, ec) || ec) {
+      return 0.0;
+    }
   }
 
   json backup_json;
   backup_json["files"] = json::array();
 
-  std::error_code ec;
   for (const auto& entry : fs::directory_iterator(w_saves_dir, ec)) {
     if (entry.path().extension() == L".json") {
       std::ifstream ifs(entry.path());
@@ -93,6 +95,7 @@ GmlCallable auto StartBackup(const char* saves_dir) -> double {
   if (!saves_dir || !*saves_dir) {
     return 0.0;
   }
+  std::string saves_dir_copy(saves_dir);
 
   std::string chosen_folder = FileSystem::ChooseFolder();
   if (chosen_folder.empty()) {
@@ -102,9 +105,14 @@ GmlCallable auto StartBackup(const char* saves_dir) -> double {
   namespace fs = std::filesystem;
   std::wstring w_chosen = FileSystem::Utf8ToUtf16(chosen_folder.c_str());
   fs::path backup_path = fs::path(w_chosen) / L"backup.json";
-  std::string backup_path_str = backup_path.string();
+  std::string backup_path_str =
+      FileSystem::Utf16ToUtf8(backup_path.wstring().c_str());
+  if (backup_path_str.empty()) {
+    return 0.0;
+  }
 
-  return StartBackupWithTargetFile(saves_dir, backup_path_str.c_str());
+  return StartBackupWithTargetFile(saves_dir_copy.c_str(),
+                                   backup_path_str.c_str());
 }
 
 GmlCallable auto RestoreBackupWithTargetFile(const char* saves_dir,
@@ -142,7 +150,10 @@ GmlCallable auto RestoreBackupWithTargetFile(const char* saves_dir,
         fs::path(w_saves_dir) / FileSystem::Utf8ToUtf16(name.c_str());
 
     std::vector<uint8_t> data(content.begin(), content.end());
-    if (!FileSystem::WriteNativeFile(file_path.string(), data)) {
+    std::string file_path_utf8 =
+        FileSystem::Utf16ToUtf8(file_path.wstring().c_str());
+    if (file_path_utf8.empty() ||
+        !FileSystem::WriteNativeFile(file_path_utf8, data)) {
       return 0.0;
     }
   }
@@ -152,10 +163,18 @@ GmlCallable auto RestoreBackupWithTargetFile(const char* saves_dir,
 
 GmlCallable auto RestoreBackup(const char* saves_dir,
                                const char* default_backup_dir) -> double {
-  std::string chosen_file = FileSystem::ChooseFileToOpen(default_backup_dir);
-  if (chosen_file.empty()) {
+  std::string saves_dir_copy = (saves_dir && *saves_dir) ? saves_dir : "";
+  std::string default_dir_copy =
+      (default_backup_dir && *default_backup_dir) ? default_backup_dir : "";
+
+  std::string chosen_file =
+      FileSystem::ChooseFileToOpen(default_dir_copy.empty()
+                                       ? nullptr
+                                       : default_dir_copy.c_str());
+  if (chosen_file.empty() || saves_dir_copy.empty()) {
     return 0.0;
   }
 
-  return RestoreBackupWithTargetFile(saves_dir, chosen_file.c_str());
+  return RestoreBackupWithTargetFile(saves_dir_copy.c_str(),
+                                     chosen_file.c_str());
 }

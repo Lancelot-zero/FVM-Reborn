@@ -17,3 +17,17 @@ else if btn_type == "open_save_folder"{
 	var ret = native_open_folder(_target)
 	show_debug_message(ret)
 }
+else if btn_type == "export_save_backup" {
+	var _user_profile = environment_get_variable("LOCALAPPDATA")
+	var _saves_target = global.laboratory_manager.file_util.transfer_path_to_windows( _user_profile + "\\FVM_Reborn\\saves")
+	// var _backup_file_target = global.laboratory_manager.file_util.transfer_path_to_windows( _user_profile + "\\FVM_Reborn\\backups\\tmp.json")
+	var ret = native_start_backup(_saves_target)
+	show_debug_message("export save backup start: " + string(ret))
+}
+else if btn_type == "import_save_backup" {
+	var _user_profile = environment_get_variable("LOCALAPPDATA")
+	var _saves_target = global.laboratory_manager.file_util.transfer_path_to_windows( _user_profile + "\\FVM_Reborn\\saves")
+	var _backup_target = global.laboratory_manager.file_util.transfer_path_to_windows( _user_profile + "\\FVM_Reborn\\backups")
+	var ret = native_restore_backup(_saves_target, _backup_target)
+	show_debug_message("import_save_backup: " + string(ret))
+}
