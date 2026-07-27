@@ -1,4 +1,4 @@
-if(global.wait_sprite_load){
+if(global.wait_sprite_load && global.network.mode != "client"){
 	global.is_paused=true;
 }
 
@@ -6,7 +6,7 @@ if global.is_paused{
 	exit
 }
 
-if global.lose_focus_pause{
+if global.lose_focus_pause && global.network.mode != "client"{
 	if !window_has_focus() && !global.is_paused{
 		global.is_paused = true
 	}

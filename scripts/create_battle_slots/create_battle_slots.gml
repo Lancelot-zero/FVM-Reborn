@@ -29,6 +29,10 @@ function create_battle_slots() {
         
         inst.cost = card_data[? "cost"];
         inst.cooldown = card_data[? "cooldown"];
+        // 联机魔塔：冷却+50%
+        if global.network.mode != "offline" && global.map_id == "tower_cake"{
+            inst.cooldown = ceil(inst.cooldown * 1.5);
+        }
         inst.card_obj = card_data[? "obj"]; 
         inst.card_spr = card_data[? "sprite"];
 		inst.place_preview = card_data[? "place_preview"]

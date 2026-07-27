@@ -300,8 +300,13 @@ function sh_connectpubserver(args) {
     }
 
     // 用法: makepubserver <IP> <ID> [端口]
+    // 快捷: connectpubserver .  → 等同于 connectpubserver 127.0.0.1 test
+    if (array_length(args) == 2 && args[1] == ".") {
+        args[1] = "127.0.0.1";
+        args[2] = "test";
+    }
     if (array_length(args) < 3) {
-        return "[网络] 用法: makepubserver <IP> <房间ID> [端口]";
+        return "[网络] 用法: connectpubserver <IP> <房间ID> [端口]";
     }
 
     var _ip   = args[1];
@@ -321,7 +326,7 @@ function sh_connectpubserver(args) {
     var _result = network_connect_raw(_sock, _ip, _port);
     if (_result >= 0) {
 		
-		send_message(_sock, MSG_CHAT,"/connectroom "+string(_id));
+		send_message(_sock, MSG_CHAT,"/connectroom " + global.game_version + " " + string(_id) + " " + global.save_data.player.name);
         global.network.mode = "client";
         global.network.server_socket = _sock;
 		global.network.client_able = false;

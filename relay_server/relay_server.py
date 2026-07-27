@@ -158,7 +158,7 @@ class Relay:
             n += 1
         return name
 
-    def _add_to_room(self, room: Room, writer) -> tuple[int, int, str]:
+    def _add_to_room(self, room: Room, writer, preferred_name: str = "") -> tuple[int, int, str]:
         if room.host is None:
             room.host = writer
             role, cid = 0, 0
@@ -167,7 +167,7 @@ class Relay:
             room.next_cid += 1
             room.clients[cid] = writer
             role = 1
-        name = self._pick_name(room)
+        name = self._pick_name(room, preferred_name)
         room.nicks[id(writer)] = name
         return role, cid, name
 
@@ -479,15 +479,47 @@ class Relay:
         except UnicodeDecodeError:
             self._close(writer)
             return
+        # 首包: MSG_CHAT + /connectroom <版本> <房间ID> [名字]
         if not text.startswith("/connectroom "):
             print(f"  首包不是 /connectroom: {text}")
             self._close(writer)
             return
 
-        room_id = text.split(" ", 1)[1].strip()
+        raw = text.split(" ", 1)[1].strip()
+        parts = raw.split()
+        # 兼容旧格式 /connectroom <房间ID>
+        # 新格式 /connectroom <版本> <房间ID> [名字]
+        if len(parts) >= 2 and "." in parts[0]:
+            client_version = parts[0]
+            room_id        = parts[1]
+            preferred_name = parts[2] if len(parts) > 2 else ""
+        else:
+            client_version = ""
+            room_id        = parts[0] if len(parts) > 0 else ""
+            preferred_name = parts[1] if len(parts) > 1 else ""
+
+        if not room_id:
+            print(f"  缺少房间ID")
+            self._close(writer)
+            return
+
         if room_id not in self.rooms:
             self.rooms[room_id] = Room(room_id)
+            if client_version:
+                self.rooms[room_id].version = client_version
         room = self.rooms[room_id]
+
+        # 版本校验：客机版本必须与房主一致
+        if room.host is not None:
+            host_ver = getattr(room, "version", "")
+            if host_ver and client_version and client_version != host_ver:
+                print(f"  [{room.id}] 版本不匹配: 房主={host_ver} 客机={client_version}")
+                self.write_str(writer, MSG_CHAT,
+                    f"[系统] 版本不匹配！房主版本: {host_ver}，你的版本: {client_version}")
+                self.write_pkt(writer, MSG_PUB_INFO, b"\\kicked" + NUL)
+                await self.flush(writer)
+                self._close(writer)
+                return
 
         # 如果房间已有房主（客户端加入），检查状态
         if room.host is not None and room.state == "battle":
@@ -506,7 +538,7 @@ class Relay:
             self._close(writer)
             return
 
-        role, cid, name = self._add_to_room(room, writer)
+        role, cid, name = self._add_to_room(room, writer, preferred_name)
         self.sessions[id(writer)] = (room, role, cid, name)
 
         role_str = "\\modserver" if role == 0 else "\\modclient"

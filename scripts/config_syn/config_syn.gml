@@ -1,6 +1,7 @@
 // ==========================================
 // 网络同步配置 — 白名单 & 规则
 // ==========================================
+global.game_version = "2.1.0.0728";
 
 // ---- 普通属性白名单 ----
 // 帧末通过 MSG_EVENT_ACTIONS / modify 自动采集同步
@@ -143,6 +144,7 @@ global.boss_spawn_sync_list = [
 	obj_lava_burn_effect,
 	obj_ladder,
 	obj_lava,
+	obj_cloud,
 	obj_ghost_mouse,
 	obj_in_water_effect,
 	obj_mummy_mouse,

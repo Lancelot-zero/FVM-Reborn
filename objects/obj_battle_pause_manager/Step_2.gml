@@ -130,9 +130,16 @@ if (keyboard_check_pressed(vk_space)) {
 
 if (keyboard_check_pressed(vk_escape)) {
     if (!global.is_paused) {
-        // ESC暂停：暂停并显示菜单
+        // ESC暂停：暂停并显示菜单（客户端无权限）
+		if (global.network.mode == "client") exit;
         global.is_paused = true;
         global.show_menu = true;
+		if (global.network.mode == "server") {
+			var _cl = global.network.connected_clients;
+			for (var i = 0; i < array_length(_cl); i++) {
+				send_message(_cl[i], MSG_SERVER_ACTION, 2);
+			}
+		}
         
         // 创建暂停菜单实例
         
@@ -145,6 +152,12 @@ if (keyboard_check_pressed(vk_escape)) {
             instance_destroy(menu);
             global.is_paused = false;
             global.show_menu = false;
+			if (global.network.mode == "server") {
+				var _cl = global.network.connected_clients;
+				for (var i = 0; i < array_length(_cl); i++) {
+					send_message(_cl[i], MSG_SERVER_ACTION, 3);
+				}
+			}
         }
     }
 }

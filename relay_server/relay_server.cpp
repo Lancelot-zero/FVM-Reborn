@@ -165,6 +165,7 @@ struct Client {
 
 struct Room {
     std::string id;
+    std::string version;
     SOCKET host = INVALID_SOCKET;
     std::map<int, SOCKET> clients;   // cid → sock
     std::map<SOCKET, std::string> nicks;
@@ -228,7 +229,7 @@ std::string pick_name(Room& room, const std::string& preferred = "") {
     return name;
 }
 
-void add_to_room(Room& room, SOCKET sock, Client& cli) {
+void add_to_room(Room& room, SOCKET sock, Client& cli, const std::string& preferred_name = "") {
     if (room.host == INVALID_SOCKET) {
         room.host = sock;
         cli.role = 0;
@@ -238,7 +239,7 @@ void add_to_room(Room& room, SOCKET sock, Client& cli) {
         cli.role = 1;
         room.clients[cli.cid] = sock;
     }
-    cli.name = pick_name(room);
+    cli.name = pick_name(room, preferred_name);
     room.nicks[sock] = cli.name;
 }
 
@@ -563,17 +564,42 @@ void handle_client(SOCKET sock) {
         close_sock(sock); return;
     }
 
-    std::string room_id = text.substr(13);
-    // 去掉首尾空格
-    while (!room_id.empty() && room_id[0] == ' ') room_id.erase(0, 1);
-    while (!room_id.empty() && room_id.back() == ' ') room_id.pop_back();
+    // 解析 /connectroom [version] <room_id> [name]
+    // 兼容旧格式 /connectroom <房间ID>
+    // 新格式 /connectroom <版本> <房间ID> [名字]
+    std::string raw = text.substr(13);
+    while (!raw.empty() && raw[0] == ' ') raw.erase(0, 1);
+    std::vector<std::string> parts;
+    std::istringstream iss(raw);
+    std::string tok;
+    while (iss >> tok) parts.push_back(tok);
+    std::string last = raw; while (!last.empty() && last.back() == ' ') last.pop_back();
+    // 名字可能有空格，取剩余部分
+    std::string client_version, room_id, preferred_name;
+    if (parts.size() >= 2 && parts[0].find('.') != std::string::npos) {
+        client_version = parts[0];
+        room_id        = parts[1];
+        if (parts.size() > 2) {
+            auto pos = raw.find(parts[0]);
+            pos = raw.find(parts[1], pos + parts[0].size());
+            preferred_name = raw.substr(pos + parts[1].size());
+            while (!preferred_name.empty() && preferred_name[0] == ' ') preferred_name.erase(0, 1);
+        }
+    } else {
+        room_id = parts.size() > 0 ? parts[0] : "";
+    }
 
-    bool is_new_room = false;
+    if (room_id.empty()) {
+        printf("  缺少房间ID\n");
+        close_sock(sock); return;
+    }
+
     {
         std::lock_guard<std::mutex> lk(g_relay.mtx);
         if (g_relay.rooms.find(room_id) == g_relay.rooms.end()) {
             g_relay.rooms[room_id] = Room{};
             g_relay.rooms[room_id].id = room_id;
+            g_relay.rooms[room_id].version = client_version;
             g_relay.rooms[room_id].created_at =
                 std::chrono::duration<double>(std::chrono::system_clock::now().time_since_epoch()).count();
         }
@@ -585,6 +611,18 @@ void handle_client(SOCKET sock) {
         room_ptr = &g_relay.rooms[room_id];
     }
     Room& room = *room_ptr;
+
+    // 版本校验
+    if (room.host != INVALID_SOCKET) {
+        if (!room.version.empty() && !client_version.empty() && client_version != room.version) {
+            printf("  [%s] 版本不匹配: 房主=%s 客机=%s\n", room.id.c_str(), room.version.c_str(), client_version.c_str());
+            write_str(sock, MSG_CHAT,
+                "[系统] 版本不匹配！房主版本: " + room.version + "，你的版本: " + client_version);
+            write_str(sock, MSG_PUB_INFO, "\\kicked");
+            close_sock(sock);
+            return;
+        }
+    }
 
     // 战斗中不能加入
     if (room.host != INVALID_SOCKET && room.state == "battle") {
@@ -606,7 +644,7 @@ void handle_client(SOCKET sock) {
     Client cli;
     {
         std::lock_guard<std::mutex> lk(g_relay.mtx);
-        add_to_room(room, sock, cli);
+        add_to_room(room, sock, cli, preferred_name);
         g_relay.session_room[sock] = room_id;
         g_relay.session_role[sock] = cli.role;
         g_relay.session_cid[sock]  = cli.cid;

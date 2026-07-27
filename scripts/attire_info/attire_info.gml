@@ -17,6 +17,10 @@ function is_attire_unlocked(attire_id){
 ///@param {string}card_id 卡片id
 ///@return {string}
 function card_equipped_attire_id(card_id){
+	// 联机模式不使用本地时装（避免文件不同步导致显示不一致）
+	if global.network.mode != "offline"{
+		return -1
+	}
 	var attire_list = global.save_data.attires
 	for(var i = 0 ; i < array_length(attire_list) ; i++){
 		var attire_data = get_attire_info(attire_list[i].attire_id)

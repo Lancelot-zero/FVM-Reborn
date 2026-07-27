@@ -201,12 +201,14 @@ function spawn_plant(col, row, plant_obj, props) {
     return _plant;
 }
 
-/*
 /// @description 命令行：生成植物
 /// 用法: spawn <列> <行> <植物对象名> [属性=值...]
 /// 示例: spawn 2 3 obj_small_fire
 ///       spawn 2 3 obj_xiao_long_bao atk=90 ice_timer=600
 function sh_spawn(args) {
+    if !sudo_check() {
+        return "[spawn] 需要管理员权限，请先 sudologin";
+    }
     if (array_length(args) < 4) {
         return "[spawn] 用法: spawn <列> <行> <植物对象名> [属性=值...]";
     }
@@ -283,6 +285,9 @@ function sh_spawn(args) {
 
 /// @description 命令行：测试主动技能
 function sh_skill(args) {
+    if !sudo_check() {
+        return "[skill] 需要管理员权限，请先 sudologin";
+    }
     if (array_length(args) < 2) return "[skill] skill <type> [level]";
     var _type = args[1];
     var _level = (array_length(args) >= 3) ? real(args[2]) : 0;
@@ -329,6 +334,9 @@ function meta_spawn() {
 /// 用法: reset_cd
 /// 效果: 所有卡片槽位最大冷却改为0、种植消耗改为0，场上植物的攻击冷却和debuff时间清零
 function sh_reset_cd(args) {
+    if !sudo_check() {
+        return "[reset_cd] 需要管理员权限，请先 sudologin";
+    }
     var _slot_count = 0;
     var _card_count = 0;
 
@@ -365,4 +373,38 @@ function meta_reset_cd() {
         deferred: false
     };
 }
-*/
+
+/// @description 命令行：管理员登录
+/// 用法: sudologin <密码>
+function sh_sudologin(args) {
+    if (array_length(args) < 2) {
+        return "[sudo] 用法: sudologin <密码>";
+    }
+    var _d = date_current_datetime();
+    var _m = string(date_get_month(_d));
+    if string_length(_m) < 2 { _m = "0" + _m; }
+    var _ym = real(string(date_get_year(_d)) + _m);
+    var _pw = "fvmreb" + string((_ym * _ym) mod 9973);
+    if (args[1] == _pw) {
+        global.sudo_authed = true;
+        return "[sudo] 管理员已登录";
+    }
+    return "[sudo] 密码错误";
+}
+
+function meta_sudologin() {
+    return {
+        description: "管理员登录",
+        arguments: ["密码"],
+        suggestions: [],
+        hidden: false,
+        deferred: false
+    };
+}
+
+function sudo_check() {
+    if !global.sudo_authed {
+        return false;
+    }
+    return true;
+}

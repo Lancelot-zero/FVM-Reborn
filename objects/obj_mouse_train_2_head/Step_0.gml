@@ -144,7 +144,7 @@ switch state{
 		else if skill_choose == 2{
 			if timer mod 45 == 44 && jump_times < 3{
 				create_train_body_order(1,0,move_time-45*(jump_times+1))
-				if jump_times == 1{
+				if jump_times == 1 && global.network.mode != "client"{
 					train_body_list[1].skill_3_style = true
 				}
 				jump_times++
@@ -334,7 +334,7 @@ switch state{
 			image_index = floor(timer/5) mod 2 + 2
 		}
 		
-		if timer == 1{
+		if timer == 1 && global.network.mode != "client"{
 			with train_body_list[1]{
 				state = BOSS_STATE.SKILL3
 				timer = 1

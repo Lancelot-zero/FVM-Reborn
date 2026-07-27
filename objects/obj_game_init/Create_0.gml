@@ -33,6 +33,7 @@ global.level_data = {}
 global.level_data_index = 0
 global.debug = 0
 global.laboretory_room = false
+global.sudo_authed = false
 Music_Init()
 
 global.laboratory_manager = new LaboratoryManager()
