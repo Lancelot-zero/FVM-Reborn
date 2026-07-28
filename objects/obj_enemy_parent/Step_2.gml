@@ -55,10 +55,11 @@ if (global.network.mode == "server" && is_boss && state != _state_prev) {
 	{
 		if (ds_map_exists(global.network.map_instance_id_net_id, id)) {
 			var _net_id = global.network.map_instance_id_net_id[? id];
-			var _ps = { state: state, timer: timer, x: x, y: y };
+			var _ps = { state: state, timer: timer, x: x, y: y, random_count: random_count };
 			if (variable_instance_exists(id, "x_move_speed"))      { _ps.x_move_speed      = x_move_speed;      }
 			if (variable_instance_exists(id, "y_move_speed"))      { _ps.y_move_speed      = y_move_speed;      }
 			if (variable_instance_exists(id, "target_pos"))        { _ps.target_pos        = target_pos;        }
+if (variable_instance_exists(id, "target_coord"))      { _ps.target_coord      = target_coord;      }
 			if (variable_instance_exists(id, "skill_timer"))       { _ps.skill_timer       = skill_timer;       }
 			if (variable_instance_exists(id, "jump_times"))        { _ps.jump_times        = jump_times;        }
 			if (variable_instance_exists(id, "skill_move_type"))   { _ps.skill_move_type   = skill_move_type;   }
@@ -68,6 +69,7 @@ if (global.network.mode == "server" && is_boss && state != _state_prev) {
 			if (variable_instance_exists(id, "image_angle"))       { _ps.image_angle       = image_angle;       }
 			if (variable_instance_exists(id, "image_xscale"))      { _ps.image_xscale      = image_xscale;      }
 			if (variable_instance_exists(id, "image_alpha"))       { _ps.image_alpha       = image_alpha;       }
+if (variable_instance_exists(id, "visible"))           { _ps.visible           = visible;           }
 			if (variable_instance_exists(id, "move_time"))         { _ps.move_time         = move_time;         }
 			if (variable_instance_exists(id, "grid_col"))          { _ps.grid_col          = grid_col;          }
 			if (variable_instance_exists(id, "grid_row"))          { _ps.grid_row          = grid_row;          }
