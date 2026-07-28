@@ -21,7 +21,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 
 switch state{
 	case BOSS_STATE.IDLE:
-		sprite_index = spr_temple_pharaoh_idle
+		sprite_index = get_load_sprite("spr_temple_pharaoh_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 6
 		}
@@ -30,7 +30,7 @@ switch state{
 		}
 		if timer >= wait_time{
 			timer = 0
-			var i = irandom_range(1,100)
+			var i = boss_random(self, 1,100)
 			if i <= 50{
 				state = BOSS_STATE.SKILL1
 			}
@@ -41,7 +41,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.APPEAR:
-		sprite_index = spr_temple_pharaoh_appear
+		sprite_index = get_load_sprite("spr_temple_pharaoh_appear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 41
 		}
@@ -56,7 +56,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.SKILL2:
-		sprite_index = spr_temple_pharaoh_skill_2
+		sprite_index = get_load_sprite("spr_temple_pharaoh_skill_2")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 44
 		}
@@ -71,8 +71,8 @@ switch state{
 			// 循环直到选出4个不同的坐标
 			while (array_length(selected_coords) < 4) {
 			    // 生成随机坐标
-			    var rand_x = irandom_range(0, 8);
-			    var rand_y = irandom_range(0, global.grid_rows - 1);
+			    var rand_x = boss_random(self, 0, 8);
+			    var rand_y = boss_random(self, 0, global.grid_rows - 1);
 			    var new_coord = [rand_x, rand_y];
     
 			    // 检查是否已存在
@@ -120,7 +120,7 @@ switch state{
 		
 	case BOSS_STATE.SKILL1:
 		if timer <= 10 * 5  - 1{
-			sprite_index = spr_temple_pharaoh_skill_1_ready
+			sprite_index = get_load_sprite("spr_temple_pharaoh_skill_1_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer/5) mod 10
 			}
@@ -129,7 +129,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_temple_pharaoh_skill_1
+			sprite_index = get_load_sprite("spr_temple_pharaoh_skill_1")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer/5) mod 11
 			}
@@ -145,8 +145,8 @@ switch state{
 			// 循环直到选出4个不同的坐标
 			while (array_length(selected_coords) < 4) {
 			    // 生成随机坐标
-			    var rand_x = irandom_range(4, 8);
-			    var rand_y = irandom_range(0, global.grid_rows - 1);
+			    var rand_x = boss_random(self, 4, 8);
+			    var rand_y = boss_random(self, 0, global.grid_rows - 1);
 			    var new_coord = [rand_x, rand_y];
     
 			    // 检查是否已存在
@@ -192,7 +192,7 @@ switch state{
 			skill_1_disappear = true
 		}
 		if skill_1_disappear{
-			sprite_index = spr_temple_pharaoh_skill_1_ready
+			sprite_index = get_load_sprite("spr_temple_pharaoh_skill_1_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = 10 - floor(timer/5) mod 10
 			}
@@ -209,7 +209,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_temple_pharaoh_disappear
+		sprite_index = get_load_sprite("spr_temple_pharaoh_disappear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 44
 		}
@@ -220,7 +220,7 @@ switch state{
 			image_alpha = 0
 		}
 		if timer == 360{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = get_world_position_from_grid(10,enemy_row)
 			x = enemy_pos.x - 80
 			y = enemy_pos.y + 30
@@ -232,7 +232,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_temple_pharaoh_death
+		sprite_index = get_load_sprite("spr_temple_pharaoh_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha = 0

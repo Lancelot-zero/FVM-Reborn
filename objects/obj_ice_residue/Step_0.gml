@@ -3,10 +3,10 @@ if global.is_paused{
 }
 
 if shape == "ice"{
-	spr_list = [spr_ice_residue_appear,spr_ice_residue_skill_1_ready,spr_ice_residue_skill_1,spr_ice_residue_skill_2,spr_ice_residue_disappear,spr_ice_residue_death]
+	spr_list = [get_load_sprite("spr_ice_residue_appear"),get_load_sprite("spr_ice_residue_skill_1_ready"),get_load_sprite("spr_ice_residue_skill_1"),get_load_sprite("spr_ice_residue_skill_2"),get_load_sprite("spr_ice_residue_disappear"),get_load_sprite("spr_ice_residue_death")]
 }
 else{
-	spr_list = [spr_fire_residue_appear,spr_fire_residue_skill_1_ready,spr_fire_residue_skill_1,spr_fire_residue_skill_2,spr_fire_residue_disappear,spr_fire_residue_death]
+	spr_list = [get_load_sprite("spr_fire_residue_appear"),get_load_sprite("spr_fire_residue_skill_1_ready"),get_load_sprite("spr_fire_residue_skill_1"),get_load_sprite("spr_fire_residue_skill_2"),get_load_sprite("spr_fire_residue_disappear"),get_load_sprite("spr_fire_residue_death")]
 }
 
 if flash_value > 0 {
@@ -87,7 +87,7 @@ switch state{
 			bullet.row = grid_row
 			bullet.target_col = target_col
 			bullet.damage = 2000
-			bullet.sprite_index = spr_ice_residue_bullet
+			bullet.sprite_index = get_load_sprite("spr_ice_residue_bullet")
 			
 			 // 获取敌人当前位置和速度
 			var bullet_pos = get_world_position_from_grid(target_col,grid_row)
@@ -137,11 +137,11 @@ switch state{
 			var inst = instance_create_depth(x-80,y-5,-500,obj_ice_residue_ball)
 			if shape == "ice"{
 				inst.shape = "ice"
-				inst.sprite_index = spr_ice_residue_ball
+				inst.sprite_index = get_load_sprite("spr_ice_residue_ball")
 			}
 			else{
 				inst.shape = "fire"
-				inst.sprite_index = spr_fire_residue_ball
+				inst.sprite_index = get_load_sprite("spr_fire_residue_ball")
 			}
 		}
 		if timer == 8 * 10 * 3 + 16 * 5 - 1{
@@ -162,12 +162,12 @@ switch state{
 			image_alpha = 0
 		}
 		if timer == 210{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = get_world_position_from_grid(10,enemy_row)
 			x = enemy_pos.x - 80
 			y = enemy_pos.y + 30
 			image_alpha = 1
-			var shape_i = irandom_range(1,100)
+			var shape_i = boss_random(self, 1,100)
 			if shape_i <= 50{shape = "ice"}
 			else{shape = "fire"}
 			timer = 0

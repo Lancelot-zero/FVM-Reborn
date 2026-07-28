@@ -290,8 +290,8 @@ if wave_timer <= 0 && level_stage == "boss"{
 	}
 }
 
-// 服务端每60步同步一次 HP 和位置
-if (global.network.mode == "server" && battle_time mod 60 == 0) {
+// 服务端每20步同步一次 HP 和位置
+if (global.network.mode == "server" && battle_time mod 20 == 0) {
 	var _list = global.network.connected_clients;
 	var _size = array_length(_list);
 

@@ -21,7 +21,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 
 switch state{
 	case BOSS_STATE.IDLE:
-		sprite_index = spr_abyss_pharaoh_idle
+		sprite_index = get_load_sprite("spr_abyss_pharaoh_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 14
 		}
@@ -43,7 +43,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.APPEAR:
-		sprite_index = spr_abyss_pharaoh_appear
+		sprite_index = get_load_sprite("spr_abyss_pharaoh_appear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 58
 		}
@@ -58,7 +58,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.SKILL1:
-		sprite_index = spr_abyss_pharaoh_skill_3
+		sprite_index = get_load_sprite("spr_abyss_pharaoh_skill_3")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 17
 		}
@@ -73,8 +73,8 @@ switch state{
 			// 循环直到选出4个不同的坐标
 			while (array_length(selected_coords) < 6) {
 			    // 生成随机坐标
-			    var rand_x = irandom_range(0, 8);
-			    var rand_y = irandom_range(0, global.grid_rows - 1);
+			    var rand_x = boss_random(self, 0, 8);
+			    var rand_y = boss_random(self, 0, global.grid_rows - 1);
 			    var new_coord = [rand_x, rand_y];
     
 			    // 检查是否已存在
@@ -116,7 +116,7 @@ switch state{
 		if timer >= 17 * 5 * 2 - 1{
 			skill_cycle += 1
 			timer = 0
-			move_target_row = irandom_range(0,global.grid_rows-1)
+			move_target_row = boss_random(self, 0,global.grid_rows-1)
 			var land_pos = get_world_position_from_grid(10,move_target_row)
 			y_move_speed = (land_pos.y+33 - y)/180
 			state = BOSS_STATE.MOVE
@@ -126,7 +126,7 @@ switch state{
 		
 	case BOSS_STATE.SKILL2:
 		
-			sprite_index = spr_abyss_pharaoh_skill_2
+			sprite_index = get_load_sprite("spr_abyss_pharaoh_skill_2")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer/5) mod 12
 			}
@@ -142,8 +142,8 @@ switch state{
 			// 循环直到选出4个不同的坐标
 			while (array_length(selected_coords) < 4) {
 			    // 生成随机坐标
-			    var rand_x = irandom_range(4, 8);
-			    var rand_y = irandom_range(0, global.grid_rows - 1);
+			    var rand_x = boss_random(self, 4, 8);
+			    var rand_y = boss_random(self, 0, global.grid_rows - 1);
 			    var new_coord = [rand_x, rand_y];
     
 			    // 检查是否已存在
@@ -187,7 +187,7 @@ switch state{
 			skill_cycle = 0
 			jump_times = 0
 			timer = 0
-			move_target_row = irandom_range(0,global.grid_rows-1)
+			move_target_row = boss_random(self, 0,global.grid_rows-1)
 			var land_pos = get_world_position_from_grid(10,move_target_row)
 			y_move_speed = (land_pos.y+33 - y)/180
 			state = BOSS_STATE.MOVE
@@ -196,7 +196,7 @@ switch state{
 		
 	case BOSS_STATE.SKILL3:
 		
-		sprite_index = spr_abyss_pharaoh_skill_1
+		sprite_index = get_load_sprite("spr_abyss_pharaoh_skill_1")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 12
 		}
@@ -211,8 +211,8 @@ switch state{
 					array_push(avaliable_line,i)
 				}
 			}
-			var linei = irandom_range(0,array_length(avaliable_line)-1)
-			var hole_col = irandom_range(7,8)
+			var linei = boss_random(self, 0,array_length(avaliable_line)-1)
+			var hole_col = boss_random(self, 7,8)
 			var hole_row = avaliable_line[linei]
 			var hole_pos = get_world_position_from_grid(hole_col,hole_row)
 			with obj_card_parent{
@@ -229,7 +229,7 @@ switch state{
 		if timer >= 12*5*8-1{
 			skill_cycle += 1
 			timer = 0
-			move_target_row = irandom_range(0,global.grid_rows-1)
+			move_target_row = boss_random(self, 0,global.grid_rows-1)
 			var land_pos = get_world_position_from_grid(10,move_target_row)
 			y_move_speed = (land_pos.y+33 - y)/180
 			state = BOSS_STATE.MOVE
@@ -239,7 +239,7 @@ switch state{
 		
 	case BOSS_STATE.DISAPPEAR:
 		//break
-		//sprite_index = spr_temple_pharaoh_disappear
+		//sprite_index = get_load_sprite("spr_temple_pharaoh_disappear")
 		//if hp > maxhp * hurt_rate{
 		//	image_index = floor(timer/5) mod 44
 		//}
@@ -250,7 +250,7 @@ switch state{
 		//	image_alpha = 0
 		//}
 		//if timer == 360{
-		//	var enemy_row = irandom_range(0,global.grid_rows-1)
+		//	var enemy_row = boss_random(self, 0,global.grid_rows-1)
 		//	var enemy_pos = get_world_position_from_grid(10,enemy_row)
 		//	x = enemy_pos.x - 50
 		//	y = enemy_pos.y + 30
@@ -261,7 +261,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.MOVE:
-		sprite_index = spr_abyss_pharaoh_idle
+		sprite_index = get_load_sprite("spr_abyss_pharaoh_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 14
 		}
@@ -276,7 +276,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_abyss_pharaoh_death
+		sprite_index = get_load_sprite("spr_abyss_pharaoh_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha = 0

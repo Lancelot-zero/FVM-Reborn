@@ -7,7 +7,7 @@ if flash_value > 0 {
 }
 
 if !appear{
-	var enemy_row = irandom_range(0,global.grid_rows-1)
+	var enemy_row = boss_random(self, 0,global.grid_rows-1)
 	var enemy_pos = {}
 	if skill_count == 2{
 		enemy_pos = get_world_position_from_grid(9,enemy_row)
@@ -42,7 +42,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 
 switch state{
 	case BOSS_STATE.IDLE:
-		sprite_index = spr_lieutenant_buzz_idle
+		sprite_index = get_load_sprite("spr_lieutenant_buzz_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 10
 		}
@@ -72,7 +72,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.APPEAR:
-		sprite_index = spr_lieutenant_buzz_idle
+		sprite_index = get_load_sprite("spr_lieutenant_buzz_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 10
 		}
@@ -104,7 +104,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.SKILL1:
-		sprite_index = spr_lieutenant_buzz_skill_1
+		sprite_index = get_load_sprite("spr_lieutenant_buzz_skill_1")
 		
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 9
@@ -126,7 +126,7 @@ switch state{
 		
 		if timer mod 45 == 35{
 			if ds_list_size(avaliable_pos) > 0{
-				var i = irandom_range(0,ds_list_size(avaliable_pos)-1)
+				var i = boss_random(self, 0,ds_list_size(avaliable_pos)-1)
 				var target_p = ds_list_find_value(avaliable_pos,i)
 				var missile = instance_create_depth(x-60,y-180,-800,obj_buzz_wind)
 				missile.target_col = target_p.col
@@ -150,7 +150,7 @@ switch state{
 		
 		
 		if timer <= 120{
-			sprite_index = spr_lieutenant_buzz_idle
+			sprite_index = get_load_sprite("spr_lieutenant_buzz_idle")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 10
 			}
@@ -159,7 +159,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_lieutenant_buzz_idle
+			sprite_index = get_load_sprite("spr_lieutenant_buzz_idle")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-120) /5) mod 10
 			}
@@ -177,7 +177,7 @@ switch state{
 			x_move = (t_pos.x-90-x)/120
 		}
 		if timer == 240{
-			t_pos = get_world_position_from_grid(10,irandom_range(0,global.grid_rows-1))
+			t_pos = get_world_position_from_grid(10,boss_random(self, 0,global.grid_rows-1))
 			
 			y_move_speed = (t_pos.y+33-y)/120
 			x_move = (t_pos.x-90-x)/120
@@ -207,7 +207,7 @@ switch state{
 	case BOSS_STATE.SKILL3:
 		
 		if timer <= 120{
-			sprite_index = spr_lieutenant_buzz_skill_3
+			sprite_index = get_load_sprite("spr_lieutenant_buzz_skill_3")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 10
 			}
@@ -216,7 +216,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_lieutenant_buzz_idle
+			sprite_index = get_load_sprite("spr_lieutenant_buzz_idle")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-120) /5) mod 10
 			}
@@ -233,7 +233,7 @@ switch state{
 			x_move = (t_pos.x-90-x)/120
 		}
 		if timer == 240{
-			t_pos = get_world_position_from_grid(10,irandom_range(0,global.grid_rows-1))
+			t_pos = get_world_position_from_grid(10,boss_random(self, 0,global.grid_rows-1))
 			
 			y_move_speed = (t_pos.y+33-y)/120
 			x_move = (t_pos.x-90-x)/120
@@ -250,7 +250,7 @@ switch state{
 				}
 				var effect_pos = get_world_position_from_grid(6-jump_times,grid_row)
 				var effect_inst = instance_create_depth(effect_pos.x,effect_pos.y+10,-800,obj_arno_bullet_effect)
-				effect_inst.sprite_index = spr_buzz_bullet_effect
+				effect_inst.sprite_index = get_load_sprite("spr_buzz_bullet_effect")
 				jump_times ++
 			}
 			
@@ -274,7 +274,7 @@ switch state{
 	case BOSS_STATE.SKILL2:
 		
 		if timer <= (10 * 5 - 1){
-			sprite_index = spr_lieutenant_buzz_skill_2_ready
+			sprite_index = get_load_sprite("spr_lieutenant_buzz_skill_2_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 10
 			}
@@ -286,7 +286,7 @@ switch state{
 			if jump_times < 3{
 				skill_timer ++
 				if skill_timer == 1{
-					t_pos = get_world_position_from_grid(irandom_range(3,7),irandom_range(0,global.grid_rows-1))
+					t_pos = get_world_position_from_grid(boss_random(self, 3,7),boss_random(self, 0,global.grid_rows-1))
 			
 					y_move_speed = (t_pos.y+33-y)/90
 					x_move = (t_pos.x-80-x)/90
@@ -297,7 +297,7 @@ switch state{
 				}
 				if skill_timer == 91{
 					instance_create_depth(x+40,y,-100,obj_apple_football_fan_mouse)
-					t_pos = get_world_position_from_grid(9,irandom_range(0,global.grid_rows-1))
+					t_pos = get_world_position_from_grid(9,boss_random(self, 0,global.grid_rows-1))
 			
 					y_move_speed = (t_pos.y+33-y)/90
 					x_move = (t_pos.x-80-x)/90
@@ -312,7 +312,7 @@ switch state{
 				}
 				
 				if skill_timer < 90{
-					sprite_index = spr_lieutenant_buzz_skill_2_catch
+					sprite_index = get_load_sprite("spr_lieutenant_buzz_skill_2_catch")
 					if hp > maxhp * hurt_rate{
 						image_index = floor((timer) /5) mod 10
 					}
@@ -321,7 +321,7 @@ switch state{
 					}
 				}
 				else{
-					sprite_index = spr_lieutenant_buzz_skill_2
+					sprite_index = get_load_sprite("spr_lieutenant_buzz_skill_2")
 					if hp > maxhp * hurt_rate{
 						image_index = floor((timer) /5) mod 10
 					}
@@ -332,7 +332,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_lieutenant_buzz_skill_2_return
+			sprite_index = get_load_sprite("spr_lieutenant_buzz_skill_2_return")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-680) /5) mod 10
 			}
@@ -349,7 +349,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_pete_disappear
+		sprite_index = get_load_sprite("spr_pete_disappear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 13
 		}
@@ -360,13 +360,13 @@ switch state{
 			image_alpha = 0
 		}
 		if timer == 240{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = {}
 			if skill_count == 2{
 				enemy_pos = get_world_position_from_grid(9,enemy_row)
 			}
 			else if skill_count == 0{
-				enemy_pos = get_world_position_from_grid(irandom_range(2,6),enemy_row)
+				enemy_pos = get_world_position_from_grid(boss_random(self, 2,6),enemy_row)
 			}
 			else{
 				enemy_pos = get_world_position_from_grid(6,enemy_row)
@@ -381,7 +381,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_lieutenant_buzz_death
+		sprite_index = get_load_sprite("spr_lieutenant_buzz_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha -= 0.1

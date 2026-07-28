@@ -22,7 +22,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 switch state{
 	case BOSS_STATE.IDLE:
 		target_type = "normal"
-		sprite_index = spr_rumble_idle
+		sprite_index = get_load_sprite("spr_rumble_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = 0
 		}
@@ -38,7 +38,7 @@ switch state{
 		
 	case BOSS_STATE.APPEAR:
 		target_type = "normal"
-		sprite_index = spr_rumble_appear
+		sprite_index = get_load_sprite("spr_rumble_appear")
 		
 		image_index = floor(timer/5) mod 11
 		
@@ -51,7 +51,7 @@ switch state{
 	
 	case BOSS_STATE.SKILL2:
 		target_type = "normal"
-		sprite_index = spr_rumble_skill_2
+		sprite_index = get_load_sprite("spr_rumble_skill_2")
 		if timer < 480{
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer/5) mod 16
@@ -90,7 +90,7 @@ switch state{
 		
 	case BOSS_STATE.SKILL1:
 		target_type = "normal"
-		sprite_index = spr_rumble_skill_1
+		sprite_index = get_load_sprite("spr_rumble_skill_1")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 16
 		}
@@ -111,7 +111,7 @@ switch state{
 		
 		if timer == 4*5 /*|| timer == 9 *5 || timer == 14*5*/{
 			if ds_list_size(avaliable_pos) > 0{
-				var i = irandom_range(0,ds_list_size(avaliable_pos)-1)
+				var i = boss_random(self, 0,ds_list_size(avaliable_pos)-1)
 				var target_p = ds_list_find_value(avaliable_pos,i)
 				var missile = instance_create_depth(x-60,y-180,-800,obj_rumble_missile)
 				missile.target_col = target_p.col
@@ -129,7 +129,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_rumble_idle
+		sprite_index = get_load_sprite("spr_rumble_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 9
 		}
@@ -140,12 +140,12 @@ switch state{
 			image_alpha = 0
 		}
 		if timer == 210{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = get_world_position_from_grid(10,enemy_row)
 			x = enemy_pos.x - 50
 			y = enemy_pos.y + 30
 			image_alpha = 1
-			var shape_i = irandom_range(1,100)
+			var shape_i = boss_random(self, 1,100)
 			timer = 0
 			state = BOSS_STATE.APPEAR
 			break
@@ -153,7 +153,7 @@ switch state{
 		break
 	case BOSS_STATE.SKILL3:
 		target_type = "normal"
-		sprite_index = spr_rumble_skill_3
+		sprite_index = get_load_sprite("spr_rumble_skill_3")
 		
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 24
@@ -184,7 +184,7 @@ switch state{
 		break
 	case BOSS_STATE.DROP:
 		target_type = "air"
-		sprite_index = spr_rumble_drop
+		sprite_index = get_load_sprite("spr_rumble_drop")
 		
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 21
@@ -204,7 +204,7 @@ switch state{
 		break
 	case BOSS_STATE.LAUNCH:
 		target_type = "air"
-		sprite_index = spr_rumble_launch
+		sprite_index = get_load_sprite("spr_rumble_launch")
 		
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 27
@@ -214,8 +214,8 @@ switch state{
 		}
 		if timer == 27 * 5 - 1{
 			if jump_times == 0 || jump_times == 2{
-				target_pos.row = irandom_range(1,global.grid_rows-1)
-				target_pos.col = irandom_range(3,6)
+				target_pos.row = boss_random(self, 1,global.grid_rows-1)
+				target_pos.col = boss_random(self, 3,6)
 				var land_pos = get_world_position_from_grid(target_pos.col,target_pos.row)
 				x_move_speed = (land_pos.x-10 - x)/180
 				y_move_speed = (land_pos.y+33 - y)/180
@@ -223,7 +223,7 @@ switch state{
 				state = BOSS_STATE.MOVE
 			}
 			else{
-				target_pos.row = irandom_range(1,global.grid_rows-1)
+				target_pos.row = boss_random(self, 1,global.grid_rows-1)
 				target_pos.col = 10
 				var land_pos = get_world_position_from_grid(target_pos.col,target_pos.row)
 				x_move_speed = (land_pos.x-80 - x)/180
@@ -236,10 +236,10 @@ switch state{
 	case BOSS_STATE.MOVE:
 		target_type = "air"
 		if x_move_speed <= 0{
-			sprite_index = spr_rumble_move_forward
+			sprite_index = get_load_sprite("spr_rumble_move_forward")
 		}
 		else{
-			sprite_index = spr_rumble_move_backword
+			sprite_index = get_load_sprite("spr_rumble_move_backword")
 		}
 		
 		if hp > maxhp * hurt_rate{
@@ -264,7 +264,7 @@ switch state{
 	
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_rumble_death
+		sprite_index = get_load_sprite("spr_rumble_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha -= 0.1

@@ -22,7 +22,7 @@ else{
 	}
 }
 
-if is_hole && col > 1{
+if is_hole && col > 1 && global.network.mode != "client"{
 	with obj_card_parent{
 		if grid_col == other.col && grid_row == other.row &&
 		plant_id != "player" && plant_type != "coffee"{

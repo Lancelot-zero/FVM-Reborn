@@ -34,7 +34,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 
 switch state{
 	case BOSS_STATE.IDLE:
-		sprite_index = spr_hulk_mouse_idle
+		sprite_index = get_load_sprite("spr_hulk_mouse_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 9
 		}
@@ -56,7 +56,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.APPEAR:
-		sprite_index = spr_hulk_mouse_appear
+		sprite_index = get_load_sprite("spr_hulk_mouse_appear")
 		if timer <= 120{
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer/5) mod 8
@@ -82,7 +82,7 @@ switch state{
 	
 	case BOSS_STATE.SKILL1:
 		if timer <= 8 * 5 - 1{
-			sprite_index = spr_hulk_mouse_skill_1_ready
+			sprite_index = get_load_sprite("spr_hulk_mouse_skill_1_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 8
 			}
@@ -91,7 +91,7 @@ switch state{
 			}
 		}
 		else if timer <= 95{
-			sprite_index = spr_hulk_mouse_skill_1
+			sprite_index = get_load_sprite("spr_hulk_mouse_skill_1")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-8*5) /3) mod 7
 			}
@@ -101,7 +101,7 @@ switch state{
 			x -= 10
 		}
 		else if timer <= 95 + 8 * 5 - 1{
-			sprite_index = spr_hulk_mouse_skill_1_ready
+			sprite_index = get_load_sprite("spr_hulk_mouse_skill_1_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = 8 - (floor((timer-95) /5) mod 8)
 			}
@@ -110,7 +110,7 @@ switch state{
 			}
 		}
 		else if timer <= 95 + 20 * 5 - 1{
-			sprite_index = spr_hulk_mouse_move_fast
+			sprite_index = get_load_sprite("spr_hulk_mouse_move_fast")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-135) /5) mod 12
 			}
@@ -119,7 +119,7 @@ switch state{
 			}
 		}
 		else if timer <= 95 + 28 * 5 - 1{
-			sprite_index = spr_hulk_mouse_skill_1_ready
+			sprite_index = get_load_sprite("spr_hulk_mouse_skill_1_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-195)/5) mod 8
 			}
@@ -128,7 +128,7 @@ switch state{
 			}
 		}
 		else if timer <= 150 + 28 * 5 - 1{
-			sprite_index = spr_hulk_mouse_skill_1
+			sprite_index = get_load_sprite("spr_hulk_mouse_skill_1")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-235) /3) mod 7
 			}
@@ -138,7 +138,7 @@ switch state{
 			x -= 10
 		}
 		else if timer <= 150 + 36 * 5 - 1{
-			sprite_index = spr_hulk_mouse_skill_1_ready
+			sprite_index = get_load_sprite("spr_hulk_mouse_skill_1_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = 8 - (floor((timer-290) /5) mod 8)
 			}
@@ -147,7 +147,7 @@ switch state{
 			}
 		}
 		
-		if sprite_index == spr_hulk_mouse_skill_1 && grid_col <= 5{
+		if sprite_index == get_load_sprite("spr_hulk_mouse_skill_1") && grid_col <= 5{
 			with obj_card_parent{
 				if grid_col >= other.grid_col-1 && grid_col <= other.grid_col && grid_row >= other.grid_row-1 && grid_row <= other.grid_row &&
 				plant_id != "player" && plant_type != "coffee" && !invincible && plant_id != "cotton_candy"{
@@ -179,7 +179,7 @@ switch state{
 		
 	case BOSS_STATE.SKILL2:
 		
-		sprite_index = spr_hulk_mouse_skill_2
+		sprite_index = get_load_sprite("spr_hulk_mouse_skill_2")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer /5) mod 23
 		}
@@ -193,7 +193,7 @@ switch state{
 				var erase_row = skill_2_erase_pos[i][1]
 				var erase_pos = get_world_position_from_grid(erase_col,erase_row)
 				var effect_inst = instance_create_depth(erase_pos.x,erase_pos.y,-800,obj_coke_bomb_explode)
-				effect_inst.sprite_index = spr_hulk_mouse_skill_effect_2
+				effect_inst.sprite_index = get_load_sprite("spr_hulk_mouse_skill_effect_2")
 				with obj_card_parent{
 					if grid_col == erase_col && grid_row == erase_row &&
 					plant_id != "player" && plant_type != "coffee" && !invincible && plant_id != "cotton_candy"{
@@ -215,7 +215,7 @@ switch state{
 	case BOSS_STATE.SKILL3:
 		
 		if timer <= 49 * 5 - 1{
-			sprite_index = spr_hulk_mouse_skill_3
+			sprite_index = get_load_sprite("spr_hulk_mouse_skill_3")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 49
 			}
@@ -224,7 +224,7 @@ switch state{
 			}
 		}
 		else if timer <= 61 * 5 - 1{
-			sprite_index = spr_hulk_mouse_move_fast
+			sprite_index = get_load_sprite("spr_hulk_mouse_move_fast")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-49*5) /5) mod 12
 			}
@@ -233,7 +233,7 @@ switch state{
 			}
 		}
 		else if timer <= 110 * 5 - 1{
-			sprite_index = spr_hulk_mouse_skill_3
+			sprite_index = get_load_sprite("spr_hulk_mouse_skill_3")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-61*5) /5) mod 49
 			}
@@ -267,7 +267,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_hulk_mouse_move_slow
+		sprite_index = get_load_sprite("spr_hulk_mouse_move_slow")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 15
 		}
@@ -278,11 +278,11 @@ switch state{
 		//	image_alpha = 0
 		//}
 		if timer == 1{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = {}
-			skill_change_style = irandom_range(0,1)
+			skill_change_style = boss_random(self, 0,1)
 			for(var i = 0 ; i < 100 ; i++){
-				var current_choose = irandom_range(0,2)
+				var current_choose = boss_random(self, 0,2)
 				if current_choose != skill_choose{
 					skill_choose = current_choose
 					break
@@ -293,8 +293,8 @@ switch state{
 				enemy_pos = get_world_position_from_grid(9,enemy_row)
 			}
 			else if skill_choose == 0{
-				skill_1_row[0] = irandom_range(1,2)
-				skill_1_row[1] = irandom_range(4,global.grid_rows-1)
+				skill_1_row[0] = boss_random(self, 1,2)
+				skill_1_row[1] = boss_random(self, 4,global.grid_rows-1)
 				enemy_pos = get_world_position_from_grid(7,skill_1_row[0]) 
 			}
 			else{
@@ -311,7 +311,7 @@ switch state{
 		}
 		
 		if timer == 15*5-1{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = {}
 			if skill_choose == 2{
 				enemy_row = 2
@@ -332,7 +332,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_hulk_mouse_death
+		sprite_index = get_load_sprite("spr_hulk_mouse_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha -= 0.1

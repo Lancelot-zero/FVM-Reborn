@@ -65,4 +65,5 @@ hp_modified = false
 
 block_mouse_id_list = ["mouse_train_1"]
 
+random_count = 0
 _state_prev = state

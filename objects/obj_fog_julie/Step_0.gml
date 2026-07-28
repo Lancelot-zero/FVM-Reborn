@@ -77,7 +77,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.APPEAR:
-		sprite_index = spr_fog_julie_idle
+		sprite_index = get_load_sprite("spr_fog_julie_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 12
 		}
@@ -112,7 +112,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.SKILL1:
-		sprite_index = spr_fog_julie_skill_1
+		sprite_index = get_load_sprite("spr_fog_julie_skill_1")
 		
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 12
@@ -126,7 +126,7 @@ switch state{
 		}
 		else{
 			if timer == 1{
-				t_pos = get_world_position_from_grid(9,irandom_range(0,global.grid_rows-1))
+				t_pos = get_world_position_from_grid(9,boss_random(self, 0,global.grid_rows-1))
 			
 				y_move_speed = (t_pos.y+33-y)/240
 				x_move = (t_pos.x-90-x)/240
@@ -161,7 +161,7 @@ switch state{
 		
 		
 		if timer <= 120{
-			sprite_index = spr_fog_julie_idle
+			sprite_index = get_load_sprite("spr_fog_julie_idle")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 12
 			}
@@ -170,7 +170,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_fog_julie_skill_4
+			sprite_index = get_load_sprite("spr_fog_julie_skill_4")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-120) /5) mod 12
 			}
@@ -182,7 +182,7 @@ switch state{
 		
 		if timer == 1{
 			
-			t_pos = get_world_position_from_grid(irandom_range(3,7),irandom_range(0,global.grid_rows-1))
+			t_pos = get_world_position_from_grid(boss_random(self, 3,7),boss_random(self, 0,global.grid_rows-1))
 			
 			y_move_speed = (t_pos.y+33-y)/120
 			x_move = (t_pos.x-90-x)/120
@@ -206,7 +206,7 @@ switch state{
 	case BOSS_STATE.SKILL3:
 		
 		if timer <= 120{
-			sprite_index = spr_fog_julie_idle
+			sprite_index = get_load_sprite("spr_fog_julie_idle")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 12
 			}
@@ -215,7 +215,7 @@ switch state{
 			}
 		}
 		else if timer <= (120 + 17 * 5 - 1){
-			sprite_index = spr_fog_julie_skill_2_ready
+			sprite_index = get_load_sprite("spr_fog_julie_skill_2_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-120) /5) mod 17
 			}
@@ -224,7 +224,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_fog_julie_skill_3
+			sprite_index = get_load_sprite("spr_fog_julie_skill_3")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-205) /5) mod 19
 			}
@@ -253,7 +253,7 @@ switch state{
 		
 		if timer == 1{
 			
-			t_pos = get_world_position_from_grid(9,irandom_range(0,global.grid_rows-1))
+			t_pos = get_world_position_from_grid(9,boss_random(self, 0,global.grid_rows-1))
 			
 			y_move_speed = (t_pos.y+33-y)/120
 			x_move = (t_pos.x-90-x)/120
@@ -264,7 +264,7 @@ switch state{
 		}
 		
 		if timer >= 120 + 17 * 5 + 19 * 2 * 5 - 1{
-			idle_spr = spr_fog_julie_skill_2_idle
+			idle_spr = get_load_sprite("spr_fog_julie_skill_2_idle")
 			idle_anim = 10
 			jump_times = 0
 			timer = 0
@@ -274,7 +274,7 @@ switch state{
 	case BOSS_STATE.SKILL2:
 		
 		if timer <= (38 * 5 - 1){
-			sprite_index = spr_fog_julie_skill_2
+			sprite_index = get_load_sprite("spr_fog_julie_skill_2")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 38
 			}
@@ -283,7 +283,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_fog_julie_skill_2_return
+			sprite_index = get_load_sprite("spr_fog_julie_skill_2_return")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-190) /5) mod 18
 			}
@@ -294,7 +294,7 @@ switch state{
 		
 		if timer == 19 * 5{
 			if !instance_exists(banding_summon_obj){
-				var enemy_row = irandom_range(0,global.grid_rows-1)
+				var enemy_row = boss_random(self, 0,global.grid_rows-1)
 				var enemy_pos = get_world_position_from_grid(8,enemy_row)
 				banding_summon_obj = instance_create_depth(enemy_pos.x-80,enemy_pos.y+33,-200,obj_lieutenant_buzz)
 				obj_battle.boss_count++
@@ -307,7 +307,7 @@ switch state{
 		}
 		
 		if timer >= 190+18*5-1{
-			idle_spr = spr_fog_julie_idle
+			idle_spr = get_load_sprite("spr_fog_julie_idle")
 			idle_anim = 12
 			jump_times = 0
 			timer = 0
@@ -316,7 +316,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_pete_disappear
+		sprite_index = get_load_sprite("spr_pete_disappear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 13
 		}
@@ -327,13 +327,13 @@ switch state{
 			image_alpha = 0
 		}
 		if timer == 240{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = {}
 			if skill_count == 2{
 				enemy_pos = get_world_position_from_grid(9,enemy_row)
 			}
 			else if skill_count == 0{
-				enemy_pos = get_world_position_from_grid(irandom_range(2,6),enemy_row)
+				enemy_pos = get_world_position_from_grid(boss_random(self, 2,6),enemy_row)
 			}
 			else{
 				enemy_pos = get_world_position_from_grid(6,enemy_row)
@@ -348,7 +348,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_fog_julie_death
+		sprite_index = get_load_sprite("spr_fog_julie_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha -= 0.1

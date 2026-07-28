@@ -7,13 +7,13 @@ if flash_value > 0 {
 }
 
 if !appear{
-	var enemy_row = irandom_range(0,global.grid_rows-1)
+	var enemy_row = boss_random(self, 0,global.grid_rows-1)
 	var enemy_pos = {}
 	if skill_count == 2{
 		enemy_pos = get_world_position_from_grid(6,enemy_row)
 	}
 	else if skill_count == 0{
-		enemy_pos = get_world_position_from_grid(irandom_range(2,6),enemy_row)
+		enemy_pos = get_world_position_from_grid(boss_random(self, 2,6),enemy_row)
 	}
 	else{
 		enemy_pos = get_world_position_from_grid(6,enemy_row)
@@ -42,7 +42,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 
 switch state{
 	case BOSS_STATE.IDLE:
-		sprite_index = spr_hot_vajra_idle
+		sprite_index = get_load_sprite("spr_hot_vajra_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 10
 		}
@@ -57,7 +57,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.APPEAR:
-		sprite_index = spr_hot_vajra_appear
+		sprite_index = get_load_sprite("spr_hot_vajra_appear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 12
 		}
@@ -97,7 +97,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.SKILL1:
-		sprite_index = spr_hot_vajra_skill_1
+		sprite_index = get_load_sprite("spr_hot_vajra_skill_1")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 14
 		}
@@ -126,7 +126,7 @@ switch state{
 	case BOSS_STATE.SKILL3:
 		if timer <= 12*5 - 1{
 		
-			sprite_index = spr_hot_vajra_skill_3_ready
+			sprite_index = get_load_sprite("spr_hot_vajra_skill_3_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 12
 			}
@@ -136,7 +136,7 @@ switch state{
 		}
 		else if timer >= 12*5 +60*8{
 		
-			sprite_index = spr_hot_vajra_skill_3_ready
+			sprite_index = get_load_sprite("spr_hot_vajra_skill_3_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = 12 - floor((timer-(12*5 +60*8)) /5) mod 12
 			}
@@ -145,7 +145,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_hot_vajra_skill_3
+			sprite_index = get_load_sprite("spr_hot_vajra_skill_3")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 10
 			}
@@ -155,7 +155,7 @@ switch state{
 		}
 		
 		if timer == 5 * 5 - 1{
-			spike_count = irandom_range(0,1)
+			spike_count = boss_random(self, 0,1)
 			if spike_count mod 2 == 0{
 				var spike_pos1 = get_world_position_from_grid(0,0)
 				spike_left_1 = instance_create_depth(spike_pos1.x,spike_pos1.y+25,-800,obj_vajra_spike)
@@ -250,22 +250,22 @@ switch state{
 				if instance_exists(spike_left_1) && instance_exists(spike_left_2){
 					var light_pos = get_world_position_from_grid(0,3)
 					var light_inst = instance_create_depth(light_pos.x,light_pos.y-50,-800,obj_vajra_lightning)
-					light_inst.sprite_index = spr_vajra_lightning_horizontal
+					light_inst.sprite_index = get_load_sprite("spr_vajra_lightning_horizontal")
 				}
 				if instance_exists(spike_right_1) && instance_exists(spike_right_2){
 					var light_pos = get_world_position_from_grid(global.grid_cols-1,3)
 					var light_inst = instance_create_depth(light_pos.x,light_pos.y-50,-800,obj_vajra_lightning)
-					light_inst.sprite_index = spr_vajra_lightning_horizontal
+					light_inst.sprite_index = get_load_sprite("spr_vajra_lightning_horizontal")
 				}
 				if instance_exists(spike_left_1) && instance_exists(spike_right_2){
 					var light_pos = get_world_position_from_grid(4,3)
 					var light_inst = instance_create_depth(light_pos.x,light_pos.y-50,-800,obj_vajra_lightning)
-					light_inst.sprite_index = spr_vajra_lightning_incline_1
+					light_inst.sprite_index = get_load_sprite("spr_vajra_lightning_incline_1")
 				}
 				if instance_exists(spike_left_2) && instance_exists(spike_right_1){
 					var light_pos = get_world_position_from_grid(4,3)
 					var light_inst = instance_create_depth(light_pos.x,light_pos.y-50,-800,obj_vajra_lightning)
-					light_inst.sprite_index = spr_vajra_lightning_incline_2
+					light_inst.sprite_index = get_load_sprite("spr_vajra_lightning_incline_2")
 				}
 			}
 			else{
@@ -309,32 +309,32 @@ switch state{
 				if instance_exists(spike_left_1) && instance_exists(spike_right_1){
 					var light_pos = get_world_position_from_grid(6,1.5)
 					var light_inst = instance_create_depth(light_pos.x,light_pos.y-50,-800,obj_vajra_lightning)
-					light_inst.sprite_index = spr_vajra_lightning_incline_1_short
+					light_inst.sprite_index = get_load_sprite("spr_vajra_lightning_incline_1_short")
 				}
 				if instance_exists(spike_left_2) && instance_exists(spike_right_2){
 					var light_pos = get_world_position_from_grid(2,4.5)
 					var light_inst = instance_create_depth(light_pos.x,light_pos.y-50,-800,obj_vajra_lightning)
-					light_inst.sprite_index = spr_vajra_lightning_incline_1_short
+					light_inst.sprite_index = get_load_sprite("spr_vajra_lightning_incline_1_short")
 				}
 				if instance_exists(spike_left_1) && instance_exists(spike_left_2){
 					var light_pos = get_world_position_from_grid(2,1.5)
 					var light_inst = instance_create_depth(light_pos.x,light_pos.y-50,-800,obj_vajra_lightning)
-					light_inst.sprite_index = spr_vajra_lightning_incline_2_short
+					light_inst.sprite_index = get_load_sprite("spr_vajra_lightning_incline_2_short")
 				}
 				if instance_exists(spike_right_1) && instance_exists(spike_right_2){
 					var light_pos = get_world_position_from_grid(6,4.5)
 					var light_inst = instance_create_depth(light_pos.x,light_pos.y-50,-800,obj_vajra_lightning)
-					light_inst.sprite_index = spr_vajra_lightning_incline_2_short
+					light_inst.sprite_index = get_load_sprite("spr_vajra_lightning_incline_2_short")
 				}
 				if instance_exists(spike_left_1) && instance_exists(spike_right_1){
 					var light_pos = get_world_position_from_grid(4,3)
 					var light_inst = instance_create_depth(light_pos.x,light_pos.y-50,-800,obj_vajra_lightning)
-					light_inst.sprite_index = spr_vajra_lightning_horizontal
+					light_inst.sprite_index = get_load_sprite("spr_vajra_lightning_horizontal")
 				}
 				if instance_exists(spike_left_2) && instance_exists(spike_right_2){
 					var light_pos = get_world_position_from_grid(4,3)
 					var light_inst = instance_create_depth(light_pos.x,light_pos.y-50,-800,obj_vajra_lightning)
-					light_inst.sprite_index = spr_vajra_lightning_vertical
+					light_inst.sprite_index = get_load_sprite("spr_vajra_lightning_vertical")
 				}
 			}
 			
@@ -350,7 +350,7 @@ switch state{
 		var skill_time = 50 * 60
 		
 		if timer <= 26 * 5 - 1{
-			sprite_index = spr_hot_vajra_skill_4
+			sprite_index = get_load_sprite("spr_hot_vajra_skill_4")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 26
 			}
@@ -363,7 +363,7 @@ switch state{
 		}
 		else{
 			image_alpha = 1
-			sprite_index = spr_hot_vajra_skill_4_return
+			sprite_index = get_load_sprite("spr_hot_vajra_skill_4_return")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-130-skill_time)/5) mod 45
 			}
@@ -418,7 +418,7 @@ switch state{
 		break
 	case BOSS_STATE.SKILL2:
 		
-		sprite_index = spr_hot_vajra_skill_2
+		sprite_index = get_load_sprite("spr_hot_vajra_skill_2")
 		
 		image_index = floor(timer /5) mod 9
 		
@@ -430,8 +430,8 @@ switch state{
 		if timer == 6 * 5 - 1{
 			for(var i = 0 ; i < 5 ; i ++){
 				var inst = instance_create_depth(x+275,y-50,-800,obj_vajra_lava)
-				inst.target_col = irandom_range(0,8)
-				inst.target_row = irandom_range(0,global.grid_rows-1)
+				inst.target_col = boss_random(self, 0,8)
+				inst.target_row = boss_random(self, 0,global.grid_rows-1)
 			}
 		}
 		
@@ -443,7 +443,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_hot_vajra_disappear
+		sprite_index = get_load_sprite("spr_hot_vajra_disappear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 12
 		}
@@ -454,13 +454,13 @@ switch state{
 			image_alpha = 0
 		}
 		if timer == 240{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = {}
 			if skill_count == 2{
 				enemy_pos = get_world_position_from_grid(6,enemy_row)
 			}
 			else if skill_count == 0{
-				enemy_pos = get_world_position_from_grid(irandom_range(2,6),enemy_row)
+				enemy_pos = get_world_position_from_grid(boss_random(self, 2,6),enemy_row)
 			}
 			else{
 				enemy_pos = get_world_position_from_grid(6,enemy_row)
@@ -475,7 +475,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_hot_vajra_death
+		sprite_index = get_load_sprite("spr_hot_vajra_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha -= 0.1

@@ -7,7 +7,7 @@ if flash_value > 0 {
 }
 
 if !appear{
-	var enemy_row = irandom_range(0,global.grid_rows-1)
+	var enemy_row = boss_random(self, 0,global.grid_rows-1)
 	var enemy_pos = {}
 	if skill_count == 2{
 		enemy_pos = get_world_position_from_grid(9,enemy_row)
@@ -42,7 +42,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 
 switch state{
 	case BOSS_STATE.IDLE:
-		sprite_index = spr_irritable_jack_idle
+		sprite_index = get_load_sprite("spr_irritable_jack_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 8
 		}
@@ -57,7 +57,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.APPEAR:
-		sprite_index = spr_irritable_jack_appear
+		sprite_index = get_load_sprite("spr_irritable_jack_appear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 11
 		}
@@ -90,7 +90,7 @@ switch state{
 	
 	case BOSS_STATE.SKILL1:
 		if timer <= 16 * 5 - 1{
-			sprite_index = spr_irritable_jack_skill_1_ready
+			sprite_index = get_load_sprite("spr_irritable_jack_skill_1_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer/5) mod 16
 			}
@@ -99,7 +99,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_irritable_jack_skill_1
+			sprite_index = get_load_sprite("spr_irritable_jack_skill_1")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-80)/5) mod 19
 			}
@@ -108,7 +108,7 @@ switch state{
 			}
 		}
 		if timer == 1{
-			var t_pos = get_world_position_from_grid(irandom_range(1,4),grid_row)
+			var t_pos = get_world_position_from_grid(boss_random(self, 1,4),grid_row)
 			y_move_speed = (t_pos.y+33-y)/60
 			x_move = (t_pos.x-x)/60
 		}
@@ -145,7 +145,7 @@ switch state{
 	case BOSS_STATE.SKILL4:
 		
 		if timer <= 17 * 5 - 1{
-			sprite_index = spr_irritable_jack_skill_3
+			sprite_index = get_load_sprite("spr_irritable_jack_skill_3")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 17
 			}
@@ -158,7 +158,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_irritable_jack_skill_4
+			sprite_index = get_load_sprite("spr_irritable_jack_skill_4")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-85) /5) mod 10
 			}
@@ -174,21 +174,21 @@ switch state{
 			x -= 1
 		}
 		if timer == 1{
-			var head_row = irandom_range(0,global.grid_rows-1)
+			var head_row = boss_random(self, 0,global.grid_rows-1)
 			while head_row == t_row{
-				head_row = irandom_range(0,global.grid_rows-1)
+				head_row = boss_random(self, 0,global.grid_rows-1)
 			}
 			for(var i = 0; i < global.grid_rows ; i++){
 				if i != t_row{
 					var rock_pos = get_world_position_from_grid(10,i)
 					var rock_inst = instance_create_depth(rock_pos.x-90,rock_pos.y+33-300,depth,obj_irritable_jack_rock_skill_4)
 					if i == head_row{
-						rock_inst.prev_spr = spr_irritable_jack_head_skill_3
-						rock_inst.next_spr = spr_irritable_jack_head_skill_4
+						rock_inst.prev_spr = get_load_sprite("spr_irritable_jack_head_skill_3")
+						rock_inst.next_spr = get_load_sprite("spr_irritable_jack_head_skill_4")
 					}
 					else{
-						rock_inst.prev_spr = spr_irritable_jack_body_skill_3
-						rock_inst.next_spr = spr_irritable_jack_body_skill_4
+						rock_inst.prev_spr = get_load_sprite("spr_irritable_jack_body_skill_3")
+						rock_inst.next_spr = get_load_sprite("spr_irritable_jack_body_skill_4")
 					}
 					rock_inst.maxhp = rock_inst.maxhp + rock_inst.maxhp*((maxhp/30000)*0.5)
 					rock_inst.hp = rock_inst.maxhp
@@ -209,7 +209,7 @@ switch state{
 			timer = 0
 			state = BOSS_STATE.SKILL3
 			skill_count ++
-			var enemy_pos = get_world_position_from_grid(irandom_range(1,9),irandom_range(0,global.grid_rows - 1))
+			var enemy_pos = get_world_position_from_grid(boss_random(self, 1,9),boss_random(self, 0,global.grid_rows - 1))
 			x = enemy_pos.x - 90
 			y = enemy_pos.y + 30
 			image_alpha = 0
@@ -229,8 +229,8 @@ switch state{
 				// 循环直到选出4个不同的坐标
 				while (array_length(selected_coords) < 4) {
 				    // 生成随机坐标
-				    var rand_x = irandom_range(0, 8);
-				    var rand_y = irandom_range(0, global.grid_rows - 1);
+				    var rand_x = boss_random(self, 0, 8);
+				    var rand_y = boss_random(self, 0, global.grid_rows - 1);
 				    var new_coord = [rand_x, rand_y];
     
 				    // 检查是否已存在
@@ -256,10 +256,10 @@ switch state{
 				rock_inst.target_col = coord_choose[0]
 				rock_inst.target_row = coord_choose[1]
 				if rock_count == 0{
-					rock_inst.sprite_index = spr_irritable_jack_head_skill_3
+					rock_inst.sprite_index = get_load_sprite("spr_irritable_jack_head_skill_3")
 				}
 				else{
-					rock_inst.sprite_index = spr_irritable_jack_body_skill_3
+					rock_inst.sprite_index = get_load_sprite("spr_irritable_jack_body_skill_3")
 				}
 				
 				rock_count ++
@@ -270,7 +270,7 @@ switch state{
 		}
 		else{
 			if timer <= 17 * 5 - 1{
-				sprite_index = spr_irritable_jack_skill_3
+				sprite_index = get_load_sprite("spr_irritable_jack_skill_3")
 				if hp > maxhp * hurt_rate{
 					image_index = floor(timer /5) mod 17
 				}
@@ -283,7 +283,7 @@ switch state{
 				}
 			}
 			else{
-				sprite_index = spr_irritable_jack_skill_4_return
+				sprite_index = get_load_sprite("spr_irritable_jack_skill_4_return")
 				if hp > maxhp * hurt_rate{
 					image_index = floor((timer-85) /5) mod 15
 				}
@@ -315,7 +315,7 @@ switch state{
 	case BOSS_STATE.SKILL2:
 		
 		if timer <= (6 * 5 - 1){
-			sprite_index = spr_irritable_jack_skill_2_ready
+			sprite_index = get_load_sprite("spr_irritable_jack_skill_2_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 6
 			}
@@ -324,7 +324,7 @@ switch state{
 			}
 		}
 		else if timer <= 6*5 + 7 * 5 * 6 - 1{
-			sprite_index = spr_irritable_jack_skill_2
+			sprite_index = get_load_sprite("spr_irritable_jack_skill_2")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-30) /5) mod 7
 			}
@@ -333,7 +333,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_irritable_jack_skill_2_ready
+			sprite_index = get_load_sprite("spr_irritable_jack_skill_2_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = 6 - floor((timer-240) /5) mod 6
 			}
@@ -342,7 +342,7 @@ switch state{
 			}
 		}
 		if timer mod 70 == 15{
-			var tg_row = irandom_range(0,global.grid_rows-1)
+			var tg_row = boss_random(self, 0,global.grid_rows-1)
 			var tg_y = get_world_position_from_grid(9,tg_row).y + 33
 			var inst = instance_create_depth(x-80,y,-800,obj_irritable_jack_fire)
 			inst.y_move = (tg_y-y)/120
@@ -356,7 +356,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_irritable_jack_appear
+		sprite_index = get_load_sprite("spr_irritable_jack_appear")
 		image_alpha = clamp(1 - timer/50,0,1)
 		if hp > maxhp * hurt_rate{
 			image_index = 11 - floor(timer/5) mod 11
@@ -368,7 +368,7 @@ switch state{
 			image_alpha = 0
 		}
 		if timer == 240{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = {}
 			if skill_count == 2{
 				enemy_pos = get_world_position_from_grid(10,enemy_row)
@@ -399,7 +399,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_irritable_jack_death
+		sprite_index = get_load_sprite("spr_irritable_jack_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha -= 0.1

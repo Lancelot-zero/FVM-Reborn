@@ -21,7 +21,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 
 switch state{
 	case BOSS_STATE.IDLE:
-		sprite_index = spr_arno_idle
+		sprite_index = get_load_sprite("spr_arno_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 12
 		}
@@ -30,7 +30,7 @@ switch state{
 		}
 		if timer >= wait_time{
 			timer = 0
-			var i = irandom_range(1,100)
+			var i = boss_random(self, 1,100)
 			if i <= 50{
 				state = BOSS_STATE.SKILL1
 			}
@@ -41,7 +41,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.APPEAR:
-		sprite_index = spr_arno_appear
+		sprite_index = get_load_sprite("spr_arno_appear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 10
 		}
@@ -56,7 +56,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.SKILL1:
-		sprite_index = spr_arno_skill_1
+		sprite_index = get_load_sprite("spr_arno_skill_1")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 20
 		}
@@ -105,7 +105,7 @@ switch state{
 		
 	case BOSS_STATE.SKILL2:
 		if timer <= 13 * 5 * 3 - 1{
-			sprite_index = spr_arno_skill_2_ready
+			sprite_index = get_load_sprite("spr_arno_skill_2_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer/5) mod 13
 			}
@@ -114,7 +114,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_arno_skill_2
+			sprite_index = get_load_sprite("spr_arno_skill_2")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer - 13 * 5 * 3)/5) mod 11
 			}
@@ -146,7 +146,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_arno_disappear
+		sprite_index = get_load_sprite("spr_arno_disappear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 11
 		}
@@ -157,7 +157,7 @@ switch state{
 			image_alpha = 0
 		}
 		if timer == 210{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = get_world_position_from_grid(10,enemy_row)
 			x = enemy_pos.x - 80
 			y = enemy_pos.y + 30
@@ -169,7 +169,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_arno_death
+		sprite_index = get_load_sprite("spr_arno_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha -= 0.1

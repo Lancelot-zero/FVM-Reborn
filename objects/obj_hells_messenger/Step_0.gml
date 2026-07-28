@@ -7,7 +7,7 @@ if flash_value > 0 {
 }
 
 if !appear{
-	var enemy_row = irandom_range(0,global.grid_rows-1)
+	var enemy_row = boss_random(self, 0,global.grid_rows-1)
 	var enemy_pos = {}
 	if skill_count == 2{
 		enemy_pos = get_world_position_from_grid(10,enemy_row)
@@ -75,7 +75,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.APPEAR:
-		sprite_index = spr_hells_messenger_appear
+		sprite_index = get_load_sprite("spr_hells_messenger_appear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 6
 		}
@@ -105,7 +105,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.SKILL1:
-		sprite_index = spr_hells_messenger_skill_1
+		sprite_index = get_load_sprite("spr_hells_messenger_skill_1")
 		if timer <= 9 * 5 * 3 - 1{
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer/5) mod 9
@@ -125,7 +125,7 @@ switch state{
 		
 		if timer == 1{
 			for(var i = 0;i < 5 ; i++){
-				var tg_row = irandom_range(0,global.grid_rows-1)
+				var tg_row = boss_random(self, 0,global.grid_rows-1)
 				var tg_y = get_world_position_from_grid(9,tg_row).y + 33
 				var inst = instance_create_depth(x-20+10*i,y,-800,obj_messenger_ignis_fatuus)
 				inst.y_move = (tg_y-y)/120
@@ -142,7 +142,7 @@ switch state{
 	case BOSS_STATE.SKILL4:
 		if timer <= 16*5 - 1{
 		
-			sprite_index = spr_hells_messenger_skill_4_ready
+			sprite_index = get_load_sprite("spr_hells_messenger_skill_4_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 16
 			}
@@ -151,7 +151,7 @@ switch state{
 			}
 		}
 		else if timer <= 23*5-1{
-			sprite_index = spr_hells_messenger_skill_4
+			sprite_index = get_load_sprite("spr_hells_messenger_skill_4")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-80)/5) mod 7
 			}
@@ -160,7 +160,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_hells_messenger_skill_2_ready
+			sprite_index = get_load_sprite("spr_hells_messenger_skill_2_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = 10 - floor((timer-115)/5) mod 10
 			}
@@ -170,8 +170,8 @@ switch state{
 		}
 		
 		if timer == 1{
-			var t_row = irandom_range(0,global.grid_rows-1)
-			var t_col = irandom_range(1,5)
+			var t_row = boss_random(self, 0,global.grid_rows-1)
+			var t_col = boss_random(self, 1,5)
 			t_pos = get_world_position_from_grid(t_col,t_row)
 			x_move = (t_pos.x-100 - x)/80
 			y_move_speed = (t_pos.y+30 - y)/80
@@ -195,7 +195,7 @@ switch state{
 			instance_destroy(obj_messenger_mace)
 		}
 		if timer >= 33*5 - 1{
-			idle_spr = spr_hells_messenger_idle
+			idle_spr = get_load_sprite("spr_hells_messenger_idle")
 			jump_times = 0
 			timer = 0
 			state = BOSS_STATE.IDLE
@@ -205,7 +205,7 @@ switch state{
 	case BOSS_STATE.SKILL3:
 	
 		if timer <= 16 * 5 * 3 - 1{
-			sprite_index = spr_hells_messenger_skill_3_ready
+			sprite_index = get_load_sprite("spr_hells_messenger_skill_3_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 16
 			}
@@ -214,7 +214,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_hells_messenger_skill_3
+			sprite_index = get_load_sprite("spr_hells_messenger_skill_3")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer - 240)/5) mod 9
 			}
@@ -238,7 +238,7 @@ switch state{
 		
 		if timer == 16 * 5 * 3 + 30*jump_times && jump_times < 4{
 			if ds_list_size(avaliable_pos) > 0{
-				var pos_choose = irandom_range(0,ds_list_size(avaliable_pos)-1)
+				var pos_choose = boss_random(self, 0,ds_list_size(avaliable_pos)-1)
 				var gr_pos = avaliable_pos[| pos_choose]
 				with obj_card_parent{
 					if plant_id != "player" && plant_type != "coffee" && !invincible
@@ -267,7 +267,7 @@ switch state{
 		break
 	case BOSS_STATE.SKILL2:
 		
-		sprite_index = spr_hells_messenger_skill_2_ready
+		sprite_index = get_load_sprite("spr_hells_messenger_skill_2_ready")
 		image_index = floor(timer /5) mod 10
 		
 		if hp <= maxhp * hurt_rate{
@@ -284,7 +284,7 @@ switch state{
 		}
 		
 		if timer >= 10*5-1{
-			idle_spr = spr_hells_messenger_skill_2_idle
+			idle_spr = get_load_sprite("spr_hells_messenger_skill_2_idle")
 			jump_times = 0
 			timer = 0
 			state = BOSS_STATE.IDLE
@@ -292,7 +292,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_hells_messenger_disappear
+		sprite_index = get_load_sprite("spr_hells_messenger_disappear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 5
 		}
@@ -303,7 +303,7 @@ switch state{
 			image_alpha = 0
 		}
 		if timer == 240{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = {}
 			if skill_count == 2{
 				enemy_pos = get_world_position_from_grid(10,enemy_row)
@@ -324,7 +324,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_hells_messenger_death
+		sprite_index = get_load_sprite("spr_hells_messenger_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha -= 0.1

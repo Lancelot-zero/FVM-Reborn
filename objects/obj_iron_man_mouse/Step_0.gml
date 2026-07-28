@@ -22,7 +22,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 switch state{
 	case BOSS_STATE.IDLE:
 		target_type = "normal"
-		sprite_index = spr_iron_man_mouse_idle
+		sprite_index = get_load_sprite("spr_iron_man_mouse_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 16
 		}
@@ -38,7 +38,7 @@ switch state{
 		
 	case BOSS_STATE.APPEAR:
 		target_type = "normal"
-		sprite_index = spr_iron_man_mouse_drop
+		sprite_index = get_load_sprite("spr_iron_man_mouse_drop")
 		
 		image_index = floor(timer/5) mod 15
 		
@@ -52,7 +52,7 @@ switch state{
 	case BOSS_STATE.SKILL1:
 		target_type = "air"
 		if timer <= 20 * 5 - 1{
-			sprite_index = spr_iron_man_mouse_skill_1_ready
+			sprite_index = get_load_sprite("spr_iron_man_mouse_skill_1_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer/5) mod 20
 			}
@@ -62,7 +62,7 @@ switch state{
 		}
 		else if timer <= 280{
 			y -= 6
-			sprite_index = spr_iron_man_mouse_skill_1
+			sprite_index = get_load_sprite("spr_iron_man_mouse_skill_1")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-100)/5) mod 6
 			}
@@ -72,7 +72,7 @@ switch state{
 		}
 		else if timer <= 460{
 			y += 6
-			sprite_index = spr_iron_man_mouse_skill_1
+			sprite_index = get_load_sprite("spr_iron_man_mouse_skill_1")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-100)/5) mod 6
 			}
@@ -81,7 +81,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_iron_man_mouse_drop
+			sprite_index = get_load_sprite("spr_iron_man_mouse_drop")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-460)/5) mod 15
 			}
@@ -103,7 +103,7 @@ switch state{
 				}
 				var effect_pos = get_world_position_from_grid(6,6-jump_times)
 				var effect_inst = instance_create_depth(effect_pos.x,effect_pos.y-30,-800,obj_coke_bomb_explode)
-				effect_inst.sprite_index = spr_iron_man_mouse_effect
+				effect_inst.sprite_index = get_load_sprite("spr_iron_man_mouse_effect")
 				jump_times ++
 			}
 			
@@ -121,7 +121,7 @@ switch state{
 				}
 				var effect_pos = get_world_position_from_grid(3,jump_times)
 				var effect_inst = instance_create_depth(effect_pos.x,effect_pos.y-30,-800,obj_coke_bomb_explode)
-				effect_inst.sprite_index = spr_iron_man_mouse_effect
+				effect_inst.sprite_index = get_load_sprite("spr_iron_man_mouse_effect")
 				jump_times ++
 			}
 			
@@ -142,7 +142,7 @@ switch state{
 	case BOSS_STATE.SKILL2:
 		target_type = "normal"
 		if timer <= 47 * 5 - 1{
-			sprite_index = spr_iron_man_mouse_skill_2_ready
+			sprite_index = get_load_sprite("spr_iron_man_mouse_skill_2_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer/5) mod 47
 			}
@@ -151,8 +151,8 @@ switch state{
 			}
 		}
 		else if timer <= 231 * 5 - 1{
-			death_spr = spr_iron_man_mouse_death2
-			sprite_index = spr_iron_man_mouse_skill_2_human
+			death_spr = get_load_sprite("spr_iron_man_mouse_death2")
+			sprite_index = get_load_sprite("spr_iron_man_mouse_skill_2_human")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-235)/5) mod 10
 			}
@@ -161,8 +161,8 @@ switch state{
 			}
 		}
 		else{
-			death_spr = spr_iron_man_mouse_death
-			sprite_index = spr_iron_man_mouse_skill_2_return
+			death_spr = get_load_sprite("spr_iron_man_mouse_death")
+			sprite_index = get_load_sprite("spr_iron_man_mouse_skill_2_return")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-1155)/5) mod 30
 			}
@@ -188,7 +188,7 @@ switch state{
 	case BOSS_STATE.SKILL3:
 		target_type = "normal"
 		if timer <= 23 * 5 - 1{
-			sprite_index = spr_iron_man_mouse_skill_3_ready
+			sprite_index = get_load_sprite("spr_iron_man_mouse_skill_3_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer/5) mod 23
 			}
@@ -197,7 +197,7 @@ switch state{
 			}
 		}
 		else if timer <= 38 * 5 - 1{
-			sprite_index = spr_iron_man_mouse_skill_3
+			sprite_index = get_load_sprite("spr_iron_man_mouse_skill_3")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-115)/5) mod 5
 			}
@@ -206,7 +206,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_iron_man_mouse_skill_3_return
+			sprite_index = get_load_sprite("spr_iron_man_mouse_skill_3_return")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer-190)/5) mod 9
 			}
@@ -222,8 +222,8 @@ switch state{
 			// 循环直到选出4个不同的坐标
 			while (array_length(selected_coords) < 3) {
 			    // 生成随机坐标
-			    var rand_x = irandom_range(1, 7);
-			    var rand_y = irandom_range(1, global.grid_rows - 2);
+			    var rand_x = boss_random(self, 1, 7);
+			    var rand_y = boss_random(self, 1, global.grid_rows - 2);
 			    var new_coord = [rand_x, rand_y];
     
 			    // 检查是否已存在
@@ -248,7 +248,7 @@ switch state{
 				var target_inst_pos = target_coord[i]
 				var inst_pos = get_world_position_from_grid(target_inst_pos[0],target_inst_pos[1])
 				var iron_target_inst = instance_create_depth(inst_pos.x,inst_pos.y+15,-800,obj_coke_bomb_explode)
-				iron_target_inst.sprite_index = spr_angelababy_target
+				iron_target_inst.sprite_index = get_load_sprite("spr_angelababy_target")
 			}
 		}
 		
@@ -269,7 +269,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_iron_man_mouse_launch
+		sprite_index = get_load_sprite("spr_iron_man_mouse_launch")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 10
 		}
@@ -280,12 +280,12 @@ switch state{
 			image_alpha = 0
 		}
 		if timer == 180{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = get_world_position_from_grid(10,enemy_row)
 			x = enemy_pos.x - 50
 			y = enemy_pos.y + 30
 			image_alpha = 1
-			var shape_i = irandom_range(1,100)
+			var shape_i = boss_random(self, 1,100)
 			timer = 0
 			state = BOSS_STATE.APPEAR
 			break
@@ -293,7 +293,7 @@ switch state{
 		break
 	case BOSS_STATE.DROP:
 		target_type = "air"
-		sprite_index = spr_iron_man_mouse_drop
+		sprite_index = get_load_sprite("spr_iron_man_mouse_drop")
 		
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 15
@@ -316,7 +316,7 @@ switch state{
 		break
 	case BOSS_STATE.LAUNCH:
 		target_type = "air"
-		sprite_index = spr_iron_man_mouse_launch
+		sprite_index = get_load_sprite("spr_iron_man_mouse_launch")
 		
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 10
@@ -326,14 +326,14 @@ switch state{
 		}
 		if timer == 10 * 5 - 1{
 			if !appear{
-				skill_choose = irandom_range(0,1)
+				skill_choose = boss_random(self, 0,1)
 				appear = true
 			}
 			else{
 				for(var i = 0 ; i < 100 ; i++){
-					var current_choose = irandom_range(0,1)
+					var current_choose = boss_random(self, 0,1)
 					if hp <= maxhp * hurt_rate{
-						current_choose = irandom_range(0,2)
+						current_choose = boss_random(self, 0,2)
 					}
 					if current_choose != skill_choose{
 						skill_choose = current_choose
@@ -351,7 +351,7 @@ switch state{
 				state = BOSS_STATE.MOVE
 			}
 			else if skill_choose == 2{
-				target_pos.row = irandom_range(1,global.grid_rows-1)
+				target_pos.row = boss_random(self, 1,global.grid_rows-1)
 				target_pos.col = 9
 				var land_pos = get_world_position_from_grid(target_pos.col,target_pos.row)
 				x_move_speed = (land_pos.x-90 - x)/180
@@ -372,7 +372,7 @@ switch state{
 		break
 	case BOSS_STATE.MOVE:
 		target_type = "air"
-		sprite_index = spr_iron_man_mouse_move
+		sprite_index = get_load_sprite("spr_iron_man_mouse_move")
 		
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 8

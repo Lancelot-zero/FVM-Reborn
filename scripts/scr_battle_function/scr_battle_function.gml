@@ -1,5 +1,7 @@
 
 
+global.__stop_msg_loop = false;
+
 // ============================
 // 网络消息ID定义
 // ============================
@@ -517,6 +519,7 @@ function parse_network_message(buf, _sock) {
                         break;
                    case "modify":
 						_inst = global.network.map_net_id_instance_id[? _act.net_id];
+						if (!instance_exists(_inst)) break;
 						_inst.visible=true;
 						with (_inst) {
 							var _props = _act.props;
@@ -699,6 +702,7 @@ function parse_network_message(buf, _sock) {
 			}
 			global.wait_sprite_load = true;
 			global.gui_stack.to(room_battle)
+				global.__stop_msg_loop = true;
 			break;
 		}
 		
@@ -750,7 +754,7 @@ function parse_network_message(buf, _sock) {
 					__fp = variable_struct_get(global._expected_fps, "pre_music");
 					global.level_data[$ "pre_music"] = file_cache_load_audio(
 					    _pre, "pre_music",
-					    mus_delicious_island_daytime_pre,
+					    get_load_audio("mus_delicious_island_daytime_pre"),
 					    is_undefined(__fp) ? "" : __fp
 					);
 				}
@@ -761,7 +765,7 @@ function parse_network_message(buf, _sock) {
 					__fp = variable_struct_get(global._expected_fps, "elite_music");
 					global.level_data[$ "elite_music"] = file_cache_load_audio(
 					    _elite, "elite_music",
-					    mus_delicious_island_daytime_elite,
+					    get_load_audio("mus_delicious_island_daytime_elite"),
 					    is_undefined(__fp) ? "" : __fp
 					);
 				}
@@ -772,7 +776,7 @@ function parse_network_message(buf, _sock) {
 					__fp = variable_struct_get(global._expected_fps, "boss_music");
 					global.level_data[$ "boss_music"] = file_cache_load_audio(
 					    _boss, "boss_music",
-					    mus_delicious_island_daytime_boss,
+					    get_load_audio("mus_delicious_island_daytime_boss"),
 					    is_undefined(__fp) ? "" : __fp
 					);
 				}

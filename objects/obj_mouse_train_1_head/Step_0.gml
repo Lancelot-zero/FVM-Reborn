@@ -8,10 +8,10 @@ if flash_value > 0 {
 
 if !appear{
 	image_angle = 0
-	var enemy_row = irandom_range(0,global.grid_rows-1)
+	var enemy_row = boss_random(self, 0,global.grid_rows-1)
 	var enemy_pos = {}
-	skill_choose = irandom_range(0,1)
-	skill_change_style = irandom_range(0,1)
+	skill_choose = boss_random(self, 0,1)
+	skill_change_style = boss_random(self, 0,1)
 	if skill_choose == 0{
 		enemy_row = 9
 		enemy_pos = get_world_position_from_grid(9,enemy_row)
@@ -75,7 +75,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 
 switch state{
 	case BOSS_STATE.IDLE:
-		sprite_index = spr_mouse_train_1_head_idle
+		sprite_index = get_load_sprite("spr_mouse_train_1_head_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 2
 		}
@@ -94,7 +94,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.APPEAR:
-		sprite_index = spr_mouse_train_1_head_idle
+		sprite_index = get_load_sprite("spr_mouse_train_1_head_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 2
 		}
@@ -136,7 +136,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.SKILL1:
-		sprite_index = spr_mouse_train_1_head_idle
+		sprite_index = get_load_sprite("spr_mouse_train_1_head_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 2
 		}
@@ -173,7 +173,7 @@ switch state{
 		
 	case BOSS_STATE.SKILL2:
 		
-		sprite_index = spr_mouse_train_1_head_idle
+		sprite_index = get_load_sprite("spr_mouse_train_1_head_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 2
 		}
@@ -222,7 +222,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_mouse_train_1_head_idle
+		sprite_index = get_load_sprite("spr_mouse_train_1_head_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 2
 		}
@@ -243,11 +243,11 @@ switch state{
 		if timer == 430{
 			clear_train_body()
 			image_angle = 0
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = {}
-			skill_change_style = irandom_range(0,1)
+			skill_change_style = boss_random(self, 0,1)
 			for(var i = 0 ; i < 100 ; i++){
-				var current_choose = irandom_range(0,1)
+				var current_choose = boss_random(self, 0,1)
 				if current_choose != skill_choose{
 					skill_choose = current_choose
 					break
@@ -301,7 +301,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_mouse_train_1_head_death
+		sprite_index = get_load_sprite("spr_mouse_train_1_head_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha -= 0.1

@@ -20,10 +20,10 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 }
 
 if !appear{
-	var enemy_row = irandom_range(0,global.grid_rows-1)
+	var enemy_row = boss_random(self, 0,global.grid_rows-1)
 	var enemy_pos = {}
-	skill_choose = irandom_range(2,2)
-	skill_change_style = irandom_range(0,1)
+	skill_choose = boss_random(self, 2,2)
+	skill_change_style = boss_random(self, 0,1)
 	if skill_choose == 2{
 		enemy_pos = get_world_position_from_grid(9,enemy_row)
 	}
@@ -50,7 +50,7 @@ if !appear{
 switch state{
 	case BOSS_STATE.IDLE:
 		target_type = "normal"
-		sprite_index = spr_angelababy_idle
+		sprite_index = get_load_sprite("spr_angelababy_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 11
 		}
@@ -65,7 +65,7 @@ switch state{
 		
 	case BOSS_STATE.APPEAR:
 		target_type = "normal"
-		sprite_index = spr_angelababy_appear
+		sprite_index = get_load_sprite("spr_angelababy_appear")
 		
 		image_index = floor(timer/5) mod 8
 		
@@ -94,8 +94,8 @@ switch state{
 			// 循环直到选出4个不同的坐标
 			while (array_length(selected_coords) < 4) {
 			    // 生成随机坐标
-			    var rand_x = irandom_range(2, 5);
-			    var rand_y = irandom_range(0, global.grid_rows - 1);
+			    var rand_x = boss_random(self, 2, 5);
+			    var rand_y = boss_random(self, 0, global.grid_rows - 1);
 			    var new_coord = [rand_x, rand_y];
     
 			    // 检查是否已存在
@@ -123,7 +123,7 @@ switch state{
 		
 		if timer < 14*5-1{
 			target_type = "normal"
-			sprite_index = spr_angelababy_skill_3_ready
+			sprite_index = get_load_sprite("spr_angelababy_skill_3_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer/5) mod 14
 			}
@@ -136,10 +136,10 @@ switch state{
 			if skill_move_type == "move"{
 				target_type = "air"
 				if x_move_speed <= 0{
-					sprite_index = spr_angelababy_move_forward
+					sprite_index = get_load_sprite("spr_angelababy_move_forward")
 				}
 				else{
-					sprite_index = spr_angelababy_move_backward
+					sprite_index = get_load_sprite("spr_angelababy_move_backward")
 				}
 				if hp > maxhp * hurt_rate{
 					image_index = floor(skill_timer/5) mod 11
@@ -150,7 +150,7 @@ switch state{
 			}
 			else{
 				target_type = "normal"
-				sprite_index = spr_angelababy_skill_3
+				sprite_index = get_load_sprite("spr_angelababy_skill_3")
 				if hp > maxhp * hurt_rate{
 					image_index = floor(skill_timer/5) mod 24
 				}
@@ -203,7 +203,7 @@ switch state{
 		
 		if skill_move_type == "move"{
 			target_type = "air"
-			sprite_index = spr_angelababy_idle
+			sprite_index = get_load_sprite("spr_angelababy_idle")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(skill_timer/5) mod 11
 			}
@@ -213,7 +213,7 @@ switch state{
 		}
 		else{
 			target_type = "normal"
-			sprite_index = spr_angelababy_skill_1
+			sprite_index = get_load_sprite("spr_angelababy_skill_1")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(skill_timer/5) mod 12
 			}
@@ -254,7 +254,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_angelababy_appear
+		sprite_index = get_load_sprite("spr_angelababy_appear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 8
 		}
@@ -265,10 +265,10 @@ switch state{
 			image_alpha = 0
 		}
 		if timer == 120{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = {}
-			skill_choose = irandom_range(0,2)
-			skill_change_style = irandom_range(0,1)
+			skill_choose = boss_random(self, 0,2)
+			skill_change_style = boss_random(self, 0,1)
 			if skill_choose == 2{
 				enemy_pos = get_world_position_from_grid(9,enemy_row)
 			}
@@ -293,7 +293,7 @@ switch state{
 		break
 	case BOSS_STATE.SKILL2:
 		target_type = "normal"
-		sprite_index = spr_angelababy_skill_2
+		sprite_index = get_load_sprite("spr_angelababy_skill_2")
 		
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 46
@@ -309,8 +309,8 @@ switch state{
 			// 循环直到选出4个不同的坐标
 			while (array_length(selected_coords) < 3) {
 			    // 生成随机坐标
-			    var rand_x = irandom_range(0, 6);
-			    var rand_y = irandom_range(0, global.grid_rows - 1);
+			    var rand_x = boss_random(self, 0, 6);
+			    var rand_y = boss_random(self, 0, global.grid_rows - 1);
 			    var new_coord = [rand_x, rand_y];
     
 			    // 检查是否已存在
@@ -353,7 +353,7 @@ switch state{
 		break
 	case BOSS_STATE.DROP:
 		target_type = "air"
-		sprite_index = spr_rumble_drop
+		sprite_index = get_load_sprite("spr_rumble_drop")
 		
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 21
@@ -374,11 +374,11 @@ switch state{
 	case BOSS_STATE.LAUNCH:
 		target_type = "air"
 		if timer == 1{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = {}
-			skill_change_style = irandom_range(0,1)
+			skill_change_style = boss_random(self, 0,1)
 			for(var i = 0 ; i < 100 ; i++){
-				var current_choose = irandom_range(0,2)
+				var current_choose = boss_random(self, 0,2)
 				if current_choose != skill_choose{
 					skill_choose = current_choose
 					break
@@ -408,10 +408,10 @@ switch state{
 	case BOSS_STATE.MOVE:
 		target_type = "air"
 		if x_move_speed <= 0{
-			sprite_index = spr_angelababy_move_forward
+			sprite_index = get_load_sprite("spr_angelababy_move_forward")
 		}
 		else{
-			sprite_index = spr_angelababy_move_backward
+			sprite_index = get_load_sprite("spr_angelababy_move_backward")
 		}
 		
 		if hp > maxhp * hurt_rate{
@@ -439,7 +439,7 @@ switch state{
 	
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_angelababy_death
+		sprite_index = get_load_sprite("spr_angelababy_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha -= 0.1

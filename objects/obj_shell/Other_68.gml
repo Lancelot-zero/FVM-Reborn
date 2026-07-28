@@ -119,6 +119,10 @@ switch (_type) {
 		    }
 		    buffer_delete(body);
 		    read_ptr += full_pkt;
+		    if (global.__stop_msg_loop) {
+		        global.__stop_msg_loop = false;
+		        break;
+		    }
 		}
 
 		// 2. 安全裁剪缓冲区：使用临时中转buffer，杜绝同buffer拷贝报错

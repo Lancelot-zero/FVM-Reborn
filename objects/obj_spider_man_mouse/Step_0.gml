@@ -7,9 +7,9 @@ if flash_value > 0 {
 }
 
 if !appear{
-	var enemy_row = irandom_range(0,global.grid_rows-1)
+	var enemy_row = boss_random(self, 0,global.grid_rows-1)
 	var enemy_pos = {}
-	skill_choose = irandom_range(0,2)
+	skill_choose = boss_random(self, 0,2)
 	if skill_choose == 2{
 		enemy_row = 3
 		enemy_pos = get_world_position_from_grid(5,enemy_row)
@@ -46,7 +46,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 
 switch state{
 	case BOSS_STATE.IDLE:
-		sprite_index = spr_spider_man_mouse_idle
+		sprite_index = get_load_sprite("spr_spider_man_mouse_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 10
 		}
@@ -68,7 +68,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.APPEAR:
-		sprite_index = spr_spider_man_mouse_idle
+		sprite_index = get_load_sprite("spr_spider_man_mouse_idle")
 		y += 15
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 10
@@ -84,7 +84,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.SKILL1:
-		sprite_index = spr_spider_man_mouse_skill_1
+		sprite_index = get_load_sprite("spr_spider_man_mouse_skill_1")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 50
 		}
@@ -93,12 +93,12 @@ switch state{
 		}
 		
 		if timer mod 125 == 65{
-			var summon_row = irandom_range(3,global.grid_rows-1)
-			var summon_col = irandom_range(1,5)
+			var summon_row = boss_random(self, 3,global.grid_rows-1)
+			var summon_col = boss_random(self, 1,5)
 			var summon_pos = get_world_position_from_grid(summon_col,summon_row)
 			instance_create_depth(summon_pos.x+10,summon_pos.y+38,-800,obj_mirror_mouse)
 			var effect_inst = instance_create_depth(summon_pos.x+10,summon_pos.y-30,-800,obj_coke_bomb_explode)
-			effect_inst.sprite_index = spr_spider_man_mouse_effect
+			effect_inst.sprite_index = get_load_sprite("spr_spider_man_mouse_effect")
 		}
 		
 		if timer >= 150 * 5 - 1{
@@ -111,7 +111,7 @@ switch state{
 	case BOSS_STATE.SKILL2:
 		skill_timer++
 		if skill_timer <= 75{
-			sprite_index = spr_spider_man_mouse_skill_2
+			sprite_index = get_load_sprite("spr_spider_man_mouse_skill_2")
 			if hp > maxhp * hurt_rate{
 				image_index = 0
 			}
@@ -121,7 +121,7 @@ switch state{
 			y -= 15
 		}
 		else if skill_timer <= 150{
-			sprite_index = spr_spider_man_mouse_idle
+			sprite_index = get_load_sprite("spr_spider_man_mouse_idle")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((skill_timer-75)/5) mod 10
 			}
@@ -131,7 +131,7 @@ switch state{
 			y += 15
 		}
 		else{
-			sprite_index = spr_spider_man_mouse_skill_2_ready
+			sprite_index = get_load_sprite("spr_spider_man_mouse_skill_2_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((skill_timer-150)/5) mod 3
 			}
@@ -147,8 +147,8 @@ switch state{
 			// 循环直到选出4个不同的坐标
 			while (array_length(selected_coords) < 3) {
 			    // 生成随机坐标
-			    var rand_x = irandom_range(3, 5);
-			    var rand_y = irandom_range(2, 4);
+			    var rand_x = boss_random(self, 3, 5);
+			    var rand_y = boss_random(self, 2, 4);
 			    var new_coord = [rand_x, rand_y];
     
 			    // 检查是否已存在
@@ -172,7 +172,7 @@ switch state{
 			var target_inst_pos = target_coord[jump_times]
 			var inst_pos = get_world_position_from_grid(target_inst_pos[0],target_inst_pos[1])
 			var iron_target_inst = instance_create_depth(inst_pos.x,inst_pos.y+15,-800,obj_coke_bomb_explode)
-			iron_target_inst.sprite_index = spr_angelababy_target
+			iron_target_inst.sprite_index = get_load_sprite("spr_angelababy_target")
 			
 		}
 		if timer mod 165 == 75 && jump_times < 3{
@@ -209,7 +209,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.SKILL3:
-		sprite_index = spr_spider_man_mouse_skill_3
+		sprite_index = get_load_sprite("spr_spider_man_mouse_skill_3")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 24
 		}
@@ -224,8 +224,8 @@ switch state{
 			// 循环直到选出4个不同的坐标
 			while (array_length(selected_coords) < 2) {
 			    // 生成随机坐标
-			    var rand_x = irandom_range(1, 7);
-			    var rand_y = irandom_range(1, global.grid_rows - 2);
+			    var rand_x = boss_random(self, 1, 7);
+			    var rand_y = boss_random(self, 1, global.grid_rows - 2);
 			    var new_coord = [rand_x, rand_y];
     
 			    // 检查是否已存在
@@ -249,7 +249,7 @@ switch state{
 			var target_inst_pos = target_coord[jump_times]
 			var inst_pos = get_world_position_from_grid(target_inst_pos[0],target_inst_pos[1])
 			var iron_target_inst = instance_create_depth(inst_pos.x+55,inst_pos.y-35,-800,obj_coke_bomb_explode)
-			iron_target_inst.sprite_index = spr_angelababy_target
+			iron_target_inst.sprite_index = get_load_sprite("spr_angelababy_target")
 			
 		}
 		
@@ -275,7 +275,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_spider_man_mouse_idle
+		sprite_index = get_load_sprite("spr_spider_man_mouse_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 10
 		}
@@ -289,10 +289,10 @@ switch state{
 			image_alpha = 0
 		}
 		if timer == 180{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = {}
 			for(var i = 0 ; i < 100 ; i++){
-				var current_choose = irandom_range(0,2)
+				var current_choose = boss_random(self, 0,2)
 				if current_choose != skill_choose{
 					skill_choose = current_choose
 					break
@@ -322,7 +322,7 @@ switch state{
 	
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_spider_man_mouse_death
+		sprite_index = get_load_sprite("spr_spider_man_mouse_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha -= 0.1

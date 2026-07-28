@@ -7,10 +7,10 @@ if flash_value > 0 {
 }
 
 if !appear{
-	var enemy_row = irandom_range(0,global.grid_rows-1)
+	var enemy_row = boss_random(self, 0,global.grid_rows-1)
 	var enemy_pos = {}
-	skill_choose = irandom_range(0,2)
-	skill_change_style = irandom_range(0,1)
+	skill_choose = boss_random(self, 0,2)
+	skill_change_style = boss_random(self, 0,1)
 	if skill_choose == 2{
 		if skill_change_style == 0{
 			enemy_row = 5
@@ -60,7 +60,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 
 switch state{
 	case BOSS_STATE.IDLE:
-		sprite_index = spr_huang_xiaoming_idle
+		sprite_index = get_load_sprite("spr_huang_xiaoming_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/6) mod 9
 		}
@@ -82,7 +82,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.APPEAR:
-		sprite_index = spr_huang_xiaoming_appear
+		sprite_index = get_load_sprite("spr_huang_xiaoming_appear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/6) mod 4
 		}
@@ -96,7 +96,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.SKILL1:
-		sprite_index = spr_huang_xiaoming_skill_1
+		sprite_index = get_load_sprite("spr_huang_xiaoming_skill_1")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 23
 		}
@@ -107,10 +107,10 @@ switch state{
 		if timer mod (23 * 5) == 14 * 5 - 2{
 			var inst = instance_create_depth(x-45,y-30,depth,obj_xiaoming_text)
 			if jump_times == 1{
-				inst.sprite_index = spr_xiaoming_text_2
+				inst.sprite_index = get_load_sprite("spr_xiaoming_text_2")
 			}
 			if jump_times == 2{
-				inst.sprite_index = spr_xiaoming_text_3
+				inst.sprite_index = get_load_sprite("spr_xiaoming_text_3")
 			}
 		}
 		if timer mod (23 * 5) == 23 * 5 - 1 && jump_times < 2{
@@ -131,7 +131,7 @@ switch state{
 		skill_timer++
 		if jump_times == 0{
 			if skill_timer <= 28 * 5 - 1{
-				sprite_index = spr_huang_xiaoming_skill_2_ready
+				sprite_index = get_load_sprite("spr_huang_xiaoming_skill_2_ready")
 				if hp > maxhp * hurt_rate{
 					image_index = floor(skill_timer /5) mod 28
 				}
@@ -140,7 +140,7 @@ switch state{
 				}
 			}
 			else if skill_timer <= 49* 5 - 1{
-				sprite_index = spr_huang_xiaoming_skill_2
+				sprite_index = get_load_sprite("spr_huang_xiaoming_skill_2")
 				if hp > maxhp * hurt_rate{
 					image_index = floor((skill_timer-28*5) /5) mod 21
 				}
@@ -149,7 +149,7 @@ switch state{
 				}
 			}
 			else if skill_timer <= 49*5 + 2 * 6 - 1{
-				sprite_index = spr_huang_xiaoming_disappear
+				sprite_index = get_load_sprite("spr_huang_xiaoming_disappear")
 				image_index = floor((skill_timer-49*5) /6) mod 2
 			}
 			else{
@@ -159,11 +159,11 @@ switch state{
 		else if jump_times == 1{
 			if skill_timer <= 4 * 6 - 1{
 				image_alpha = 1
-				sprite_index = spr_huang_xiaoming_appear
+				sprite_index = get_load_sprite("spr_huang_xiaoming_appear")
 				image_index = floor(skill_timer /6) mod 4
 			}
 			else if skill_timer <= 4 * 6 + 28 * 5 - 1{
-				sprite_index = spr_huang_xiaoming_skill_2_ready
+				sprite_index = get_load_sprite("spr_huang_xiaoming_skill_2_ready")
 				if hp > maxhp * hurt_rate{
 					image_index = floor((skill_timer-24) /5) mod 28
 				}
@@ -172,7 +172,7 @@ switch state{
 				}
 			}
 			else if skill_timer <= 4 * 6 + 49* 5 - 1{
-				sprite_index = spr_huang_xiaoming_skill_2
+				sprite_index = get_load_sprite("spr_huang_xiaoming_skill_2")
 				if hp > maxhp * hurt_rate{
 					image_index = floor((skill_timer-28*5-24) /5) mod 21
 				}
@@ -185,7 +185,7 @@ switch state{
 		if jump_times == 0{
 			if skill_timer == 37 * 5 - 1{
 				var inst = instance_create_depth(x-120,y-30,-10,obj_coke_bomb_explode)
-				inst.sprite_index = spr_xiaoming_ice
+				inst.sprite_index = get_load_sprite("spr_xiaoming_ice")
 				var erase_col = grid_col - 1
 				var erase_row = grid_row
 		
@@ -222,7 +222,7 @@ switch state{
 		else if jump_times == 1{
 			if skill_timer == 24+37 * 5 - 1{
 				var inst = instance_create_depth(x-120,y-30,-10,obj_coke_bomb_explode)
-				inst.sprite_index = spr_xiaoming_ice
+				inst.sprite_index = get_load_sprite("spr_xiaoming_ice")
 				var erase_col = grid_col - 1
 				var erase_row = grid_row
 		
@@ -252,7 +252,7 @@ switch state{
 		break
 	case BOSS_STATE.SKILL3:
 		
-		sprite_index = spr_huang_xiaoming_skill_3
+		sprite_index = get_load_sprite("spr_huang_xiaoming_skill_3")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer /5) mod 5
 		}
@@ -317,7 +317,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_huang_xiaoming_disappear
+		sprite_index = get_load_sprite("spr_huang_xiaoming_disappear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/6) mod 2
 		}
@@ -328,11 +328,11 @@ switch state{
 			image_alpha = 0
 		}
 		if timer == 180{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = {}
-			skill_change_style = irandom_range(0,1)
+			skill_change_style = boss_random(self, 0,1)
 			for(var i = 0 ; i < 100 ; i++){
-				var current_choose = irandom_range(0,2)
+				var current_choose = boss_random(self, 0,2)
 				if current_choose != skill_choose{
 					skill_choose = current_choose
 					break
@@ -374,7 +374,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_huang_xiaoming_death
+		sprite_index = get_load_sprite("spr_huang_xiaoming_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha -= 0.1

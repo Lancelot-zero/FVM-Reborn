@@ -7,13 +7,13 @@ if flash_value > 0 {
 }
 
 if !appear{
-	var enemy_row = irandom_range(0,global.grid_rows-1)
+	var enemy_row = boss_random(self, 0,global.grid_rows-1)
 	var enemy_pos = {}
 	if skill_count == 2{
 		enemy_pos = get_world_position_from_grid(9,enemy_row)
 	}
 	else if skill_count == 0{
-		enemy_pos = get_world_position_from_grid(irandom_range(2,6),enemy_row)
+		enemy_pos = get_world_position_from_grid(boss_random(self, 2,6),enemy_row)
 	}
 	else{
 		enemy_pos = get_world_position_from_grid(6,enemy_row)
@@ -41,7 +41,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 
 switch state{
 	case BOSS_STATE.IDLE:
-		sprite_index = spr_pete_idle
+		sprite_index = get_load_sprite("spr_pete_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 10
 		}
@@ -56,7 +56,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.APPEAR:
-		sprite_index = spr_pete_appear
+		sprite_index = get_load_sprite("spr_pete_appear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 13
 		}
@@ -96,7 +96,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.SKILL1:
-		sprite_index = spr_pete_skill_1
+		sprite_index = get_load_sprite("spr_pete_skill_1")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 14
 		}
@@ -125,7 +125,7 @@ switch state{
 	case BOSS_STATE.SKILL4:
 		if timer <= 11*5 - 1{
 		
-			sprite_index = spr_pete_skill_4_ready
+			sprite_index = get_load_sprite("spr_pete_skill_4_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 11
 			}
@@ -135,7 +135,7 @@ switch state{
 		}
 		else if timer >= 11*5 +60*8{
 		
-			sprite_index = spr_pete_skill_4_ready
+			sprite_index = get_load_sprite("spr_pete_skill_4_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = 11 - floor((timer-(11*5 +60*8)) /5) mod 11
 			}
@@ -144,7 +144,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_pete_skill_4
+			sprite_index = get_load_sprite("spr_pete_skill_4")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 10
 			}
@@ -170,7 +170,7 @@ switch state{
 		
 	case BOSS_STATE.SKILL3:
 		
-		sprite_index = spr_pete_skill_3
+		sprite_index = get_load_sprite("spr_pete_skill_3")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer /5) mod 17
 		}
@@ -185,8 +185,8 @@ switch state{
 			// 循环直到选出4个不同的坐标
 			while (array_length(selected_coords) < 5) {
 			    // 生成随机坐标
-			    var rand_x = irandom_range(0, 6);
-			    var rand_y = irandom_range(0, global.grid_rows - 1);
+			    var rand_x = boss_random(self, 0, 6);
+			    var rand_y = boss_random(self, 0, global.grid_rows - 1);
 			    var new_coord = [rand_x, rand_y];
     
 			    // 检查是否已存在
@@ -221,7 +221,7 @@ switch state{
 		break
 	case BOSS_STATE.SKILL2:
 		
-		sprite_index = spr_pete_skill_2
+		sprite_index = get_load_sprite("spr_pete_skill_2")
 		if timer <= 5 * 7 - 1{
 			image_index = floor(timer /5) mod 7
 		}
@@ -238,8 +238,8 @@ switch state{
 		
 		if timer > 35 && (timer-35) mod 30 == 15 && timer < 220{
 			var inst = instance_create_depth(x,y-285,-800,obj_pete_missile)
-			inst.target_col = irandom_range(0,8)
-			inst.target_row = irandom_range(0,global.grid_rows-1)
+			inst.target_col = boss_random(self, 0,8)
+			inst.target_row = boss_random(self, 0,global.grid_rows-1)
 		}
 		
 		if timer >= 215+6*5-1{
@@ -250,7 +250,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_pete_disappear
+		sprite_index = get_load_sprite("spr_pete_disappear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 13
 		}
@@ -261,13 +261,13 @@ switch state{
 			image_alpha = 0
 		}
 		if timer == 240{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = {}
 			if skill_count == 2{
 				enemy_pos = get_world_position_from_grid(9,enemy_row)
 			}
 			else if skill_count == 0{
-				enemy_pos = get_world_position_from_grid(irandom_range(2,6),enemy_row)
+				enemy_pos = get_world_position_from_grid(boss_random(self, 2,6),enemy_row)
 			}
 			else{
 				enemy_pos = get_world_position_from_grid(6,enemy_row)
@@ -282,7 +282,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_pete_death
+		sprite_index = get_load_sprite("spr_pete_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha -= 0.1

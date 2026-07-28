@@ -57,15 +57,26 @@ function spawn_plant(col, row, plant_obj, props) {
     }
 	
 	
-	if(global.network.mode=="server"){
+	{
 		// 替换逻辑：如果格子中有同类型植物，先销毁旧的
 		var _plant_list = ds_grid_get(global.grid_plants, col, row);
-		for (var _i = 0; _i < ds_list_size(_plant_list); _i++) {
+		var _has_player = false;
+		for (var _i= ds_list_size(_plant_list)-1;_i>=0; _i--) {
 			var _old = ds_list_find_value(_plant_list, _i);
-			if (instance_exists(_old) && _old.plant_type == _plant.plant_type && _old.plant_id != "player") {
+			if (!instance_exists(_old)) continue;
+			if (_old.plant_id == "player") {
+				_has_player = true;
+				continue;
+			}
+			if (_old.plant_type == _plant.plant_type) {
 				card_destroyed(_old);
 				instance_destroy(_old);
 			}
+		}
+		// 格子上有 player 时，normal 类型不允许种植
+		if (_has_player && _plant.plant_type == "normal") {
+			instance_destroy(_plant);
+			return -1;
 		}
 	}
 	

@@ -1,3 +1,18 @@
+/// @function boss_random(boss_inst, min_val, max_val)
+/// @desc 确定性随机，两端用 net_id 做种子，保证联机同步
+function boss_random(boss_inst, min_val, max_val) {
+    var _id = boss_inst.id;
+    var net_id = ds_map_exists(global.network.map_instance_id_net_id, _id)
+        ? global.network.map_instance_id_net_id[? _id]
+        : _id;
+    if (!variable_instance_exists(boss_inst, "random_count")) {
+        boss_inst.random_count = 0;
+    }
+    var seed = net_id * 1103515245 + boss_inst.random_count;
+    boss_inst.random_count++;
+    return min_val + (abs(seed) % (max_val - min_val + 1));
+}
+
 function boss_init(){
 	boss_registry_init()
 	register_boss("mario_mouse",{"name":"洞君","hp":9000,"icon":spr_mario_mouse_icon})

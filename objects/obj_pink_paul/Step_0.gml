@@ -14,13 +14,13 @@ if !appear{
 		skill_choose = 75
 	}
 	skill_count++
-	var enemy_row = irandom_range(0,global.grid_rows-1)
+	var enemy_row = boss_random(self, 0,global.grid_rows-1)
 	var enemy_pos = {}
 	if skill_choose <= 50{
 		enemy_pos = get_world_position_from_grid(8,enemy_row)
 	}
 	else{
-		enemy_pos = get_world_position_from_grid(irandom_range(2,6),enemy_row)
+		enemy_pos = get_world_position_from_grid(boss_random(self, 2,6),enemy_row)
 	}
 	x = enemy_pos.x - 80
 	y = enemy_pos.y + 30
@@ -45,7 +45,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 
 switch state{
 	case BOSS_STATE.IDLE:
-		sprite_index = spr_pink_paul_idle
+		sprite_index = get_load_sprite("spr_pink_paul_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 6
 		}
@@ -65,7 +65,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.APPEAR:
-		sprite_index = spr_pink_paul_appear
+		sprite_index = get_load_sprite("spr_pink_paul_appear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 14
 		}
@@ -90,7 +90,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.SKILL1:
-		sprite_index = spr_pink_paul_skill_1
+		sprite_index = get_load_sprite("spr_pink_paul_skill_1")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 9
 		}
@@ -112,7 +112,7 @@ switch state{
 		
 		if timer mod 90 == 30{
 			if ds_list_size(avaliable_pos) > 0{
-				var i = irandom_range(0,ds_list_size(avaliable_pos)-1)
+				var i = boss_random(self, 0,ds_list_size(avaliable_pos)-1)
 				var target_p = ds_list_find_value(avaliable_pos,i)
 				var missile = instance_create_depth(x-60,y-180,-800,obj_paul_bullet)
 				missile.target_col = target_p.col
@@ -133,7 +133,7 @@ switch state{
 		
 	case BOSS_STATE.SKILL2:
 		
-		sprite_index = spr_pink_paul_skill_2
+		sprite_index = get_load_sprite("spr_pink_paul_skill_2")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer /5) mod 13
 		}
@@ -161,7 +161,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_pink_paul_disappear
+		sprite_index = get_load_sprite("spr_pink_paul_disappear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 9
 		}
@@ -179,14 +179,14 @@ switch state{
 				skill_choose = 75
 			}
 			skill_count++
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = {}
 			if skill_choose <= 50{
 				enemy_pos = get_world_position_from_grid(8,enemy_row)
 				wait_time = 300
 			}
 			else{
-				enemy_pos = get_world_position_from_grid(irandom_range(2,6),enemy_row)
+				enemy_pos = get_world_position_from_grid(boss_random(self, 2,6),enemy_row)
 				wait_time = 180
 			}
 			x = enemy_pos.x - 80
@@ -199,7 +199,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_pink_paul_death
+		sprite_index = get_load_sprite("spr_pink_paul_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha -= 0.1

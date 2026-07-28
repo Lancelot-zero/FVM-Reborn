@@ -7,7 +7,7 @@ if flash_value > 0 {
 }
 
 if !appear{
-	var enemy_row = irandom_range(0,global.grid_rows-1)
+	var enemy_row = boss_random(self, 0,global.grid_rows-1)
 	var enemy_pos = {}
 	if skill_count == 1 || skill_count == 3{
 		enemy_pos = get_world_position_from_grid(9,3)
@@ -38,7 +38,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 
 switch state{
 	case BOSS_STATE.IDLE:
-		sprite_index = spr_blonde_mary_idle
+		sprite_index = get_load_sprite("spr_blonde_mary_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 6
 		}
@@ -53,7 +53,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.APPEAR:
-		sprite_index = spr_blonde_mary_appear
+		sprite_index = get_load_sprite("spr_blonde_mary_appear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 17
 		}
@@ -91,10 +91,10 @@ switch state{
 	
 	case BOSS_STATE.SKILL1:
 		if timer <= 90{ 
-			sprite_index = spr_blonde_mary_skill_1_forward
+			sprite_index = get_load_sprite("spr_blonde_mary_skill_1_forward")
 		}
 		else{
-			sprite_index = spr_blonde_mary_skill_1_backward
+			sprite_index = get_load_sprite("spr_blonde_mary_skill_1_backward")
 		}
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 8
@@ -131,7 +131,7 @@ switch state{
 	case BOSS_STATE.SKILL2:
 		if timer <= 5*5 - 1{
 		
-			sprite_index = spr_blonde_mary_skill_2_ready
+			sprite_index = get_load_sprite("spr_blonde_mary_skill_2_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 5
 			}
@@ -140,7 +140,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_blonde_mary_skill_2
+			sprite_index = get_load_sprite("spr_blonde_mary_skill_2")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 6
 			}
@@ -173,7 +173,7 @@ switch state{
 		
 	case BOSS_STATE.SKILL3:
 		
-		sprite_index = spr_blonde_mary_skill_3
+		sprite_index = get_load_sprite("spr_blonde_mary_skill_3")
 		if timer <= 7 * 5 - 1{
 			image_index = (timer/5) mod 7
 		}
@@ -200,7 +200,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_blonde_mary_disappear
+		sprite_index = get_load_sprite("spr_blonde_mary_disappear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 18
 		}
@@ -211,7 +211,7 @@ switch state{
 			image_alpha = 0
 		}
 		if timer == 240{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = {}
 			if skill_count == 1{
 				enemy_pos = get_world_position_from_grid(9,3)
@@ -232,7 +232,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_blonde_mary_death
+		sprite_index = get_load_sprite("spr_blonde_mary_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha -= 0.1

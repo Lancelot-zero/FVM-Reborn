@@ -8,6 +8,10 @@ if card_id == "magic_chicken"{
 				if cooldown < 13.5 * 60{
 					cooldown = 13.5 * 60
 				}
+				// 联机魔塔：冷却+50%
+				if global.network.mode != "offline" && global.map_id == "tower_cake"{
+					cooldown = ceil(cooldown * 1.5);
+				}
 				cooldown_timer = cooldown
 			}
 			cost = prev_card_info[? "cost"]

@@ -14,6 +14,10 @@ if (plant_data != undefined) {
     if (upgrade_data != undefined) {
         cost = upgrade_data[? "cost"];
         cooldown = upgrade_data[? "cooldown"];
+        // 联机魔塔：冷却+50%
+        if global.network.mode != "offline" && global.map_id == "tower_cake"{
+            cooldown = ceil(cooldown * 1.5);
+        }
     }
 	
 }

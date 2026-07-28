@@ -7,7 +7,7 @@ if flash_value > 0 {
 }
 
 if !appear{
-	var enemy_row = irandom_range(0,global.grid_rows-1)
+	var enemy_row = boss_random(self, 0,global.grid_rows-1)
 	var enemy_pos = {}
 	if skill_count == 2{
 		enemy_pos = get_world_position_from_grid(10,enemy_row)
@@ -41,7 +41,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 
 switch state{
 	case BOSS_STATE.IDLE:
-		sprite_index = spr_needle_baron_idle
+		sprite_index = get_load_sprite("spr_needle_baron_idle")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 8
 		}
@@ -69,7 +69,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.APPEAR:
-		sprite_index = spr_needle_baron_appear
+		sprite_index = get_load_sprite("spr_needle_baron_appear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 14
 		}
@@ -85,7 +85,7 @@ switch state{
 	
 	case BOSS_STATE.SKILL1:
 		if timer <= 120{
-			sprite_index = spr_needle_baron_idle
+			sprite_index = get_load_sprite("spr_needle_baron_idle")
 			image_index = floor(timer /5) mod 8
 		
 			if hp <= maxhp * hurt_rate{
@@ -94,7 +94,7 @@ switch state{
 		}
 		else{
 		
-			sprite_index = spr_needle_baron_skill_1
+			sprite_index = get_load_sprite("spr_needle_baron_skill_1")
 			image_index = floor((timer-120) /5) mod 8
 		
 			if hp <= maxhp * hurt_rate{
@@ -113,7 +113,7 @@ switch state{
 				}
 			}
 			if ds_list_size(avaliable_pos) > 0{
-				var pos_choose = irandom_range(0,ds_list_size(avaliable_pos)-1)
+				var pos_choose = boss_random(self, 0,ds_list_size(avaliable_pos)-1)
 				var pos_grid = avaliable_pos[| pos_choose]
 				t_pos = get_world_position_from_grid(pos_grid.col,pos_grid.row)
 				y_move_speed = (t_pos.y+33-y)/120
@@ -165,7 +165,7 @@ switch state{
 	case BOSS_STATE.SKILL3:
 	
 		if timer <= 5 * 5 - 1{
-			sprite_index = spr_needle_baron_skill_3_ready
+			sprite_index = get_load_sprite("spr_needle_baron_skill_3_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = floor(timer /5) mod 5
 			}
@@ -174,7 +174,7 @@ switch state{
 			}
 		}
 		else if timer <= 145{
-			sprite_index = spr_needle_baron_skill_3_ready
+			sprite_index = get_load_sprite("spr_needle_baron_skill_3_ready")
 			if hp > maxhp * hurt_rate{
 				image_index = 4
 			}
@@ -183,7 +183,7 @@ switch state{
 			}
 		}
 		else{
-			sprite_index = spr_needle_baron_skill_3
+			sprite_index = get_load_sprite("spr_needle_baron_skill_3")
 			if hp > maxhp * hurt_rate{
 				image_index = floor((timer - 145)/5) mod 3
 			}
@@ -194,8 +194,8 @@ switch state{
 		
 		if timer == 85{
 			for(var i = 0;i < 3 ; i++){
-				var tg_row = irandom_range(0,global.grid_rows-1)
-				var tg_pos = get_world_position_from_grid(irandom_range(0,6),tg_row)
+				var tg_row = boss_random(self, 0,global.grid_rows-1)
+				var tg_pos = get_world_position_from_grid(boss_random(self, 0,6),tg_row)
 				var inst = instance_create_depth(x-60+10*i,y-75,-800,obj_baron_bats)
 				inst.y_speed = (tg_pos.y+33-inst.y)/120
 				inst.x_speed = (tg_pos.x-inst.x)/120
@@ -210,7 +210,7 @@ switch state{
 		break
 	case BOSS_STATE.SKILL2:
 		if timer <= 120{
-			sprite_index = spr_needle_baron_idle
+			sprite_index = get_load_sprite("spr_needle_baron_idle")
 			image_index = floor(timer /5) mod 8
 		
 			if hp <= maxhp * hurt_rate{
@@ -219,7 +219,7 @@ switch state{
 		}
 		else{
 		
-			sprite_index = spr_needle_baron_skill_2
+			sprite_index = get_load_sprite("spr_needle_baron_skill_2")
 			image_index = floor((timer-120) /5) mod 10
 		
 			if hp <= maxhp * hurt_rate{
@@ -228,7 +228,7 @@ switch state{
 		}
 		
 		if timer == 1{
-			t_type = irandom_range(0,1)
+			t_type = boss_random(self, 0,1)
 			if t_type == 0{
 				t_pos = get_world_position_from_grid(10,0)
 			}
@@ -260,7 +260,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_needle_baron_appear
+		sprite_index = get_load_sprite("spr_needle_baron_appear")
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 5
 		}
@@ -271,7 +271,7 @@ switch state{
 			image_alpha = 0
 		}
 		if timer == 240{
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self, 0,global.grid_rows-1)
 			var enemy_pos = {}
 			if skill_count == 2{
 				enemy_pos = get_world_position_from_grid(10,enemy_row)
@@ -292,7 +292,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_needle_baron_death
+		sprite_index = get_load_sprite("spr_needle_baron_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha -= 0.1
