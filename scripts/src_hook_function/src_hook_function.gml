@@ -2,6 +2,7 @@ global._evt_created   = [];
 global._evt_destroyed = [];
 global._evt_log_enabled = false;
 global._destroy_queue = ds_list_create()  
+global._tanghulu_bullets = ds_list_create();
 global._server_destroy_queue = []
 global._boss_spawn_queue = []
 global._boss_client_cleanup = []
@@ -48,6 +49,10 @@ function instance_create_depth_define(_x, _y, _depth, _obj) {
 	var _inst = instance_create_depth_origfunc(_x, _y, _depth, _obj);
 	if (_inst >= 0) {
 		array_push(global._move_instance_pre_arr, _inst);
+		// 糖葫芦炮弹：加入全局ds_list，用于统一合并
+		if (_obj == obj_tanghulu_bullet) {
+			ds_list_add(global._tanghulu_bullets, _inst);
+		}
 	}
 	if (_inst >= 0 && _obj == obj_platform) {
 		global._last_platform = _inst;
