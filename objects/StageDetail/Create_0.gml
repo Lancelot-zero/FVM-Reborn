@@ -130,6 +130,20 @@ function on_create_room() {
         global._sync_custom_music_names = _custom_music_names;
         global._sync_resource_fingerprints = _resource_fingerprints;
 
+        // level_data 中的音频 ID 转为字符串名，兼容懒加载
+        {
+            var _ld = _json_struct[$ "level_data"];
+            var _rev = global._audio_reverse;
+            var _mf = ["pre_music", "elite_music", "boss_music"];
+            for (var _fi = 0; _fi < 3; _fi++) {
+                var _f = _mf[_fi];
+                var _v = _ld[$ _f];
+                if (!is_string(_v) && ds_map_exists(_rev, _v)) {
+                    _ld[$ _f] = _rev[? _v];
+                }
+            }
+        }
+
         var _json = json_stringify(_json_struct)
 		
 		
