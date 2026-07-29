@@ -11,6 +11,7 @@ wait_time = 3 * 60
 cave = noone
 sprite_index = spr_abyss_pharaoh_appear
 is_boss = true
+step_ready = false;	frame_count = 0;
 
 target_coord = []
 skill_1_disappear = false

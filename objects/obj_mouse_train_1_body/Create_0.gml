@@ -13,6 +13,7 @@ move_time = 250
 cave = noone
 sprite_index = spr_mouse_train_1_body_idle
 is_boss = true
+step_ready = false;	frame_count = 0;
 
 skill_choose = 0
 skill_count = 0

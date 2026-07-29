@@ -14,43 +14,6 @@ function network_shovel_remove(col, row, net_id, flame_amount) {
     var logical_world = get_world_position_from_grid(col, row);
 
 	
-	if global.network.mode == "client"{
-		if(flame_amount>=0){
-            var shovel_effect = instance_create_depth(x+10, y-55, depth, obj_shovel);
-            shovel_effect.sprite_index = shovel_spr_to_use;
-
-            // 返还火苗
-            if (flame_amount > 0) {
-                var flame_inst = instance_create_depth(x, y-30, -2000, obj_flame);
-                flame_inst.value = flame_amount;
-            }
-
-            // 地形特效和音效
-            if (global.grid_terrains[row][col].type == "normal") {
-                instance_create_depth(logical_world.x, logical_world.y, -2, obj_place_effect);
-                audio_play_sound(snd_place2, 1, false);
-            } else if (global.grid_terrains[row][col].type == "water") {
-                var inst = instance_create_depth(logical_world.x, logical_world.y+20, -2500, obj_place_effect);
-                inst.sprite_index = spr_enter_water_effect;
-                audio_play_sound(snd_enter_water, 0, 0);
-            }
-		}else {
-	        // 没找到植物：空铲动画
-	        var shovel_effect = instance_create_depth(logical_world.x, logical_world.y-55, depth, obj_shovel);
-	        shovel_effect.sprite_index = shovel_spr_to_use;
-
-	        if (global.grid_terrains[row][col].type == "normal") {
-	            instance_create_depth(logical_world.x, logical_world.y, -2, obj_place_effect);
-	            audio_play_sound(snd_place2, 1, false);
-	        } else if (global.grid_terrains[row][col].type == "water") {
-	            var inst = instance_create_depth(logical_world.x, logical_world.y+20, -2500, obj_place_effect);
-	            inst.sprite_index = spr_enter_water_effect;
-	            audio_play_sound(snd_enter_water, 0, 0);
-	        }
-	    }
-		exit;
-	}
-	
 	var target_plant = noone;
 
     // 1. 优先通过网络ID查找植物
@@ -68,6 +31,7 @@ function network_shovel_remove(col, row, net_id, flame_amount) {
             var target_type = ds_list_find_value(global.shovel_order, i);
             for (var j = ds_list_size(plant_list) - 1; j >= 0; j--) {
                 var plant = ds_list_find_value(plant_list, j);
+                if (!instance_exists(plant)) continue;
                 if (plant.plant_type == target_type && plant.can_shovel_remove) {
                     target_plant = plant;
                     break;

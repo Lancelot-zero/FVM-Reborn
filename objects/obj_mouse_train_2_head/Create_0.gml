@@ -13,6 +13,7 @@ move_time = 250
 cave = noone
 sprite_index = spr_mouse_train_2_head_appear1
 is_boss = true
+step_ready = false;	frame_count = 0;
 train_dir = 0
 fog_spawn = false
 skill_2_times = 0

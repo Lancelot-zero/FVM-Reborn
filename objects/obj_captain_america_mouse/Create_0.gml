@@ -12,6 +12,7 @@ wait_time = 120
 cave = noone
 sprite_index = spr_captain_america_mouse_appear1
 is_boss = true
+step_ready = false;	frame_count = 0;
 
 skill_choose = 0
 skill_count = 0

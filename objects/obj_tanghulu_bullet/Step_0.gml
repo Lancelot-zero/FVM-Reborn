@@ -2,6 +2,30 @@ if global.is_paused{
 	exit
 }
 timer++;
+
+// 每帧首次扫描缓存最左敌人，同帧其他炮弹复用
+if (!variable_global_exists("_tanghulu_scan_frame")) {
+    global._tanghulu_scan_frame = -1;
+    global._tanghulu_best_id = noone;
+}
+if (global._tanghulu_scan_frame != obj_battle.battle_time) {
+    global._tanghulu_scan_frame = obj_battle.battle_time;
+    global._tanghulu_best_id = noone;
+    var _best_x = room_width;
+    var _best_hp = 0;
+    with (obj_enemy_parent) {
+        if (hp > 0 && can_hit(other.target_type,target_type) && y > 0) {
+            if (x < _best_x || (x == _best_x && hp > _best_hp)) {
+                _best_x = x;
+                _best_hp = hp;
+                global._tanghulu_best_id = id;
+            }
+        }
+    }
+}
+// 从缓存取最左敌人
+var _best = global._tanghulu_best_id;
+
 // 子弹追踪逻辑
 if (instance_exists(target_enemy) && target_enemy.hp > 0 && can_hit(target_type,target_enemy.target_type)) {
     // 目标存在且存活，继续追踪
@@ -22,19 +46,10 @@ if (instance_exists(target_enemy) && target_enemy.hp > 0 && can_hit(target_type,
     var max_hp = 0;
     var right_range = 150;
     
-    // 寻找更高优先级的目标
-    with (obj_enemy_parent) {
-        if (hp > 0 && can_hit(other.target_type,target_type) && y > 0) {
-           
-			
-            // 检查是否比当前目标更靠左
-            if (x < other.target_enemy.x) {
-                if (closest_left_enemy == noone || x < min_x || (x == min_x && maxhp > max_hp)){
-                    min_x = x;
-                    max_hp = maxhp;
-                    closest_left_enemy = id;
-                }
-            }
+    // 如果缓存的最左敌人比当前目标更靠左，切换目标
+    if (instance_exists(_best) && _best.hp > 0 && can_hit(target_type, _best.target_type)) {
+        if (_best.x < target_enemy.x) {
+            closest_left_enemy = _best;
         }
     }
     
@@ -56,17 +71,9 @@ if (instance_exists(target_enemy) && target_enemy.hp > 0 && can_hit(target_type,
     var max_hp = 0;
     var right_range = 80;
     
-    with (obj_enemy_parent) {
-        if (hp > 0 && can_hit(other.target_type,target_type) && y > 0) {
-            
-            
-            // 寻找最左侧敌人
-            if (x < min_x || (x == min_x && hp > max_hp)){
-                min_x = x;
-                max_hp = hp;
-                closest_left_enemy = id;
-            }
-        }
+    // 使用缓存的最左敌人作为新目标
+    if (instance_exists(_best) && _best.hp > 0 && can_hit(target_type, _best.target_type)) {
+        closest_left_enemy = _best;
     }
     
     // 优先选择右边一格内的敌人，如果没有则选择最左侧敌人

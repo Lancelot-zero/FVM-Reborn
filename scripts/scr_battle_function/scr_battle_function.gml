@@ -35,7 +35,7 @@ global.__stop_msg_loop = false;
 #macro MSG_MODIFY_PROP          25  // S→C: 修改实例属性(net_id, json)
 #macro MSG_REQUEST_FILE         26  // C→S: 请求文件(文件名,用途)
 #macro MSG_TRANSFER_FILE        27  // S→C: 传输文件(文件名, 用途, 大小, 字节流)
-#macro MSG_SYNC_CARD_STATES     28  // S→C: 批量同步卡牌状态(JSON)
+#macro MSG_PLATFORM_TICK        29  // S→C: 平台帧同步拍子，客户端收到后驱动所有平台step一次
 
 /// @function add_net_id(ins_id, net_id)
 /// @description 为实例产生一个 net_id
@@ -405,6 +405,23 @@ function parse_network_message(buf, _sock) {
             var _inst = global.network.map_net_id_instance_id[? _net_id];
             if (instance_exists(_inst)) {
                 var _props = json_parse(_json);
+                // 服务器 timer 领先时快进追上，确保 target_coord 等依赖 timer==N 初始化的变量被正确生成
+                if (variable_struct_exists(_props, "timer")) {
+                    var _sv_t = _props[$ "timer"];
+                    with (_inst) step_ready = true;
+                    while (_inst.timer < _sv_t) {
+                        with (_inst) event_perform(ev_step, ev_step_normal);
+                    }
+                    with (_inst) step_ready = false;
+                }
+                if (variable_struct_exists(_props, "skill_timer") && variable_instance_exists(_inst, "skill_timer")) {
+                    var _sv_st = _props[$ "skill_timer"];
+                    with (_inst) step_ready = true;
+                    while (_inst.skill_timer < _sv_st) {
+                        with (_inst) event_perform(ev_step, ev_step_normal);
+                    }
+                    with (_inst) step_ready = false;
+                }
                 var _keys = struct_get_names(_props);
                 for (var _k = 0; _k < array_length(_keys); _k++) {
                     var _key = _keys[_k];
@@ -806,7 +823,8 @@ function parse_network_message(buf, _sock) {
 					with (obj_readyroom_manager){
 						enemy_type_list = []
 						boss_type_list = []
-						for(var i = 0;i < global.level_file.total_waves;i ++){
+						var _wave_count = min(global.level_file.total_waves, array_length(global.level_file.waves));
+						for(var i = 0;i < _wave_count;i ++){
 							if global.level_file.waves[i].boss_wave{
 								if array_get_index(boss_type_list,global.level_file.waves[i].boss) == -1{
 									array_push(boss_type_list,global.level_file.waves[i].boss)
@@ -884,127 +902,23 @@ function parse_network_message(buf, _sock) {
 			break;
 		}
 		
-		
-        case MSG_SYNC_CARD_STATES:
+        case MSG_PLATFORM_TICK:            // 参数: json(string)
         {
             var _json = buffer_read(buf, buffer_string);
-            var _cards = json_parse(_json);
-            for (var _i = 0; _i < array_length(_cards); _i++) {
-                var _c = _cards[_i];
-                var _inst = global.network.map_net_id_instance_id[? _c[$ "n"]];
+            var _list = json_parse(_json);
+            for (var _i = 0; _i < array_length(_list); _i++) {
+                var _entry = _list[_i];
+                var _inst = global.network.map_net_id_instance_id[? _entry[$ "n"]];
                 if (!instance_exists(_inst)) continue;
-
-                // 平台：算差值，模拟挪动来带动卡片
-                if (!is_undefined(_c[$ "offs"])) {
-                    var _dx = _c[$ "x"] - _inst.x;
-                    var _dy = _c[$ "y"] - _inst.y;
-                    var _ax = (_inst.move_axis == "x");
-
-                    // 记录旧 offset，用于 grid_plants 迁移
-                    var _old_offs = _inst.current_offset;
-
-                    // 校准平台状态
-                    _inst.current_offset = _c[$ "offs"];
-                    _inst.move_progress  = _c[$ "prog"];
-                    _inst.state          = _c[$ "state"];
-                    _inst.move_direction = _c[$ "dir"];
-                    if (!is_undefined(_c[$ "itimer"])) _inst.idle_timer = _c[$ "itimer"];
-                    if (!is_undefined(_c[$ "vx"])) _inst.visual_x_shift = _c[$ "vx"];
-                    if (!is_undefined(_c[$ "vy"])) _inst.visual_y_shift = _c[$ "vy"];
-                    // 防止客户端重复做格子迁移
-                    if (_c[$ "state"] == "moving") _inst.step_migrated = true;
-
-                    // 平台自身位移
-                    _inst.x = _c[$ "x"];
-                    _inst.y = _c[$ "y"];
-
-                    // current_offset 变了 → 先把 grid_plants 里的植物从旧格子迁移到新格子
-                    if (_old_offs != _inst.current_offset) {
-                        var _dc = _ax ? (_inst.current_offset - _old_offs) : 0;
-                        var _dr = _ax ? 0 : (_inst.current_offset - _old_offs);
-
-                        var _old_cs = _ax ? _inst.start_col + _old_offs : _inst.start_col;
-                        var _old_rs = _ax ? _inst.start_row : _inst.start_row + _old_offs;
-
-                        for (var _gc = _old_cs; _gc < _old_cs + _inst.width; _gc++) {
-                            for (var _gr = _old_rs; _gr < _old_rs + _inst.length; _gr++) {
-                                if (_gr < 0 || _gr >= global.grid_rows || _gc < 0 || _gc >= global.grid_cols) continue;
-                                var _tgt_c = _gc + _dc;
-                                var _tgt_r = _gr + _dr;
-                                if (_tgt_r < 0 || _tgt_r >= global.grid_rows || _tgt_c < 0 || _tgt_c >= global.grid_cols) continue;
-
-                                var _old_list = ds_grid_get(global.grid_plants, _gc, _gr);
-                                var _new_list = ds_grid_get(global.grid_plants, _tgt_c, _tgt_r);
-                                if (!ds_exists(_old_list, ds_type_list) || !ds_exists(_new_list, ds_type_list)) continue;
-
-                                for (var _j = ds_list_size(_old_list) - 1; _j >= 0; _j--) {
-                                    var _plant = ds_list_find_value(_old_list, _j);
-                                    if (instance_exists(_plant)) {
-                                        ds_list_add(_new_list, _plant);
-                                        ds_list_delete(_old_list, _j);
-                                        _plant.grid_col = _tgt_c;
-                                        _plant.grid_row = _tgt_r;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // 视觉位移：遍历新格子里的植物，统一加 dx/dy
-                    if (_dx != 0 || _dy != 0) {
-                        var _new_cs = _ax ? _inst.start_col + _inst.current_offset : _inst.start_col;
-                        var _new_rs = _ax ? _inst.start_row : _inst.start_row + _inst.current_offset;
-
-                        for (var _gc = _new_cs; _gc < _new_cs + _inst.width; _gc++) {
-                            for (var _gr = _new_rs; _gr < _new_rs + _inst.length; _gr++) {
-                                if (_gr < 0 || _gr >= global.grid_rows || _gc < 0 || _gc >= global.grid_cols) continue;
-                                var _plist = ds_grid_get(global.grid_plants, _gc, _gr);
-                                if (!ds_exists(_plist, ds_type_list)) continue;
-                                for (var _j = 0; _j < ds_list_size(_plist); _j++) {
-                                    var _plant = ds_list_find_value(_plist, _j);
-                                    if (!instance_exists(_plant)) continue;
-                                    _plant.x += _dx;
-                                    _plant.y += _dy;
-                                    if (variable_instance_exists(_plant, "target_x")) _plant.target_x += _dx;
-                                    if (variable_instance_exists(_plant, "target_y")) _plant.target_y += _dy;
-                                    var _gp = get_grid_position_from_world(_plant.x, _plant.y);
-                                    _plant.grid_col = _gp.col;
-                                    _plant.grid_row = _gp.row;
-                                    if (variable_instance_exists(_plant, "plant_type")) {
-                                        _plant.depth = calculate_plant_depth(_plant.grid_col, _plant.grid_row, _plant.plant_type);
-                                    }
-                                    // 附属对象
-                                    if (variable_instance_exists(_plant, "banding_star_obj") && instance_exists(_plant.banding_star_obj)) {
-                                        _plant.banding_star_obj.x += _dx;
-                                        _plant.banding_star_obj.y += _dy;
-                                    }
-                                    if (variable_instance_exists(_plant, "banding_water_obj") && instance_exists(_plant.banding_water_obj)) {
-                                        _plant.banding_water_obj.x += _dx;
-                                        _plant.banding_water_obj.y += _dy;
-                                    }
-                                    if (variable_instance_exists(_plant, "banding_sleep_obj") && instance_exists(_plant.banding_sleep_obj)) {
-                                        _plant.banding_sleep_obj.x += _dx;
-                                        _plant.banding_sleep_obj.y += _dy;
-                                    }
-                                    // _move_instance_map 里的关联对象（武器/人物/护盾等）
-                                    if (ds_map_exists(global._move_instance_map, _plant.id)) {
-                                        var _mlist = global._move_instance_map[? _plant.id];
-                                        if (ds_exists(_mlist, ds_type_list)) {
-                                            for (var _k = 0; _k < ds_list_size(_mlist); _k++) {
-                                                var _mobj = _mlist[| _k];
-                                                if (instance_exists(_mobj)) {
-                                                    _mobj.x += _dx;
-                                                    _mobj.y += _dy;
-                                                    if (variable_instance_exists(_mobj, "target_x")) _mobj.target_x += _dx;
-                                                    if (variable_instance_exists(_mobj, "target_y")) _mobj.target_y += _dy;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                var _gap = _entry[$ "fc"] - _inst.frame_count;
+                if (_gap <= 0) continue;
+                with (_inst) {
+                    step_ready = true;
+                    if (object_is_ancestor(object_index, obj_enemy_parent))
+                        repeat (_gap) event_perform(ev_step, ev_step_normal);  // boss: Step_0
+                    else
+                        repeat (_gap) event_perform(ev_step, 2);               // 平台: Step_2
+                    if (global.network.mode == "client") step_ready = false;
                 }
             }
             break;
@@ -1018,9 +932,6 @@ function parse_network_message(buf, _sock) {
     }
 }
 
-
-/// @function send_message(socket, msg_id, ...)
-/// @param {real} socket  网络套接字
 /// @param {real} msg_id  消息ID常量
 /// @param {...} 可变参数，按协议顺序传入字段值
 /// @description 自动根据 msg_id 打包并发送，支持所有消息类型
@@ -1180,7 +1091,7 @@ function send_message(socket, msg_id) {
             buffer_copy(argument[5], 0, buffer_get_size(argument[5]), buf, buffer_tell(buf));
             buffer_seek(buf, buffer_seek_relative, buffer_get_size(argument[5]));
             break;
-        case MSG_SYNC_CARD_STATES:         // 参数: json(string)
+        case MSG_PLATFORM_TICK:            // 参数: json(string)
             buffer_write(buf, buffer_string, argument[2]);
             break;
 

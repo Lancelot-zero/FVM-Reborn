@@ -150,3 +150,24 @@ if (!global.save_data.unlocked_items.elite_unlocked && current_wave >= global.le
 		}
 	}
 }
+
+// 服务器每帧发送平台+boss tick，携带各实例的 net_id + frame_count
+if (global.network.mode == "server" && !global.is_paused) {
+	var _arr = [];
+	with (obj_platform) {
+		var _nid = ds_map_exists(global.network.map_instance_id_net_id, id) ? global.network.map_instance_id_net_id[? id] : -1;
+		if (_nid != -1) array_push(_arr, {n: _nid, fc: frame_count});
+	}
+	with (obj_enemy_parent) {
+		if (!is_boss) continue;
+		var _nid = ds_map_exists(global.network.map_instance_id_net_id, id) ? global.network.map_instance_id_net_id[? id] : -1;
+		if (_nid != -1) array_push(_arr, {n: _nid, fc: frame_count});
+	}
+	if (array_length(_arr) > 0) {
+		var _json = json_stringify(_arr);
+		var _cl = global.network.connected_clients;
+		for (var i = 0; i < array_length(_cl); i++) {
+			send_message(_cl[i], MSG_PLATFORM_TICK, _json);
+		}
+	}
+}

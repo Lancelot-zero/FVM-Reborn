@@ -13,6 +13,7 @@ skill_choose = 0
 sprite_index = spr_spider_man_mouse_idle
 image_alpha = 0
 is_boss = true
+step_ready = false;	frame_count = 0;
 target_type = "air"
 skill_timer = 0
 

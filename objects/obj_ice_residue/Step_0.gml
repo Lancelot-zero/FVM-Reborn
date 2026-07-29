@@ -1,6 +1,7 @@
 if global.is_paused{
 	exit
 }
+if (global.network.mode == "client" && !step_ready) exit;
 
 if shape == "ice"{
 	spr_list = [get_load_sprite("spr_ice_residue_appear"),get_load_sprite("spr_ice_residue_skill_1_ready"),get_load_sprite("spr_ice_residue_skill_1"),get_load_sprite("spr_ice_residue_skill_2"),get_load_sprite("spr_ice_residue_disappear"),get_load_sprite("spr_ice_residue_death")]
@@ -197,6 +198,7 @@ switch state{
 
 
 timer ++
+frame_count++;
 
 
 // 透明度处理

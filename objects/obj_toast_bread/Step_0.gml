@@ -2,6 +2,10 @@
 if global.is_paused{
 	exit
 }
+
+	if(global.network.mode=="client"&&!ds_map_exists(global.network.map_instance_id_net_id, id)){
+		instance_destroy(id);
+	}
 var current_flash_speed = flash_speed
 if is_slowdown{
 	current_flash_speed *= 2

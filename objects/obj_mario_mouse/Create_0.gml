@@ -12,6 +12,7 @@ cave = noone
 pipeline = noone
 sprite_index = spr_mario_mouse_appear
 is_boss = true
+step_ready = false;	frame_count = 0;
 
 hpbar_inst = instance_create_depth(450,1040,-900,obj_boss_hpbar)
 hpbar_inst.target_boss = id

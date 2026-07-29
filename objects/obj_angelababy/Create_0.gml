@@ -14,6 +14,7 @@ skill_timer = 0
 skill_move_type = "act"
 sprite_index = spr_angelababy_appear
 is_boss = true
+step_ready = false;	frame_count = 0;
 
 image_alpha = 0
 appear = false

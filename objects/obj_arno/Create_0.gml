@@ -11,6 +11,7 @@ wait_time = 12 * 5 - 1
 cave = noone
 sprite_index = spr_arno_appear
 is_boss = true
+step_ready = false;	frame_count = 0;
 
 hpbar_inst = instance_create_depth(450,1040,-900,obj_boss_hpbar)
 hpbar_inst.target_boss = id

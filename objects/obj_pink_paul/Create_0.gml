@@ -11,6 +11,7 @@ wait_time = 180
 cave = noone
 sprite_index = spr_pink_paul_appear
 is_boss = true
+step_ready = false;	frame_count = 0;
 
 skill_choose = 0
 skill_count = 0

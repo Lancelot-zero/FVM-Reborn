@@ -13,6 +13,7 @@ sprite_index = spr_irritable_jack_idle
 idle_spr = spr_irritable_jack_idle
 idle_anim = 8
 is_boss = true
+step_ready = false;	frame_count = 0;
 
 y_move_speed = 0
 x_move = 0

@@ -36,6 +36,14 @@ if awake_buff_timer > 0{
 		else{
 			state = CARD_STATE.IDLE
 		}
+		if global.network.mode == "server" && ds_map_exists(global.network.map_instance_id_net_id, id){
+			var _net_id = global.network.map_instance_id_net_id[? id];
+			var _json = json_stringify({state: state});
+			var _list = global.network.connected_clients;
+			for (var _j = 0; _j < array_length(_list); _j++){
+				send_message(_list[_j], MSG_MODIFY_PROP, _net_id, _json);
+			}
+		}
 	}
 }
 if state == CARD_STATE.SLEEP && !instance_exists(banding_sleep_obj) && awake_anim == 0{

@@ -1,6 +1,10 @@
 if global.is_paused{
 	exit
 }
+
+	if(global.network.mode=="client"&&!ds_map_exists(global.network.map_instance_id_net_id, id)){
+		instance_destroy(id);
+	}
 // obj_plant_parent 的 Step 事件（继承自父事件）
 // 动画计时器
 var current_flash_speed = flash_speed

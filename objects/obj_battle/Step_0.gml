@@ -9,6 +9,12 @@ if global.is_paused{
 if global.lose_focus_pause && global.network.mode != "client"{
 	if !window_has_focus() && !global.is_paused{
 		global.is_paused = true
+		if (global.network.mode == "server") {
+			var _cl = global.network.connected_clients;
+			for (var i = 0; i < array_length(_cl); i++) {
+				send_message(_cl[i], MSG_SERVER_ACTION, 2);
+			}
+		}
 	}
 }
 
@@ -319,35 +325,6 @@ if (global.network.mode == "server" && battle_time mod 20 == 0) {
 	}
 }
 
-
-// 每300帧同步平台状态，客户端收到后算差值并模拟平台挪动来带动卡片
-if (global.network.mode == "server" && battle_time mod 300 == 0 && instance_number(obj_platform) > 0) {
-	var _cards = [];
-	var _clist = global.network.connected_clients;
-	var _csize = array_length(_clist);
-	with (obj_platform) {
-		var _pnid = (ds_map_exists(global.network.map_instance_id_net_id, id)) ? global.network.map_instance_id_net_id[? id] : -1;
-		if (_pnid != -1) {
-			array_push(_cards, {
-				n: _pnid,
-				x: x, y: y,
-				offs: current_offset,
-				prog: move_progress,
-				state: state,
-				dir: move_direction,
-				itimer: idle_timer,
-				vx: visual_x_shift,
-				vy: visual_y_shift
-			});
-		}
-	}
-	if (array_length(_cards) > 0) {
-		var _json = json_stringify(_cards);
-		for (var _si = 0; _si < _csize; _si++) {
-			send_message(_clist[_si], MSG_SYNC_CARD_STATES, _json);
-		}
-	}
-}
 
 
 if global.debug{

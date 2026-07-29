@@ -117,7 +117,7 @@ std::string read_str(const uint8_t* data, int& off) {
     const char* start = (const char*)data + off;
     const char* end   = (const char*)memchr(start, 0, 65536);
     if (!end) { off = (int)strlen(start); return start; }
-    off = (int)(end - start) + 1 + (off - off);  // advance past start offset
+    off += (int)(end - start) + 1;  // advance past start offset
     return std::string(start, end - start);
 }
 

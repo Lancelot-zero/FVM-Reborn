@@ -12,6 +12,7 @@ cave = noone
 sprite_index = spr_needle_baron_appear
 idle_spr = spr_needle_baron_idle
 is_boss = true
+step_ready = false;	frame_count = 0;
 
 skill_choose = 0
 skill_count = 0

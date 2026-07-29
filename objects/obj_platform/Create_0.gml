@@ -25,6 +25,8 @@ move_speed = 0.01;      // 每帧移动进度（0.01 表示 100帧走完1格）
 first_frame = true;     // 用于在第一帧初始化网格地形
 initial_idle_done = false; // 初始停顿是否完成
 step_migrated = true;   // 当前步骤是否已迁移grid_plants
+	step_ready = false;     // 客户端帧同步：true时允许执行一次step
+	frame_count = 0;        // 帧同步计数：每step一次+1
 
 // 视觉位移偏差记录，供预览和放置逻辑读取
 visual_x_shift = 0;

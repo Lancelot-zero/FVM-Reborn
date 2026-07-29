@@ -13,6 +13,7 @@ sprite_index = spr_lieutenant_buzz_idle
 idle_spr = spr_lieutenant_buzz_idle
 idle_anim = 10
 is_boss = true
+step_ready = false;	frame_count = 0;
 
 y_move_speed = 0
 x_move = 0

@@ -46,6 +46,9 @@ if (first_frame) {
     }
 }
 
+// 客户端：仅收到tick时执行step，否则跳过
+if (global.network.mode == "client" && !step_ready) exit;
+
 if (global.is_paused) { 
     exit; 
 }
@@ -321,3 +324,4 @@ with (obj_melon_shield_inner) {
     }
 }
 }
+	frame_count++;

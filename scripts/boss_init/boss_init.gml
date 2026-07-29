@@ -8,7 +8,8 @@ function boss_random(boss_inst, min_val, max_val) {
     if (!variable_instance_exists(boss_inst, "random_count")) {
         boss_inst.random_count = 0;
     }
-    var seed = net_id * 1103515245 + boss_inst.random_count;
+	
+    var seed = int64(net_id) * 1103515245 + boss_inst.random_count;
     boss_inst.random_count++;
     return min_val + (abs(seed) % (max_val - min_val + 1));
 }

@@ -23,7 +23,8 @@ function card_created(plant_inst, col, row) {
 					skill:get_card_info(_target)[$ "skill"],
 					shape:get_card_info(_target)[$ "shape"],
 					level:get_card_info(_target)[$ "level"],
-					sprite_index: ds_map_exists(global._pid_reverse, global.prev_place_id_shape) ? global._pid_reverse[? global.prev_place_id_shape] : sprite_get_name(global.prev_place_id_shape)
+					sprite_index: ds_map_exists(global._pid_reverse, global.prev_place_id_shape) ? global._pid_reverse[? global.prev_place_id_shape] : sprite_get_name(global.prev_place_id_shape),
+					plant_type: deck_get_card_data(_target, get_card_info(_target)[$ "shape"])[? "plant_type"]
 				}
 				_meta = {target_card:_target,target_card_info:target_card_info};
 			}
@@ -88,7 +89,8 @@ function card_created(plant_inst, col, row) {
 					skill: _tci[$ "skill"],
 					shape: _tci[$ "shape"],
 					level: _tci[$ "level"],
-					sprite_index: _tci_sid
+					sprite_index: _tci_sid,
+					plant_type: _tci[$ "plant_type"]
 				};
 				_meta = { target_card: plant_inst.target_card, target_card_info: _tci_copy };
 			}else if _target!=""{
@@ -96,7 +98,8 @@ function card_created(plant_inst, col, row) {
 					skill:get_card_info(_target)[$ "skill"],
 					shape:get_card_info(_target)[$ "shape"],
 					level:get_card_info(_target)[$ "level"],
-					sprite_index: ds_map_exists(global._pid_reverse, global.prev_place_id_shape) ? global._pid_reverse[? global.prev_place_id_shape] : sprite_get_name(global.prev_place_id_shape)
+					sprite_index: ds_map_exists(global._pid_reverse, global.prev_place_id_shape) ? global._pid_reverse[? global.prev_place_id_shape] : sprite_get_name(global.prev_place_id_shape),
+					plant_type: deck_get_card_data(_target, get_card_info(_target)[$ "shape"])[? "plant_type"]
 				}
 				_meta = {target_card:_target,target_card_info:target_card_info};
 			}else

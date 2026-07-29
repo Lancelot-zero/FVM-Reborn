@@ -11,6 +11,7 @@ wait_time = 300
 cave = noone
 sprite_index = spr_hot_vajra_appear
 is_boss = true
+step_ready = false;	frame_count = 0;
 
 skill_choose = 0
 skill_count = 0
