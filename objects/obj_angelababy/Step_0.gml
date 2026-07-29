@@ -20,9 +20,12 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 }
 
 if !appear{
+	skill_group = skill_group_list[irandom_range(0,array_length(skill_group_list)-1)]
+	skill_group = array_shuffle(skill_group)
 	var enemy_row = irandom_range(0,global.grid_rows-1)
 	var enemy_pos = {}
-	skill_choose = irandom_range(2,2)
+	skill_choose = skill_group[skill_count]
+	skill_count ++
 	skill_change_style = irandom_range(0,1)
 	if skill_choose == 2{
 		enemy_pos = get_world_position_from_grid(9,enemy_row)
