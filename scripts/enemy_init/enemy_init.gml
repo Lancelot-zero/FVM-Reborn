@@ -108,4 +108,5 @@ function enemy_init(){
 	register_enemy("machine_bee",{"name":"机械蜜蜂","_obj":obj_machine_bee,"hp":1170,"shield":0,"description":"机械蜜蜂：快速飞行啃咬卡片","speed":0.9,"atk":20,"cycle":36,"range":90,"ash_proof":true,"spr":spr_machine_bee,"feature":"land"})
 	register_enemy("spider_man_mouse",{"name":"蜘蛛侠鼠","_obj":obj_spider_man_mouse,"hp":120000,"shield":0,"description":"蜘蛛侠鼠：浮空岛BOSS","speed":0.3,"atk":10,"cycle":36,"range":90,"ash_proof":true,"spr":spr_spider_man_mouse_idle,"feature":"land"})
 	register_enemy("hulk_mouse",{"name":"绿巨鼠","_obj":obj_hulk_mouse,"hp":120000,"shield":0,"description":"绿巨鼠：浮空岛BOSS","speed":0.3,"atk":10,"cycle":36,"range":90,"ash_proof":true,"spr":spr_hulk_mouse_idle,"feature":"land"})
+	register_enemy("mouse_train_3",{"name":"鼠国列车三态","_obj":obj_mouse_train_3_head,"hp":200000,"shield":0,"description":"鼠国列车三态：十三香中心岛BOSS","speed":0.3,"atk":10,"cycle":36,"range":90,"ash_proof":true,"spr":spr_mouse_train_2_head_idle,"feature":"land"})
 }

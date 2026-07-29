@@ -53,6 +53,7 @@ if (global.is_paused)
 				draw_text(630,260, "通关时间："+string(minute)+":"+string(second));
 				draw_text(630,285,"卡片损失："+string(obj_task_manager.card_loss))
 				draw_text(630,310,"猫损失："+string(obj_task_manager.cat_loss))
+				draw_text(630,335,"难度："+string(global.difficulty))
 				if global.level_file.version != "1.0.0" && !global.laboretory_room{
 					if first_complete{
 						var item_string = ""

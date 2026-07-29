@@ -6,3 +6,4 @@ timer = 0
 target_col = -1
 target_row = -1
 destroy_times = 0
+skill_dropped = false

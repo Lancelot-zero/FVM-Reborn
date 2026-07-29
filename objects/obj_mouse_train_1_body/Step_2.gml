@@ -3,6 +3,7 @@ event_inherited();
 
 if !instance_exists(train_head){
 	instance_destroy()
+	exit
 }
 else{
 	if train_head.hp <= 0{

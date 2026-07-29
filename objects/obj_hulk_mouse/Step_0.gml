@@ -41,7 +41,21 @@ switch state{
 		else{
 			image_index = floor(timer/5) mod 9 + 9
 		}
+		
+		if timer == 1{
+			prev_hp = hp
+			damage_take = 0
+			show_notice("造成足够伤害以削弱该技能",wait_time)
+			skill_dropped = false
+		}
+		else{
+			damage_take = prev_hp - hp
+		}
+		
 		if timer >= wait_time{
+			if damage_take >= 0.1 * maxhp{
+				skill_dropped = true
+			}
 			timer = 0
 			if skill_choose == 0 {
 				state = BOSS_STATE.SKILL1
@@ -53,6 +67,7 @@ switch state{
 				state = BOSS_STATE.SKILL3
 			}
 		}
+		
 		break
 		
 	case BOSS_STATE.APPEAR:
@@ -147,7 +162,7 @@ switch state{
 			}
 		}
 		
-		if sprite_index == spr_hulk_mouse_skill_1 && grid_col <= 5{
+		if sprite_index == spr_hulk_mouse_skill_1 && grid_col <= 5 && (!skill_dropped || (skill_dropped && grid_col >= 5)){
 			with obj_card_parent{
 				if grid_col >= other.grid_col-1 && grid_col <= other.grid_col && grid_row >= other.grid_row-1 && grid_row <= other.grid_row &&
 				plant_id != "player" && plant_type != "coffee" && !invincible && plant_id != "cotton_candy"{
@@ -256,6 +271,7 @@ switch state{
 			var effect_inst = instance_create_depth(effect_pos.x,effect_pos.y,-800,obj_hulk_destroy_effect)
 			effect_inst.target_row = grid_row
 			effect_inst.target_col = 6
+			effect_inst.skill_dropped = skill_dropped
 		}
 		
 		if timer >= 110*5-1{
