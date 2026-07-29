@@ -11,20 +11,31 @@ if selected_attire_id != -1{
 }
 
 // 创建保存按钮
-var save_btn = instance_create_depth(x - 250, y + 280, depth-1, obj_edit_menu_button);
+var save_btn = instance_create_depth(x - 350, y + 280, depth-1, obj_edit_menu_button);
 save_btn.button_text = "保存";
 save_btn.btn_type = "save";
 save_btn.parent = id; // 设置父对象以便通信
 
 // 创建保存按钮
-var open_save_folder_btn = instance_create_depth(x, y + 280, depth-1, obj_edit_menu_button);
+var open_save_folder_btn = instance_create_depth(x - 175, y + 280, depth-1, obj_edit_menu_button);
 open_save_folder_btn.button_text = "存档文件夹";
 open_save_folder_btn.btn_type = "open_save_folder";
 open_save_folder_btn.parent = id; 
 
+// 创建导出按钮
+var open_save_folder_btn = instance_create_depth(x, y + 280, depth-1, obj_edit_menu_button);
+open_save_folder_btn.button_text = "导出存档备份";
+open_save_folder_btn.btn_type = "export_save_backup";
+open_save_folder_btn.parent = id; 
+
+// 创建导入按钮
+var open_save_folder_btn = instance_create_depth(x + 175, y + 280, depth-1, obj_edit_menu_button);
+open_save_folder_btn.button_text = "导入存档备份";
+open_save_folder_btn.btn_type = "import_save_backup";
+open_save_folder_btn.parent = id; 
 
 // 创建取消按钮
-var cancel_btn = instance_create_depth(x + 250, y + 280, depth-1, obj_edit_menu_button);
+var cancel_btn = instance_create_depth(x + 350, y + 280, depth-1, obj_edit_menu_button);
 cancel_btn.button_text = "取消";
 cancel_btn.btn_type = "cancel";
 cancel_btn.parent = id;

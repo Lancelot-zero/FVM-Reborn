@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 
+#include "typedef.h"
+
 using FileBufferID = std::uint8_t;
 
 class FileSystem {
@@ -19,11 +21,13 @@ class FileSystem {
     return instance;
   }
 
-  static auto OpenFolder(std::string path) -> double {
+  // 成功返回 0；失败返回 ShellExecute 错误码 (0-32)。
+  static auto OpenFolder(std::string path) -> int {
     std::wstring w_path = Utf8ToUtf16(path.c_str());
     auto ret = ShellExecuteW(NULL, L"open", w_path.c_str(), NULL, NULL,
                              SW_SHOWDEFAULT);
-    return static_cast<double>(reinterpret_cast<INT_PTR>(ret) > 32);
+    auto code = reinterpret_cast<INT_PTR>(ret);
+    return code > 32 ? 0 : static_cast<int>(code);
   }
 
   static auto FolderExists(std::string path) -> bool {
@@ -40,8 +44,9 @@ class FileSystem {
             !(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
   }
 
+  // 成功返回 0；失败返回 std::error_code::value() 或 Win32 错误码。
   static auto CopyAndMergeDirectory(const char* source,
-                                    const char* targetParent) -> bool {
+                                    const char* targetParent) -> int {
     namespace fs = std::filesystem;
 
     std::wstring w_src_str = Utf8ToUtf16(source);
@@ -53,20 +58,24 @@ class FileSystem {
     fs::path finalDstPath = dstParentPath / srcPath.filename();
 
     std::error_code ec;
-    if (!fs::exists(srcPath, ec)) return false;
+    if (!fs::exists(srcPath, ec)) {
+      return ec ? ec.value() : ERROR_PATH_NOT_FOUND;
+    }
 
     if (!fs::exists(dstParentPath, ec)) {
       fs::create_directories(dstParentPath, ec);
+      if (ec) return ec.value();
     }
 
     fs::copy(srcPath, finalDstPath,
              fs::copy_options::recursive | fs::copy_options::overwrite_existing,
              ec);
 
-    return !ec;
+    return ec ? ec.value() : 0;
   }
 
-  static auto DeleteFolder(std::string path) -> bool {
+  // 成功返回 0；失败返回 SHFileOperation 错误码。
+  static auto DeleteFolder(std::string path) -> int {
     std::wstring w_path = Utf8ToUtf16(path.c_str());
 
     w_path.push_back(L'\0');
@@ -79,9 +88,7 @@ class FileSystem {
 
     fileOp.fFlags = FOF_NOCONFIRMATION | FOF_SILENT;
 
-    int result = SHFileOperationW(&fileOp);
-
-    return result == 0;
+    return SHFileOperationW(&fileOp);
   }
 
   static auto ChooseFileToOpen(const char* default_dir = nullptr)
@@ -208,21 +215,28 @@ class FileSystem {
     return true;
   }
 
+  // 成功返回 0；失败返回 GetLastError()（若为 0 则返回 NativeError::UnknownFailure）。
   static auto WriteNativeFile(const std::string& path,
-                              const std::vector<uint8_t>& data) -> bool {
+                              const std::vector<uint8_t>& data) -> int {
     std::wstring w_path = Utf8ToUtf16(path.c_str());
     HANDLE file_handler =
         CreateFileW(w_path.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
                     FILE_ATTRIBUTE_NORMAL, NULL);
     if (file_handler == INVALID_HANDLE_VALUE) {
-      return false;
+      DWORD err = GetLastError();
+      return err ? static_cast<int>(err) : NativeError::UnknownFailure;
     }
     DWORD bytes_written = 0;
     BOOL write_result =
         WriteFile(file_handler, data.data(), static_cast<DWORD>(data.size()),
                   &bytes_written, NULL);
+    if (!write_result || bytes_written != data.size()) {
+      DWORD err = GetLastError();
+      CloseHandle(file_handler);
+      return err ? static_cast<int>(err) : NativeError::UnknownFailure;
+    }
     CloseHandle(file_handler);
-    return write_result && bytes_written == data.size();
+    return 0;
   }
 
  public:
@@ -240,6 +254,24 @@ class FileSystem {
     }
 
     return utf16_str;
+  }
+
+  static auto Utf16ToUtf8(const wchar_t* utf16_str) -> std::string {
+    if (!utf16_str) return "";
+
+    int size_needed =
+        WideCharToMultiByte(CP_UTF8, 0, utf16_str, -1, NULL, 0, NULL, NULL);
+    if (size_needed <= 0) return "";
+
+    std::string utf8_str(size_needed, 0);
+    WideCharToMultiByte(CP_UTF8, 0, utf16_str, -1, &utf8_str[0], size_needed,
+                        NULL, NULL);
+
+    if (!utf8_str.empty() && utf8_str.back() == '\0') {
+      utf8_str.pop_back();
+    }
+
+    return utf8_str;
   }
 
  private:

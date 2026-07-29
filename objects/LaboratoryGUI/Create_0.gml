@@ -117,9 +117,11 @@ function create_widgets() {
             return gui_state.current_stage_id == ""
         }))
         .set_on_click(method({}, function() {
-            var _user_profile = environment_get_variable("LOCALAPPDATA")
-        	var _target = global.laboratory_manager.file_util.transfer_path_to_windows( _user_profile + "\\FVM_Reborn\\laboratory")
-            native_open_folder(_target)
+            var _target = global.native_util.get_path_in_local_appdata("\\FVM_Reborn\\laboratory")
+            var _error_code = native_open_folder(_target)
+            if (_error_code != 0) {
+                global.native_util.show_error(_error_code, "打开实验室文件夹失败")
+            }
         }))
 }
 

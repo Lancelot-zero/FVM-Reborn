@@ -22,11 +22,7 @@ function FileUtil() constructor {
         return _sub_folders
     }
 
-    /// @param {String} _path 
-    /// @returns {String}
-    static transfer_path_to_windows = function(_path) {
-        return string_replace(_path, "/", "\\")
-    }
+ 
 
     /// @description return full path of files with specific extension in the folder
     /// @param {String} _path 
