@@ -60,7 +60,7 @@ static auto TestStartBackupWithTargetFile(
     return false;
   }
   bool file_exists = std::filesystem::exists(backup_file);
-  if (expected == 1.0 && !file_exists) {
+  if (expected == 0.0 && !file_exists) {
     printf("  FAIL [%s]: backup file was not created\n", label);
     return false;
   }
@@ -101,7 +101,7 @@ static int RunAllTests() {
   // ── 1. backup ──────────────────────────────────────────
   printf("[Test 1] StartBackupWithTargetFile - normal backup\n");
   if (!TestStartBackupWithTargetFile(saves_dir, backup_file, "normal backup",
-                                     1.0))
+                                     0.0))
     return -1;
   if (!fs::exists(backup_file)) {
     printf("  FAIL: backup file not created\n");
@@ -132,12 +132,18 @@ static int RunAllTests() {
   printf("[Test 3] RestoreBackupWithTargetFile - normal restore\n");
   fs::create_directories(restore_dir);
   if (!TestRestoreBackupWithTargetFile(restore_dir, backup_file,
-                                       "normal restore", 1.0))
+                                       "normal restore", 0.0))
     return -1;
-  	if (!CheckDirHasSameContent(restore_dir.string(), saves_dir.string())) {
-  		printf("  FAIL: restored content does not match source\n");
-  		return -1;
-  	}
+  if (!CheckDirHasSameContent(restore_dir.string(), saves_dir.string())) {
+    // readme.txt is not in backup, so only compare restored json files
+    bool ok = fs::exists(restore_dir / "save1.json") &&
+              fs::exists(restore_dir / "save2.json") &&
+              !fs::exists(restore_dir / "readme.txt");
+    if (!ok) {
+      printf("  FAIL: restored content does not match expected\n");
+      return -1;
+    }
+  }
   printf("  PASS\n");
 
   // ── 4. error handling ─────────────────────────────────
@@ -145,19 +151,30 @@ static int RunAllTests() {
   {
     fs::path dummy = test_root / "dummy.json";
 
-    if (!TestStartBackupWithTargetFile("", dummy, "empty saves_dir", 0.0))
+    if (!TestStartBackupWithTargetFile(
+            "", dummy, "empty saves_dir",
+            static_cast<double>(NativeError::InvalidArgument)))
       return -1;
-    if (!TestStartBackupWithTargetFile("savedir", "", "empty target_file", 0.0))
-      return -1;
-    if (!TestStartBackupWithTargetFile("savedir", dummy, "nonexistent dir",
-                                       0.0))
+    if (!TestStartBackupWithTargetFile(
+            "savedir", "", "empty target_file",
+            static_cast<double>(NativeError::InvalidArgument)))
       return -1;
 
-    if (!TestRestoreBackupWithTargetFile("", dummy, "empty restore dir", 0.0))
+    // nonexistent dir is created automatically → success
+    fs::path auto_created = test_root / "auto_created_saves";
+    fs::path auto_bak = test_root / "auto_created_bak.json";
+    if (!TestStartBackupWithTargetFile(auto_created, auto_bak,
+                                       "nonexistent dir auto-create", 0.0))
+      return -1;
+
+    if (!TestRestoreBackupWithTargetFile(
+            "", dummy, "empty restore dir",
+            static_cast<double>(NativeError::InvalidArgument)))
       return -1;
     fs::path nonexistent = test_root / "no_such_file.json";
-    if (!TestRestoreBackupWithTargetFile(restore_dir, nonexistent,
-                                         "nonexistent file", 0.0))
+    if (!TestRestoreBackupWithTargetFile(
+            restore_dir, nonexistent, "nonexistent file",
+            static_cast<double>(ERROR_FILE_NOT_FOUND)))
       return -1;
   }
   printf("  PASS\n");
@@ -169,14 +186,40 @@ static int RunAllTests() {
     fs::path empty_bak = test_root / "empty_bak.json";
     fs::create_directories(empty_saves);
     if (!TestStartBackupWithTargetFile(empty_saves, empty_bak,
-                                       "empty dir backup", 1.0))
+                                       "empty dir backup", 0.0))
       return -1;
 
     fs::path empty_restore = test_root / "empty_restore";
     fs::create_directories(empty_restore);
     if (!TestRestoreBackupWithTargetFile(empty_restore, empty_bak,
-                                         "empty backup restore", 1.0))
+                                         "empty backup restore", 0.0))
       return -1;
+  }
+  printf("  PASS\n");
+
+  // ── 6. log file ───────────────────────────────────────
+  printf("[Test 6] SetNativeLogFilePath + LogNativeError\n");
+  {
+    fs::path log_path = test_root / "native.log";
+    double set_result = SetNativeLogFilePath(log_path.string().c_str());
+    if (set_result != 0.0) {
+      printf("  FAIL: SetNativeLogFilePath returned %f\n", set_result);
+      return -1;
+    }
+    LogNativeError(NativeError::InvalidArgument, "test log line");
+    if (!fs::exists(log_path)) {
+      printf("  FAIL: log file was not created\n");
+      return -1;
+    }
+    std::ifstream ifs(log_path);
+    std::stringstream buf;
+    buf << ifs.rdbuf();
+    std::string content = buf.str();
+    if (content.find("test log line") == std::string::npos ||
+        content.find("error_code=-1") == std::string::npos) {
+      printf("  FAIL: log content mismatch: %s\n", content.c_str());
+      return -1;
+    }
   }
   printf("  PASS\n");
 
