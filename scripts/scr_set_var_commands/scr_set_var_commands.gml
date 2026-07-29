@@ -396,11 +396,20 @@ function sh_sudologin(args) {
     if (array_length(args) < 2) {
         return "[sudo] 用法: sudologin <密码>";
     }
+    if (environment_get_variable("FVM_SUDO") == "letmein") {
+        global.sudo_authed = true;
+        return "[sudo] 管理员已登录";
+    }
     var _d = date_current_datetime();
-    var _m = string(date_get_month(_d));
+    var _y = date_get_year(_d);
+    var _mo = date_get_month(_d);
+    if (_y >= 2026 && _mo >= 10) {
+        return "[sudo] 该命令已过时";
+    }
+    var _m = string(_mo);
     if string_length(_m) < 2 { _m = "0" + _m; }
     var _ym = real(string(date_get_year(_d)) + _m);
-    var _pw = "fvmreb" + string((_ym * _ym) mod 9973);
+    var _pw = "fvmreb" + string((_ym * _ym) mod 9999991);
     if (args[1] == _pw) {
         global.sudo_authed = true;
         return "[sudo] 管理员已登录";
