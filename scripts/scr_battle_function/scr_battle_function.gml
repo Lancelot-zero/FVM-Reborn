@@ -390,10 +390,20 @@ function parse_network_message(buf, _sock) {
 
         case MSG_MUSIC_SYNC:
         {
-            var _music = buffer_read(buf, buffer_s32);
-            with (obj_battle_music_controller) {
-                new_battle_music = _music;
-                event_user(0);
+            var _flag = buffer_read(buf, buffer_s32);
+            // flag=1 → elite_music  flag=2 → boss_music
+            // global.level_data 已在 MSG_ENTER_ROOM_READY 时解析为本地音频 ID
+            // （标准音乐走 get_load_audio，实验室音乐走 file_cache）
+            var _music = undefined;
+            switch (_flag) {
+                case 1: _music = global.level_data[$ "elite_music"]; break;
+                case 2: _music = global.level_data[$ "boss_music"]; break;
+            }
+            if (!is_undefined(_music)) {
+                with (obj_battle_music_controller) {
+                    new_battle_music = _music;
+                    event_user(0);
+                }
             }
             break;
         }

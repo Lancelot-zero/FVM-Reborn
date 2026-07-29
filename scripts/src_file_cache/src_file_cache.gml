@@ -120,7 +120,23 @@ function file_cache_handle_receive(_filename, _purpose, _size, _data) {
         var _aud = audio_create_stream(_path);
         if (_aud != -1) {
             file_cache_set_audio(_filename, _aud);
+            var _old = global.level_data[$ _field];
             global.level_data[$ _field] = _aud;
+            // 同步更新正在运行的战斗音乐控制器
+            if (instance_exists(obj_battle_music_controller)) {
+                with (obj_battle_music_controller) {
+                    if (_field == "pre_music") {
+                        audio_stop_sound(battle_music);
+                        battle_music = _aud;
+                    } else if (_field == "elite_music" || _field == "boss_music") {
+                        new_battle_music = _aud;
+                        // 如果波次已切换、控制器正在播放旧默认值，立即切到正确音频
+                        if (battle_music == _old) {
+                            event_user(0);
+                        }
+                    }
+                }
+            }
             show_debug_message("[客户端] 音频已注册: " + _filename + " -> " + _field);
         }
     } else {

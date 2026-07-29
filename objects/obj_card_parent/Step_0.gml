@@ -124,7 +124,7 @@ if timer < current_flash_speed - 1 {
 }
 
 
-if(global.network.mode=="client"&&!ds_map_exists(global.network.map_instance_id_net_id, id)){
+if(global.network.mode!="offline"&&!ds_map_exists(global.network.map_instance_id_net_id, id)){
 	instance_destroy(id);
 	show_debug_message("销毁卡片");
 }

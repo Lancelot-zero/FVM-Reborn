@@ -1176,6 +1176,15 @@ if (global.network.mode == "server") {
 						_props[$ _key] = variable_instance_get(id, _key);
 					}
 				}
+				// sprite_index 转为字符串名，跨客户端兼容懒加载
+				if (variable_struct_exists(_props, "sprite_index")) {
+					var _sid = _props[$ "sprite_index"];
+					if (ds_map_exists(global._pid_reverse, _sid)) {
+						_props[$ "sprite_index"] = global._pid_reverse[? _sid];
+					} else {
+						_props[$ "sprite_index"] = sprite_get_name(_sid);
+					}
+				}
 				array_push(_actions, {
 									op: "spawn",
 									obj: object_get_name(object_index),

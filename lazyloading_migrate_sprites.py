@@ -51,6 +51,14 @@ SKIP_AUDIO = {
     'mus_menu',
     'mus_readyroom',
     'mus_town',
+    # 魔塔蛋糕
+    'mus_delicious_tower_pre',
+    'mus_delicious_tower_elite',
+    'mus_delicious_tower_boss',
+    # 火山魔塔
+    'mus_volcanic_tower_pre',
+    'mus_volcanic_tower_elite',
+    'mus_volcanic_tower_boss',
 }
 
 MAX_STRIP_WIDTH = 16384  # GPU 纹理上限，超出则不迁移（sprite_add 单行条带限制）
