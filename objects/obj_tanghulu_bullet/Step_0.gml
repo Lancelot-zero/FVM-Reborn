@@ -28,7 +28,11 @@ if (global._tanghulu_scan_frame != obj_battle.battle_time) {
     var _blen = ds_list_size(_blist);
     for (var _bi = _blen - 1; _bi >= 0; _bi--) {
         var _bid = _blist[| _bi];
-        if (_bid == id || !instance_exists(_bid)) continue;
+        if (_bid == id ) continue;
+		if (!instance_exists(_bid)){
+			ds_list_delete(global._tanghulu_bullets,_bi);
+			continue;
+		}
         with (_bid) {
             if (abs(x - other.x) < 3 && abs(y - other.y) < 3) {
                 other.damage += damage;
