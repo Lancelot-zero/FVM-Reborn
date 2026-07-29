@@ -40,7 +40,6 @@ global._sync_keys = [
 	"is_reversed",
 	// 状态机
 	"state",
-	"timer",
 	"skill_timer",
 	"jump_times",
 	"skill_choose",

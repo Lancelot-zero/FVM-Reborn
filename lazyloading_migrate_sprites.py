@@ -35,8 +35,6 @@ REPLACE_AUDIO  = 'mus_menu'             # 音乐替换默认值
 SPRITE_FOLDERS = [
     'folders/精灵/Enemy/',
     'folders/精灵/Cards/',
-    'folders/精灵/Maps/',
-    'folders/精灵/UI/Attire/',
 ]
 
 # 白名单：这些精灵/音乐跳过不处理
@@ -141,6 +139,7 @@ for name in sorted(target_sprites):
     frames_list = [f['name'] if isinstance(f, dict) else f for f in raw_frames]
     dir_path = '/'.join(path.replace('\\', '/').split('/')[:-1]) if '/' in path else path
 
+    seq = info.get('sequence', {}) or {}
     # 按 sequence tracks 的关键帧顺序重排帧列表
     if len(frames_list) > 1:
         tracks = seq.get('tracks', [])
