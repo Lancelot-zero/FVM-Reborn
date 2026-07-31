@@ -303,19 +303,19 @@ function slots_init(){
 	    {"shape":1, "sprite":spr_tang_hu_lu_icon_1, "cost":200, "cooldown":7*60, "description":"水果糖葫芦弹：发射追踪空中敌人的糖葫芦炮弹","plant_type":"normal","feature_type":"normal","target_card":"none","place_preview":spr_tang_hu_lu_1},
 		{"shape":2, "sprite":spr_tang_hu_lu_icon_2, "cost":250, "cooldown":7*60, "description":"七彩糖葫芦弹：发射两个追踪空中敌人的糖葫芦炮弹","plant_type":"normal","feature_type":"normal","target_card":"none","place_preview":spr_tang_hu_lu_2}
 	]);
-	//register_card("beef_hotpot",obj_beef_hotpot,[
-	//    {"shape":0, "sprite":spr_beef_hotpot, "cost":175, "cooldown":7*60, "description":"肥牛火锅：穿透攻击4格敌人","plant_type":"normal","feature_type":"normal","target_card":"none"},
-	//    {"shape":1, "sprite":spr_beef_hotpot_1, "cost":200, "cooldown":7*60, "description":"酸汤肥牛锅：穿透攻击4格敌人","plant_type":"normal","feature_type":"normal","target_card":"none"},
-	//	{"shape":2, "sprite":spr_beef_hotpot_2, "cost":250, "cooldown":7*60, "description":"海鲜肥牛锅：穿透攻击5格敌人","plant_type":"normal","feature_type":"normal","target_card":"none"}
-	//])
-	//register_card("spicy_pot",obj_spicy_pot,[
-	//    {"shape":0, "sprite":spr_spicy_pot, "cost":300, "cooldown":7*60, "description":"麻辣香锅：穿透攻击前方三行4格内的敌人","plant_type":"normal","feature_type":"normal","target_card":"none"},
-	//    {"shape":1, "sprite":spr_spicy_pot_1, "cost":325, "cooldown":7*60, "description":"孜然羊肉锅：穿透攻击前方三行4格内的敌人","plant_type":"normal","feature_type":"normal","target_card":"none"},
-	//	{"shape":2, "sprite":spr_spicy_pot_2, "cost":375, "cooldown":7*60, "description":"酱香鱿鱼锅：穿透攻击前方三行5格内的敌人","plant_type":"normal","feature_type":"normal","target_card":"none"}
-	//])
-	//register_card("pan_fried_bun",obj_pan_fried_bun,[
-	//    {"shape":0, "sprite":spr_pan_fried_bun, "cost":150, "cooldown":7*60, "description":"生煎锅：投掷十字范围灼烧的生煎包","plant_type":"normal","feature_type":"normal","target_card":"none"},
-	//    {"shape":1, "sprite":spr_pan_fried_bun_1, "cost":175, "cooldown":7*60, "description":"水煎包锅：投掷十字范围灼烧的生煎包","plant_type":"normal","feature_type":"normal","target_card":"none"},
-	//	{"shape":2, "sprite":spr_pan_fried_bun_2, "cost":225, "cooldown":7*60, "description":"驴肉火烧锅：投掷3*3范围灼烧的生煎包","plant_type":"normal","feature_type":"normal","target_card":"none"}
-	//])
+	register_card("beef_hotpot",obj_beef_hotpot,[
+	    {"shape":0, "sprite":spr_beef_hotpot, "cost":175, "cooldown":7*60, "description":"肥牛火锅：穿透攻击4格敌人","plant_type":"normal","feature_type":"normal","target_card":"none"},
+	    {"shape":1, "sprite":spr_beef_hotpot_1, "cost":200, "cooldown":7*60, "description":"酸汤肥牛锅：穿透攻击5格敌人","plant_type":"normal","feature_type":"normal","target_card":"none"},
+		{"shape":2, "sprite":spr_beef_hotpot_2, "cost":250, "cooldown":7*60, "description":"海鲜肥牛锅：穿透攻击5格敌人","plant_type":"normal","feature_type":"normal","target_card":"none"}
+	])
+	register_card("spicy_pot",obj_spicy_pot,[
+	    {"shape":0, "sprite":spr_spicy_pot, "cost":300, "cooldown":7*60, "description":"麻辣香锅：穿透攻击前方三行4格内的敌人","plant_type":"normal","feature_type":"normal","target_card":"none"},
+	    {"shape":1, "sprite":spr_spicy_pot_1, "cost":325, "cooldown":7*60, "description":"孜然羊肉锅：穿透攻击前方三行5格内的敌人","plant_type":"normal","feature_type":"normal","target_card":"none"},
+		{"shape":2, "sprite":spr_spicy_pot_2, "cost":375, "cooldown":7*60, "description":"酱香鱿鱼锅：穿透攻击前方三行5格内的敌人","plant_type":"normal","feature_type":"normal","target_card":"none"}
+	])
+	register_card("pan_fried_bun",obj_pan_fried_bun,[
+	    {"shape":0, "sprite":spr_pan_fried_bun, "cost":150, "cooldown":7*60, "description":"生煎锅：投掷十字范围灼烧的生煎包","plant_type":"normal","feature_type":"normal","target_card":"none"},
+	    {"shape":1, "sprite":spr_pan_fried_bun_1, "cost":175, "cooldown":7*60, "description":"水煎包锅：投掷3*3范围灼烧的生煎包","plant_type":"normal","feature_type":"normal","target_card":"none"},
+		{"shape":2, "sprite":spr_pan_fried_bun_2, "cost":225, "cooldown":7*60, "description":"驴肉火烧锅：投掷3*3范围灼烧的生煎包","plant_type":"normal","feature_type":"normal","target_card":"none"}
+	])
 }

@@ -8,9 +8,12 @@ if flash_value > 0 {
 
 if !appear{
 	image_angle = 0
+	skill_group = skill_group_list[irandom_range(0,array_length(skill_group_list)-1)]
+	skill_group = array_shuffle(skill_group)
 	var enemy_row = irandom_range(0,global.grid_rows-1)
 	var enemy_pos = {}
-	skill_choose = irandom_range(0,2)
+	skill_choose = skill_group[skill_count]
+	skill_count ++
 	skill_change_style = irandom_range(0,1)
 	if skill_choose == 0{
 		enemy_row = 0
@@ -401,16 +404,16 @@ switch state{
 		if timer == move_time+disappear_time{
 			clear_train_body()
 			image_angle = 0
+			if skill_count >= array_length(skill_group){
+				skill_group = skill_group_list[irandom_range(0,array_length(skill_group_list)-1)]
+				skill_group = array_shuffle(skill_group)
+				skill_count = 0
+			}
 			var enemy_row = irandom_range(0,global.grid_rows-1)
 			var enemy_pos = {}
+			skill_choose = skill_group[skill_count]
+			skill_count ++
 			skill_change_style = irandom_range(0,1)
-			for(var i = 0 ; i < 100 ; i++){
-				var current_choose = irandom_range(0,2)
-				if current_choose != skill_choose{
-					skill_choose = current_choose
-					break
-				}
-			}
 			if skill_choose == 0{
 				enemy_row = 0
 				enemy_pos = get_world_position_from_grid(9,enemy_row)

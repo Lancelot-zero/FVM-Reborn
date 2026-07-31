@@ -8,7 +8,7 @@ state = BOSS_STATE.APPEAR
 hp = 120000
 maxhp = 120000
 immune_to_ash = true
-wait_time = 240
+wait_time = 480
 cave = noone
 sprite_index = spr_hulk_mouse_appear
 is_boss = true
@@ -20,6 +20,9 @@ appear = false
 target_coord = []
 skill_1_row = [-1,-1]
 skill_2_erase_pos = [[3,3],[4,3],[2,3],[3,2],[3,4]]
+damage_take = 0
+prev_hp = hp
+skill_dropped = false
 
 skill_change_style = 0
 

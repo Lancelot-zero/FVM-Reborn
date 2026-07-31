@@ -1,7 +1,7 @@
 if attack_timer mod 12 == 1{
 
 	if other.hp > 0 and row == other.grid_row and can_hit(target_type,other.target_type) and
-	((shape <= 1 && other.x - x <= 4.5*global.grid_cell_size_x) or (shape >= 2 && other.x - x <= 5.5*global.grid_cell_size_x)){
+	((shape <= 1 && other.x - x <= 4.5*global.grid_cell_size_x) or (shape >= 1 && other.x - x <= 5.5*global.grid_cell_size_x)){
 		with(other){
 			if hp > other.damage{
 				audio_play_sound(snd_fire_hit,0,0)

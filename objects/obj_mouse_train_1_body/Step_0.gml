@@ -8,6 +8,7 @@ if flash_value > 0 {
 
 if !instance_exists(train_head){
 	instance_destroy()
+	exit
 }
 else{
 	if !variable_instance_exists(train_head,"hp") || !variable_instance_exists(self,"maxhp") || !variable_instance_exists(self,"hurt_rate"){

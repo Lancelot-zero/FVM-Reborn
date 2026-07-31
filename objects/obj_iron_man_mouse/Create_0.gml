@@ -10,6 +10,7 @@ immune_to_ash = true
 appear = false
 wait_time = 0
 skill_choose = 0
+skill_count = 0
 sprite_index = spr_iron_man_mouse_drop
 is_boss = true
 death_spr = spr_iron_man_mouse_death
@@ -17,6 +18,9 @@ death_spr = spr_iron_man_mouse_death
 hpbar_inst = instance_create_depth(450,1040,-900,obj_boss_hpbar)
 hpbar_inst.target_boss = id
 hpbar_inst.boss_id = mouse_id
+
+skill_group_list = [[0,1,1,2],[0,1,1]]
+skill_group = []
 
 if obj_battle.boss_count > 0{
 	hpbar_inst.y -= 40

@@ -13,6 +13,11 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
     target_plant = noone;  // 清除攻击目标
 }
 
+if !instance_exists(train_head){
+	instance_destroy()
+	exit
+}
+
 switch state{
 	case BOSS_STATE.IDLE:
 		if !skill_3_style{

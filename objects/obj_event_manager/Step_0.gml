@@ -478,7 +478,7 @@ if is_real(global.level_file.version){
 					for(var c_row = 0 ; c_row < global.grid_rows  ; c_row ++){
 						if array_get_index(event_list[i].cloud_rows,c_row+1) != -1{
 							var cloud_pos = get_world_position_from_grid(9,c_row)
-							var cloud_inst = instance_create_depth(cloud_pos.x,cloud_pos.y-10,10,obj_cloud)
+							var cloud_inst = instance_create_depth(cloud_pos.x,cloud_pos.y-10,30,obj_cloud)
 							cloud_inst.image_index = cloud_count mod 2
 							cloud_inst.depth += cloud_count mod 2
 							if event_list[i].cloud_type == "night"{
@@ -505,7 +505,7 @@ if is_real(global.level_file.version){
 						for(var c_row = 0 ; c_row < global.grid_rows  ; c_row ++){
 							if array_get_index(event_list[i].cloud_rows,c_row+1) != -1{
 								var cloud_pos = get_world_position_from_grid(c_col,c_row)
-								var cloud_inst = instance_create_depth(cloud_pos.x,cloud_pos.y-10,20,obj_static_cloud)
+								var cloud_inst = instance_create_depth(cloud_pos.x,cloud_pos.y-10,35,obj_static_cloud)
 								if event_list[i].cloud_type == "night"{
 									cloud_inst.sprite_index = spr_cloud_night
 								}
@@ -868,7 +868,7 @@ if is_real(global.level_file.version){
 						plat2.length = 3
 						plat2.move_distance = 2
 						plat2.move_direction = -1
-						plat2.boundary_idle_duration = 720;
+						plat2.boundary_idle_duration = 710;
 						plat2.move_speed = 0.005;
 						plat2.initial_offset = 0;
 						plat2.initial_idle_duration = 0;
@@ -886,7 +886,7 @@ if is_real(global.level_file.version){
 						plat4.length = 3
 						plat4.move_distance = 2
 						plat4.move_direction = 1
-						plat4.boundary_idle_duration = 720;
+						plat4.boundary_idle_duration = 710;
 						plat4.move_speed = 0.005;
 						plat4.initial_offset = 0;
 						plat4.initial_idle_duration = 0;
@@ -1029,7 +1029,7 @@ if is_real(global.level_file.version){
 						plat1.length = 1
 						plat1.move_distance = 1
 						plat1.move_direction = -1
-						plat1.boundary_idle_duration = 600;
+						plat1.boundary_idle_duration = 700;
 						plat1.move_speed = 0.005;
 						plat1.initial_offset = 0;
 						plat1.initial_idle_duration = 0;
@@ -1044,7 +1044,7 @@ if is_real(global.level_file.version){
 						plat2.length = 1
 						plat2.move_distance = 1
 						plat2.move_direction = 1
-						plat2.boundary_idle_duration = 600;
+						plat2.boundary_idle_duration = 700;
 						plat2.move_speed = 0.005;
 						plat2.initial_offset = 0;
 						plat2.initial_idle_duration = 0;
@@ -1059,7 +1059,7 @@ if is_real(global.level_file.version){
 						plat3.length = 3
 						plat3.move_distance = 1
 						plat3.move_direction = -1
-						plat3.boundary_idle_duration = 600;
+						plat3.boundary_idle_duration = 700;
 						plat3.move_speed = 0.005;
 						plat3.initial_offset = 0;
 						plat3.initial_idle_duration = 0;
@@ -1074,7 +1074,7 @@ if is_real(global.level_file.version){
 						plat4.length = 3
 						plat4.move_distance = 1
 						plat4.move_direction = 1
-						plat4.boundary_idle_duration = 600;
+						plat4.boundary_idle_duration = 700;
 						plat4.move_speed = 0.005;
 						plat4.initial_offset = 0;
 						plat4.initial_idle_duration = 0;

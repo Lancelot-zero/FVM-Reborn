@@ -9,6 +9,7 @@ maxhp = 60000
 immune_to_ash = true
 wait_time = 180
 skill_choose = 0
+skill_count = 0
 skill_change_style = 0
 skill_timer = 0
 skill_move_type = "act"
@@ -21,6 +22,9 @@ appear = false
 hpbar_inst = instance_create_depth(450,1040,-900,obj_boss_hpbar)
 hpbar_inst.target_boss = id
 hpbar_inst.boss_id = mouse_id
+
+skill_group_list = [[0,0,1,2],[0,1,1,2]]
+skill_group = []
 
 if obj_battle.boss_count > 0{
 	hpbar_inst.y -= 40

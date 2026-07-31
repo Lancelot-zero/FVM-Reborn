@@ -1,4 +1,4 @@
-if timer mod 12 == 1 && !disabled{
+if ds_list_find_index(hitted_enemy,other.id) == -1 && !disabled{
 
 	if other.hp > 0 and abs(row - other.grid_row) <= 1  and can_hit(target_type,other.target_type){
 		with(other){
@@ -21,5 +21,6 @@ if timer mod 12 == 1 && !disabled{
 				instance_destroy()
 			}
 		}
+		ds_list_add(hitted_enemy,other.id)
 	}
 }
