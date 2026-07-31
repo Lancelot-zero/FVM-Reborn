@@ -10,7 +10,7 @@ else{
 	image_index = floor(timer/5) mod 10 + 4
 }
 col = get_grid_position_from_world(x,y).col
-if ((col >= start_col + 4)&& shape <= 1 )||(col >= start_col + 5){
+if ((col >= start_col + 4)&& shape < 1 )||(col >= start_col + 5){
 	disabled = true
 }
 if disabled{

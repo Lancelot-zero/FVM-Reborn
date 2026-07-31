@@ -16,7 +16,7 @@ if y >= thrower_y {
 	inst.damage = round(damage*splash_ratio)
 	inst.grid_row = grid_pos.row
 	inst.shape = shape
-	if shape >= 2{
+	if shape >= 1{
 		inst.sprite_index = spr_panfriedbun_bullet_effect_2
 	}
     instance_destroy()

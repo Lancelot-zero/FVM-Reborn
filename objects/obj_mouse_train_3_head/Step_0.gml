@@ -9,7 +9,7 @@ if flash_value > 0 {
 if !appear{
 	image_angle = 0
 	skill_group = skill_group_list[irandom_range(0,array_length(skill_group_list)-1)]
-	skill_group = array_shuffle(skill_group)
+	//skill_group = array_shuffle(skill_group)
 	var enemy_row = irandom_range(0,global.grid_rows-1)
 	var enemy_pos = {}
 	skill_choose = skill_group[skill_count]
@@ -338,6 +338,13 @@ switch state{
 			t_amount++
 		}
 		
+		if timer == 1 && grid_row == 0{
+			var mucus_pos = get_world_position_from_grid(8,0)
+			var inst = instance_create_depth(mucus_pos.x,mucus_pos.y,0,obj_mouse_train_3_butter)
+			inst.target_col = 8
+			inst.target_row = 0
+		}
+		
 		if array_get_index(skill_3_col,grid_col) == -1 && grid_col >= 0 && grid_col <= 8{
 			var mucus_pos = get_world_position_from_grid(grid_col,grid_row)
 			var inst = instance_create_depth(mucus_pos.x,mucus_pos.y,0,obj_mouse_train_3_butter)
@@ -532,7 +539,7 @@ switch state{
 			image_angle = 0
 			if skill_count >= array_length(skill_group){
 				skill_group = skill_group_list[irandom_range(0,array_length(skill_group_list)-1)]
-				skill_group = array_shuffle(skill_group)
+				//skill_group = array_shuffle(skill_group)
 				skill_count = 0
 			}
 			var enemy_row = irandom_range(0,global.grid_rows-1)

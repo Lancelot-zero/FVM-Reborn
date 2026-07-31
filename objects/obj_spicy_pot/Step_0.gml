@@ -12,7 +12,7 @@ if is_slowdown{
 
 //检测自身右方是否有敌人
 var has_enemy = false
-if shape < 2{	
+if shape < 1{	
 	with(obj_enemy_parent){
 		if (abs(grid_row - other.grid_row) <= 1 && grid_col >= other.grid_col && grid_col <= (other.grid_col + 4) && can_target_on(other.target_type,target_type)){
 			has_enemy = true

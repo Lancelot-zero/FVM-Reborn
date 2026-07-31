@@ -40,7 +40,7 @@ skill_3_col = []
 skill_4_erase_row = [0,2,4]
 is_reversed = false
 
-skill_group_list = [[0,1,2,3]]
+skill_group_list = [[3,2,0,1]]
 skill_group = []
 
 if obj_battle.boss_count > 0{
