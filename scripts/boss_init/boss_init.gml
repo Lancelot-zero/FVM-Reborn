@@ -23,4 +23,5 @@ function boss_init(){
 	register_boss("mouse_train_2",{"name":"列车进阶","hp":200000,"icon":spr_mouse_train_icon})
 	register_boss("spider_man_mouse",{"name":"蜘蛛侠鼠","hp":120000,"icon":spr_spider_man_mouse_icon})
 	register_boss("hulk_mouse",{"name":"绿巨鼠","hp":120000,"icon":spr_hulk_mouse_icon})
+	register_boss("mouse_train_3",{"name":"列车终极","hp":200000,"icon":spr_mouse_train_icon})
 }
