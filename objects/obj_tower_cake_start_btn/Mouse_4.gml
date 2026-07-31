@@ -14,6 +14,13 @@ if not obj_tower_cake_bg.is_submenu_opened{
 				_ld_send[$ _f] = _rev[? _v];
 			}
 		}
+		{
+			var _spr_rev = global._pid_reverse;
+			var _spr_v = _ld_send[$ "level_sprite"];
+			if (!is_string(_spr_v) && ds_map_exists(_spr_rev, _spr_v)) {
+				_ld_send[$ "level_sprite"] = _spr_rev[? _spr_v];
+			}
+		}
 			var _json = json_stringify({
 				target_level_id: global.level_id,
 				level_index: obj_tower_cake_bg.real_level_index,

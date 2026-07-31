@@ -143,15 +143,17 @@ function file_cache_handle_receive(_filename, _purpose, _size, _data) {
         var _spr = sprite_add(_path, 1, false, false, 0, 0);
         if (_spr != -1) {
             file_cache_set_sprite(_filename, _spr);
-            global.level_data[$ "level_sprite"] = _spr;
-            show_debug_message("[客户端] 精灵已注册: " + _filename + " -> level_sprite");
+            if (_purpose == "map_sprite") {
+                global.level_data[$ "level_sprite"] = _spr;
+            }
+            show_debug_message("[客户端] 精灵已注册: " + _filename + (_purpose == "map_sprite" ? " -> level_sprite" : ""));
         }
     }
 }
 
 // ========== 客户端：懒加载入口 ==========
 
-function file_cache_load_sprite(_name, _default, _fingerprint) {
+function file_cache_load_sprite(_name, _default, _fingerprint, _purpose = "map_sprite") {
     // 1. 先查内存缓存
     if (file_cache_has_sprite(_name)) {
         show_debug_message("[客户端] 精灵命中缓存: " + _name);
@@ -179,7 +181,7 @@ function file_cache_load_sprite(_name, _default, _fingerprint) {
     }
     // 3. 缓存和本地都没有，发网络请求
     show_debug_message("[客户端] 精灵使用缺省，请求: " + _name);
-    send_message(global.network.server_socket, MSG_REQUEST_FILE, _name, "map_sprite");
+    send_message(global.network.server_socket, MSG_REQUEST_FILE, _name, _purpose);
     return _default;
 }
 

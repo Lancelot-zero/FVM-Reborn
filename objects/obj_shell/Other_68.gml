@@ -36,6 +36,13 @@ switch (_type) {
 						_ld_send[$ _f] = _rev[? _v];
 					}
 				}
+				{
+					var _spr_rev = global._pid_reverse;
+					var _spr_v = _ld_send[$ "level_sprite"];
+					if (!is_string(_spr_v) && ds_map_exists(_spr_rev, _spr_v)) {
+						_ld_send[$ "level_sprite"] = _spr_rev[? _spr_v];
+					}
+				}
 				var _sync = {
 					target_level_id: global.level_id,
 					target_level_file: global.level_data.level_file,

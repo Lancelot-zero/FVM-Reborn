@@ -529,6 +529,9 @@ function parse_network_message(buf, _sock) {
                                 if (_key == "sprite_index" && is_string(_val)) {
                                     _val = get_load_sprite(_val);
                                 }
+                                if (_key == "map_spr" && is_string(_val)) {
+                                    _val = get_load_sprite(_val);
+                                }
                                 variable_instance_set(id, _key, _val);
                             }
                             if (variable_struct_exists(_act, "target_ids")) {
@@ -557,6 +560,9 @@ function parse_network_message(buf, _sock) {
 							    if (_key == "sprite_index" && is_string(_val)) {
 							        _val = get_load_sprite(_val);
 							    }
+							    if (_key == "map_spr" && is_string(_val)) {
+							        _val = get_load_sprite(_val);
+							    }
 							    variable_instance_set(id, _key, _val);
 							}
 							if (variable_struct_exists(_act, "target_ids")) {
@@ -578,6 +584,7 @@ function parse_network_message(buf, _sock) {
 					case "state":
 						if (_act.key == "grid_terrains") global.grid_terrains = json_parse(_act.val);
 						if (_act.key == "row_feature")   global.row_feature   = json_parse(_act.val);
+						if (_act.key == "map_spr_index") obj_battle.map_spr_index = real(_act.val);
 						break;
 					}
             }
@@ -768,6 +775,13 @@ function parse_network_message(buf, _sock) {
 					get_load_sprite("spr_cookie_island"),
 					is_undefined(_fp) ? "" : _fp
 				);
+			}
+			// level_sprite 如果还是 name 字符串，转回本地精灵索引（标准关/魔塔）
+			{
+				var _spr_v = global.level_data[$ "level_sprite"];
+				if (is_string(_spr_v)) {
+					global.level_data[$ "level_sprite"] = get_load_sprite(_spr_v);
+				}
 			}
 
 			// 自定义音乐：指纹一致用本地文件，否则请求服务端

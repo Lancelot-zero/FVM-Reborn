@@ -21,6 +21,7 @@ global._audio_reverse = ds_map_create(); // audio id → name
 function get_load_sprite(_name) {
 	var _native_spr = asset_get_index(_name);
     if (_native_spr != -1 && sprite_exists(_native_spr)) {
+        ds_map_add(global._pid_reverse, _native_spr, _name);
         return _native_spr;
     }
 	if (ds_map_exists(global._sprite_cache,_name)){

@@ -15,6 +15,7 @@ goods_registry_init()
 shop_init()
 audio_preload_all()
 maps_init()
+global._vm = VM_Create();
 enemy_init()
 enemy_info_island_init()
 plus_card_init()

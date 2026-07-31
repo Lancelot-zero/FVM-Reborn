@@ -8,6 +8,7 @@ if (global.network.mode == "server"){
 	instance_log_enable();
 	_evt_pre_terrains = json_stringify(global.grid_terrains);
     _evt_pre_row      = json_stringify(global.row_feature);
+    _evt_pre_map_spr_index = obj_battle.map_spr_index;
 }
 event_timer ++
 {//（旧代码）硬编码的事件和地图物件
@@ -255,19 +256,19 @@ event_timer ++
 		cheese_castle_anim_timer++
 		if cheese_castle_anim_timer == 1{
 			var inst = instance_create_depth(0,0,49,obj_map_change_effect)
-			inst.map_spr = spr_cheese_castle
+			inst.map_spr = get_load_sprite("spr_cheese_castle")
 			inst.map_spr_index = 0
 			obj_battle.map_spr_index = 1
 		}
 		else if cheese_castle_anim_timer == 45{
 			var inst = instance_create_depth(0,0,49,obj_map_change_effect)
-			inst.map_spr = spr_cheese_castle
+			inst.map_spr = get_load_sprite("spr_cheese_castle")
 			inst.map_spr_index = 1
 			obj_battle.map_spr_index = 2
 		}
 		else if cheese_castle_anim_timer == 90{
 			var inst = instance_create_depth(0,0,49,obj_map_change_effect)
-			inst.map_spr = spr_cheese_castle
+			inst.map_spr = get_load_sprite("spr_cheese_castle")
 			inst.map_spr_index = 2
 			obj_battle.map_spr_index = 3
 		}
@@ -535,19 +536,19 @@ if is_real(global.level_file.version){
 					cheese_castle_anim_timer++
 					if cheese_castle_anim_timer == 1{
 						var inst = instance_create_depth(0,0,49,obj_map_change_effect)
-						inst.map_spr = spr_cheese_castle
+						inst.map_spr = get_load_sprite("spr_cheese_castle")
 						inst.map_spr_index = 0
 						obj_battle.map_spr_index = 1
 					}
 					else if cheese_castle_anim_timer == 45{
 						var inst = instance_create_depth(0,0,49,obj_map_change_effect)
-						inst.map_spr = spr_cheese_castle
+						inst.map_spr = get_load_sprite("spr_cheese_castle")
 						inst.map_spr_index = 1
 						obj_battle.map_spr_index = 2
 					}
 					else if cheese_castle_anim_timer == 90{
 						var inst = instance_create_depth(0,0,49,obj_map_change_effect)
-						inst.map_spr = spr_cheese_castle
+						inst.map_spr = get_load_sprite("spr_cheese_castle")
 						inst.map_spr_index = 2
 						obj_battle.map_spr_index = 3
 					}
@@ -1176,13 +1177,21 @@ if (global.network.mode == "server") {
 						_props[$ _key] = variable_instance_get(id, _key);
 					}
 				}
-				// sprite_index 转为字符串名，跨客户端兼容懒加载
+				// sprite_index / map_spr 转为字符串名，跨客户端兼容懒加载
 				if (variable_struct_exists(_props, "sprite_index")) {
 					var _sid = _props[$ "sprite_index"];
 					if (ds_map_exists(global._pid_reverse, _sid)) {
 						_props[$ "sprite_index"] = global._pid_reverse[? _sid];
 					} else {
 						_props[$ "sprite_index"] = sprite_get_name(_sid);
+					}
+				}
+				if (variable_struct_exists(_props, "map_spr")) {
+					var _sid = _props[$ "map_spr"];
+					if (ds_map_exists(global._pid_reverse, _sid)) {
+						_props[$ "map_spr"] = global._pid_reverse[? _sid];
+					} else {
+						_props[$ "map_spr"] = sprite_get_name(_sid);
 					}
 				}
 				array_push(_actions, {
@@ -1211,6 +1220,9 @@ if (global.network.mode == "server") {
     }
     if (json_stringify(global.row_feature) != _evt_pre_row) {
         array_push(_actions, { op: "state", key: "row_feature", val: json_stringify(global.row_feature) });
+    }
+    if (obj_battle.map_spr_index != _evt_pre_map_spr_index) {
+        array_push(_actions, { op: "state", key: "map_spr_index", val: obj_battle.map_spr_index });
     }
 	  
 	  

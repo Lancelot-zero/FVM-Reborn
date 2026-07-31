@@ -130,7 +130,7 @@ function on_create_room() {
         global._sync_custom_music_names = _custom_music_names;
         global._sync_resource_fingerprints = _resource_fingerprints;
 
-        // level_data 中的音频 ID 转为字符串名，兼容懒加载
+        // level_data 中的音频 ID 和精灵索引转为字符串名，兼容懒加载
         {
             var _ld = _json_struct[$ "level_data"];
             var _rev = global._audio_reverse;
@@ -141,6 +141,11 @@ function on_create_room() {
                 if (!is_string(_v) && ds_map_exists(_rev, _v)) {
                     _ld[$ _f] = _rev[? _v];
                 }
+            }
+            var _spr_rev = global._pid_reverse;
+            var _spr_v = _ld[$ "level_sprite"];
+            if (!is_string(_spr_v) && ds_map_exists(_spr_rev, _spr_v)) {
+                _ld[$ "level_sprite"] = _spr_rev[? _spr_v];
             }
         }
 
