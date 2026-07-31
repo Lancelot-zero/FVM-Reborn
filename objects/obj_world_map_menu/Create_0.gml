@@ -28,3 +28,10 @@ btn4.map_name = "浮空岛"
 btn4.map_id = "floating_island"
 btn4.room_target = room_map
 btn4.level_require = 41
+
+//var btn5 = instance_create_depth(x+402,y-20,depth-1,obj_world_map_choose_btn)
+//btn5.sprite_index = spr_world_map_undersea_vortex
+//btn5.map_name = "海底旋涡"
+//btn5.map_id = "undersea_vortex"
+//btn5.room_target = room_map
+//btn5.level_require = 20

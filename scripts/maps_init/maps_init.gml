@@ -1563,4 +1563,13 @@ function maps_init(){
 			]
 		}
 	)
+	
+	register_map(
+		"undersea_vortex",
+		{
+			"map_name":"海底旋涡",
+			"map_sprite":spr_undersea_vortex,
+			"levels_data":[]
+		}
+	)
 }

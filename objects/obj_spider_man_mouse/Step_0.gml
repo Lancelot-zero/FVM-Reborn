@@ -9,7 +9,7 @@ if flash_value > 0 {
 if !appear{
 	var enemy_row = irandom_range(0,global.grid_rows-1)
 	var enemy_pos = {}
-	skill_choose = irandom_range(2,2)
+	skill_choose = irandom_range(0,2)
 	if skill_choose == 2{
 		enemy_row = 3
 		enemy_pos = get_world_position_from_grid(9,enemy_row)
@@ -224,14 +224,16 @@ switch state{
 			var col_2 = 0
 			
 			with obj_card_parent{
-				if grid_row == 0 || grid_row == 1{
-					if grid_col >= col_1{
-						col_1 = grid_col
+				if grid_col <= 6{
+					if grid_row == 0 || grid_row == 1{
+						if grid_col >= col_1{
+							col_1 = grid_col
+						}
 					}
-				}
-				if grid_row == global.grid_rows-1 || grid_row == global.grid_rows-2{
-					if grid_col >= col_2{
-						col_2 = grid_col
+					if grid_row == global.grid_rows-1 || grid_row == global.grid_rows-2{
+						if grid_col >= col_2{
+							col_2 = grid_col
+						}
 					}
 				}
 			}
