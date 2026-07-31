@@ -326,14 +326,20 @@ switch state{
 		}
 		if timer == 10 * 5 - 1{
 			if !appear{
-				skill_group = skill_group_list[irandom_range(0,array_length(skill_group_list)-1)]
+				skill_group = skill_group_list[1]
 				skill_group = array_shuffle(skill_group)
 				skill_choose = skill_group[skill_count]
 				skill_count ++
+				appear = true
 			}
 			else{
 				if skill_count >= array_length(skill_group){
-					skill_group = skill_group_list[irandom_range(0,array_length(skill_group_list)-1)]
+					if hp > 0.5 * maxhp{
+						skill_group = skill_group_list[1]
+					}
+					else{
+						skill_group = skill_group_list[0]
+					}
 					skill_group = array_shuffle(skill_group)
 					skill_count = 0
 				}

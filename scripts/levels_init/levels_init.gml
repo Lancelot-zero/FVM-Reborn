@@ -39,4 +39,9 @@ function level_info_island_init(){
 	register_level_info_island("bayleaf_airport_daytime",{"name":"香叶空港（日）","icon":spr_levelselect_button_floating,"spr":spr_bayleaf_airport_daytime,"description":"空中航母的血量非常高，使用糖葫芦来摧毁它。","spr_index":7})
 	register_level_info_island("bayleaf_airport_night",{"name":"香叶空港（夜）","icon":spr_levelselect_button_floating,"spr":spr_bayleaf_airport_night,"description":"钢铁侠鼠的破坏力极强，需要快速补阵。","spr_index":8})
 	register_level_info_island("spice_airship",{"name":"香料飞船","icon":spr_levelselect_button_floating,"spr":spr_spice_airship,"description":"鼠国列车二态的激光技能需要及时打断，否则会严重破坏阵型。","spr_index":9})
+	register_level_info_island("pepper_floating_isle_daytime",{"name":"花椒浮岛（日）","icon":spr_levelselect_button_floating,"spr":spr_pepper_floating_isle_daytime,"description":"本关可放置位置很少，需要灵活安排阵型。\n前排的防御卡片容易被放置弹簧，可以选择避免或者利用它。","spr_index":10})
+	register_level_info_island("pepper_floating_isle_night",{"name":"花椒浮岛（夜）","icon":spr_levelselect_button_floating,"spr":spr_pepper_floating_isle_night,"description":"蜘蛛侠鼠全程属于空中单位，使用糖葫芦炮弹来对付它。","spr_index":11})
+	register_level_info_island("lilac_rainbow_daytime",{"name":"丁香彩虹（日）","icon":spr_levelselect_button_floating,"spr":spr_lilac_rainbow_daytime,"description":"机械蜂箱鼠会释放难缠的机械蜜蜂，需要尽快消灭。\n蜗牛鼠留下的黏液会让老鼠加速，可以使用鱼刺处理掉。","spr_index":12})
+	register_level_info_island("lilac_rainbow_night",{"name":"丁香彩虹（夜）","icon":spr_levelselect_button_floating,"spr":spr_lilac_rainbow_night,"description":"绿巨鼠的破坏力很强，需要尽快集火削弱技能。","spr_index":13})
+	register_level_info_island("spices_central_isle",{"name":"十三香中心岛","icon":spr_levelselect_button_floating,"spr":spr_spices_central_isle,"description":"鼠国列车三态的每个技能都有应对策略，多练习即可完美解决。","spr_index":14})
 }
