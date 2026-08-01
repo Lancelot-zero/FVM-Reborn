@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_can_mouse_with_can");  //转化额外添加保证触发
  // Inherit the parent event
 event_inherited();
 hp = 800
@@ -25,7 +26,7 @@ function armor_drop(){
 	inst.y_speed = random_range(-5,-8)
 	inst.cgravity = 0.8
 	inst.sprite_index = spr_can
-	sprite_index = spr_can_mouse
+	sprite_index = get_load_sprite("spr_can_mouse")
 	can_dropped = true
 }
 

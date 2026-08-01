@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_apple_duck_mouse_land_helmet");  //转化额外添加保证触发
  // Inherit the parent event
 event_inherited();
 hp = 400

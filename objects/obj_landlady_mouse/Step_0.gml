@@ -1,11 +1,11 @@
 // Inherit the parent event
 
 if shield_hp > 0{
-	sprite_index = spr_landlady_mouse_shield
+	sprite_index = get_load_sprite("spr_landlady_mouse_shield")
 	attack_anim = 6
 }
 else{
-	sprite_index = spr_landlady_mouse
+	sprite_index = get_load_sprite("spr_landlady_mouse")
 	attack_anim = 4
 }
 if shield_hp <= 0 && not armor_dropped{

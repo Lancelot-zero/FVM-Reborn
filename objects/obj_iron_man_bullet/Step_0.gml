@@ -27,7 +27,7 @@ if state == "drop"{
 			}
 		}
 		var inst = instance_create_depth(x,y-30,-800,obj_coke_bomb_explode)
-		inst.sprite_index = spr_iron_man_mouse_bullet_effect
+		inst.sprite_index = get_load_sprite("spr_iron_man_mouse_bullet_effect")
 		instance_destroy()
 	}
 }

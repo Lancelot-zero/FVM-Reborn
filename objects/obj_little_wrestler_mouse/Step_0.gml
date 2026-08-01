@@ -1,6 +1,6 @@
 // Inherit the parent event
 if hp <= 0 && state != ENEMY_STATE.DEAD{
-	sprite_index = spr_little_wrestler
+	sprite_index = get_load_sprite("spr_little_wrestler")
 	state = ENEMY_STATE.DEAD
 	timer = 0
 }
@@ -24,7 +24,7 @@ if state = ENEMY_STATE.ACTING{
 		land_timer ++
 		image_index = floor(land_timer/flash_speed) mod 3 + 9
 		if land_timer >= 3*flash_speed-1{
-			sprite_index = spr_little_wrestler
+			sprite_index = get_load_sprite("spr_little_wrestler")
 			state = ENEMY_STATE.NORMAL
 			timer = 0
 			target_type = "normal"

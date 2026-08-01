@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_coffee_cup");  //转化额外添加保证触发
 // obj_small_furnace 的 Create 事件
 //plant_id = "small_fire";  // 唯一标识符
 event_inherited();  // 继承父对象属性
@@ -7,13 +8,13 @@ obj_type = object_index;
 current_level = 1
 event_user(0)
 if shape == 0{
-	sprite_index = spr_coffee_cup
+	sprite_index = get_load_sprite("spr_coffee_cup")
 }
 else if shape == 1{
-	sprite_index = spr_coffee_cup_1
+	sprite_index = get_load_sprite("spr_coffee_cup_1")
 }
 else if shape == 2{
-	sprite_index = spr_coffee_cup_2
+	sprite_index = get_load_sprite("spr_coffee_cup_2")
 }
 
 // ========== 特定属性默认值 ==========

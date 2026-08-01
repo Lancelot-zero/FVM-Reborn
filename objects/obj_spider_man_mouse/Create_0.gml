@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_spider_man_mouse_idle");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 
@@ -10,7 +11,7 @@ immune_to_ash = true
 appear = false
 wait_time = 180
 skill_choose = 0
-sprite_index = spr_spider_man_mouse_idle
+sprite_index = get_load_sprite("spr_spider_man_mouse_idle")
 image_alpha = 0
 is_boss = true
 step_ready = false;	frame_count = 0;

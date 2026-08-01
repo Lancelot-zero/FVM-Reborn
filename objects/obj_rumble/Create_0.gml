@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_rumble_idle");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 
@@ -9,7 +10,7 @@ maxhp = 20000
 immune_to_ash = true
 wait_time = 0
 cave = noone
-sprite_index = spr_rumble_appear
+sprite_index = get_load_sprite("spr_rumble_appear")
 is_boss = true
 step_ready = false;	frame_count = 0;
 

@@ -8,7 +8,7 @@ if not summon{
 }
 
 	if state == ENEMY_STATE.ACTING{
-		sprite_index = spr_naruto_minion_mouse_summon
+		sprite_index = get_load_sprite("spr_naruto_minion_mouse_summon")
 	}
 	else{
 		sprite_index = spr_naruto_minion_mouse

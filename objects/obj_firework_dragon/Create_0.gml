@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_firework_dragon");  //转化额外添加保证触发
 // obj_small_furnace 的 Create 事件
 //plant_id = "small_fire";  // 唯一标识符
 event_inherited();  // 继承父对象属性
@@ -8,13 +9,13 @@ obj_type = object_index;
 flame_produce = 25;
 event_user(0)
 if shape == 1{
-	sprite_index = spr_firework_dragon_1
+	sprite_index = get_load_sprite("spr_firework_dragon_1")
 }
 else if shape == 2{
-	sprite_index = spr_firework_dragon_2
+	sprite_index = get_load_sprite("spr_firework_dragon_2")
 }
 else{
-	sprite_index = spr_firework_dragon;
+	sprite_index = get_load_sprite("spr_firework_dragon");
 }
 
 

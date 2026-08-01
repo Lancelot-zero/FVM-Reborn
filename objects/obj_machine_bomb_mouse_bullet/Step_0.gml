@@ -14,6 +14,6 @@ if y >= target_pos.y{
 		}
 	}
 	var effect = instance_create_depth(x,y-25,-200,obj_coke_bomb_explode)
-	effect.sprite_index = spr_machine_bomb_mouse_bomb_effect
+	effect.sprite_index = get_load_sprite("spr_machine_bomb_mouse_bomb_effect")
 	instance_destroy()
 }

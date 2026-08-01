@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_mario_mouse_idle");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 
@@ -10,7 +11,7 @@ immune_to_ash = true
 wait_time = 5 * 60
 cave = noone
 pipeline = noone
-sprite_index = spr_mario_mouse_appear
+sprite_index = get_load_sprite("spr_mario_mouse_appear")
 is_boss = true
 step_ready = false;	frame_count = 0;
 

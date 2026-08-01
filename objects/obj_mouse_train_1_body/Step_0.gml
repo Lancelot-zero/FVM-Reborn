@@ -26,7 +26,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 
 switch state{
 	case BOSS_STATE.IDLE:
-		sprite_index = spr_mouse_train_1_body_idle
+		sprite_index = get_load_sprite("spr_mouse_train_1_body_idle")
 		if train_head.hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 3
 		}
@@ -45,7 +45,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.APPEAR:
-		sprite_index = spr_mouse_train_1_body_idle
+		sprite_index = get_load_sprite("spr_mouse_train_1_body_idle")
 		if train_head.hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 3
 		}
@@ -67,7 +67,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.SKILL1:
-		sprite_index = spr_mouse_train_1_body_skill_1
+		sprite_index = get_load_sprite("spr_mouse_train_1_body_skill_1")
 		if train_head.hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 42
 		}
@@ -78,10 +78,10 @@ switch state{
 		if timer mod (23 * 5) == 14 * 5 - 2{
 			//var inst = instance_create_depth(x-45,y-30,depth,obj_xiaoming_text)
 			if jump_times == 1{
-				//inst.sprite_index = spr_xiaoming_text_2
+				//inst.sprite_index = get_load_sprite("spr_xiaoming_text_2")
 			}
 			if jump_times == 2{
-				//inst.sprite_index = spr_xiaoming_text_3
+				//inst.sprite_index = get_load_sprite("spr_xiaoming_text_3")
 			}
 		}
 		
@@ -95,9 +95,9 @@ switch state{
 		
 	case BOSS_STATE.SKILL2:
 		
-		sprite_index = spr_mouse_train_1_body_skill_2
+		sprite_index = get_load_sprite("spr_mouse_train_1_body_skill_2")
 		if skill_change_style == 0{
-			sprite_index = spr_mouse_train_1_body_skill_4
+			sprite_index = get_load_sprite("spr_mouse_train_1_body_skill_4")
 		}
 		if train_head.hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 27
@@ -114,7 +114,7 @@ switch state{
 		break
 		
 	case BOSS_STATE.DISAPPEAR:
-		sprite_index = spr_mouse_train_1_body_idle
+		sprite_index = get_load_sprite("spr_mouse_train_1_body_idle")
 		if train_head.hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 3
 		}
@@ -136,7 +136,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = spr_mouse_train_1_body_death
+		sprite_index = get_load_sprite("spr_mouse_train_1_body_death")
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha -= 0.1

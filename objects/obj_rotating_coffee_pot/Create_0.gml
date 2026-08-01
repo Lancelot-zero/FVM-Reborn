@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_rotating_coffee_pot");  //转化额外添加保证触发
 // obj_small_furnace 的 Create 事件
 //plant_id = "small_fire";  // 唯一标识符
 event_inherited();  // 继承父对象属性
@@ -7,13 +8,13 @@ obj_type = object_index;
 current_level = 1
 event_user(0)
 if shape == 0{
-	sprite_index = spr_rotating_coffee_pot
+	sprite_index = get_load_sprite("spr_rotating_coffee_pot")
 }
 else if shape == 1{
-	sprite_index = spr_rotating_coffee_pot_1
+	sprite_index = get_load_sprite("spr_rotating_coffee_pot_1")
 }
 else if shape == 2{
-	sprite_index = spr_rotating_coffee_pot_2
+	sprite_index = get_load_sprite("spr_rotating_coffee_pot_2")
 }
 if card_equipped_attire_id(plant_id) != -1{
 	var spr_list = get_attire_info(card_equipped_attire_id(plant_id)).spr
@@ -26,10 +27,10 @@ if global.level_file.level_time_feature == "daytime" && shape < 2{
 	state = CARD_STATE.SLEEP
 	if card_equipped_attire_id(plant_id) == -1{
 		if shape == 0{
-			sprite_index = spr_rotating_coffee_pot_sleep
+			sprite_index = get_load_sprite("spr_rotating_coffee_pot_sleep")
 		}
 		else{
-			sprite_index = spr_rotating_coffee_pot_sleep_1
+			sprite_index = get_load_sprite("spr_rotating_coffee_pot_sleep_1")
 		}
 	}
 }

@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_bat_mouse");  //转化额外添加保证触发
  // Inherit the parent event
 event_inherited();
 hp = 800
@@ -12,7 +13,7 @@ attack_range = 90
 target_type = "air"
 
 state = ENEMY_STATE.APPEAR
-sprite_index = spr_bat_mouse
+sprite_index = get_load_sprite("spr_bat_mouse")
 special_ash = true
 anim_timer = 0
 

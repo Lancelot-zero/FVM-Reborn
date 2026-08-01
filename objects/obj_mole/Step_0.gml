@@ -4,7 +4,7 @@ if global.is_paused{
 }
 
 if (hp <= 0) {
-	sprite_index = spr_mole
+	sprite_index = get_load_sprite("spr_mole")
 	if state != ENEMY_STATE.DEAD{
 	    timer = 0;
 	    state = ENEMY_STATE.DEAD;
@@ -30,7 +30,7 @@ if hp > 0 && state != ENEMY_STATE.DEAD{
 		image_index = floor(anim_timer/flash_speed) mod 6
 		if x <= global.grid_offset_x - 20{
 			state = ENEMY_STATE.APPEAR
-			sprite_index = spr_mole_appear
+			sprite_index = get_load_sprite("spr_mole_appear")
 			anim_timer = 0
 		}
 	}
@@ -40,7 +40,7 @@ if hp > 0 && state != ENEMY_STATE.DEAD{
 		image_index = floor(anim_timer/flash_speed) mod 14
 		if anim_timer >= flash_speed * 14{
 			state = ENEMY_STATE.ACTING
-			sprite_index = spr_mole_stun
+			sprite_index = get_load_sprite("spr_mole_stun")
 			anim_timer = 0
 		}
 	}
@@ -49,7 +49,7 @@ if hp > 0 && state != ENEMY_STATE.DEAD{
 		image_index = floor(anim_timer/flash_speed) mod 4
 		if anim_timer >= flash_speed * 30{
 			state = ENEMY_STATE.NORMAL
-			sprite_index = spr_mole
+			sprite_index = get_load_sprite("spr_mole")
 			anim_timer = 0
 			move_speed = -0.15
 		}

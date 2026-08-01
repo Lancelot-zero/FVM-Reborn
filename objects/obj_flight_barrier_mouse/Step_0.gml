@@ -4,7 +4,7 @@ if global.is_paused{
 }
 
 if (hp <= 0) {
-	sprite_index = spr_flight_barrier_mouse_land
+	sprite_index = get_load_sprite("spr_flight_barrier_mouse_land")
 	if state != ENEMY_STATE.DEAD{
 	    timer = 0;
 	    state = ENEMY_STATE.DEAD;
@@ -32,7 +32,7 @@ if hp > 0 && state != ENEMY_STATE.DEAD{
 		image_index = floor(anim_timer/flash_speed) mod 6
 		if hp <= (maxhp-helmet_hp) || x <= target_pos.x+80{
 			state = ENEMY_STATE.ACTING
-			sprite_index = spr_flight_barrier_mouse_drop
+			sprite_index = get_load_sprite("spr_flight_barrier_mouse_drop")
 			anim_timer = 0
 		}
 	}
@@ -51,7 +51,7 @@ if hp > 0 && state != ENEMY_STATE.DEAD{
 		}
 		if anim_timer >= flash_speed * 6{
 			state = ENEMY_STATE.NORMAL
-			sprite_index = spr_flight_barrier_mouse_land
+			sprite_index = get_load_sprite("spr_flight_barrier_mouse_land")
 			move_speed = 0.36
 			anim_timer = 0
 			helmet_hp = 0

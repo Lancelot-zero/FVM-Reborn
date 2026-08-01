@@ -1,12 +1,13 @@
+sprite_index = get_load_sprite("spr_flour_sack");  //转化额外添加保证触发
 event_inherited();  // 继承父对象属性
 plant_id = "flour_sack"; 
 // 设置对象类型和精灵
 obj_type = object_index;
 current_level = 1
 event_user(0)
-sprite_index = spr_flour_sack;
+sprite_index = get_load_sprite("spr_flour_sack");
 if shape == 1{
-	sprite_index = spr_flour_sack_1
+	sprite_index = get_load_sprite("spr_flour_sack_1")
 }
 else if shape == 2{
 	sprite_index = spr_flour_sack_2

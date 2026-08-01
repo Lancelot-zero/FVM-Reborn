@@ -58,8 +58,8 @@ if x >= target_x - 10 && x <= target_x + 10{
 	
 	//var inst_y = get_world_position_from_grid(target_col,row).y
 	var inst = instance_create_depth(x,y,-200,obj_engineer_bullet_effect)
-	if sprite_index == spr_ice_residue_bullet{
-		inst.sprite_index = spr_ice_residue_bullet_effect
+	if sprite_index == get_load_sprite("spr_ice_residue_bullet"){
+		inst.sprite_index = get_load_sprite("spr_ice_residue_bullet_effect")
 	}
 	
 	instance_destroy()

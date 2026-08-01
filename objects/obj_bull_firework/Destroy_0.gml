@@ -15,12 +15,12 @@ for(var i = 0 ; i < __count__ ; i++){
 		cat_inst.move_speed = 8
 		cat_inst.state = "attack"
 		cat_inst.can_loss = false
-		cat_inst.sprite_index = spr_bull_firework_bullet
+		cat_inst.sprite_index = get_load_sprite("spr_bull_firework_bullet")
 		if shape == 1{
-			cat_inst.sprite_index = spr_bull_firework_bullet_1
+			cat_inst.sprite_index = get_load_sprite("spr_bull_firework_bullet_1")
 		}
 		if shape == 2{
-			cat_inst.sprite_index = spr_bull_firework_bullet_2
+			cat_inst.sprite_index = get_load_sprite("spr_bull_firework_bullet_2")
 		}
 	}
 }
@@ -31,12 +31,12 @@ audio_play_sound(snd_coke_bomb_explode, 0, false);
 	 
 var effect_inst = instance_create_depth(x,y,depth,obj_coke_bomb_explode)
 if shape == 0 {
-	effect_inst.sprite_index = spr_bull_firework_effect
+	effect_inst.sprite_index = get_load_sprite("spr_bull_firework_effect")
 }
 else if shape == 1{
-	effect_inst.sprite_index = spr_bull_firework_effect_1
+	effect_inst.sprite_index = get_load_sprite("spr_bull_firework_effect_1")
 }
 else if shape == 2{
-	effect_inst.sprite_index = spr_bull_firework_effect_2
+	effect_inst.sprite_index = get_load_sprite("spr_bull_firework_effect_2")
 }
 event_inherited()

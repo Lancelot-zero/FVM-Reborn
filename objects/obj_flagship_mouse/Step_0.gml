@@ -4,7 +4,7 @@ if global.is_paused{
 if hp <= 0 && state != ENEMY_STATE.DEAD{
 	state = ENEMY_STATE.DEAD
 	timer = 0 
-	sprite_index = spr_flagship_mouse
+	sprite_index = get_load_sprite("spr_flagship_mouse")
 }
 
 // Inherit the parent event
@@ -20,14 +20,14 @@ if state == ENEMY_STATE.APPEAR{
 	}
 	if hp <= 0{
 		timer = 0
-		sprite_index = spr_flagship_mouse
+		sprite_index = get_load_sprite("spr_flagship_mouse")
 		state = ENEMY_STATE.DEAD
 	}
 	appear_timer++
 	image_index = floor(appear_timer/5) mod 16
 	if appear_timer >= 16*5-1{
 		timer = 0
-		sprite_index = spr_flagship_mouse
+		sprite_index = get_load_sprite("spr_flagship_mouse")
 		state = ENEMY_STATE.NORMAL
 	}
 	image_alpha = 1

@@ -17,7 +17,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
     timer = 0;
     state = BOSS_STATE.DEATH;
     target_plant = noone;  // 清除攻击目标
-
+}
 switch state{
 	case BOSS_STATE.IDLE:
 		if !skill_3_style{
@@ -236,7 +236,7 @@ switch state{
 			image_index = image_number - 1
 		}
 		break
-
+}
 
 timer ++
 
@@ -244,7 +244,7 @@ timer ++
 // 透明度处理
 if (image_alpha <= 0 && state == BOSS_STATE.DEATH) {
     instance_destroy();
-
+}
 
 var zombie_grid = get_grid_position_from_world(x, y);
 

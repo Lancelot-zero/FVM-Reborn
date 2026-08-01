@@ -3,31 +3,31 @@ if hp <= 0 && state != ENEMY_STATE.DEAD{
 	timer = 0
 	state = ENEMY_STATE.DEAD
 	if (grid_col < 0 || grid_col >= global.grid_cols || grid_row < 0 || grid_row >= global.grid_rows){
-		sprite_index = spr_kof_submarine_mouse_land
+		sprite_index = get_load_sprite("spr_kof_submarine_mouse_land")
 		death_anim = 12
 	}
 	else{
 		if global.grid_terrains[grid_row][grid_col].type == "water"{
-			sprite_index = spr_kof_submarine_mouse
+			sprite_index = get_load_sprite("spr_kof_submarine_mouse")
 			death_anim = 12
 		}
 		else{
-			sprite_index = spr_kof_submarine_mouse_land
+			sprite_index = get_load_sprite("spr_kof_submarine_mouse_land")
 			death_anim = 12
 		}
 	}
 		
 }
 if (grid_col < 0 || grid_col >= global.grid_cols || grid_row < 0 || grid_row >= global.grid_rows) {
-	sprite_index = spr_kof_submarine_mouse_land
+	sprite_index = get_load_sprite("spr_kof_submarine_mouse_land")
 	death_anim = 12
 }
 else{
 	if state != ENEMY_STATE.DEAD{
 		if global.grid_terrains[grid_row][grid_col].type == "water"{
-			if sprite_index == spr_kof_submarine_mouse_land{
+			if sprite_index == get_load_sprite("spr_kof_submarine_mouse_land"){
 				state = ENEMY_STATE.ACTING
-				sprite_index = spr_kof_submarine_mouse_enter
+				sprite_index = get_load_sprite("spr_kof_submarine_mouse_enter")
 				timer = 0
 				audio_play_sound(snd_enter_water,0,0)
 				reversed = false
@@ -36,9 +36,9 @@ else{
 			death_anim = 12
 		}
 		else{
-			if sprite_index == spr_kof_submarine_mouse{
+			if sprite_index == get_load_sprite("spr_kof_submarine_mouse"){
 				state = ENEMY_STATE.ACTING
-				sprite_index = spr_kof_submarine_mouse_enter
+				sprite_index = get_load_sprite("spr_kof_submarine_mouse_enter")
 				timer = 0
 				audio_play_sound(snd_enter_water,0,0)
 				reversed = true
@@ -74,10 +74,10 @@ if state == ENEMY_STATE.ACTING{
 	if timer >= flash_speed * 8 - 1 or hp <= 0{
 		state = ENEMY_STATE.NORMAL
 		if reversed{
-			sprite_index = spr_kof_submarine_mouse_land
+			sprite_index = get_load_sprite("spr_kof_submarine_mouse_land")
 		}
 		else{
-			sprite_index = spr_kof_submarine_mouse
+			sprite_index = get_load_sprite("spr_kof_submarine_mouse")
 		}
 	}
 }

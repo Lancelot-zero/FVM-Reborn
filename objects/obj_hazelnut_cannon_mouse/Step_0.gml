@@ -11,7 +11,7 @@ if is_frozen || is_stun{
 }
 
 if (hp <= 0) {
-	sprite_index = spr_hazelnut_cannon_mouse
+	sprite_index = get_load_sprite("spr_hazelnut_cannon_mouse")
 	if state != ENEMY_STATE.DEAD{
 	    timer = 0;
 	    state = ENEMY_STATE.DEAD;
@@ -63,7 +63,7 @@ if state == ENEMY_STATE.APPEAR{
 		image_index = floor(anim_timer/flash_speed) mod 6
 		if x <= get_world_position_from_grid(9,grid_row).x{
 			anim_timer = 0
-			sprite_index = spr_hazelnut_cannon_mouse
+			sprite_index = get_load_sprite("spr_hazelnut_cannon_mouse")
 			state = ENEMY_STATE.NORMAL
 		}
 	}
@@ -113,7 +113,7 @@ if state == ENEMY_STATE.ACTING{
 			bullet.row = grid_row
 			bullet.target_col = target_col
 			bullet.damage = 20
-			bullet.sprite_index = spr_hazelnut_bullet
+			bullet.sprite_index = get_load_sprite("spr_hazelnut_bullet")
 			
 			// 获取敌人当前位置和速度
 			var bullet_pos = get_world_position_from_grid(target_col,grid_row)

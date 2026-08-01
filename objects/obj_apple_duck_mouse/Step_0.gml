@@ -1,18 +1,18 @@
 // Inherit the parent event
 if (grid_col < 0 || grid_col >= global.grid_cols || grid_row < 0 || grid_row >= global.grid_rows) {
 	if hp > maxhp - helmet_hp{
-		sprite_index = spr_apple_duck_mouse_land_helmet
+		sprite_index = get_load_sprite("spr_apple_duck_mouse_land_helmet")
 	}
 	else{
-		sprite_index = spr_apple_duck_mouse_land
+		sprite_index = get_load_sprite("spr_apple_duck_mouse_land")
 	}
 	death_anim = 12
 }
 else{
 	if global.grid_terrains[grid_row][grid_col].type == "water"{
-		if sprite_index == spr_apple_duck_mouse_land or sprite_index == spr_apple_duck_mouse_land_helmet{
+		if sprite_index == get_load_sprite("spr_apple_duck_mouse_land") or sprite_index == get_load_sprite("spr_apple_duck_mouse_land_helmet"){
 			state = ENEMY_STATE.ACTING
-			sprite_index = spr_apple_duck_mouse_enter
+			sprite_index = get_load_sprite("spr_apple_duck_mouse_enter")
 			timer = 0
 			audio_play_sound(snd_enter_water,0,0)
 			reversed = false
@@ -21,9 +21,9 @@ else{
 		death_anim = 8
 	}
 	else{
-		if sprite_index == spr_apple_duck_mouse or sprite_index == spr_apple_duck_mouse_helmet{
+		if sprite_index == get_load_sprite("spr_apple_duck_mouse") or sprite_index == get_load_sprite("spr_apple_duck_mouse_helmet"){
 			state = ENEMY_STATE.ACTING
-			sprite_index = spr_apple_duck_mouse_enter
+			sprite_index = get_load_sprite("spr_apple_duck_mouse_enter")
 			timer = 0
 			audio_play_sound(snd_enter_water,0,0)
 			reversed = true
@@ -33,24 +33,24 @@ else{
 	}
 	if hp > maxhp - helmet_hp && state != ENEMY_STATE.ACTING{
 		if global.grid_terrains[grid_row][grid_col].type == "water"{
-			sprite_index = spr_apple_duck_mouse_helmet
+			sprite_index = get_load_sprite("spr_apple_duck_mouse_helmet")
 		}
 		else{
-			sprite_index = spr_apple_duck_mouse_land_helmet
+			sprite_index = get_load_sprite("spr_apple_duck_mouse_land_helmet")
 		}
 	}
 	else  if hp <= maxhp - helmet_hp && state != ENEMY_STATE.ACTING{
 		if global.grid_terrains[grid_row][grid_col].type == "water"{
-			sprite_index = spr_apple_duck_mouse
+			sprite_index = get_load_sprite("spr_apple_duck_mouse")
 		}
 		else{
-			sprite_index = spr_apple_duck_mouse_land
+			sprite_index = get_load_sprite("spr_apple_duck_mouse_land")
 		}
 	}
 }
 if hp <= maxhp - helmet_hp && not armor_dropped{
 	var inst = instance_create_depth(x-25,y-175,depth-1,obj_enemy_armor)
-	if sprite_index == spr_apple_duck_mouse || sprite_index == spr_apple_duck_mouse_helmet{
+	if sprite_index == get_load_sprite("spr_apple_duck_mouse") || sprite_index == get_load_sprite("spr_apple_duck_mouse_helmet"){
 		inst.y += 30
 		inst.water = true
 	}
@@ -68,10 +68,10 @@ if global.is_paused or is_frozen{
 }
 if state = ENEMY_STATE.ACTING{
 	if hp > maxhp - helmet_hp{
-				sprite_index = spr_apple_duck_mouse_enter_helmet
+				sprite_index = get_load_sprite("spr_apple_duck_mouse_enter_helmet")
 			}
 			else{
-				sprite_index = spr_apple_duck_mouse_enter
+				sprite_index = get_load_sprite("spr_apple_duck_mouse_enter")
 			}
 	x -= move_speed
 	if hp > maxhp * hurt_rate{
@@ -94,18 +94,18 @@ if state = ENEMY_STATE.ACTING{
 		state = ENEMY_STATE.NORMAL
 		if reversed{
 			if hp > maxhp - helmet_hp{
-				sprite_index = spr_apple_duck_mouse_land_helmet
+				sprite_index = get_load_sprite("spr_apple_duck_mouse_land_helmet")
 			}
 			else{
-				sprite_index = spr_apple_duck_mouse_land
+				sprite_index = get_load_sprite("spr_apple_duck_mouse_land")
 			}
 		}
 		else{
 			if hp > maxhp - helmet_hp{
-				sprite_index = spr_apple_duck_mouse_helmet
+				sprite_index = get_load_sprite("spr_apple_duck_mouse_helmet")
 			}
 			else{
-				sprite_index = spr_apple_duck_mouse
+				sprite_index = get_load_sprite("spr_apple_duck_mouse")
 			}
 		}
 	}

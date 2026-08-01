@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_spicy_pot");  //转化额外添加保证触发
 event_inherited();  // 继承父对象属性
 plant_id = "spicy_pot"; 
 // 设置对象类型和精灵
@@ -5,13 +6,13 @@ obj_type = object_index;
 current_level = 1
 event_user(0)
 if shape == 0{
-	sprite_index = spr_spicy_pot
+	sprite_index = get_load_sprite("spr_spicy_pot")
 }
 else if shape == 1{
-	sprite_index = spr_spicy_pot_1
+	sprite_index = get_load_sprite("spr_spicy_pot_1")
 }
 else if shape == 2{
-	sprite_index = spr_spicy_pot_2
+	sprite_index = get_load_sprite("spr_spicy_pot_2")
 }
 
 // ========== 特定属性默认值 ==========

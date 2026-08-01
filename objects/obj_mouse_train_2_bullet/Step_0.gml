@@ -10,7 +10,7 @@ if b_type == 0{
 		if abs(x-other.x) <= 50 && grid_row == other.grid_row{
 			if plant_id != "cotton_candy" && plant_type != "coffee"{
 				var inst = instance_create_depth(x,y-35,-800,obj_arno_bullet_effect)
-				inst.sprite_index = spr_mouse_train_1_bullet_effect
+				inst.sprite_index = get_load_sprite("spr_mouse_train_1_bullet_effect")
 				instance_destroy(other)
 			}
 			if plant_id != "player" && plant_type != "coffee" && !invincible && plant_id != "cotton_candy"{
@@ -26,7 +26,7 @@ else if b_type == 1{
 		if abs(y-other.y) <= 50 && grid_col == other.grid_col{
 			if plant_id != "cotton_candy" && plant_type != "coffee"{
 				var inst = instance_create_depth(x,y-35,-800,obj_arno_bullet_effect)
-				inst.sprite_index = spr_mouse_train_1_bullet_effect
+				inst.sprite_index = get_load_sprite("spr_mouse_train_1_bullet_effect")
 				instance_destroy(other)
 			}
 			if plant_id != "player" && plant_type != "coffee" && !invincible && plant_id != "cotton_candy"{
@@ -43,7 +43,7 @@ else if b_type == 2{
 		if place_meeting(x,y,other){
 			if plant_id != "cotton_candy" && plant_type != "coffee"{
 				var inst = instance_create_depth(x,y-35,-800,obj_arno_bullet_effect)
-				inst.sprite_index = spr_mouse_train_1_bullet_effect
+				inst.sprite_index = get_load_sprite("spr_mouse_train_1_bullet_effect")
 				instance_destroy(other)
 			}
 			if plant_id != "player" && plant_type != "coffee" && !invincible && plant_id != "cotton_candy"{

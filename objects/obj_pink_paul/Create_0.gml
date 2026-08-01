@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_pink_paul_disappear");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 
@@ -9,7 +10,7 @@ maxhp = 25000
 immune_to_ash = true
 wait_time = 180
 cave = noone
-sprite_index = spr_pink_paul_appear
+sprite_index = get_load_sprite("spr_pink_paul_appear")
 is_boss = true
 step_ready = false;	frame_count = 0;
 

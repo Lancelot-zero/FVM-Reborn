@@ -1,0 +1,1134 @@
+{
+  "obj_abyss_pharaoh": [
+    "spr_abyss_pharaoh_idle",
+    "spr_abyss_pharaoh_appear"
+  ],
+  "obj_airbrone_explosive_mouse": [
+    "spr_airbrone_explosive_mouse_air",
+    "spr_airbrone_explosive_mouse_land",
+    "spr_airbrone_explosive_mouse_drop"
+  ],
+  "obj_aircraft_carrier": [
+    "spr_aircraft_carrier"
+  ],
+  "obj_angelababy": [
+    "spr_angelababy_idle",
+    "spr_angelababy_appear"
+  ],
+  "obj_angelababy_diamond": [
+    "spr_angelababy_diamond"
+  ],
+  "obj_angelababy_star": [
+    "spr_angelababy_star"
+  ],
+  "obj_angelababy_summon": [
+    "spr_angelababy_summon"
+  ],
+  "obj_angelababy_target": [
+    "spr_angelababy_target"
+  ],
+  "obj_apple_duck_mouse": [
+    "spr_apple_duck_mouse_land_helmet",
+    "spr_apple_duck_mouse",
+    "spr_apple_duck_mouse_helmet",
+    "spr_apple_duck_mouse_land",
+    "spr_apple_duck_mouse_enter",
+    "spr_apple_duck_mouse_enter_helmet"
+  ],
+  "obj_apple_football_fan_mouse": [
+    "spr_apple_football_fan_mouse_helmet",
+    "spr_apple_football_fan_mouse"
+  ],
+  "obj_aquarius_elve": [
+    "spr_aquarius_elve",
+    "spr_aquarius_elve_1",
+    "spr_aquarius_elve_2"
+  ],
+  "obj_arno": [
+    "spr_arno_disappear",
+    "spr_arno_appear"
+  ],
+  "obj_arno_bullet": [
+    "spr_arno_bullet",
+    "spr_ice_residue_bullet",
+    "spr_ice_residue_bullet_effect"
+  ],
+  "obj_arno_bullet_effect": [
+    "spr_arno_bullet_effect"
+  ],
+  "obj_arson_bullet": [
+    "spr_arson_mouse_bullet",
+    "spr_arson_mouse_bullet_effect"
+  ],
+  "obj_arson_mouse": [
+    "spr_arson_mouse_bomb",
+    "spr_arson_mouse",
+    "spr_arson_mouse_ready",
+    "spr_arson_mouse_throw"
+  ],
+  "obj_assault_mouse": [
+    "spr_assault_mouse_appear",
+    "spr_assault_mouse",
+    "spr_assault_mouse_helmet",
+    "spr_assault_mouse_land_helmet",
+    "spr_assault_mouse_land",
+    "spr_duck_mouse_enter"
+  ],
+  "obj_baron_bats": [
+    "spr_baron_bats"
+  ],
+  "obj_baron_blade": [
+    "spr_baron_blade"
+  ],
+  "obj_baron_needle": [
+    "spr_baron_needle"
+  ],
+  "obj_barrier": [
+    "spr_flight_barrier_mouse_pig"
+  ],
+  "obj_bat_mouse": [
+    "spr_bat_mouse",
+    "spr_bat_mouse_cord"
+  ],
+  "obj_bat_mouse_target": [
+    "spr_bat_mouse_target"
+  ],
+  "obj_blonde_mary": [
+    "spr_blonde_mary_idle",
+    "spr_blonde_mary_appear"
+  ],
+  "obj_blonde_mary_bullet": [
+    "spr_blonde_mary_boomerang"
+  ],
+  "obj_brazier": [
+    "spr_brazier",
+    "spr_brazier_1",
+    "spr_brazier_2"
+  ],
+  "obj_bull_firework": [
+    "spr_bull_firework",
+    "spr_bull_firework_1",
+    "spr_bull_firework_2",
+    "spr_bull_firework_bullet",
+    "spr_bull_firework_bullet_1",
+    "spr_bull_firework_bullet_2",
+    "spr_bull_firework_effect",
+    "spr_bull_firework_effect_1",
+    "spr_bull_firework_effect_2"
+  ],
+  "obj_butterfly_mouse": [
+    "spr_butterfly_mouse_land_shield",
+    "spr_butterfly_mouse",
+    "spr_butterfly_mouse_shield",
+    "spr_butterfly_mouse_land",
+    "spr_butterfly_mouse_enter",
+    "spr_butterfly_mouse_enter_shield"
+  ],
+  "obj_buzz_wind": [
+    "spr_buzz_wind"
+  ],
+  "obj_can_mouse": [
+    "spr_can_mouse_with_can",
+    "spr_can_mouse",
+    "spr_can_mouse_drop"
+  ],
+  "obj_captain_america_mouse": [
+    "spr_captain_america_mouse_idle",
+    "spr_captain_america_mouse_appear1"
+  ],
+  "obj_captain_rainbow": [
+    "spr_captain_america_mouse_rainbow"
+  ],
+  "obj_captain_shield": [
+    "spr_captain_america_mouse_shield"
+  ],
+  "obj_caribbean_mouse": [
+    "spr_caribbean_mouse"
+  ],
+  "obj_cat_box": [
+    "spr_cat_box_1",
+    "spr_cat_box_3",
+    "spr_cat_box_2"
+  ],
+  "obj_cat_chest": [
+    "spr_cat_chest_1",
+    "spr_cat_chest_3",
+    "spr_cat_chest_2"
+  ],
+  "obj_charge_spring_mouse": [
+    "spr_charge_spring_mouse_shield",
+    "spr_charge_spring_mouse",
+    "spr_mouse_spring_2",
+    "spr_charge_spring_mouse_place"
+  ],
+  "obj_cherry_pudding": [
+    "spr_cherry_pudding",
+    "spr_cherry_pudding_1",
+    "spr_cherry_pudding_2"
+  ],
+  "obj_chili_powder": [
+    "spr_chili_powder",
+    "spr_chili_powder_1",
+    "spr_chili_powder_2"
+  ],
+  "obj_chocolate_bread": [
+    "spr_chocolate_bread",
+    "spr_chocolate_bread_1"
+  ],
+  "obj_chocolate_cannon": [
+    "spr_chocolate_cannon",
+    "spr_chocolate_cannon_1",
+    "spr_chocolate_cannon_2"
+  ],
+  "obj_chocolate_pult": [
+    "spr_chocolate_pult",
+    "spr_chocolate_pult_1",
+    "spr_chocolate_pult_2"
+  ],
+  "obj_coffee_cup": [
+    "spr_coffee_cup",
+    "spr_coffee_cup_1",
+    "spr_coffee_cup_2"
+  ],
+  "obj_coffee_grounds": [
+    "spr_coffee_grounds",
+    "spr_coffee_grounds_1",
+    "spr_coffee_grounds_2"
+  ],
+  "obj_coffee_pot": [
+    "spr_coffee_pot",
+    "spr_coffee_pot_1",
+    "spr_coffee_pot_2",
+    "spr_coffee_pot_sleep"
+  ],
+  "obj_coke_bomb": [
+    "spr_coke_bomb",
+    "spr_coke_bomb_1",
+    "spr_coke_bomb_2"
+  ],
+  "obj_cotton_candy": [
+    "spr_cotton_candy_0_0",
+    "spr_cotton_candy_0_1",
+    "spr_cotton_candy_0_2",
+    "spr_cotton_candy_1_0",
+    "spr_cotton_candy_1_1",
+    "spr_cotton_candy_1_2",
+    "spr_cotton_candy_2_0",
+    "spr_cotton_candy_2_1",
+    "spr_cotton_candy_2_2"
+  ],
+  "obj_cucumber_normal_mouse": [
+    "spr_cucumber_normal_mouse",
+    "spr_mario_mouse_idle"
+  ],
+  "obj_cucumber_paper_boat_mouse": [
+    "spr_cucumber_paper_boat_mouse_land",
+    "spr_cucumber_paper_boat_mouse",
+    "spr_cucumber_paper_boat_mouse_enter"
+  ],
+  "obj_dentist_mouse": [
+    "spr_dentist_mouse",
+    "spr_dentist_mouse_dig",
+    "spr_dentist_mouse_appear",
+    "spr_dentist_mouse_stun"
+  ],
+  "obj_diver_mouse": [
+    "spr_diver_mouse_land",
+    "spr_diver_mouse",
+    "spr_diver_mouse_up",
+    "spr_diver_mouse_enter"
+  ],
+  "obj_double_ice_long_bao": [
+    "spr_double_ice_long_bao"
+  ],
+  "obj_double_long_bao": [
+    "spr_double_long_bao"
+  ],
+  "obj_double_water_pipe": [
+    "spr_double_water_pipe",
+    "spr_double_water_pipe_1",
+    "spr_double_water_pipe_2"
+  ],
+  "obj_dragon_boat_mouse": [
+    "spr_rowboat_mouse",
+    "spr_dragon_boat_mouse_appear",
+    "spr_dragon_boat_mouse"
+  ],
+  "obj_dragon_fruit": [
+    "spr_dragon_fruit",
+    "spr_dragon_fruit_1",
+    "spr_dragon_fruit_2"
+  ],
+  "obj_duck_mouse": [
+    "spr_duck_mouse_land_helmet",
+    "spr_duck_mouse",
+    "spr_duck_mouse_helmet",
+    "spr_duck_mouse_land",
+    "spr_duck_mouse_enter",
+    "spr_duck_mouse_enter_helmet"
+  ],
+  "obj_durian": [
+    "spr_durian",
+    "spr_durian_1",
+    "spr_durian_2"
+  ],
+  "obj_durian_effect": [
+    "spr_durian_effect"
+  ],
+  "obj_egg_boiler_pult": [
+    "spr_egg_boiler_pult",
+    "spr_egg_boiler_pult_1",
+    "spr_egg_boiler_pult_2"
+  ],
+  "obj_egg_iron_pan_mouse": [
+    "spr_egg_iron_pan_mouse_helmet",
+    "spr_egg_iron_pan_mouse"
+  ],
+  "obj_egg_tropical_fish_mouse": [
+    "spr_egg_tropical_fish_mouse_land_helmet",
+    "spr_egg_tropical_fish_mouse",
+    "spr_egg_tropical_fish_mouse_helmet",
+    "spr_egg_tropical_fish_mouse_land",
+    "spr_egg_tropical_fish_mouse_enter",
+    "spr_egg_tropical_fish_mouse_enter_helmet"
+  ],
+  "obj_engineer_bullet": [
+    "spr_engineer_bullet",
+    "spr_ice_residue_bullet",
+    "spr_ice_residue_bullet_effect",
+    "spr_landmine_bullet",
+    "spr_landmine_bullet_effect"
+  ],
+  "obj_engineer_bullet_effect": [
+    "spr_engineer_bullet_effect"
+  ],
+  "obj_engineering_vehicle_mouse": [
+    "spr_engineering_vehicle_mouse",
+    "spr_engineering_vehicle_mouse_move"
+  ],
+  "obj_firework_dragon": [
+    "spr_firework_dragon",
+    "spr_firework_dragon_1",
+    "spr_firework_dragon_2"
+  ],
+  "obj_fishbone": [
+    "spr_fishbone"
+  ],
+  "obj_flagship_mouse": [
+    "spr_rowboat_mouse",
+    "spr_flagship_mouse_appear",
+    "spr_flagship_mouse"
+  ],
+  "obj_flight_barrier_mouse": [
+    "spr_flight_barrier_mouse_air",
+    "spr_flight_barrier_mouse_land",
+    "spr_flight_barrier_mouse_drop"
+  ],
+  "obj_flour_sack": [
+    "spr_flour_sack",
+    "spr_flour_sack_1"
+  ],
+  "obj_flute_mouse": [
+    "spr_flute_mouse",
+    "spr_flute_mouse_effect",
+    "spr_flute_mouse_perform"
+  ],
+  "obj_fog_julie": [
+    "spr_fog_julie_idle"
+  ],
+  "obj_football_fan_mouse": [
+    "spr_football_fan_mouse",
+    "spr_football_fan_mouse_helmet"
+  ],
+  "obj_frog_prince_mouse": [
+    "spr_frog_prince_mouse_enter",
+    "spr_frog_prince_mouse",
+    "spr_frog_prince_mouse_frog",
+    "spr_frog_prince_mouse_land"
+  ],
+  "obj_garbage_track_mouse": [
+    "spr_garbage_track_mouse"
+  ],
+  "obj_gatlin_ice_long_bao": [
+    "spr_gatlin_ice_long_bao"
+  ],
+  "obj_gatlin_long_bao": [
+    "spr_gatlin_long_bao",
+    "spr_gatlin_long_bao_1",
+    "spr_gatlin_long_bao_2"
+  ],
+  "obj_ghost_mouse": [
+    "spr_ghost_mouse"
+  ],
+  "obj_glider_mouse": [
+    "spr_glider_mouse_air",
+    "spr_glider_mouse_land",
+    "spr_glider_mouse_drop"
+  ],
+  "obj_goblet_lamp": [
+    "spr_goblet_lamp",
+    "spr_goblet_lamp_1",
+    "spr_goblet_lamp_2"
+  ],
+  "obj_hamburger": [
+    "spr_hamburger",
+    "spr_hamburger_1",
+    "spr_hamburger_2",
+    "spr_hamburger_eat",
+    "spr_hamburger_eat_1",
+    "spr_hamburger_eat_2"
+  ],
+  "obj_hazelnut_cannon_mouse": [
+    "spr_hazelnut_cannon_mouse",
+    "spr_hazelnut_cannon_mouse_move",
+    "spr_hazelnut_bullet"
+  ],
+  "obj_hells_messenger": [
+    "spr_hells_messenger_idle",
+    "spr_hells_messenger_appear"
+  ],
+  "obj_hotdog_cannon": [
+    "spr_hotdog_cannon",
+    "spr_hotdog_cannon_1",
+    "spr_hotdog_cannon_2"
+  ],
+  "obj_huang_xiaoming": [
+    "spr_huang_xiaoming_idle",
+    "spr_huang_xiaoming_appear"
+  ],
+  "obj_hulk_destroy_effect": [
+    "spr_hulk_mouse_skill_effect_3"
+  ],
+  "obj_hulk_mouse": [
+    "spr_hulk_mouse_idle"
+  ],
+  "obj_ice_bucket_bomb": [
+    "spr_ice_bucket_bomb",
+    "spr_ice_bucket_bomb_1",
+    "spr_ice_bucket_bomb_2",
+    "spr_ice_bucket_bomb_sleep",
+    "spr_ice_bucket_bomb_sleep_1",
+    "spr_ice_bucket_bomb_sleep_2"
+  ],
+  "obj_ice_cream": [
+    "spr_ice_cream",
+    "spr_ice_cream_1",
+    "spr_ice_cream_2"
+  ],
+  "obj_ice_egg_boiler_pult": [
+    "spr_ice_egg_boiler_pult",
+    "spr_ice_egg_boiler_pult_1",
+    "spr_ice_egg_boiler_pult_2"
+  ],
+  "obj_ice_long_bao": [
+    "spr_ice_long_bao"
+  ],
+  "obj_ice_residue": [
+    "spr_ice_residue_disappear",
+    "spr_ice_residue_appear",
+    "spr_ice_residue_skill_1_ready",
+    "spr_ice_residue_skill_1",
+    "spr_ice_residue_skill_2",
+    "spr_ice_residue_death"
+  ],
+  "obj_ice_residue_bullet": [
+    "spr_ice_residue_bullet",
+    "spr_ice_residue_bullet_effect"
+  ],
+  "obj_iron_fishbone": [
+    "spr_iron_fishbone",
+    "spr_iron_fishbone_1",
+    "spr_iron_fishbone_2"
+  ],
+  "obj_iron_man_bullet": [
+    "spr_iron_man_mouse_bullet",
+    "spr_iron_man_mouse_bullet_effect"
+  ],
+  "obj_iron_pan_mouse": [
+    "spr_iron_pan_mouse",
+    "spr_iron_pan_mouse_helmet"
+  ],
+  "obj_irritable_jack": [
+    "spr_irritable_jack_idle"
+  ],
+  "obj_irritable_jack_fire": [
+    "spr_irritable_jack_fire_mouse_appear"
+  ],
+  "obj_irritable_jack_fire_mouse": [
+    "spr_irritable_jack_fire_mouse",
+    "spr_julie_incendiary_bomb_effect"
+  ],
+  "obj_irritable_jack_rock_skill_3": [
+    "spr_irritable_jack_head_skill_3"
+  ],
+  "obj_irritable_jack_rock_skill_4": [
+    "spr_irritable_jack_head_skill_3",
+    "spr_irritable_jack_head_skill_4"
+  ],
+  "obj_jet_mouse": [
+    "spr_jet_mouse"
+  ],
+  "obj_julie_missile": [
+    "spr_julie_incendiary_bomb",
+    "spr_julie_incendiary_bomb_effect"
+  ],
+  "obj_kamikaze_glider_mouse": [
+    "spr_kamikaze_glider_mouse_air",
+    "spr_arson_mouse_bullet_effect",
+    "spr_kamikaze_glider_mouse_drop",
+    "spr_kamikaze_glider_mouse_land",
+    "spr_kamikaze_glider_mouse_effect"
+  ],
+  "obj_kangaroo": [
+    "spr_kangaroo"
+  ],
+  "obj_kettle_bomb": [
+    "spr_kettle_bomb",
+    "spr_kettle_bomb_1",
+    "spr_kettle_bomb_2",
+    "spr_kettle_bomb_sleep",
+    "spr_kettle_bomb_sleep_1"
+  ],
+  "obj_king_long_bao": [
+    "spr_king_long_bao_0_0",
+    "spr_king_long_bao_0_1",
+    "spr_king_long_bao_0_2",
+    "spr_king_long_bao_0_upgrade_1",
+    "spr_king_long_bao_0_upgrade_2",
+    "spr_king_long_bao_1_0",
+    "spr_king_long_bao_1_1",
+    "spr_king_long_bao_1_2",
+    "spr_king_long_bao_1_3",
+    "spr_king_long_bao_1_upgrade_1",
+    "spr_king_long_bao_1_upgrade_2",
+    "spr_king_long_bao_1_upgrade_3",
+    "spr_king_long_bao_2_0",
+    "spr_king_long_bao_2_1",
+    "spr_king_long_bao_2_2",
+    "spr_king_long_bao_2_3",
+    "spr_king_long_bao_2_4",
+    "spr_king_long_bao_2_5",
+    "spr_king_long_bao_2_upgrade_1",
+    "spr_king_long_bao_2_upgrade_2",
+    "spr_king_long_bao_2_upgrade_3",
+    "spr_king_long_bao_2_upgrade_4",
+    "spr_king_long_bao_2_upgrade_5"
+  ],
+  "obj_king_triple_long_bao": [
+    "spr_king_triple_long_bao_0_0",
+    "spr_king_triple_long_bao_0_1",
+    "spr_king_triple_long_bao_0_2",
+    "spr_king_triple_long_bao_0_upgrade_1",
+    "spr_king_triple_long_bao_0_upgrade_2",
+    "spr_king_triple_long_bao_1_0",
+    "spr_king_triple_long_bao_1_1",
+    "spr_king_triple_long_bao_1_2",
+    "spr_king_triple_long_bao_1_3",
+    "spr_king_triple_long_bao_1_upgrade_1",
+    "spr_king_triple_long_bao_1_upgrade_2",
+    "spr_king_triple_long_bao_1_upgrade_3",
+    "spr_king_triple_long_bao_2_0",
+    "spr_king_triple_long_bao_2_1",
+    "spr_king_triple_long_bao_2_2",
+    "spr_king_triple_long_bao_2_3",
+    "spr_king_triple_long_bao_2_4",
+    "spr_king_triple_long_bao_2_5",
+    "spr_king_triple_long_bao_2_upgrade_1",
+    "spr_king_triple_long_bao_2_upgrade_2",
+    "spr_king_triple_long_bao_2_upgrade_3",
+    "spr_king_triple_long_bao_2_upgrade_4",
+    "spr_king_triple_long_bao_2_upgrade_5"
+  ],
+  "obj_knock_back_effect": [
+    "spr_normal_mouse"
+  ],
+  "obj_kof_submarine_mouse": [
+    "spr_kof_submarine_mouse_land",
+    "spr_kof_submarine_mouse",
+    "spr_kof_submarine_mouse_enter"
+  ],
+  "obj_lambo_mouse": [
+    "spr_lambo_mouse"
+  ],
+  "obj_landlady_mouse": [
+    "spr_landlady_mouse",
+    "spr_landlady_mouse_shield"
+  ],
+  "obj_landmine_vehicle_mouse": [
+    "spr_landmine_vehicle_mouse",
+    "spr_landmine_vehicle_mouse_move",
+    "spr_landmine_bullet"
+  ],
+  "obj_large_fire": [
+    "spr_large_fire",
+    "spr_large_fire_1",
+    "spr_large_fire_2"
+  ],
+  "obj_lieutenant_buzz": [
+    "spr_lieutenant_buzz_idle",
+    "spr_apple_football_fan_mouse_helmet"
+  ],
+  "obj_lightning_baguette": [
+    "spr_lightning_baguette",
+    "spr_lightning_baguette_1",
+    "spr_lightning_baguette_2"
+  ],
+  "obj_lightning_baguette_thunder": [
+    "spr_lightning_baguette_thunder"
+  ],
+  "obj_little_armour_mouse": [
+    "spr_little_armour_mouse",
+    "spr_little_armour_mouse_throw"
+  ],
+  "obj_little_magician_mouse": [
+    "spr_little_magician",
+    "spr_little_magician_throw"
+  ],
+  "obj_little_panda_mouse": [
+    "spr_little_panda",
+    "spr_little_panda_throw"
+  ],
+  "obj_little_wrestler_mouse": [
+    "spr_little_wrestler",
+    "spr_little_wrestler_throw"
+  ],
+  "obj_machine_bee": [
+    "spr_machine_bee"
+  ],
+  "obj_machine_beehive_mouse": [
+    "spr_machine_beehive_mouse"
+  ],
+  "obj_machine_bomb_mouse": [
+    "spr_machine_bomb_mouse_air",
+    "spr_machine_bomb_mouse_land",
+    "spr_machine_bomb_mouse_drop"
+  ],
+  "obj_machine_bomb_mouse_bullet": [
+    "spr_machine_bomb_mouse_bomb",
+    "spr_machine_bomb_mouse_bomb_effect"
+  ],
+  "obj_machine_flag_mouse": [
+    "spr_machine_flag_mouse_air",
+    "spr_machine_flag_mouse_land",
+    "spr_machine_flag_mouse_drop"
+  ],
+  "obj_machine_football_fan_mouse": [
+    "spr_machine_football_fan_mouse_helmet",
+    "spr_machine_football_fan_mouse"
+  ],
+  "obj_machine_iron_pan_mouse": [
+    "spr_machine_iron_pan_mouse_helmet",
+    "spr_machine_iron_pan_mouse"
+  ],
+  "obj_machine_mouse": [
+    "spr_machine_mouse",
+    "spr_machine_mouse_explode"
+  ],
+  "obj_machine_normal_mouse": [
+    "spr_machine_normal_mouse"
+  ],
+  "obj_magic_chicken": [
+    "spr_magic_chicken"
+  ],
+  "obj_mario_cave": [
+    "spr_mario_cave_land",
+    "spr_mario_cave_water"
+  ],
+  "obj_mario_mouse": [
+    "spr_mario_mouse_idle",
+    "spr_mario_mouse_appear"
+  ],
+  "obj_mario_pipeline": [
+    "spr_mario_pipeline_land",
+    "spr_mario_pipeline_water"
+  ],
+  "obj_melon_shield": [
+    "spr_melon_shield_outer_1",
+    "spr_melon_shield_outer_2",
+    "spr_melon_shield_outer_3",
+    "spr_melon_shield_1_outer_1",
+    "spr_melon_shield_1_outer_2",
+    "spr_melon_shield_1_outer_3",
+    "spr_melon_shield_inner_2",
+    "spr_melon_shield_2_outer_1",
+    "spr_melon_shield_2_outer_2",
+    "spr_melon_shield_2_outer_3",
+    "spr_melon_shield_inner_3"
+  ],
+  "obj_melon_shield_inner": [
+    "spr_melon_shield_inner_1"
+  ],
+  "obj_messenger_ignis_fatuus": [
+    "spr_messenger_ignis_fatuus"
+  ],
+  "obj_messenger_mace": [
+    "spr_messenger_mace"
+  ],
+  "obj_messenger_poop": [
+    "spr_messenger_poop",
+    "spr_messenger_fog"
+  ],
+  "obj_mirror_mouse": [
+    "spr_mirror_mouse",
+    "spr_flute_mouse_effect",
+    "spr_mirror_mouse_acting"
+  ],
+  "obj_mole": [
+    "spr_mole",
+    "spr_mole_dig",
+    "spr_mole_appear",
+    "spr_mole_stun"
+  ],
+  "obj_mouse_clip": [
+    "spr_mouse_clip",
+    "spr_mouse_clip_1",
+    "spr_mouse_clip_2"
+  ],
+  "obj_mouse_spring": [
+    "spr_mouse_spring_1"
+  ],
+  "obj_mouse_train_1_body": [
+    "spr_mouse_train_1_body_idle",
+    "spr_mouse_train_1_body_skill_1",
+    "spr_xiaoming_text_2",
+    "spr_xiaoming_text_3",
+    "spr_mouse_train_1_body_skill_2",
+    "spr_mouse_train_1_body_skill_4",
+    "spr_mouse_train_1_body_death"
+  ],
+  "obj_mouse_train_1_bullet": [
+    "spr_mouse_train_1_bullet",
+    "spr_mouse_train_1_bullet_effect"
+  ],
+  "obj_mouse_train_1_head": [
+    "spr_mouse_train_1_head_idle"
+  ],
+  "obj_mouse_train_2_body": [
+    "spr_mouse_train_2_body_idle1",
+    "spr_mouse_train_2_body_appear1",
+    "spr_mouse_train_2_body_idle2",
+    "spr_mouse_train_2_body_appear2",
+    "spr_mouse_train_2_body_appear3",
+    "spr_mouse_train_2_body_appear4",
+    "spr_mouse_train_2_body_disappear1",
+    "spr_mouse_train_2_body_disappear2",
+    "spr_mouse_train_2_body_disappear3",
+    "spr_mouse_train_2_body_disappear4",
+    "spr_mouse_train_2_body_death"
+  ],
+  "obj_mouse_train_2_bullet": [
+    "spr_mouse_train_2_bullet",
+    "spr_mouse_train_1_bullet_effect"
+  ],
+  "obj_mouse_train_2_head": [
+    "spr_mouse_train_2_head_idle",
+    "spr_mouse_train_2_head_appear1"
+  ],
+  "obj_mouse_train_3_body": [
+    "spr_mouse_train_2_body_idle1",
+    "spr_mouse_train_2_body_appear1"
+  ],
+  "obj_mouse_train_3_butter": [
+    "spr_mouse_train_3_butter"
+  ],
+  "obj_mouse_train_3_head": [
+    "spr_mouse_train_2_head_idle",
+    "spr_mouse_train_2_head_appear1"
+  ],
+  "obj_mummy_mouse": [
+    "spr_mummy_mouse"
+  ],
+  "obj_naruto_mouse": [
+    "spr_naruto_mouse",
+    "spr_naruto_mouse_summon"
+  ],
+  "obj_needle_baron": [
+    "spr_needle_baron_idle",
+    "spr_needle_baron_appear"
+  ],
+  "obj_ninja_mouse": [
+    "spr_ninja_mouse",
+    "spr_ninja_mouse_summon"
+  ],
+  "obj_non_mainstream_mouse": [
+    "spr_non_mainstream_mouse",
+    "spr_non_mainstream_mouse_dance_1",
+    "spr_non_mainstream_mouse_dance_2",
+    "spr_non_mainstream_mouse_dance_3"
+  ],
+  "obj_normal_mouse": [
+    "spr_normal_mouse",
+    "spr_mario_mouse_idle"
+  ],
+  "obj_oden_pot": [
+    "spr_oden_pot",
+    "spr_oden_pot_1",
+    "spr_oden_pot_2",
+    "spr_oden_pot_sleep"
+  ],
+  "obj_oil_lamp": [
+    "spr_oil_lamp",
+    "spr_oil_lamp_1"
+  ],
+  "obj_orange_prince_mouse": [
+    "spr_orange_prince_mouse_enter",
+    "spr_orange_prince_mouse",
+    "spr_orange_prince_mouse_frog",
+    "spr_orange_prince_mouse_land"
+  ],
+  "obj_pan_fried_bun": [
+    "spr_pan_fried_bun",
+    "spr_pan_fried_bun_1",
+    "spr_pan_fried_bun_2"
+  ],
+  "obj_paper_boat_mouse": [
+    "spr_paper_boat_mouse_land",
+    "spr_paper_boat_mouse",
+    "spr_paper_boat_mouse_enter"
+  ],
+  "obj_paratrooper_mouse": [
+    "spr_paratrooper_mouse_air",
+    "spr_paratrooper_mouse"
+  ],
+  "obj_paratrooper_mouse_shield": [
+    "spr_paratrooper_mouse_shield"
+  ],
+  "obj_paul_bullet": [
+    "spr_pink_paul_bullet"
+  ],
+  "obj_paul_bullet_effect": [
+    "spr_pink_paul_bullet_effect"
+  ],
+  "obj_penguin_bullet": [
+    "spr_penguin_mouse_bullet"
+  ],
+  "obj_penguin_mouse": [
+    "spr_penguin_mouse_bomb",
+    "spr_penguin_mouse",
+    "spr_penguin_mouse_throw"
+  ],
+  "obj_pete": [
+    "spr_pete_idle",
+    "spr_pete_appear"
+  ],
+  "obj_pete_claw": [
+    "spr_pete_claw"
+  ],
+  "obj_pete_claw_effect": [
+    "spr_pete_claw_effect"
+  ],
+  "obj_pete_missile": [
+    "spr_pete_bullet"
+  ],
+  "obj_pete_spike": [
+    "spr_pete_spike"
+  ],
+  "obj_pharaoh_bandage": [
+    "spr_pharaoh_bandage"
+  ],
+  "obj_pharaoh_coffin": [
+    "spr_pharaoh_coffin"
+  ],
+  "obj_pharaoh_scarab": [
+    "spr_scarab"
+  ],
+  "obj_pineapple_explosive_bread": [
+    "spr_pineapple_explosive_bread_0_0",
+    "spr_pineapple_explosive_bread_0_1",
+    "spr_pineapple_explosive_bread_0_2",
+    "spr_pineapple_explosive_bread_1_0",
+    "spr_pineapple_explosive_bread_1_1",
+    "spr_pineapple_explosive_bread_1_2",
+    "spr_pineapple_explosive_bread_2_0",
+    "spr_pineapple_explosive_bread_2_1",
+    "spr_pineapple_explosive_bread_2_2",
+    "spr_pineapple_explosive_bread_1_explosion",
+    "spr_pineapple_explosive_bread_2_explosion"
+  ],
+  "obj_pineapple_explosive_bread_explosion": [
+    "spr_pineapple_explosive_bread_0_explosion"
+  ],
+  "obj_pink_paul": [
+    "spr_pink_paul_disappear",
+    "spr_pink_paul_appear"
+  ],
+  "obj_pink_paul_tentacle": [
+    "spr_pink_paul_tentacle"
+  ],
+  "obj_pink_paul_tentacle_drop": [
+    "spr_pink_paul_tentacle_drop"
+  ],
+  "obj_pope_mouse": [
+    "spr_pope_mouse",
+    "spr_flute_mouse_effect",
+    "spr_pope_mouse_perform"
+  ],
+  "obj_priest_mouse": [
+    "spr_priest_mouse",
+    "spr_flute_mouse_effect",
+    "spr_priest_mouse_perform"
+  ],
+  "obj_repairman_mouse": [
+    "spr_repairman_mouse",
+    "spr_repairman_mouse_shield",
+    "spr_repairman_mouse_place"
+  ],
+  "obj_roller_skating_mouse": [
+    "spr_roller_skating_mouse_helmet",
+    "spr_roller_skating_mouse"
+  ],
+  "obj_rotating_coffee_pot": [
+    "spr_rotating_coffee_pot",
+    "spr_rotating_coffee_pot_1",
+    "spr_rotating_coffee_pot_2",
+    "spr_rotating_coffee_pot_sleep",
+    "spr_rotating_coffee_pot_sleep_1"
+  ],
+  "obj_rowboat_mouse": [
+    "spr_rowboat_mouse",
+    "spr_rowboat_mouse_appear"
+  ],
+  "obj_rumble": [
+    "spr_rumble_idle",
+    "spr_rumble_appear"
+  ],
+  "obj_rumble_laser": [
+    "spr_rumble_laser"
+  ],
+  "obj_rumble_missile": [
+    "spr_rumble_missile"
+  ],
+  "obj_salad_pult": [
+    "spr_salad_pult",
+    "spr_salad_pult_1",
+    "spr_salad_pult_2"
+  ],
+  "obj_sausage": [
+    "spr_sausage_land"
+  ],
+  "obj_sawblade_mouse": [
+    "spr_sawblade_mouse",
+    "spr_sawblade_mouse_dig",
+    "spr_sawblade_mouse_appear",
+    "spr_sawblade_mouse_stun"
+  ],
+  "obj_shy_landlady_mouse": [
+    "spr_shy_landlady_mouse_shield",
+    "spr_shy_landlady_mouse"
+  ],
+  "obj_skateboard_mouse": [
+    "spr_skateboard_mouse_skate",
+    "spr_skateboard_mouse"
+  ],
+  "obj_skewer_bomb": [
+    "spr_skewer_bomb"
+  ],
+  "obj_small_fire": [
+    "spr_small_fire",
+    "spr_small_fire_1",
+    "spr_small_fire_2"
+  ],
+  "obj_snail_mouse": [
+    "spr_snail_mouse"
+  ],
+  "obj_snail_mouse_mucus": [
+    "spr_snail_mouse_mucus"
+  ],
+  "obj_soar_mouse": [
+    "spr_soar_mouse"
+  ],
+  "obj_spicy_pot": [
+    "spr_spicy_pot",
+    "spr_spicy_pot_1",
+    "spr_spicy_pot_2"
+  ],
+  "obj_spider_man_mouse": [
+    "spr_spider_man_mouse_idle"
+  ],
+  "obj_spider_man_mouse_web": [
+    "spr_spider_man_mouse_web",
+    "spr_spider_man_mouse_web_effect"
+  ],
+  "obj_steel_wool": [
+    "spr_steel_wool"
+  ],
+  "obj_stinky_tofu_pult": [
+    "spr_stinky_tofu_pult",
+    "spr_stinky_tofu_pult_1",
+    "spr_stinky_tofu_pult_2"
+  ],
+  "obj_submarine_mouse": [
+    "spr_submarine_mouse_land",
+    "spr_submarine_mouse",
+    "spr_submarine_mouse_enter"
+  ],
+  "obj_takoyaki": [
+    "spr_takoyaki",
+    "spr_takoyaki_1",
+    "spr_takoyaki_2"
+  ],
+  "obj_tang_hu_lu": [
+    "spr_tang_hu_lu",
+    "spr_tang_hu_lu_1",
+    "spr_tang_hu_lu_2"
+  ],
+  "obj_tangerine_skateboard_mouse": [
+    "spr_tangerine_skateboard_mouse_skate",
+    "spr_tangerine_skateboard_mouse"
+  ],
+  "obj_tar_sprayer": [
+    "spr_tar_sprayer",
+    "spr_tar_sprayer_1",
+    "spr_tar_sprayer_2"
+  ],
+  "obj_taro_toho_mouse": [
+    "spr_taro_toho_mouse"
+  ],
+  "obj_temple_pharaoh": [
+    "spr_temple_pharaoh_idle"
+  ],
+  "obj_thug_submarine_mouse": [
+    "spr_thug_submarine_mouse_land",
+    "spr_thug_submarine_mouse",
+    "spr_thug_submarine_mouse_enter"
+  ],
+  "obj_toast_bread": [
+    "spr_toast_bread"
+  ],
+  "obj_triple_ice_long_bao": [
+    "spr_triple_ice_long_bao"
+  ],
+  "obj_triple_long_bao": [
+    "spr_triple_long_bao"
+  ],
+  "obj_triple_wine_rack": [
+    "spr_triple_wine_rack",
+    "spr_triple_wine_rack_1",
+    "spr_triple_wine_rack_2"
+  ],
+  "obj_tropical_fish_mouse": [
+    "spr_tropical_fish_mouse_land_helmet",
+    "spr_tropical_fish_mouse",
+    "spr_tropical_fish_mouse_helmet",
+    "spr_tropical_fish_mouse_land",
+    "spr_tropical_fish_mouse_enter",
+    "spr_tropical_fish_mouse_enter_helmet"
+  ],
+  "obj_trumpeter_mouse": [
+    "spr_trumpeter_mouse",
+    "spr_flute_mouse_effect",
+    "spr_trumpeter_mouse_perform"
+  ],
+  "obj_vajra_lava": [
+    "spr_vajra_lava"
+  ],
+  "obj_vajra_lava_effect": [
+    "spr_vajra_lava_effect"
+  ],
+  "obj_vajra_lightning": [
+    "spr_vajra_lightning_vertical"
+  ],
+  "obj_vajra_spike": [
+    "spr_vajra_spike"
+  ],
+  "obj_ventilation_fan": [
+    "spr_ventilation_fan",
+    "spr_ventilation_fan_1",
+    "spr_ventilation_fan_2"
+  ],
+  "obj_warrior_mouse": [
+    "spr_warrior_mouse",
+    "spr_warrior_mouse_summon"
+  ],
+  "obj_waste_flying_mouse": [
+    "spr_waste_flying_mouse_air",
+    "spr_waste_flying_mouse_land",
+    "spr_waste_flying_mouse_drop"
+  ],
+  "obj_water_penguin_mouse": [
+    "spr_water_penguin_mouse_land",
+    "spr_water_penguin_mouse",
+    "spr_water_penguin_mouse_throw",
+    "spr_water_penguin_mouse_enter"
+  ],
+  "obj_water_taro_toho_mouse": [
+    "spr_water_taro_toho_mouse_land",
+    "spr_water_taro_toho_mouse",
+    "spr_water_taro_toho_mouse_enter"
+  ],
+  "obj_water_tea_cup": [
+    "spr_water_tea_cup"
+  ],
+  "obj_whisky_bomb": [
+    "spr_whisky_bomb",
+    "spr_whisky_bomb_1",
+    "spr_whisky_bomb_2"
+  ],
+  "obj_wine_bottle_bomb": [
+    "spr_wine_bottle_bomb",
+    "spr_wine_bottle_bomb_1",
+    "spr_wine_bottle_bomb_2"
+  ],
+  "obj_wooden_cork": [
+    "spr_wooden_cork"
+  ],
+  "obj_wooden_plate": [
+    "spr_wooden_plate",
+    "spr_wooden_plate_1",
+    "spr_wooden_plate_2"
+  ],
+  "obj_xiao_long_bao": [
+    "spr_xiao_long_bao"
+  ],
+  "obj_xiaoming_text": [
+    "spr_xiaoming_text_1"
+  ],
+  "obj_xinjiang_fried_noodles": [
+    "spr_xinjiang_fried_noodles",
+    "spr_xinjiang_fried_noodles_1",
+    "spr_xinjiang_fried_noodles_2"
+  ],
+  "obj_zombie_with_flower_pot": [
+    "spr_zombie_with_flower_pot",
+    "spr_zombie_with_flower_pot_shield",
+    "spr_zombie_with_flower_pot_drop"
+  ],
+  "obj_zombie_with_wallnut": [
+    "spr_zombie_with_wallnut_shield",
+    "spr_zombie_with_wallnut",
+    "spr_zombie_with_wallnut_drop"
+  ],
+  "obj_card_preview": [
+    "spr_small_fire"
+  ],
+  "obj_card_slot": [
+    "spr_small_fire"
+  ],
+  "obj_iron_man": [
+    "spr_iron_man_mouse_laser"
+  ],
+  "obj_iron_man_mouse": [
+    "spr_iron_man_mouse_death"
+  ],
+  "obj_machine_skateboard_mouse": [
+    "spr_machine_skateboard_mouse"
+  ],
+  "obj_minion_mouse": [
+    "spr_minion_mouse_summon"
+  ],
+  "obj_naruto_minion_mouse": [
+    "spr_naruto_minion_mouse_summon"
+  ],
+  "obj_panda_mouse": [
+    "spr_panda_mouse_throw"
+  ],
+  "obj_special_armour_mouse": [
+    "spr_special_armour_mouse_throw"
+  ],
+  "obj_warrior_minion_mouse": [
+    "spr_warrior_minion_mouse_summon"
+  ],
+  "obj_wrestler_mouse": [
+    "spr_wrestler_mouse_throw"
+  ]
+}

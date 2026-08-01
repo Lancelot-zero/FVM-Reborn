@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_irritable_jack_idle");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 
@@ -9,8 +10,8 @@ maxhp = 60000
 immune_to_ash = true
 wait_time = 240
 cave = noone
-sprite_index = spr_irritable_jack_idle
-idle_spr = spr_irritable_jack_idle
+sprite_index = get_load_sprite("spr_irritable_jack_idle")
+idle_spr = get_load_sprite("spr_irritable_jack_idle")
 idle_anim = 8
 is_boss = true
 step_ready = false;	frame_count = 0;

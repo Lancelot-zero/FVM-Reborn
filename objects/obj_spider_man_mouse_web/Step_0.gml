@@ -23,7 +23,7 @@ if x >= target_x - 10 && x <= target_x + 10{
 		}
 	}
 	var inst = instance_create_depth(x+50,y-65,-800,obj_coke_bomb_explode)
-	inst.sprite_index = spr_spider_man_mouse_web_effect
+	inst.sprite_index = get_load_sprite("spr_spider_man_mouse_web_effect")
 	instance_destroy()
 	
 }

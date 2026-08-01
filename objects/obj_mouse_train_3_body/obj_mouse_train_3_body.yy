@@ -36,8 +36,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_mouse_train_2_body_idle1",
-    "path":"sprites/spr_mouse_train_2_body_idle1/spr_mouse_train_2_body_idle1.yy",
+    "name":"spr_cloud_daytime",
+    "path":"sprites/spr_cloud_daytime/spr_cloud_daytime.yy",
   },
   "spriteMaskId":null,
   "visible":true,

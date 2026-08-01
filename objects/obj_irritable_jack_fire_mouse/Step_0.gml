@@ -37,7 +37,7 @@ if state == ENEMY_STATE.ACTING && hp > 0 && state != ENEMY_STATE.DEAD{
 			}
 			var effect = instance_create_depth(x-15,y+15,-800,obj_wine_bottle_bomb_explode)
 			effect.interval = 0
-			effect.sprite_index = spr_julie_incendiary_bomb_effect
+			effect.sprite_index = get_load_sprite("spr_julie_incendiary_bomb_effect")
 			effect.max_time = 45
 			effect.is_parent = true
 			effect.row = grid_row

@@ -111,9 +111,9 @@ function on_create_room() {
         var _custom_music_names = {}
         if (_check_custom_music(_raw_json,"pre_music") || _check_custom_music(_raw_json,"elite_music") || _check_custom_music(_raw_json,"boss_music")) {
             var _ld = _json_struct[$ "level_data"]
-            _ld[$ "pre_music"]   = mus_delicious_island_daytime_pre
-            _ld[$ "elite_music"] = mus_delicious_island_daytime_elite
-            _ld[$ "boss_music"]  = mus_delicious_island_daytime_boss
+            _ld[$ "pre_music"]   = mus_menu
+            _ld[$ "elite_music"] = mus_menu
+            _ld[$ "boss_music"]  = mus_menu
             if (_check_custom_music(_raw_json,"pre_music")) {
                 var _rel = string(variable_struct_get(_raw_json, "pre_music"))
                 _custom_music_names[$ "pre_music"] = _rel

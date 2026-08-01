@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_ice_residue_disappear");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 
@@ -9,7 +10,7 @@ maxhp = 12000
 immune_to_ash = true
 wait_time = 0
 cave = noone
-sprite_index = spr_ice_residue_appear
+sprite_index = get_load_sprite("spr_ice_residue_appear")
 is_boss = true
 step_ready = false;	frame_count = 0;
 skill_count = 0
@@ -23,4 +24,4 @@ if obj_battle.boss_count > 0{
 }
 
 shape = "ice"
-spr_list = [spr_ice_residue_appear,spr_ice_residue_skill_1_ready,spr_ice_residue_skill_1,spr_ice_residue_skill_2,spr_ice_residue_disappear,spr_ice_residue_death]
+spr_list = [get_load_sprite("spr_ice_residue_appear"),get_load_sprite("spr_ice_residue_skill_1_ready"),get_load_sprite("spr_ice_residue_skill_1"),get_load_sprite("spr_ice_residue_skill_2"),get_load_sprite("spr_ice_residue_disappear"),get_load_sprite("spr_ice_residue_death")]

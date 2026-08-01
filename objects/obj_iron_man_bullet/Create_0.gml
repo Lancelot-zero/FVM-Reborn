@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_iron_man_mouse_bullet");  //转化额外添加保证触发
 image_xscale = 1.8
 image_yscale = 1.8
 image_speed = 0

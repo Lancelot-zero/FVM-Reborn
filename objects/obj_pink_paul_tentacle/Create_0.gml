@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_pink_paul_tentacle");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 

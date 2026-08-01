@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_angelababy_idle");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 
@@ -13,7 +14,7 @@ skill_count = 0
 skill_change_style = 0
 skill_timer = 0
 skill_move_type = "act"
-sprite_index = spr_angelababy_appear
+sprite_index = get_load_sprite("spr_angelababy_appear")
 is_boss = true
 step_ready = false;	frame_count = 0;
 

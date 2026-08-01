@@ -4,10 +4,10 @@ if global.is_paused{
 
 var grid_pos = get_grid_position_from_world(x,y)
 if global.grid_terrains[grid_pos.row][grid_pos.col].type == "water"{
-	sprite_index = spr_mario_pipeline_water
+	sprite_index = get_load_sprite("spr_mario_pipeline_water")
 }
 else if global.grid_terrains[grid_pos.row][grid_pos.col].type == "normal"{
-	sprite_index = spr_mario_pipeline_land
+	sprite_index = get_load_sprite("spr_mario_pipeline_land")
 }
 
 if global.grid_terrains[grid_pos.row][grid_pos.col].type != "obstacle"{

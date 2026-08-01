@@ -3,7 +3,7 @@
 if hp <= 0 && state != ENEMY_STATE.DEAD{
 	state = ENEMY_STATE.DEAD
 	timer = 0 
-	sprite_index = spr_penguin_mouse
+	sprite_index = get_load_sprite("spr_penguin_mouse")
 }
 event_inherited();
 
@@ -18,7 +18,7 @@ if (throw_timer <= 0 || state == ENEMY_STATE.ATTACK) && !throwed && grid_col <= 
 }
 
 if state == ENEMY_STATE.APPEAR{
-	sprite_index = spr_penguin_mouse_throw	
+	sprite_index = get_load_sprite("spr_penguin_mouse_throw")	
 	if hp > maxhp * hurt_rate{
 		image_index = floor(timer/flash_speed) mod 9
 	}
@@ -27,7 +27,7 @@ if state == ENEMY_STATE.APPEAR{
 	}
 	if timer >= flash_speed * 9 - 1 or hp <= 0{
 		state = ENEMY_STATE.NORMAL
-		sprite_index = spr_penguin_mouse
+		sprite_index = get_load_sprite("spr_penguin_mouse")
 	}
 	if timer == 6 * flash_speed - 1{
 		for(var i = 0 ; i < grid_col;i++){

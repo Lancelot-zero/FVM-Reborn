@@ -3,31 +3,31 @@ if hp <= 0  && state != ENEMY_STATE.DEAD{
 		timer = 0
 		state = ENEMY_STATE.DEAD
 		if (grid_col < 0 || grid_col >= global.grid_cols || grid_row < 0 || grid_row >= global.grid_rows){
-			sprite_index = spr_diver_mouse_land
+			sprite_index = get_load_sprite("spr_diver_mouse_land")
 		}
 		else{
 			if global.grid_terrains[grid_row][grid_col].type == "water"{
-				sprite_index = spr_diver_mouse
+				sprite_index = get_load_sprite("spr_diver_mouse")
 				death_anim = 10
 			}
 			else{
-				sprite_index = spr_diver_mouse_land
+				sprite_index = get_load_sprite("spr_diver_mouse_land")
 				death_anim = 13
 			}
 		}
 		
 	}
 if (grid_col < 0 || grid_col >= global.grid_cols || grid_row < 0 || grid_row >= global.grid_rows) {
-	sprite_index = spr_diver_mouse_land
+	sprite_index = get_load_sprite("spr_diver_mouse_land")
 	move_anim = 8
 	death_anim = 13
 }
 else{
 	if state != ENEMY_STATE.DEAD{
 		if global.grid_terrains[grid_row][grid_col].type == "water" && not entered{
-			if sprite_index == spr_diver_mouse_land{
+			if sprite_index == get_load_sprite("spr_diver_mouse_land"){
 				state = ENEMY_STATE.ACTING
-				sprite_index = spr_diver_mouse_enter
+				sprite_index = get_load_sprite("spr_diver_mouse_enter")
 				timer = 0
 				audio_play_sound(snd_enter_water,0,0)
 				reversed = false
@@ -36,9 +36,9 @@ else{
 			death_anim = 10
 		}
 		//else if global.grid_terrains[grid_row][grid_col].type != "water" && entered{
-		//	if sprite_index == spr_diver_mouse{
+		//	if sprite_index == get_load_sprite("spr_diver_mouse"){
 		//		state = ENEMY_STATE.ACTING
-		//		sprite_index = spr_diver_mouse_enter
+		//		sprite_index = get_load_sprite("spr_diver_mouse_enter")
 		//		timer = 0
 		//		audio_play_sound(snd_enter_water,0,0)
 		//		reversed = true
@@ -50,12 +50,12 @@ else{
 }
 if state == ENEMY_STATE.ATTACK && entered{
 	if instance_exists(target_plant) && not up{
-		sprite_index = spr_diver_mouse_up
+		sprite_index = get_load_sprite("spr_diver_mouse_up")
 		state = ENEMY_STATE.ACTING
 		timer = 0
 	}
 	if !instance_exists(target_plant) && up{
-		sprite_index = spr_diver_mouse_up
+		sprite_index = get_load_sprite("spr_diver_mouse_up")
 		state = ENEMY_STATE.ACTING
 		timer = 0
 	}
@@ -71,10 +71,10 @@ if state == ENEMY_STATE.ACTING{
 			timer = 0
 			state = ENEMY_STATE.DEAD
 			if reversed{
-				sprite_index = spr_diver_mouse_land
+				sprite_index = get_load_sprite("spr_diver_mouse_land")
 			}
 			else{
-				sprite_index = spr_diver_mouse
+				sprite_index = get_load_sprite("spr_diver_mouse")
 			}
 		
 		}
@@ -99,11 +99,11 @@ if state == ENEMY_STATE.ACTING{
 			state = ENEMY_STATE.NORMAL
 			
 			if reversed{
-				sprite_index = spr_diver_mouse_land
+				sprite_index = get_load_sprite("spr_diver_mouse_land")
 				entered = false
 			}
 			else{
-				sprite_index = spr_diver_mouse
+				sprite_index = get_load_sprite("spr_diver_mouse")
 				entered = true
 			}
 			if hp <= 0{
@@ -134,7 +134,7 @@ if state == ENEMY_STATE.ACTING{
 		if timer >= flash_speed * 4 or hp <= 0{
 			state = ENEMY_STATE.NORMAL
 			
-			sprite_index = spr_diver_mouse
+			sprite_index = get_load_sprite("spr_diver_mouse")
 			up = !up
 			
 			if hp <= 0{
@@ -145,7 +145,7 @@ if state == ENEMY_STATE.ACTING{
 	}
 }
 
-if sprite_index == spr_diver_mouse && state != ENEMY_STATE.ATTACK{
+if sprite_index == get_load_sprite("spr_diver_mouse") && state != ENEMY_STATE.ATTACK{
 	target_type = "diver"
 }
 else{

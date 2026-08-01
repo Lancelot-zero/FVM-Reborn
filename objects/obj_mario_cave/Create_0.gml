@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_mario_cave_land");  //转化额外添加保证触发
 row = 0
 col = 0
 timer = 0

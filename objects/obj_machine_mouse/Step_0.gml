@@ -1,10 +1,10 @@
 // Inherit the parent event
 
 if hp > maxhp - helmet_hp{
-	sprite_index = spr_machine_mouse
+	sprite_index = get_load_sprite("spr_machine_mouse")
 }
 else{
-	sprite_index = spr_machine_mouse
+	sprite_index = get_load_sprite("spr_machine_mouse")
 }
 
 event_inherited();

@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_pineapple_explosive_bread_0_0");  //转化额外添加保证触发
 // obj_small_furnace 的 Create 事件
 //plant_id = "small_fire";  // 唯一标识符
 event_inherited();  // 继承父对象属性
@@ -9,12 +10,12 @@ event_user(0)
 
 // ========== 特定属性默认值 ==========
 
-sprite_list = [spr_pineapple_explosive_bread_0_0,spr_pineapple_explosive_bread_0_1,spr_pineapple_explosive_bread_0_2]
+sprite_list = [get_load_sprite("spr_pineapple_explosive_bread_0_0"),get_load_sprite("spr_pineapple_explosive_bread_0_1"),get_load_sprite("spr_pineapple_explosive_bread_0_2")]
 if shape == 1{
-	sprite_list = [spr_pineapple_explosive_bread_1_0,spr_pineapple_explosive_bread_1_1,spr_pineapple_explosive_bread_1_2]
+	sprite_list = [get_load_sprite("spr_pineapple_explosive_bread_1_0"),get_load_sprite("spr_pineapple_explosive_bread_1_1"),get_load_sprite("spr_pineapple_explosive_bread_1_2")]
 }
 if shape == 2{
-	sprite_list = [spr_pineapple_explosive_bread_2_0,spr_pineapple_explosive_bread_2_1,spr_pineapple_explosive_bread_2_2]
+	sprite_list = [get_load_sprite("spr_pineapple_explosive_bread_2_0"),get_load_sprite("spr_pineapple_explosive_bread_2_1"),get_load_sprite("spr_pineapple_explosive_bread_2_2")]
 }
 sprite_index = sprite_list[0]
 idle_anim = 12

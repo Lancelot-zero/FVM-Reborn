@@ -4,7 +4,7 @@ if global.is_paused{
 }
 
 if (hp <= 0) {
-	sprite_index = spr_machine_bomb_mouse_land
+	sprite_index = get_load_sprite("spr_machine_bomb_mouse_land")
 	if state != ENEMY_STATE.DEAD{
 	    timer = 0;
 	    state = ENEMY_STATE.DEAD;
@@ -37,7 +37,7 @@ if hp > 0 && state != ENEMY_STATE.DEAD{
 		image_index = floor(anim_timer/flash_speed) mod 8
 		if hp <= (maxhp-helmet_hp) || x <= global.grid_offset_x + 150{
 			state = ENEMY_STATE.ACTING
-			sprite_index = spr_machine_bomb_mouse_drop
+			sprite_index = get_load_sprite("spr_machine_bomb_mouse_drop")
 			anim_timer = 0
 		}
 	}
@@ -47,7 +47,7 @@ if hp > 0 && state != ENEMY_STATE.DEAD{
 		image_index = floor(anim_timer/flash_speed) mod 8
 		if anim_timer >= flash_speed * 8{
 			state = ENEMY_STATE.NORMAL
-			sprite_index = spr_machine_bomb_mouse_land
+			sprite_index = get_load_sprite("spr_machine_bomb_mouse_land")
 			move_speed = 0.3
 			anim_timer = 0
 			helmet_hp = 0
