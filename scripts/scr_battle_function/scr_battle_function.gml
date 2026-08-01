@@ -126,7 +126,7 @@ function parse_network_message(buf, _sock) {
 			network_apply_plant_level(_plant);
             add_net_id(_plant.id);
 
-            show_debug_message("[解析] MSG_UNIT_REQUEST: type=" + object_name + " Lv=" + string(level)+" meta="+meta);
+            show_debug_message("[解析] MSG_UNIT_REQUEST: type=" + object_name + " Lv=" + string(level) + " shape=" + string(shape) + " skill=" + string(skill) + " sprite=" + _sprite_name + " meta="+meta);
             break;
         }
         
@@ -224,7 +224,7 @@ function parse_network_message(buf, _sock) {
 			network_apply_plant_level(_plant);
             set_net_id(_plant.id, net_id);
 
-            show_debug_message("[解析] MSG_SPAWN_UNIT: ID=" + string(net_id) + " type=" + object_name + " Lv=" + string(level)+" meta="+meta);
+            show_debug_message("[解析] MSG_SPAWN_UNIT: ID=" + string(net_id) + " type=" + object_name + " Lv=" + string(level) + " shape=" + string(shape) + " skill=" + string(skill) + " sprite=" + _sprite_name + " meta="+meta);
             break;
 
         }

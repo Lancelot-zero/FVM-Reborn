@@ -93,6 +93,13 @@ function spawn_plant(col, row, plant_obj, props) {
 	        if (array_length(_pkeys) > 0) {
 	            var _net_id = ds_map_exists(global.network.map_instance_id_net_id, _plant) ? global.network.map_instance_id_net_id[? _plant] : -1;
 	            if (_net_id != -1) {
+	                if (variable_struct_exists(props, "sprite_index")) {
+	                    var _sid = props[$ "sprite_index"];
+	                    if (ds_map_exists(global._pid_reverse, _sid))
+	                        props[$ "sprite_index"] = global._pid_reverse[? _sid];
+	                    else
+	                        props[$ "sprite_index"] = sprite_get_name(_sid);
+	                }
 	                var _json = json_stringify(props);
 	                var _cl = global.network.connected_clients;
 	                for (var _n = 0; _n < array_length(_cl); _n++) {
