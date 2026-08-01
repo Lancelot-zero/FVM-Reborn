@@ -13,6 +13,9 @@
   ],
   "obj_aircraft_carrier": [
     "spr_aircraft_carrier",
+    "spr_aircraft_carrier_release_1",
+    "spr_aircraft_carrier_release_2",
+    "spr_aircraft_carrier_release_3",
     "spr_machine_bomb_mouse_air",
     "spr_machine_bomb_mouse_bomb",
     "spr_machine_bomb_mouse_bomb_effect",
@@ -143,8 +146,17 @@
     "spr_charge_spring_mouse_shield",
     "spr_duck_mouse_enter",
     "spr_flute_mouse_effect",
+    "spr_gatling_popcorn_bullet",
+    "spr_gatling_popcorn_bullet_1",
+    "spr_gatling_popcorn_bullet_2",
+    "spr_gatling_popcorn_bullet_effect",
+    "spr_gatling_popcorn_bullet_effect_1",
+    "spr_gatling_popcorn_bullet_effect_2",
     "spr_machine_bee",
     "spr_machine_beehive_mouse",
+    "spr_machine_beehive_release_1",
+    "spr_machine_beehive_release_2",
+    "spr_machine_beehive_release_3",
     "spr_mario_cave_land",
     "spr_mario_cave_water",
     "spr_mario_mouse_appear",
@@ -172,7 +184,11 @@
     "spr_xiao_long_bao"
   ],
   "obj_battle_pause_manager": [],
-  "obj_beef_hotpot": [],
+  "obj_beef_hotpot": [
+    "spr_beef_hotpot",
+    "spr_beef_hotpot_1",
+    "spr_beef_hotpot_2"
+  ],
   "obj_beefhotpot_bullet": [],
   "obj_blonde_mary": [
     "spr_blonde_mary_appear",
@@ -221,6 +237,9 @@
   ],
   "obj_captain_america_mouse": [
     "spr_aircraft_carrier",
+    "spr_aircraft_carrier_release_1",
+    "spr_aircraft_carrier_release_2",
+    "spr_aircraft_carrier_release_3",
     "spr_captain_america_mouse_appear1",
     "spr_captain_america_mouse_idle",
     "spr_captain_america_mouse_rainbow",
@@ -229,10 +248,12 @@
     "spr_machine_bomb_mouse_bomb",
     "spr_machine_bomb_mouse_bomb_effect",
     "spr_machine_bomb_mouse_drop",
-    "spr_machine_bomb_mouse_land"
+    "spr_machine_bomb_mouse_land",
+    "spr_soldier_mouse"
   ],
   "obj_captain_rainbow": [
-    "spr_captain_america_mouse_rainbow"
+    "spr_captain_america_mouse_rainbow",
+    "spr_soldier_mouse"
   ],
   "obj_captain_shield": [
     "spr_captain_america_mouse_shield"
@@ -361,13 +382,20 @@
     "spr_double_ice_long_bao"
   ],
   "obj_double_long_bao": [
-    "spr_double_long_bao"
+    "spr_double_long_bao",
+    "spr_gatling_popcorn_bullet",
+    "spr_gatling_popcorn_bullet_1",
+    "spr_gatling_popcorn_bullet_2",
+    "spr_gatling_popcorn_bullet_effect",
+    "spr_gatling_popcorn_bullet_effect_1",
+    "spr_gatling_popcorn_bullet_effect_2"
   ],
   "obj_double_water_gun": [],
   "obj_double_water_pipe": [
     "spr_double_water_pipe",
     "spr_double_water_pipe_1",
-    "spr_double_water_pipe_2"
+    "spr_double_water_pipe_2",
+    "spr_water_pipe_libra_bullet"
   ],
   "obj_dragon_boat_mouse": [
     "spr_dragon_boat_mouse",
@@ -474,7 +502,8 @@
   ],
   "obj_flour_sack": [
     "spr_flour_sack",
-    "spr_flour_sack_1"
+    "spr_flour_sack_1",
+    "spr_flour_sack_2"
   ],
   "obj_flute_mouse": [
     "spr_flute_mouse",
@@ -515,11 +544,20 @@
   "obj_gatlin_long_bao": [
     "spr_gatlin_long_bao",
     "spr_gatlin_long_bao_1",
-    "spr_gatlin_long_bao_2"
+    "spr_gatlin_long_bao_2",
+    "spr_gatling_popcorn_bullet",
+    "spr_gatling_popcorn_bullet_1",
+    "spr_gatling_popcorn_bullet_2",
+    "spr_gatling_popcorn_bullet_effect",
+    "spr_gatling_popcorn_bullet_effect_1",
+    "spr_gatling_popcorn_bullet_effect_2"
   ],
   "obj_gem_edit_menu": [],
   "obj_ghost_mouse": [
     "spr_ghost_mouse"
+  ],
+  "obj_giant_mouse": [
+    "spr_giant_mouse"
   ],
   "obj_glider_mouse": [
     "spr_glider_mouse_air",
@@ -566,6 +604,8 @@
     "spr_arno_bullet_effect",
     "spr_buzz_wind",
     "spr_fog_julie_idle",
+    "spr_hot_vajra_appear",
+    "spr_hot_vajra_idle",
     "spr_julie_incendiary_bomb",
     "spr_julie_incendiary_bomb_effect",
     "spr_lieutenant_buzz_idle",
@@ -600,6 +640,7 @@
     "spr_hulk_mouse_skill_effect_3"
   ],
   "obj_hulk_mouse": [
+    "spr_hulk_mouse_appear",
     "spr_hulk_mouse_idle",
     "spr_hulk_mouse_skill_effect_3"
   ],
@@ -619,7 +660,9 @@
   "obj_ice_egg_boiler_pult": [
     "spr_ice_egg_boiler_pult",
     "spr_ice_egg_boiler_pult_1",
-    "spr_ice_egg_boiler_pult_2"
+    "spr_ice_egg_boiler_pult_2",
+    "spr_ice_egg_pisces_bullet",
+    "spr_ice_egg_pisces_bullet_effect"
   ],
   "obj_ice_gun": [],
   "obj_ice_long_bao": [
@@ -628,6 +671,7 @@
   "obj_ice_residue": [
     "spr_engineer_bullet_effect",
     "spr_ice_residue_appear",
+    "spr_ice_residue_ball",
     "spr_ice_residue_bullet",
     "spr_ice_residue_bullet_effect",
     "spr_ice_residue_death",
@@ -636,13 +680,22 @@
     "spr_ice_residue_skill_1_ready",
     "spr_ice_residue_skill_2"
   ],
+  "obj_ice_residue_ball": [
+    "spr_ice_residue_ball"
+  ],
   "obj_ice_residue_bullet": [
     "spr_engineer_bullet_effect",
     "spr_ice_residue_bullet",
     "spr_ice_residue_bullet_effect"
   ],
-  "obj_ice_spoon_crossbow": [],
-  "obj_iceeggboilerpult_bullet": [],
+  "obj_ice_spoon_crossbow": [
+    "spr_ice_egg_pisces_bullet",
+    "spr_ice_egg_pisces_bullet_effect"
+  ],
+  "obj_iceeggboilerpult_bullet": [
+    "spr_ice_egg_pisces_bullet",
+    "spr_ice_egg_pisces_bullet_effect"
+  ],
   "obj_icegun_bullet": [],
   "obj_icelongbao_bullet": [],
   "obj_icelongbao_bullet_vertical": [],
@@ -655,7 +708,8 @@
     "spr_iron_fishbone_2"
   ],
   "obj_iron_man": [
-    "spr_iron_man_mouse_laser"
+    "spr_iron_man_mouse_laser",
+    "spr_iron_man_mouse_skill_2_iron"
   ],
   "obj_iron_man_bullet": [
     "spr_iron_man_mouse_bullet",
@@ -665,7 +719,10 @@
     "spr_iron_man_mouse_bullet",
     "spr_iron_man_mouse_bullet_effect",
     "spr_iron_man_mouse_death",
-    "spr_iron_man_mouse_laser"
+    "spr_iron_man_mouse_drop",
+    "spr_iron_man_mouse_idle",
+    "spr_iron_man_mouse_laser",
+    "spr_iron_man_mouse_skill_2_iron"
   ],
   "obj_iron_pan_mouse": [
     "spr_iron_pan_mouse",
@@ -839,13 +896,23 @@
     "spr_little_wrestler",
     "spr_little_wrestler_throw"
   ],
-  "obj_long_bao_gun": [],
+  "obj_long_bao_gun": [
+    "spr_gatling_popcorn_bullet",
+    "spr_gatling_popcorn_bullet_1",
+    "spr_gatling_popcorn_bullet_2",
+    "spr_gatling_popcorn_bullet_effect",
+    "spr_gatling_popcorn_bullet_effect_1",
+    "spr_gatling_popcorn_bullet_effect_2"
+  ],
   "obj_machine_bee": [
     "spr_machine_bee"
   ],
   "obj_machine_beehive_mouse": [
     "spr_machine_bee",
-    "spr_machine_beehive_mouse"
+    "spr_machine_beehive_mouse",
+    "spr_machine_beehive_release_1",
+    "spr_machine_beehive_release_2",
+    "spr_machine_beehive_release_3"
   ],
   "obj_machine_bomb_mouse": [
     "spr_machine_bomb_mouse_air",
@@ -879,14 +946,16 @@
     "spr_machine_normal_mouse"
   ],
   "obj_machine_skateboard_mouse": [
-    "spr_machine_skateboard_mouse"
+    "spr_machine_skateboard_mouse",
+    "spr_machine_skateboard_mouse_skate"
   ],
   "obj_magic_chicken": [
     "spr_magic_chicken"
   ],
   "obj_magician_mouse": [
     "spr_little_magician",
-    "spr_little_magician_throw"
+    "spr_little_magician_throw",
+    "spr_magician_mouse"
   ],
   "obj_map_manager": [],
   "obj_mario_cave": [
@@ -938,6 +1007,7 @@
   "obj_mighty_gun": [],
   "obj_mightygun_bullet": [],
   "obj_minion_mouse": [
+    "spr_minion_mouse",
     "spr_minion_mouse_summon"
   ],
   "obj_mirror_mouse": [
@@ -1004,6 +1074,12 @@
     "spr_mouse_train_2_body_disappear4",
     "spr_mouse_train_2_body_idle1",
     "spr_mouse_train_2_body_idle2",
+    "spr_mouse_train_2_body_skill_1_1",
+    "spr_mouse_train_2_body_skill_1_2",
+    "spr_mouse_train_2_body_skill_2_1",
+    "spr_mouse_train_2_body_skill_2_2",
+    "spr_mouse_train_2_body_skill_2_3",
+    "spr_mouse_train_2_body_skill_3",
     "spr_mouse_train_2_bullet"
   ],
   "obj_mouse_train_2_bullet": [
@@ -1027,6 +1103,12 @@
     "spr_mouse_train_2_body_disappear4",
     "spr_mouse_train_2_body_idle1",
     "spr_mouse_train_2_body_idle2",
+    "spr_mouse_train_2_body_skill_1_1",
+    "spr_mouse_train_2_body_skill_1_2",
+    "spr_mouse_train_2_body_skill_2_1",
+    "spr_mouse_train_2_body_skill_2_2",
+    "spr_mouse_train_2_body_skill_2_3",
+    "spr_mouse_train_2_body_skill_3",
     "spr_mouse_train_2_bullet",
     "spr_mouse_train_2_head_appear1",
     "spr_mouse_train_2_head_idle"
@@ -1038,7 +1120,9 @@
   "obj_mouse_train_3_butter": [
     "spr_mouse_train_3_butter"
   ],
-  "obj_mouse_train_3_explode": [],
+  "obj_mouse_train_3_explode": [
+    "spr_mouse_train_3_body_skill_3"
+  ],
   "obj_mouse_train_3_head": [
     "spr_machine_iron_pan_mouse",
     "spr_machine_iron_pan_mouse_helmet",
@@ -1046,15 +1130,18 @@
     "spr_mouse_train_2_body_idle1",
     "spr_mouse_train_2_head_appear1",
     "spr_mouse_train_2_head_idle",
+    "spr_mouse_train_3_body_skill_3",
     "spr_mouse_train_3_butter"
   ],
   "obj_mummy_mouse": [
     "spr_mummy_mouse"
   ],
   "obj_naruto_minion_mouse": [
+    "spr_naruto_minion_mouse",
     "spr_naruto_minion_mouse_summon"
   ],
   "obj_naruto_mouse": [
+    "spr_minion_mouse",
     "spr_minion_mouse_summon",
     "spr_naruto_mouse",
     "spr_naruto_mouse_summon"
@@ -1068,6 +1155,7 @@
     "spr_needle_baron_idle"
   ],
   "obj_ninja_mouse": [
+    "spr_minion_mouse",
     "spr_minion_mouse_summon",
     "spr_ninja_mouse",
     "spr_ninja_mouse_summon"
@@ -1107,6 +1195,8 @@
   "obj_panda_mouse": [
     "spr_little_panda",
     "spr_little_panda_throw",
+    "spr_panda_mouse",
+    "spr_panda_mouse_has_small",
     "spr_panda_mouse_throw"
   ],
   "obj_panfriedbun_bullet": [],
@@ -1205,6 +1295,12 @@
     "spr_pink_paul_tentacle_drop"
   ],
   "obj_player_character": [
+    "spr_gatling_popcorn_bullet",
+    "spr_gatling_popcorn_bullet_1",
+    "spr_gatling_popcorn_bullet_2",
+    "spr_gatling_popcorn_bullet_effect",
+    "spr_gatling_popcorn_bullet_effect_1",
+    "spr_gatling_popcorn_bullet_effect_2",
     "spr_wooden_plate",
     "spr_wooden_plate_1",
     "spr_wooden_plate_2"
@@ -1304,9 +1400,14 @@
   "obj_soar_mouse": [
     "spr_soar_mouse"
   ],
+  "obj_soldier_mouse": [
+    "spr_soldier_mouse"
+  ],
   "obj_special_armour_mouse": [
     "spr_little_armour_mouse",
     "spr_little_armour_mouse_throw",
+    "spr_special_armour_mouse",
+    "spr_special_armour_mouse_has_small",
     "spr_special_armour_mouse_throw"
   ],
   "obj_spicy_pot": [
@@ -1327,7 +1428,14 @@
     "spr_spider_man_mouse_web",
     "spr_spider_man_mouse_web_effect"
   ],
-  "obj_star_gun": [],
+  "obj_star_gun": [
+    "spr_gatling_popcorn_bullet",
+    "spr_gatling_popcorn_bullet_1",
+    "spr_gatling_popcorn_bullet_2",
+    "spr_gatling_popcorn_bullet_effect",
+    "spr_gatling_popcorn_bullet_effect_1",
+    "spr_gatling_popcorn_bullet_effect_2"
+  ],
   "obj_starlight_gem": [],
   "obj_starlight_gem_effect": [],
   "obj_steel_claw_gun": [],
@@ -1348,7 +1456,9 @@
   "obj_takoyaki": [
     "spr_takoyaki",
     "spr_takoyaki_1",
-    "spr_takoyaki_2"
+    "spr_takoyaki_2",
+    "spr_takoyaki_cancer_bullet",
+    "spr_takoyaki_cancer_bullet_1"
   ],
   "obj_takoyaki_bullet": [],
   "obj_tang_hu_lu": [
@@ -1375,6 +1485,7 @@
     "spr_mummy_mouse",
     "spr_pharaoh_bandage",
     "spr_pharaoh_coffin",
+    "spr_temple_pharaoh_appear",
     "spr_temple_pharaoh_idle"
   ],
   "obj_thug_submarine_mouse": [
@@ -1390,14 +1501,29 @@
     "spr_triple_ice_long_bao"
   ],
   "obj_triple_long_bao": [
+    "spr_gatling_popcorn_bullet",
+    "spr_gatling_popcorn_bullet_1",
+    "spr_gatling_popcorn_bullet_2",
+    "spr_gatling_popcorn_bullet_effect",
+    "spr_gatling_popcorn_bullet_effect_1",
+    "spr_gatling_popcorn_bullet_effect_2",
     "spr_triple_long_bao"
   ],
   "obj_triple_wine_rack": [
     "spr_triple_wine_rack",
     "spr_triple_wine_rack_1",
-    "spr_triple_wine_rack_2"
+    "spr_triple_wine_rack_2",
+    "spr_wine_rack_sagittarius_bullet",
+    "spr_wine_rack_sagittarius_bullet_1",
+    "spr_wine_rack_sagittarius_bullet_effect",
+    "spr_wine_rack_sagittarius_bullet_effect_1"
   ],
-  "obj_triplewinerack_bullet": [],
+  "obj_triplewinerack_bullet": [
+    "spr_wine_rack_sagittarius_bullet",
+    "spr_wine_rack_sagittarius_bullet_1",
+    "spr_wine_rack_sagittarius_bullet_effect",
+    "spr_wine_rack_sagittarius_bullet_effect_1"
+  ],
   "obj_tropical_fish_mouse": [
     "spr_tropical_fish_mouse",
     "spr_tropical_fish_mouse_enter",
@@ -1430,9 +1556,11 @@
     "spr_ventilation_fan_2"
   ],
   "obj_warrior_minion_mouse": [
+    "spr_warrior_minion_mouse",
     "spr_warrior_minion_mouse_summon"
   ],
   "obj_warrior_mouse": [
+    "spr_minion_mouse",
     "spr_minion_mouse_summon",
     "spr_warrior_mouse",
     "spr_warrior_mouse_summon"
@@ -1482,12 +1610,27 @@
   "obj_wrestler_mouse": [
     "spr_little_wrestler",
     "spr_little_wrestler_throw",
+    "spr_wrestler_mouse",
+    "spr_wrestler_mouse_has_small",
     "spr_wrestler_mouse_throw"
   ],
   "obj_xiao_long_bao": [
+    "spr_gatling_popcorn_bullet",
+    "spr_gatling_popcorn_bullet_1",
+    "spr_gatling_popcorn_bullet_2",
+    "spr_gatling_popcorn_bullet_effect",
+    "spr_gatling_popcorn_bullet_effect_1",
+    "spr_gatling_popcorn_bullet_effect_2",
     "spr_xiao_long_bao"
   ],
-  "obj_xiaolongbao_bullet": [],
+  "obj_xiaolongbao_bullet": [
+    "spr_gatling_popcorn_bullet",
+    "spr_gatling_popcorn_bullet_1",
+    "spr_gatling_popcorn_bullet_2",
+    "spr_gatling_popcorn_bullet_effect",
+    "spr_gatling_popcorn_bullet_effect_1",
+    "spr_gatling_popcorn_bullet_effect_2"
+  ],
   "obj_xiaolongbao_bullet_vertical": [],
   "obj_xiaoming_text": [
     "spr_xiaoming_text_1"

@@ -9,7 +9,10 @@
     "spr_airbrone_explosive_mouse_drop"
   ],
   "obj_aircraft_carrier": [
-    "spr_aircraft_carrier"
+    "spr_aircraft_carrier",
+    "spr_aircraft_carrier_release_2",
+    "spr_aircraft_carrier_release_3",
+    "spr_aircraft_carrier_release_1"
   ],
   "obj_angelababy": [
     "spr_angelababy_idle",
@@ -92,6 +95,11 @@
   ],
   "obj_bat_mouse_target": [
     "spr_bat_mouse_target"
+  ],
+  "obj_beef_hotpot": [
+    "spr_beef_hotpot",
+    "spr_beef_hotpot_1",
+    "spr_beef_hotpot_2"
   ],
   "obj_blonde_mary": [
     "spr_blonde_mary_idle",
@@ -247,7 +255,8 @@
   "obj_double_water_pipe": [
     "spr_double_water_pipe",
     "spr_double_water_pipe_1",
-    "spr_double_water_pipe_2"
+    "spr_double_water_pipe_2",
+    "spr_water_pipe_libra_bullet"
   ],
   "obj_dragon_boat_mouse": [
     "spr_rowboat_mouse",
@@ -326,7 +335,8 @@
   ],
   "obj_flour_sack": [
     "spr_flour_sack",
-    "spr_flour_sack_1"
+    "spr_flour_sack_1",
+    "spr_flour_sack_2"
   ],
   "obj_flute_mouse": [
     "spr_flute_mouse",
@@ -355,10 +365,16 @@
   "obj_gatlin_long_bao": [
     "spr_gatlin_long_bao",
     "spr_gatlin_long_bao_1",
-    "spr_gatlin_long_bao_2"
+    "spr_gatlin_long_bao_2",
+    "spr_gatling_popcorn_bullet",
+    "spr_gatling_popcorn_bullet_1",
+    "spr_gatling_popcorn_bullet_2"
   ],
   "obj_ghost_mouse": [
     "spr_ghost_mouse"
+  ],
+  "obj_giant_mouse": [
+    "spr_giant_mouse"
   ],
   "obj_glider_mouse": [
     "spr_glider_mouse_air",
@@ -387,6 +403,10 @@
     "spr_hells_messenger_idle",
     "spr_hells_messenger_appear"
   ],
+  "obj_hot_vajra": [
+    "spr_hot_vajra_idle",
+    "spr_hot_vajra_appear"
+  ],
   "obj_hotdog_cannon": [
     "spr_hotdog_cannon",
     "spr_hotdog_cannon_1",
@@ -400,7 +420,8 @@
     "spr_hulk_mouse_skill_effect_3"
   ],
   "obj_hulk_mouse": [
-    "spr_hulk_mouse_idle"
+    "spr_hulk_mouse_idle",
+    "spr_hulk_mouse_appear"
   ],
   "obj_ice_bucket_bomb": [
     "spr_ice_bucket_bomb",
@@ -418,7 +439,8 @@
   "obj_ice_egg_boiler_pult": [
     "spr_ice_egg_boiler_pult",
     "spr_ice_egg_boiler_pult_1",
-    "spr_ice_egg_boiler_pult_2"
+    "spr_ice_egg_boiler_pult_2",
+    "spr_ice_egg_pisces_bullet"
   ],
   "obj_ice_long_bao": [
     "spr_ice_long_bao"
@@ -431,6 +453,9 @@
     "spr_ice_residue_skill_2",
     "spr_ice_residue_death"
   ],
+  "obj_ice_residue_ball": [
+    "spr_ice_residue_ball"
+  ],
   "obj_ice_residue_bullet": [
     "spr_ice_residue_bullet",
     "spr_ice_residue_bullet_effect"
@@ -440,9 +465,18 @@
     "spr_iron_fishbone_1",
     "spr_iron_fishbone_2"
   ],
+  "obj_iron_man": [
+    "spr_iron_man_mouse_skill_2_iron",
+    "spr_iron_man_mouse_laser"
+  ],
   "obj_iron_man_bullet": [
     "spr_iron_man_mouse_bullet",
     "spr_iron_man_mouse_bullet_effect"
+  ],
+  "obj_iron_man_mouse": [
+    "spr_iron_man_mouse_idle",
+    "spr_iron_man_mouse_drop",
+    "spr_iron_man_mouse_death"
   ],
   "obj_iron_pan_mouse": [
     "spr_iron_pan_mouse",
@@ -596,7 +630,10 @@
     "spr_machine_bee"
   ],
   "obj_machine_beehive_mouse": [
-    "spr_machine_beehive_mouse"
+    "spr_machine_beehive_mouse",
+    "spr_machine_beehive_release_2",
+    "spr_machine_beehive_release_3",
+    "spr_machine_beehive_release_1"
   ],
   "obj_machine_bomb_mouse": [
     "spr_machine_bomb_mouse_air",
@@ -627,8 +664,15 @@
   "obj_machine_normal_mouse": [
     "spr_machine_normal_mouse"
   ],
+  "obj_machine_skateboard_mouse": [
+    "spr_machine_skateboard_mouse_skate",
+    "spr_machine_skateboard_mouse"
+  ],
   "obj_magic_chicken": [
     "spr_magic_chicken"
+  ],
+  "obj_magician_mouse": [
+    "spr_magician_mouse"
   ],
   "obj_mario_cave": [
     "spr_mario_cave_land",
@@ -667,6 +711,10 @@
   "obj_messenger_poop": [
     "spr_messenger_poop",
     "spr_messenger_fog"
+  ],
+  "obj_minion_mouse": [
+    "spr_minion_mouse",
+    "spr_minion_mouse_summon"
   ],
   "obj_mirror_mouse": [
     "spr_mirror_mouse",
@@ -710,6 +758,12 @@
     "spr_mouse_train_2_body_appear2",
     "spr_mouse_train_2_body_appear3",
     "spr_mouse_train_2_body_appear4",
+    "spr_mouse_train_2_body_skill_1_2",
+    "spr_mouse_train_2_body_skill_1_1",
+    "spr_mouse_train_2_body_skill_2_2",
+    "spr_mouse_train_2_body_skill_2_1",
+    "spr_mouse_train_2_body_skill_2_3",
+    "spr_mouse_train_2_body_skill_3",
     "spr_mouse_train_2_body_disappear1",
     "spr_mouse_train_2_body_disappear2",
     "spr_mouse_train_2_body_disappear3",
@@ -731,12 +785,19 @@
   "obj_mouse_train_3_butter": [
     "spr_mouse_train_3_butter"
   ],
+  "obj_mouse_train_3_explode": [
+    "spr_mouse_train_3_body_skill_3"
+  ],
   "obj_mouse_train_3_head": [
     "spr_mouse_train_2_head_idle",
     "spr_mouse_train_2_head_appear1"
   ],
   "obj_mummy_mouse": [
     "spr_mummy_mouse"
+  ],
+  "obj_naruto_minion_mouse": [
+    "spr_naruto_minion_mouse",
+    "spr_naruto_minion_mouse_summon"
   ],
   "obj_naruto_mouse": [
     "spr_naruto_mouse",
@@ -780,6 +841,11 @@
     "spr_pan_fried_bun",
     "spr_pan_fried_bun_1",
     "spr_pan_fried_bun_2"
+  ],
+  "obj_panda_mouse": [
+    "spr_panda_mouse_has_small",
+    "spr_panda_mouse",
+    "spr_panda_mouse_throw"
   ],
   "obj_paper_boat_mouse": [
     "spr_paper_boat_mouse_land",
@@ -937,6 +1003,14 @@
   "obj_soar_mouse": [
     "spr_soar_mouse"
   ],
+  "obj_soldier_mouse": [
+    "spr_soldier_mouse"
+  ],
+  "obj_special_armour_mouse": [
+    "spr_special_armour_mouse_has_small",
+    "spr_special_armour_mouse",
+    "spr_special_armour_mouse_throw"
+  ],
   "obj_spicy_pot": [
     "spr_spicy_pot",
     "spr_spicy_pot_1",
@@ -965,7 +1039,9 @@
   "obj_takoyaki": [
     "spr_takoyaki",
     "spr_takoyaki_1",
-    "spr_takoyaki_2"
+    "spr_takoyaki_2",
+    "spr_takoyaki_cancer_bullet",
+    "spr_takoyaki_cancer_bullet_1"
   ],
   "obj_tang_hu_lu": [
     "spr_tang_hu_lu",
@@ -985,7 +1061,8 @@
     "spr_taro_toho_mouse"
   ],
   "obj_temple_pharaoh": [
-    "spr_temple_pharaoh_idle"
+    "spr_temple_pharaoh_idle",
+    "spr_temple_pharaoh_appear"
   ],
   "obj_thug_submarine_mouse": [
     "spr_thug_submarine_mouse_land",
@@ -1004,7 +1081,9 @@
   "obj_triple_wine_rack": [
     "spr_triple_wine_rack",
     "spr_triple_wine_rack_1",
-    "spr_triple_wine_rack_2"
+    "spr_triple_wine_rack_2",
+    "spr_wine_rack_sagittarius_bullet",
+    "spr_wine_rack_sagittarius_bullet_1"
   ],
   "obj_tropical_fish_mouse": [
     "spr_tropical_fish_mouse_land_helmet",
@@ -1035,6 +1114,10 @@
     "spr_ventilation_fan",
     "spr_ventilation_fan_1",
     "spr_ventilation_fan_2"
+  ],
+  "obj_warrior_minion_mouse": [
+    "spr_warrior_minion_mouse",
+    "spr_warrior_minion_mouse_summon"
   ],
   "obj_warrior_mouse": [
     "spr_warrior_mouse",
@@ -1077,6 +1160,11 @@
     "spr_wooden_plate_1",
     "spr_wooden_plate_2"
   ],
+  "obj_wrestler_mouse": [
+    "spr_wrestler_mouse_has_small",
+    "spr_wrestler_mouse",
+    "spr_wrestler_mouse_throw"
+  ],
   "obj_xiao_long_bao": [
     "spr_xiao_long_bao"
   ],
@@ -1104,31 +1192,22 @@
   "obj_card_slot": [
     "spr_small_fire"
   ],
-  "obj_iron_man": [
-    "spr_iron_man_mouse_laser"
+  "obj_iceeggboilerpult_bullet": [
+    "spr_ice_egg_pisces_bullet",
+    "spr_ice_egg_pisces_bullet_effect"
   ],
-  "obj_iron_man_mouse": [
-    "spr_iron_man_mouse_death"
+  "obj_triplewinerack_bullet": [
+    "spr_wine_rack_sagittarius_bullet",
+    "spr_wine_rack_sagittarius_bullet_effect",
+    "spr_wine_rack_sagittarius_bullet_1",
+    "spr_wine_rack_sagittarius_bullet_effect_1"
   ],
-  "obj_machine_skateboard_mouse": [
-    "spr_machine_skateboard_mouse"
-  ],
-  "obj_minion_mouse": [
-    "spr_minion_mouse_summon"
-  ],
-  "obj_naruto_minion_mouse": [
-    "spr_naruto_minion_mouse_summon"
-  ],
-  "obj_panda_mouse": [
-    "spr_panda_mouse_throw"
-  ],
-  "obj_special_armour_mouse": [
-    "spr_special_armour_mouse_throw"
-  ],
-  "obj_warrior_minion_mouse": [
-    "spr_warrior_minion_mouse_summon"
-  ],
-  "obj_wrestler_mouse": [
-    "spr_wrestler_mouse_throw"
+  "obj_xiaolongbao_bullet": [
+    "spr_gatling_popcorn_bullet",
+    "spr_gatling_popcorn_bullet_effect",
+    "spr_gatling_popcorn_bullet_1",
+    "spr_gatling_popcorn_bullet_effect_1",
+    "spr_gatling_popcorn_bullet_2",
+    "spr_gatling_popcorn_bullet_effect_2"
   ]
 }

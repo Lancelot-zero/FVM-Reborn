@@ -4,7 +4,7 @@ if global.is_paused{
 	exit
 }
 if (hp <= 0) {
-	sprite_index = spr_magician_mouse
+	sprite_index = get_load_sprite("spr_magician_mouse")
 	if state != ENEMY_STATE.DEAD{
 	    timer = 0;
 	    state = ENEMY_STATE.DEAD;
@@ -40,7 +40,7 @@ if state == ENEMY_STATE.APPEAR{
 		image_index = floor(anim_timer/flash_speed) mod 6
 		if x <= get_world_position_from_grid(9,grid_row).x{
 			anim_timer = 0
-			sprite_index = spr_magician_mouse
+			sprite_index = get_load_sprite("spr_magician_mouse")
 			state = ENEMY_STATE.ACTING
 		}
 	}

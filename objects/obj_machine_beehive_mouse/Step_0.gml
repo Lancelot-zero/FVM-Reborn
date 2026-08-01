@@ -33,13 +33,13 @@ if hp > 0 && state != ENEMY_STATE.DEAD{
 		state = ENEMY_STATE.ACTING
 		bee_released = true
 		if grid_row == 0{
-			sprite_index = spr_machine_beehive_release_2
+			sprite_index = get_load_sprite("spr_machine_beehive_release_2")
 		}
 		else if grid_row == global.grid_rows-1{
-			sprite_index = spr_machine_beehive_release_3
+			sprite_index = get_load_sprite("spr_machine_beehive_release_3")
 		}
 		else{
-			sprite_index = spr_machine_beehive_release_1
+			sprite_index = get_load_sprite("spr_machine_beehive_release_1")
 		}
 	}
 	if state == ENEMY_STATE.ACTING{

@@ -27,9 +27,9 @@ function attire_init(){
 		{
 			"target_card":"ice_egg_boiler_pult",
 			"name":"双鱼座精灵",
-			"icon":spr_ice_egg_pisces_icon,
-			"spr":[spr_ice_egg_pisces,spr_ice_egg_pisces_1,spr_ice_egg_pisces_2],
-			"card_slot_icon":[spr_ice_egg_pisces_icon,spr_ice_egg_pisces_icon_1,spr_ice_egg_pisces_icon_2]
+			"icon":get_load_sprite("spr_ice_egg_pisces_icon"),
+			"spr":[get_load_sprite("spr_ice_egg_pisces"),get_load_sprite("spr_ice_egg_pisces_1"),get_load_sprite("spr_ice_egg_pisces_2")],
+			"card_slot_icon":[get_load_sprite("spr_ice_egg_pisces_icon"),get_load_sprite("spr_ice_egg_pisces_icon_1"),get_load_sprite("spr_ice_egg_pisces_icon_2")]
 		}
 	)
 	register_attire(
@@ -37,9 +37,9 @@ function attire_init(){
 		{
 			"target_card":"double_water_pipe",
 			"name":"天秤座精灵",
-			"icon":spr_water_pipe_libra,
-			"spr":[spr_water_pipe_libra,spr_water_pipe_libra_1,spr_water_pipe_libra_2],
-			"card_slot_icon":[spr_water_pipe_libra,spr_water_pipe_libra_1,spr_water_pipe_libra_2]
+			"icon":get_load_sprite("spr_water_pipe_libra"),
+			"spr":[get_load_sprite("spr_water_pipe_libra"),get_load_sprite("spr_water_pipe_libra_1"),get_load_sprite("spr_water_pipe_libra_2")],
+			"card_slot_icon":[get_load_sprite("spr_water_pipe_libra"),get_load_sprite("spr_water_pipe_libra_1"),get_load_sprite("spr_water_pipe_libra_2")]
 		}
 	)
 	register_attire(
@@ -47,9 +47,9 @@ function attire_init(){
 		{
 			"target_card":"triple_wine_rack",
 			"name":"射手座精灵",
-			"icon":spr_wine_rack_sagittarius_icon,
-			"spr":[spr_wine_rack_sagittarius,spr_wine_rack_sagittarius_1,spr_wine_rack_sagittarius_2],
-			"card_slot_icon":[spr_wine_rack_sagittarius_icon,spr_wine_rack_sagittarius_icon_1,spr_wine_rack_sagittarius_icon_2]
+			"icon":get_load_sprite("spr_wine_rack_sagittarius_icon"),
+			"spr":[get_load_sprite("spr_wine_rack_sagittarius"),get_load_sprite("spr_wine_rack_sagittarius_1"),get_load_sprite("spr_wine_rack_sagittarius_2")],
+			"card_slot_icon":[get_load_sprite("spr_wine_rack_sagittarius_icon"),get_load_sprite("spr_wine_rack_sagittarius_icon_1"),get_load_sprite("spr_wine_rack_sagittarius_icon_2")]
 		}
 	)
 	register_attire(
@@ -57,9 +57,9 @@ function attire_init(){
 		{
 			"target_card":"brazier",
 			"name":"金牛座精灵",
-			"icon":spr_brazier_taurus,
-			"spr":[spr_brazier_taurus,spr_brazier_taurus_1,spr_brazier_taurus_2],
-			"card_slot_icon":[spr_brazier_taurus,spr_brazier_taurus_1,spr_brazier_taurus_2]
+			"icon":get_load_sprite("spr_brazier_taurus"),
+			"spr":[get_load_sprite("spr_brazier_taurus"),get_load_sprite("spr_brazier_taurus_1"),get_load_sprite("spr_brazier_taurus_2")],
+			"card_slot_icon":[get_load_sprite("spr_brazier_taurus"),get_load_sprite("spr_brazier_taurus_1"),get_load_sprite("spr_brazier_taurus_2")]
 		}
 	)
 	register_attire(
@@ -67,9 +67,9 @@ function attire_init(){
 		{
 			"target_card":"large_fire",
 			"name":"双子座精灵",
-			"icon":spr_large_fire_gemini_icon,
-			"spr":[spr_large_fire_gemini,spr_large_fire_gemini_1,spr_large_fire_gemini_2],
-			"card_slot_icon":[spr_large_fire_gemini_icon,spr_large_fire_gemini_icon_1,spr_large_fire_gemini_icon_2]
+			"icon":get_load_sprite("spr_large_fire_gemini_icon"),
+			"spr":[get_load_sprite("spr_large_fire_gemini"),get_load_sprite("spr_large_fire_gemini_1"),get_load_sprite("spr_large_fire_gemini_2")],
+			"card_slot_icon":[get_load_sprite("spr_large_fire_gemini_icon"),get_load_sprite("spr_large_fire_gemini_icon_1"),get_load_sprite("spr_large_fire_gemini_icon_2")]
 		}
 	)
 	register_attire(
@@ -77,9 +77,9 @@ function attire_init(){
 		{
 			"target_card":"takoyaki",
 			"name":"巨蟹座精灵",
-			"icon":spr_takoyaki_cancer_icon,
-			"spr":[spr_takoyaki_cancer,spr_takoyaki_cancer_1,spr_takoyaki_cancer_2],
-			"card_slot_icon":[spr_takoyaki_cancer_icon,spr_takoyaki_cancer_icon_1,spr_takoyaki_cancer_icon_2]
+			"icon":get_load_sprite("spr_takoyaki_cancer_icon"),
+			"spr":[get_load_sprite("spr_takoyaki_cancer"),get_load_sprite("spr_takoyaki_cancer_1"),get_load_sprite("spr_takoyaki_cancer_2")],
+			"card_slot_icon":[get_load_sprite("spr_takoyaki_cancer_icon"),get_load_sprite("spr_takoyaki_cancer_icon_1"),get_load_sprite("spr_takoyaki_cancer_icon_2")]
 		}
 	)
 	register_attire(
@@ -87,9 +87,9 @@ function attire_init(){
 		{
 			"target_card":"gatlin_long_bao",
 			"name":"玉蜀黍",
-			"icon":spr_gatling_popcorn_icon,
-			"spr":[spr_gatling_popcorn,spr_gatling_popcorn_1,spr_gatling_popcorn_2],
-			"card_slot_icon":[spr_gatling_popcorn_icon,spr_gatling_popcorn_icon_1,spr_gatling_popcorn_icon_2]
+			"icon":get_load_sprite("spr_gatling_popcorn_icon"),
+			"spr":[get_load_sprite("spr_gatling_popcorn"),get_load_sprite("spr_gatling_popcorn_1"),get_load_sprite("spr_gatling_popcorn_2")],
+			"card_slot_icon":[get_load_sprite("spr_gatling_popcorn_icon"),get_load_sprite("spr_gatling_popcorn_icon_1"),get_load_sprite("spr_gatling_popcorn_icon_2")]
 		}
 	)
 	register_attire(
@@ -97,9 +97,9 @@ function attire_init(){
 		{
 			"target_card":"rotating_coffee_pot",
 			"name":"狮子座精灵",
-			"icon":spr_rotate_leo_icon,
-			"spr":[spr_rotate_leo,spr_rotate_leo_1,spr_rotate_leo_2],
-			"card_slot_icon":[spr_rotate_leo_icon,spr_rotate_leo_icon_1,spr_rotate_leo_icon_2]
+			"icon":get_load_sprite("spr_rotate_leo_icon"),
+			"spr":[get_load_sprite("spr_rotate_leo"),get_load_sprite("spr_rotate_leo_1"),get_load_sprite("spr_rotate_leo_2")],
+			"card_slot_icon":[get_load_sprite("spr_rotate_leo_icon"),get_load_sprite("spr_rotate_leo_icon_1"),get_load_sprite("spr_rotate_leo_icon_2")]
 		}
 	)
 	register_attire(
@@ -107,15 +107,15 @@ function attire_init(){
 		{
 			"target_card":"melon_shield",
 			"name":"处女座精灵",
-			"icon":spr_melon_virgo_icon,
-			"spr":[spr_melon_virgo_icon,spr_melon_virgo_icon_1,spr_melon_virgo_icon_2],
+			"icon":get_load_sprite("spr_melon_virgo_icon"),
+			"spr":[get_load_sprite("spr_melon_virgo_icon"),get_load_sprite("spr_melon_virgo_icon_1"),get_load_sprite("spr_melon_virgo_icon_2")],
 			"outer_spr":[
-				[spr_melon_virgo_outer_1,spr_melon_virgo_outer_1,spr_melon_virgo_outer_1],
-				[spr_melon_virgo_1_outer_1,spr_melon_virgo_1_outer_2,spr_melon_virgo_1_outer_3],
-				[spr_melon_virgo_2_outer_1,spr_melon_virgo_2_outer_2,spr_melon_virgo_2_outer_3]
+				[get_load_sprite("spr_melon_virgo_outer_1"),get_load_sprite("spr_melon_virgo_outer_1"),get_load_sprite("spr_melon_virgo_outer_1")],
+				[get_load_sprite("spr_melon_virgo_1_outer_1"),get_load_sprite("spr_melon_virgo_1_outer_2"),get_load_sprite("spr_melon_virgo_1_outer_3")],
+				[get_load_sprite("spr_melon_virgo_2_outer_1"),get_load_sprite("spr_melon_virgo_2_outer_2"),get_load_sprite("spr_melon_virgo_2_outer_3")]
 			],
-			"card_slot_icon":[spr_melon_virgo_icon,spr_melon_virgo_icon_1,spr_melon_virgo_icon_2],
-			"inner_spr":[spr_melon_virgo_inner_1,spr_melon_virgo_inner_2,spr_melon_virgo_inner_3]
+			"card_slot_icon":[get_load_sprite("spr_melon_virgo_icon"),get_load_sprite("spr_melon_virgo_icon_1"),get_load_sprite("spr_melon_virgo_icon_2")],
+			"inner_spr":[get_load_sprite("spr_melon_virgo_inner_1"),get_load_sprite("spr_melon_virgo_inner_2"),get_load_sprite("spr_melon_virgo_inner_3")]
 		}
 	)
 	

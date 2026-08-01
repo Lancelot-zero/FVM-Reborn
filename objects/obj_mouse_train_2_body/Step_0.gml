@@ -99,10 +99,10 @@ switch state{
 	
 	case BOSS_STATE.SKILL1:
 		if grid_row == 0{
-			sprite_index = spr_mouse_train_2_body_skill_1_2
+			sprite_index = get_load_sprite("spr_mouse_train_2_body_skill_1_2")
 		}
 		else{
-			sprite_index = spr_mouse_train_2_body_skill_1_1
+			sprite_index = get_load_sprite("spr_mouse_train_2_body_skill_1_1")
 		}
 		if timer <= 10 * 5 - 1{
 			if train_head.hp > maxhp * hurt_rate{
@@ -141,13 +141,13 @@ switch state{
 	case BOSS_STATE.SKILL2:
 		
 		if grid_row == 0{
-			sprite_index = spr_mouse_train_2_body_skill_2_2
+			sprite_index = get_load_sprite("spr_mouse_train_2_body_skill_2_2")
 		}
 		else if grid_row == global.grid_rows-1{
-			sprite_index = spr_mouse_train_2_body_skill_2_1
+			sprite_index = get_load_sprite("spr_mouse_train_2_body_skill_2_1")
 		}
 		else{
-			sprite_index = spr_mouse_train_2_body_skill_2_3
+			sprite_index = get_load_sprite("spr_mouse_train_2_body_skill_2_3")
 		}
 		if train_head.hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 63
@@ -166,7 +166,7 @@ switch state{
 		
 	case BOSS_STATE.SKILL3:
 		
-		sprite_index = spr_mouse_train_2_body_skill_3
+		sprite_index = get_load_sprite("spr_mouse_train_2_body_skill_3")
 		if train_head.hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 63
 		}

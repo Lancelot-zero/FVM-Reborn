@@ -265,7 +265,7 @@ function level_entry_from_stage_metadata(_meta) {
     var hf = lf
     var spr_ix = _meta.map_sprite
     if (spr_ix == -1) {
-        spr_ix = spr_cookie_island
+        spr_ix = get_load_sprite("spr_cookie_island")
     }
     var pre_ix = _meta.pre_music
     var elite_ix = _meta.elite_music

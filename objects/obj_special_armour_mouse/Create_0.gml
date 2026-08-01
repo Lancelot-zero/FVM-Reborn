@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_special_armour_mouse_has_small");  //转化额外添加保证触发
  // Inherit the parent event
 event_inherited();
 hp = 10800

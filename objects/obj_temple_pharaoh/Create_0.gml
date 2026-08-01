@@ -10,7 +10,7 @@ maxhp = 12000
 immune_to_ash = true
 wait_time = 3 * 60
 cave = noone
-sprite_index = spr_temple_pharaoh_appear
+sprite_index = get_load_sprite("spr_temple_pharaoh_appear")
 is_boss = true
 step_ready = false;	frame_count = 0;
 

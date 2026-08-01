@@ -1,3 +1,4 @@
+sprite_index = get_load_sprite("spr_hot_vajra_idle");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 
@@ -9,7 +10,7 @@ maxhp = 80000
 immune_to_ash = true
 wait_time = 300
 cave = noone
-sprite_index = spr_hot_vajra_appear
+sprite_index = get_load_sprite("spr_hot_vajra_appear")
 is_boss = true
 step_ready = false;	frame_count = 0;
 

@@ -10,7 +10,7 @@ if shape == 1{
 	sprite_index = get_load_sprite("spr_flour_sack_1")
 }
 else if shape == 2{
-	sprite_index = spr_flour_sack_2
+	sprite_index = get_load_sprite("spr_flour_sack_2")
 }
 
 // ========== 特定属性默认值 ==========

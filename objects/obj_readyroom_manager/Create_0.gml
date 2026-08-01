@@ -5,7 +5,7 @@ surface_reset_target();
 
 global.menu_screen = false
 instance_create_depth(1700,883,-2,obj_battlestart_button)
-readyroom_music = mus_readyroom
+readyroom_music = get_load_audio("mus_readyroom")
 
 ds_list_clear(global.selected_deck);
 //for(var i = 0;i < 21;i++){

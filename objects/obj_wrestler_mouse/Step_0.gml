@@ -1,6 +1,6 @@
 // Inherit the parent event
 if hp <= 0 && state != ENEMY_STATE.DEAD{
-	sprite_index = spr_wrestler_mouse
+	sprite_index = get_load_sprite("spr_wrestler_mouse")
 	state = ENEMY_STATE.DEAD
 	timer = 0
 }
@@ -66,7 +66,7 @@ if state == ENEMY_STATE.APPEAR{
 	if timer >= 14 * flash_speed -1{
 		state = ENEMY_STATE.NORMAL
 		timer = 0
-		sprite_index = spr_wrestler_mouse
+		sprite_index = get_load_sprite("spr_wrestler_mouse")
 	}
 	if timer == 7 * flash_speed - 1{
 		var inst = instance_create_depth(x+35,y-125,depth-1,obj_little_wrestler_mouse)

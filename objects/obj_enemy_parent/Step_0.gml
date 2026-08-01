@@ -404,4 +404,6 @@ if current_frozen && not is_frozen{
 	inst.sprite_index = ice_sprite
 	ice_sprite = spr_mouse_frozen
 	current_frozen = false
+
+frame_count++
 }
