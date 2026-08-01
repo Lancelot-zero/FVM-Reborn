@@ -4,12 +4,20 @@
 function load_custom_deck(deck_index) {
     // 清空当前卡组
     ds_list_clear(global.selected_deck);
-    
+
+    // VM 卡槽上限
+    var _max_slot = 21;
+    if (global._VM_max_slots >= 0) {
+        _max_slot = global._VM_max_slots;
+    }
+
     // 添加新卡牌
-    for(var i = 0; i < array_length(global.save_data.saved_decks[deck_index].card_id); i++) {
-        var info = get_card_info(global.save_data.saved_decks[deck_index].card_id[i]);
+    var _cards = global.save_data.saved_decks[deck_index].card_id;
+    for(var i = 0; i < array_length(_cards); i++) {
+        if (ds_list_size(global.selected_deck) >= _max_slot) break;
+        var info = get_card_info(_cards[i]);
         if (info != false) {
-            add_to_deck(global.save_data.saved_decks[deck_index].card_id[i], info.shape);
+            add_to_deck(_cards[i], info.shape);
         }
     }
     

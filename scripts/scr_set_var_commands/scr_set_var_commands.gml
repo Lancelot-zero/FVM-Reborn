@@ -86,6 +86,21 @@ function spawn_plant(col, row, plant_obj, props) {
 	}
 	
 	card_created(_plant, col, row);
+
+	    // 服务端同步自定义属性
+	    if (global.network.mode == "server" && is_struct(props)) {
+	        var _pkeys = variable_struct_get_names(props);
+	        if (array_length(_pkeys) > 0) {
+	            var _net_id = ds_map_exists(global.network.map_instance_id_net_id, _plant) ? global.network.map_instance_id_net_id[? _plant] : -1;
+	            if (_net_id != -1) {
+	                var _json = json_stringify(props);
+	                var _cl = global.network.connected_clients;
+	                for (var _n = 0; _n < array_length(_cl); _n++) {
+	                    send_message(_cl[_n], MSG_MODIFY_PROP, _net_id, _json);
+	                }
+	            }
+	        }
+	    }
     
     // 放置特效（注意：如果不需要特效可跳过）
     if (instance_exists(obj_place_effect)) {

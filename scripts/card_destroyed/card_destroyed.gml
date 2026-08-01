@@ -2,6 +2,9 @@
 /// @description 当植物销毁时调用，更新网格数据
 /// @param {instance} plant_inst 植物实例
 function card_destroyed(plant_inst) {
+    global._VM_last_destroyed_card = plant_inst.id;
+    if (buffer_exists(global._VM_CARD_DESTROYED)) VM_QueueHook(global._VM_CARD_DESTROYED, "card_del", plant_inst.id);
+
     var col = plant_inst.grid_col;
     var row = plant_inst.grid_row;
     

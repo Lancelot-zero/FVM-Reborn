@@ -4,9 +4,9 @@ function LaboratoryManager() constructor {
     self.dynamic_audios = {}
     self.dynamic_sprites = {}
     self.stages = {}
-    /// @type {Array<String>} 
+    /// @type {Array<String>}
     self.stage_ids = []
-    /// @type {Struct.FileUtil} 
+    /// @type {Struct.FileUtil}
     self.file_util = undefined
 
     /// @returns {Struct.Result} 
@@ -143,6 +143,7 @@ function LaboratoryManager() constructor {
                 error_message += _result.get_error_stack()
             }
         }
+
         if (error_message != "") {
             return new Result().fail(ErrorCode.INVALID_METADATA, "error occurred while loading stages:\n" + error_message)
         }

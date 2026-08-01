@@ -5,6 +5,9 @@ function add_to_deck(card_id, shape) {
     if global.network.mode != "offline" && (card_id == "king_long_bao" || card_id == "king_triple_long_bao"){
         return false
     }
+    if !is_undefined(global.banned_cards_online[? card_id]){
+        return false
+    }
     var card_data = deck_get_card_data(card_id, shape);
     if (card_data != noone) {
         // 同时存储卡牌ID和形态信息，以便后续使用

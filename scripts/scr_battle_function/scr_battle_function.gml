@@ -761,6 +761,18 @@ function parse_network_message(buf, _sock) {
 			global.level_id    = json_data[$ "target_level_id"] ?? "";
 			global.level_data  = json_data[$ "level_data"];
 			global.level_file  = json_data[$ "level_file"];
+
+			// 读 .bin 数据：JSON 后剩余的全部内容
+			var _remain = buffer_get_size(buf) - buffer_tell(buf);
+			if (_remain > 0) {
+			    var _bin_buf = buffer_create(_remain, buffer_fixed, 1);
+			    buffer_copy(buf, buffer_tell(buf), _remain, _bin_buf, 0);
+			    buffer_seek(_bin_buf, buffer_seek_start, 0);
+			    VM_InitRoomEntry(_bin_buf);
+			} else {
+			    VM_InitRoomEntry(undefined);
+			}
+
 			// 存到全局，供 file_cache 内部使用
 			global._expected_fps = variable_struct_get(json_data, "resource_fingerprints")
 			if (is_undefined(global._expected_fps)) global._expected_fps = {};
@@ -1091,8 +1103,14 @@ function send_message(socket, msg_id) {
             break;
         case MSG_START_BATTLE:
 			break;
-		case MSG_ENTER_ROOM_READY:                  // 参数: text(string)
+		case MSG_ENTER_ROOM_READY:                  // 参数: text(string), bin_buf(optional)
             buffer_write(buf, buffer_string, argument[2]);
+            if (argument_count > 2 && buffer_exists(argument[3])) {
+                var _bin_size = buffer_get_size(argument[3]);
+                buffer_seek(argument[3], buffer_seek_start, 0);
+                buffer_copy(argument[3], 0, _bin_size, buf, buffer_tell(buf));
+                buffer_seek(buf, buffer_seek_relative, _bin_size);
+            }
             break;
         case MSG_EVENT_ACTIONS:         // 参数: json(string)
             buffer_write(buf, buffer_string, argument[2]);

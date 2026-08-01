@@ -38,6 +38,7 @@ if on_click && obj_player_info_ui.menu_type == 0 && unlock{
 		show_debug_message(global.level_data)
 		
 		if(global.network.mode == "server"){
+			VM_InitRoomEntry(undefined);
 		var _ld_send = variable_clone(global.level_data);
 		var _rev = global._audio_reverse;
 		var _mf = ["pre_music", "elite_music", "boss_music"];

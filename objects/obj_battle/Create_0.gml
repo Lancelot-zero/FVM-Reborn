@@ -23,6 +23,7 @@ instance_create_depth(room_width-200,room_height-25,0,obj_level_progress_bar)
 
 global.selected_slot = noone;
 global.current_seed = noone;
+global._VM_battle_start_done = false;
 global.grid_offset_x = 695
 global.grid_cell_size_x = 107
 global.grid_cell_size_y = 116
@@ -312,6 +313,8 @@ function enemy_subwave_summon(){
 					send_message(_socket, MSG_SPAWN_ENEMY, _net_id, grid_pos.x+30, grid_pos.y + 3, object_get_name(enemy_obj));
 				}
 			}
+			global._VM_last_created_enemy = new_enemy.id;
+			if (buffer_exists(global._VM_ENEMY_SPAWNED)) VM_QueueHook(global._VM_ENEMY_SPAWNED, "enemy", new_enemy.id);
             // 更新统计信息
             current_total_hp += global.enemy_map[? enemy_list[i].type].hp;
             

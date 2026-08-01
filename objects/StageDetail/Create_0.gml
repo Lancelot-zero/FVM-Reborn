@@ -67,6 +67,17 @@ function on_create_room() {
     global.level_data = _level_data
     global.level_id = self.state.custom_stage.id
     global.level_file = _parse_result.data
+
+    // VM 初始化：读取同名 .bin 文件（如果存在）
+    var _bin_buf = undefined;
+    var _bin_path = string_replace(self.state.custom_stage.json_path, ".json", ".bin");
+    if (file_exists(_bin_path)) {
+        _bin_buf = buffer_load(_bin_path);
+        VM_InitRoomEntry(_bin_buf);
+    } else {
+        VM_InitRoomEntry(undefined);
+    }
+
     if (global.network.mode == "server") {
         var _json_struct = {
             target_level_id: global.level_id,
@@ -129,6 +140,7 @@ function on_create_room() {
         global._sync_map_sprite_name = _sprite_rel;
         global._sync_custom_music_names = _custom_music_names;
         global._sync_resource_fingerprints = _resource_fingerprints;
+        global._sync_vm_bin_buf = _bin_buf;
 
         // level_data 中的音频 ID 和精灵索引转为字符串名，兼容懒加载
         {
@@ -154,7 +166,7 @@ function on_create_room() {
 		
         var _list = global.network.connected_clients;
         for (var _i = 0; _i < array_length(_list); _i++) {
-            send_message(_list[_i], MSG_ENTER_ROOM_READY, _json);
+            send_message(_list[_i], MSG_ENTER_ROOM_READY, _json, _bin_buf);
         }
     }
     global.gui_stack.to(room_ready)

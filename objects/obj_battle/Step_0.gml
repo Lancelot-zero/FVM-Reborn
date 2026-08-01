@@ -183,6 +183,10 @@ if battle_time >= (global.level_file.first_wave_delay * 60) && level_stage == "r
 
 	enemy_subwave_summon()
 	
+	// VM Hook: 第一波开始
+	if (buffer_exists(global._VM_WAVE_START)) VM_Execute(global.__vm, global._VM_WAVE_START);
+	if (buffer_exists(global._VM_SUBWAVE_START)) VM_Execute(global.__vm, global._VM_SUBWAVE_START);
+	
 	// 服务端同步进度条
 	if (global.network.mode == "server") {
 		var _cl = global.network.connected_clients;
@@ -262,10 +266,14 @@ if wave_timer <= 0 && level_stage == "pre"{
 			enemy_subwave_summon()
 		}
 		if current_subwave < current_total_subwaves-1{
+			if (buffer_exists(global._VM_SUBWAVE_END)) VM_Execute(global.__vm, global._VM_SUBWAVE_END);
 			current_subwave+=1
+			if (buffer_exists(global._VM_SUBWAVE_START)) VM_Execute(global.__vm, global._VM_SUBWAVE_START);
 		}
 		else if current_wave < total_wave{
+			if (buffer_exists(global._VM_WAVE_END)) VM_Execute(global.__vm, global._VM_WAVE_END);
 			current_wave += 1
+			if (buffer_exists(global._VM_WAVE_START)) VM_Execute(global.__vm, global._VM_WAVE_START);
 			if (global.network.mode == "server") {
 				var _cl = global.network.connected_clients;
 				for (var _j = 0; _j < array_length(_cl); _j++) {
@@ -281,7 +289,9 @@ if wave_timer <= 0 && level_stage == "pre"{
 if wave_timer <= 0 && level_stage == "boss"{
 	enemy_subwave_summon()
 	if current_subwave < current_total_subwaves-1{
+		if (buffer_exists(global._VM_SUBWAVE_END)) VM_Execute(global.__vm, global._VM_SUBWAVE_END);
 		current_subwave+=1
+		if (buffer_exists(global._VM_SUBWAVE_START)) VM_Execute(global.__vm, global._VM_SUBWAVE_START);
 		
 		//  服务端同步消息
 		if (global.network.mode == "server") {

@@ -347,8 +347,10 @@ for(var i = deck_first_slot_index; i < deck_first_slot_index+11;i++){
 	
 	//关卡地图和敌人提示
 	surface_set_target(map_surface)
-	if (global.level_data.level_sprite != -1 && sprite_exists(global.level_data.level_sprite)){
-		draw_sprite_ext(global.level_data.level_sprite,0,x,y,0.2,0.2,0,c_white,1)
+	var _spr = global.level_data.level_sprite;
+	if (is_string(_spr)) _spr = get_load_sprite(_spr);
+	if (_spr != -1 && sprite_exists(_spr)){
+		draw_sprite_ext(_spr,0,x,y,0.2,0.2,0,c_white,1)
 		}
 	surface_reset_target()
 	draw_surface(map_surface,760,771)

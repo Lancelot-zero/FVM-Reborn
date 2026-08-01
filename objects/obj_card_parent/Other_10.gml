@@ -10,7 +10,12 @@ if (plant_data != undefined) {
 	
 	var card_save_data = get_card_info(plant_id)
 	if card_save_data != false{
-		current_level = card_save_data.level
+		// VM 等级上限：超过则压到上限
+		if (global._VM_card_level_cap >= 0 && card_save_data.level > global._VM_card_level_cap) {
+		    current_level = global._VM_card_level_cap;
+		} else {
+		    current_level = card_save_data.level;
+		}
 		skill = card_save_data.skill
 		shape = card_save_data.shape
 	}

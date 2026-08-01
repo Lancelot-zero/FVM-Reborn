@@ -4,6 +4,7 @@ if not obj_tower_cake_bg.is_submenu_opened{
 		global.map_name = "魔塔蛋糕"
 		global.gui_stack.to(room_ready)
 		if (global.network.mode == "server") {
+			VM_InitRoomEntry(undefined);
 		var _ld_send = variable_clone(global.level_data);
 		var _rev = global._audio_reverse;
 		var _mf = ["pre_music", "elite_music", "boss_music"];

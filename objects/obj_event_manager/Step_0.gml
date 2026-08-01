@@ -10,6 +10,13 @@ if (global.network.mode == "server"){
     _evt_pre_row      = json_stringify(global.row_feature);
     _evt_pre_map_spr_index = obj_battle.map_spr_index;
 }
+
+if (buffer_exists(global._VM_BATTLE_START) && !global._VM_battle_start_done) {
+	VM_Execute(global.__vm, global._VM_BATTLE_START);
+	global._VM_battle_start_done = true;
+}
+
+
 event_timer ++
 {//（旧代码）硬编码的事件和地图物件
 	if global.level_data.name == "布丁岛（日）" || global.level_data.name == "布丁岛（夜）"{
@@ -1236,4 +1243,7 @@ if (global.network.mode == "server") {
 
 	instance_log_disable();
 }
+
+
+VM_FlushHooks();
 

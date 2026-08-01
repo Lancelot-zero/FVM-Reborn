@@ -57,18 +57,15 @@ function instance_create_depth_define(_x, _y, _depth, _obj) {
 	if (_inst >= 0 && _obj == obj_platform) {
 		global._last_platform = _inst;
 	}
-
-
-
 	if (_inst >= 0 && _is_boss && global.network.mode == "server") {
 		add_net_id(_inst.id);
 		array_push(global._boss_spawn_queue, _inst);
 		return _inst;
 	}
-
 	if (_inst >= 0 && global._evt_log_enabled) {
 		array_push(global._evt_created, _inst);
 	}
+	
 	return _inst;
 }
 

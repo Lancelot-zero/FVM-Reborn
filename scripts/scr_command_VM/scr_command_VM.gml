@@ -1,377 +1,735 @@
 // ============================================================
-// VM — 二进制字节码虚拟机
-// 操作: CALL / IF / ASSIGN / MEM_WRITE / MEM_READ / HALT
-// 代码存 buffer（二进制），内存存 array
+// VM — 内存型虚拟机（无寄存器，全内存寻址）
+// 内存单元: { type, value }   type: 0=int 1=float 2=字符串池索引
 // ============================================================
 
 // 操作码 (u8)
-#macro VM_OP_CALL       1
-#macro VM_OP_IF         2
-#macro VM_OP_ASSIGN     3
-#macro VM_OP_MEM_WRITE  4
-#macro VM_OP_MEM_READ   5
-#macro VM_OP_HALT       6
+#macro VM_OP_ASSIGN  1    // dst(u32) type(u8) value(s32)
+#macro VM_OP_COPY    2    // dst(u32) src(u32)
+#macro VM_OP_ADD     3    // dst(u32) a(u32) b(u32)
+#macro VM_OP_SUB     4
+#macro VM_OP_MUL     5
+#macro VM_OP_DIV     6
+#macro VM_OP_MOD     7
+#macro VM_OP_EQ      8    // dst = (a == b) ? 1 : 0 (type=int)
+#macro VM_OP_NEQ     9
+#macro VM_OP_GT      10
+#macro VM_OP_GTE     11
+#macro VM_OP_LT      12
+#macro VM_OP_LTE     13
+#macro VM_OP_CALL    14   // func_id(u16) arg_count(u8) dst(s32) [addr(s32)*]
+#macro VM_OP_IF      15   // cond_addr(u32) true_ip(s32) false_ip(s32)
+#macro VM_OP_JMP     16   // ip(s32)
+#macro VM_OP_HALT    17
 
-// 值类型标签 (u8)
-#macro VM_VAL_IMMEDIATE  0x10   // 后跟 s32
-#macro VM_VAL_REGISTER   0x12   // 后跟 u8 寄存器ID
+// 内存类型 (u8)
+#macro VM_TYPE_INT    0
+#macro VM_TYPE_FLOAT  1
+#macro VM_TYPE_STRING 2
 
-// 寄存器 ID (u8)
-#macro VM_REG_R0     0
-#macro VM_REG_R1     1
-#macro VM_REG_R2     2
-#macro VM_REG_R3     3
-#macro VM_REG_RESULT 4
+// CALL dst 特殊值
+#macro VM_DST_VOID    -1
 
-/// @function VM_RegName(id)
-function VM_RegName(id) {
-	switch (id) {
-		case 0: return "R0";
-		case 1: return "R1";
-		case 2: return "R2";
-		case 3: return "R3";
-		case 4: return "RESULT";
-	}
-	return "R0";
+/// @function VM_Create(mem_size)
+function VM_Create(mem_size = 32768) {
+    var vm = {
+        mem_type: array_create(mem_size, VM_TYPE_INT),
+        mem_val:  array_create(mem_size, 0),
+        functions: [],
+        strings: []
+    };
+    return vm;
 }
 
-/// @function VM_Create()
-function VM_Create() {
-	var vm = {
-		registers: ds_map_create(),
-		memory: [],
-		function_map: ds_map_create(),
-	};
-
-	ds_map_set(vm.registers, "R0", 0);
-	ds_map_set(vm.registers, "R1", 0);
-	ds_map_set(vm.registers, "R2", 0);
-	ds_map_set(vm.registers, "R3", 0);
-	ds_map_set(vm.registers, "RESULT", 0);
-
-	return vm;
+/// @function VM_RegisterFunction(vm, script_func)
+/// @return 函数ID (u16)
+function VM_RegisterFunction(vm, script_func) {
+    var func_id = array_length(vm.functions);
+    array_push(vm.functions, script_func);
+    return func_id;
 }
 
-/// @function VM_RegisterFunction(vm, func_name, script_func)
-function VM_RegisterFunction(vm, func_name, script_func) {
-	ds_map_set(vm.function_map, func_name, script_func);
+
+// ============================================================
+// 游戏 API 函数
+// ============================================================
+function VM_BanCard(card_id) {
+    global.banned_cards_online[? card_id] = true;
+}
+function VM_SetCardLevelCap(level) {
+    global._VM_card_level_cap = level;
+}
+function VM_SetMaxSlots(n) {
+    global._VM_max_slots = n;
+}
+/**
+ * Function Description
+ * @param {any*} a Description
+ * @param {any*} b Description
+ * @param {any*} c Description
+ * @param {any*} d Description
+ * @param {any*} e Description
+ * @param {any*} f Description
+ * @param {any*} g Description
+ * @param {any*} h Description
+ * @param {any*} i Description
+ * @param {any*} j Description
+ * @param {any*} k Description
+ * @param {any*} l Description
+ * @param {any*} m Description
+ * @param {any*} n Description
+ * @param {any*} o Description
+ * @param {any*} p Description
+ */
+function VM_ShellPrint(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p) {
+    var _args = [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p];
+    var _msg = "";
+    for (var _n = 0; _n < 16; _n++) {
+        if (!is_undefined(_args[_n])) _msg += string(_args[_n]);
+    }
+    shell_print(_msg);
+}
+function VM_ShowNotice(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p) {
+    var _args = [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p];
+    var _msg = "";
+    for (var _n = 0; _n < 16; _n++) {
+        if (!is_undefined(_args[_n])) _msg += string(_args[_n]);
+    }
+    show_notice(_msg, 120);
+}
+function VM_CreatePlatform(col, row, width, length, axis, distance, idle, spr) {
+    var _pos = get_world_position_from_grid(col, row);
+    var _plat = instance_create_depth(
+        _pos.x - global.grid_cell_size_x / 2,
+        _pos.y - global.grid_cell_size_y / 2 - 35,
+        800, obj_platform
+    );
+    _plat.start_col = col;
+    _plat.start_row = row;
+    _plat.width = width;
+    _plat.length = length;
+    _plat.move_axis = (axis == 0) ? "y" : "x";
+    _plat.move_distance = distance;
+    _plat.initial_offset = 0;
+    _plat.initial_idle_duration = 0;
+    _plat.boundary_idle_duration = idle;
+    if (!is_undefined(spr) && spr != "") {
+        _plat.sprite_index = VM_LoadSprite(spr);
+    }
+    // 网络同步
+    if (global.network.mode == "server") {
+        add_net_id(_plat.id);
+    }
+    return _plat.id;
 }
 
-// ---- 寄存器读写 ----
-
-function VM_GetReg(vm, id) {
-	var _name = VM_RegName(id);
-	if (ds_map_exists(vm.registers, _name)) {
-		return ds_map_find_value(vm.registers, _name);
-	}
-	return 0;
+/// @function VM_LoadSprite(name)
+/// @return sprite index
+function VM_LoadSprite(name) {
+    if (file_exists(name)) {
+        return sprite_add(name, 1, false, false, 0, 0);
+    }
+    return get_load_sprite(name);
 }
 
-function VM_SetReg(vm, id, value) {
-	ds_map_set(vm.registers, VM_RegName(id), value);
+/// @function VM_SetTerrain(col, row, type)
+/// @param col  列，-1=所有列
+/// @param row  行，-1=所有行
+/// @param type 地形: "normal"/"water"/"obstacle"
+function VM_SetTerrain(col, row, type) {
+    var _c1 = (col == -1) ? 0 : col;
+    var _c2 = (col == -1) ? global.grid_cols - 1 : col;
+    var _r1 = (row == -1) ? 0 : row;
+    var _r2 = (row == -1) ? global.grid_rows - 1 : row;
+    for (var _r = _r1; _r <= _r2; _r++) {
+        for (var _c = _c1; _c <= _c2; _c++) {
+            global.grid_terrains[_r][_c].type = type;
+            if (type != "water") { global.row_feature[_r] = "land"; }
+        }
+    }
 }
 
-// ---- 从 buffer 读取一个值 ----
-
-function VM_ReadValue(vm, buf) {
-	var _type = buffer_read(buf, buffer_u8);
-	switch (_type) {
-		case VM_VAL_IMMEDIATE:
-			return buffer_read(buf, buffer_s32);
-		case VM_VAL_REGISTER: {
-			var _reg = buffer_read(buf, buffer_u8);
-			return VM_GetReg(vm, _reg);
-		}
-		default:
-			shell_print("VM Error: 未知值类型 " + string(_type));
-			return 0;
-	}
+/// @function VM_GetFlame()
+/// @return 当前火苗数量
+function VM_GetFlame() {
+    return global.flame;
 }
 
-// ---- 向 buffer 写入一个值 ----
+/// @function VM_ClearPlants(col, row)
+/// @param col  列，-1=所有列
+/// @param row  行，-1=所有行
+function VM_ClearPlants(col, row) {
+    var _c1 = (col == -1) ? 0 : col;
+    var _c2 = (col == -1) ? global.grid_cols - 1 : col;
+    var _r1 = (row == -1) ? 0 : row;
+    var _r2 = (row == -1) ? global.grid_rows - 1 : row;
+    for (var _r = _r1; _r <= _r2; _r++) {
+        for (var _c = _c1; _c <= _c2; _c++) {
+            var _list = ds_grid_get(global.grid_plants, _c, _r);
+            while (ds_list_size(_list) > 0) {
+                var _plant = ds_list_find_value(_list, 0);
+                card_destroyed(_plant);
+                instance_destroy(_plant);
+            }
+        }
+    }
+}
 
-function VM_WriteValue(buf, val) {
-	if (is_string(val) && string_char_at(val, 1) == "R") {
-		// 寄存器引用: "R0"~"R3", "RESULT"
-		var _id;
-		switch (val) {
-			case "R0": _id = 0; break;
-			case "R1": _id = 1; break;
-			case "R2": _id = 2; break;
-			case "R3": _id = 3; break;
-			case "RESULT": _id = 4; break;
-			default: _id = 0;
-		}
-		buffer_write(buf, buffer_u8, VM_VAL_REGISTER);
-		buffer_write(buf, buffer_u8, _id);
-	} else {
-		buffer_write(buf, buffer_u8, VM_VAL_IMMEDIATE);
-		buffer_write(buf, buffer_s32, val);
-	}
+/// @function VM_SetFlame(amount)
+/// @param amount 设置的火苗数
+function VM_SetFlame(amount) {
+    global.flame = amount;
+}
+
+/// @function VM_Random(min, max)
+/// @return [min, max] 之间随机整数
+function VM_Random(min, max) {
+    return irandom_range(min, max);
+}
+
+/// @function VM_GetWave()
+/// @return 当前波次
+function VM_GetWave() {
+    return obj_battle.current_wave;
+}
+
+/// @function VM_GetSubwave()
+/// @return 当前子波
+function VM_GetSubwave() {
+    return obj_battle.current_subwave;
+}
+
+/// @function VM_GetLastBoss()
+/// @return 最新创建的 BOSS 实例 ID
+function VM_GetLastBoss() {
+    return  real(global._VM_last_boss);
+}
+
+/// @function VM_GetLastCreatedEnemy()
+/// @return 最新创建的敌人实例 ID
+function VM_GetLastCreatedEnemy() {
+    return  real(global._VM_last_created_enemy);
+}
+
+/// @function VM_GetLastKilledEnemy()
+/// @return 最新死亡的敌人实例 ID
+function VM_GetLastKilledEnemy() {
+    return  real(global._VM_last_killed_enemy);
+}
+
+/// @function VM_GetLastCreatedCard()
+/// @return 最新创建的卡片实例 ID
+function VM_GetLastCreatedCard() {
+    return  real(global._VM_last_created_card);
+}
+
+/// @function VM_GetLastDestroyedCard()
+/// @return 最新销毁的卡片实例 ID
+function VM_GetLastDestroyedCard() {
+    return  real(global._VM_last_destroyed_card);
+}
+
+/// @function VM_GetProp(inst_id, prop)
+/// @return 属性值
+function VM_GetProp(inst_id, prop) {
+    if (!instance_exists(inst_id)) return undefined;
+    return variable_instance_get(inst_id, prop);
+}
+
+/// @function VM_SetProp(inst_id, prop, value)
+function VM_SetProp(inst_id, prop, value) {
+    if (!instance_exists(inst_id)) return;
+    variable_instance_set(inst_id, prop, value);
+    if (global.network.mode == "server") {
+        var _nid = ds_map_exists(global.network.map_instance_id_net_id, inst_id) ? global.network.map_instance_id_net_id[? inst_id] : -1;
+        if (_nid != -1) {
+            var _s = {}; _s[$ prop] = value;
+            var _json = json_stringify(_s);
+            var _list = global.network.connected_clients;
+            for (var _i = 0; _i < array_length(_list); _i++)
+                send_message(_list[_i], MSG_MODIFY_PROP, _nid, _json);
+        }
+    }
+}
+
+/// @function VM_SpawnObject(obj_name, col, row)
+/// @return 实例 ID
+function VM_SpawnObject(obj_name, col, row) {
+    if (!string_starts_with(obj_name, "obj_"))
+        obj_name = "obj_" + obj_name;
+    var _obj = asset_get_index(obj_name);
+    if (_obj < 0) {
+        show_debug_message("[VM_SpawnObject] 对象不存在: " + obj_name);
+        return -1;
+    }
+    return spawn_plant(col, row, _obj, {});
+}
+
+/// @function VM_SpawnPlant(card_id, col, row, shape, level, skill)
+/// @return 植物实例 ID
+function VM_SpawnPlant(card_id, col, row, shape, level, skill) {
+    if (is_undefined(shape)) shape = 0;
+    if (is_undefined(level)) level = 0;
+    if (is_undefined(skill)) skill = 0;
+    var _card_data = deck_get_card_data(card_id, shape);
+    if (is_undefined(_card_data)) return -1;
+    var _obj = _card_data[? "obj"];
+    var _props = { current_level: level, skill: skill };
+    var _plant = spawn_plant(col, row, _obj, _props);
+    global._VM_last_created_card = _plant;
+    // card_created 已挂 hook，此处不重复
+    return _plant;
+}
+
+/// @function VM_SpawnEnemy(type, row, hp_override)
+/// @return 敌人实例 ID
+function VM_SpawnEnemy(type, row, hp_override) {
+    var _info = global.enemy_map[? type];
+    if (is_undefined(_info)) return -1;
+    var _pos = get_world_position_from_grid(global.grid_cols, row);
+    var _enemy = instance_create_depth(_pos.x + 30, _pos.y + 38, 0, _info._obj);
+    if (!is_undefined(hp_override) && hp_override > 0) {
+        _enemy.hp = hp_override;
+        _enemy.maxhp = hp_override;
+    }
+    if (global.network.mode == "server") {
+        add_net_id(_enemy.id);
+        var _nid = global.network.map_instance_id_net_id[? _enemy.id];
+        var _list = global.network.connected_clients;
+        for (var _i = 0; _i < array_length(_list); _i++)
+            send_message(_list[_i], MSG_SPAWN_ENEMY, _nid, _pos.x + 30, _pos.y + 3, object_get_name(_info._obj));
+    }
+    global._VM_last_created_enemy = _enemy.id;
+    if (buffer_exists(global._VM_ENEMY_SPAWNED)) VM_QueueHook(global._VM_ENEMY_SPAWNED, "enemy", _enemy.id);
+    return _enemy.id;
+}
+
+/// @function VM_SpawnBoss(type, row, hp_override)
+/// @return BOSS 实例 ID
+function VM_SpawnBoss(type, row, hp_override) {
+    var _info = global.enemy_map[? type];
+    if (is_undefined(_info)) return -1;
+    var _pos = get_world_position_from_grid(10, row);
+    var _boss = instance_create_depth(_pos.x - 80, _pos.y + 30, -200, _info._obj);
+    if (!is_undefined(hp_override) && hp_override > 0) {
+        _boss.hp = hp_override;
+        _boss.maxhp = hp_override;
+    }
+    obj_battle.boss_count++;
+    if (global.network.mode == "server") {
+        add_net_id(_boss.id);
+        var _nid = global.network.map_instance_id_net_id[? _boss.id];
+        var _list = global.network.connected_clients;
+        for (var _i = 0; _i < array_length(_list); _i++)
+            send_message(_list[_i], MSG_SPAWN_BOSS, _nid, _pos.x - 80, _pos.y + 30, object_get_name(_info._obj), _boss.hp, _boss.maxhp, row);
+    }
+    global._VM_last_boss = _boss.id;
+    return _boss.id;
 }
 
 // ============================================================
-// 编码: struct 数组 → 二进制 buffer
+// 辅助：从内存地址读取值（按类型转换）
 // ============================================================
-
-function VM_Encode(vm, code) {
-	// ---- 第一遍：计算每条指令的字节偏移 ----
-	var _offsets = [];
-	var _pos = 0;
-	var _len = array_length(code);
-
-	for (var _i = 0; _i < _len; _i++) {
-		_offsets[_i] = _pos;
-		var _inst = code[_i];
-		var _op = _inst[$ "op"];
-
-		_pos += 1; // op(u8)
-
-		switch (_op) {
-			case "CALL":
-				_pos += 1 + string_length(_inst[$ "func"]) + 1;  // func_len + func_name
-				_pos += 1;  // arg_count
-				_pos += array_length(_inst[$ "args"]) * (VM_EncodeValueSize(_inst[$ "args"]));
-				_pos += 1;  // target_reg
-				break;
-			case "IF":
-				_pos += VM_EncodeValueSize([_inst[$ "cond"]]);
-				_pos += 4 + 4;  // true_ip + false_ip
-				break;
-			case "ASSIGN":
-				_pos += 1;  // target_reg
-				_pos += VM_EncodeValueSize([_inst[$ "value"]]);
-				break;
-			case "MEM_WRITE":
-				_pos += VM_EncodeValueSize([_inst[$ "index"]]);
-				_pos += VM_EncodeValueSize([_inst[$ "value"]]);
-				break;
-			case "MEM_READ":
-				_pos += VM_EncodeValueSize([_inst[$ "index"]]);
-				_pos += 1;  // target_reg
-				break;
-			case "HALT":
-				break;
-		}
-	}
-
-	// ---- 第二遍：实际编码 ----
-	var _buf = buffer_create(_pos + 16, buffer_fixed, 1);
-
-	for (var _i = 0; _i < _len; _i++) {
-		var _inst = code[_i];
-		var _op = _inst[$ "op"];
-
-		switch (_op) {
-
-			case "CALL": {
-				buffer_write(_buf, buffer_u8, VM_OP_CALL);
-				var _name = _inst[$ "func"];
-				buffer_write(_buf, buffer_u8, string_length(_name));
-				buffer_write(_buf, buffer_string, _name);
-				var _args = _inst[$ "args"];
-				buffer_write(_buf, buffer_u8, array_length(_args));
-				for (var _ai = 0; _ai < array_length(_args); _ai++) {
-					VM_WriteValue(_buf, _args[_ai]);
-				}
-				buffer_write(_buf, buffer_u8, VM_RegID(_inst[$ "target"]));
-				break;
-			}
-
-			case "IF": {
-				buffer_write(_buf, buffer_u8, VM_OP_IF);
-				VM_WriteValue(_buf, _inst[$ "cond"]);
-				var _true_idx  = _inst[$ "true"];
-				var _false_idx = _inst[$ "false"];
-				buffer_write(_buf, buffer_s32, (_true_idx  != -1) ? _offsets[_true_idx]  : -1);
-				buffer_write(_buf, buffer_s32, (_false_idx != -1) ? _offsets[_false_idx] : -1);
-				break;
-			}
-
-			case "ASSIGN": {
-				buffer_write(_buf, buffer_u8, VM_OP_ASSIGN);
-				buffer_write(_buf, buffer_u8, VM_RegID(_inst[$ "target"]));
-				VM_WriteValue(_buf, _inst[$ "value"]);
-				break;
-			}
-
-			case "MEM_WRITE": {
-				buffer_write(_buf, buffer_u8, VM_OP_MEM_WRITE);
-				VM_WriteValue(_buf, _inst[$ "index"]);
-				VM_WriteValue(_buf, _inst[$ "value"]);
-				break;
-			}
-
-			case "MEM_READ": {
-				buffer_write(_buf, buffer_u8, VM_OP_MEM_READ);
-				VM_WriteValue(_buf, _inst[$ "index"]);
-				buffer_write(_buf, buffer_u8, VM_RegID(_inst[$ "target"]));
-				break;
-			}
-
-			case "HALT": {
-				buffer_write(_buf, buffer_u8, VM_OP_HALT);
-				break;
-			}
-
-			default: {
-				shell_print("VM Encode Error: 未知操作 " + string(_op));
-			}
-		}
-	}
-
-	return _buf;
+function vm_read_mem(vm, addr) {
+    var _type = vm.mem_type[addr];
+    if (_type == VM_TYPE_STRING) {
+        var _idx = vm.mem_val[addr];
+        if (_idx >= 0 && _idx < array_length(vm.strings))
+            return vm.strings[_idx];
+        return "";
+    }
+    return vm.mem_val[addr];
 }
 
-/// @function VM_RegID(name)  寄存器名 → u8 ID
-function VM_RegID(name) {
-	switch (name) {
-		case "R0": return 0;
-		case "R1": return 1;
-		case "R2": return 2;
-		case "R3": return 3;
-		case "RESULT": return 4;
-	}
-	return 0;
-}
 
-/// @function VM_EncodeValueSize(vals)  计算值的编码长度
-function VM_EncodeValueSize(vals) {
-	var _sum = 0;
-	for (var _i = 0; _i < array_length(vals); _i++) {
-		var _v = vals[_i];
-		if (is_string(_v) && string_char_at(_v, 1) == "R") {
-			_sum += 1 + 1;  // type(u8) + reg_id(u8)
-		} else {
-			_sum += 1 + 4;  // type(u8) + s32
-		}
-	}
-	return _sum;
-}
-
-// ============================================================
-// 执行: 从二进制 buffer 读取并执行
-// ============================================================
-
+/// @function VM_Execute(vm, buf)
 function VM_Execute(vm, buf) {
-	try {
-		buffer_seek(buf, buffer_seek_start, 0);
-		var _size = buffer_get_size(buf);
+    try {
+        buffer_seek(buf, buffer_seek_start, 0);
+        var _size = buffer_get_size(buf);
+        var _mt = vm.mem_type;
+        var _mv = vm.mem_val;
+        var _mlen = array_length(_mt);
 
-		while (buffer_tell(buf) < _size) {
-			var _op = buffer_read(buf, buffer_u8);
+        while (buffer_tell(buf) < _size) {
+            var _op = buffer_read(buf, buffer_u8);
 
-			switch (_op) {
+            switch (_op) {
 
-				case VM_OP_CALL: {
-					var _func_len = buffer_read(buf, buffer_u8);
-					var _func_name = buffer_read(buf, buffer_string);
-					if (string_length(_func_name) > _func_len) {
-						_func_name = string_copy(_func_name, 1, _func_len);
-					}
-					var _arg_count = buffer_read(buf, buffer_u8);
-					var _args = [];
-					for (var _ai = 0; _ai < _arg_count; _ai++) {
-						array_push(_args, VM_ReadValue(vm, buf));
-					}
-					var _target_reg = buffer_read(buf, buffer_u8);
+                // ==================== ASSIGN ====================
+                case VM_OP_ASSIGN: {
+                    var _dst = buffer_read(buf, buffer_s32);
+                    var _type = buffer_read(buf, buffer_u8);
+                    if (_type == VM_TYPE_STRING) {
+                        _mt[_dst] = VM_TYPE_STRING;
+                        _mv[_dst] = buffer_read(buf, buffer_u16);
+                    } else {
+                        _mt[_dst] = _type;
+                        _mv[_dst] = buffer_read(buf, buffer_s32);
+                    }
+                    break;
+                }
 
-					if (ds_map_exists(vm.function_map, _func_name)) {
-						var _fn = ds_map_find_value(vm.function_map, _func_name);
-						var _result = script_execute_ext(_fn, _args);
-						VM_SetReg(vm, _target_reg, _result);
-						VM_SetReg(vm, VM_REG_RESULT, _result);
-					} else {
-						shell_print("VM Error: 未注册函数 " + _func_name);
-					}
-					break;
-				}
+                // ==================== COPY ====================
+                case VM_OP_COPY: {
+                    var _dst = buffer_read(buf, buffer_s32);
+                    var _src = buffer_read(buf, buffer_s32);
+                    _mt[_dst] = _mt[_src];
+                    _mv[_dst] = _mv[_src];
+                    break;
+                }
 
-				case VM_OP_IF: {
-					var _cond = VM_ReadValue(vm, buf);
-					var _true_ip  = buffer_read(buf, buffer_s32);
-					var _false_ip = buffer_read(buf, buffer_s32);
+                // ==================== 算术 ====================
+                case VM_OP_ADD: {
+                    var _d = buffer_read(buf, buffer_s32);
+                    var _a = buffer_read(buf, buffer_s32);
+                    var _b = buffer_read(buf, buffer_s32);
+                    var _res = _mv[_a] + _mv[_b];
+                    _mt[_d] = (_mt[_a] == VM_TYPE_FLOAT || _mt[_b] == VM_TYPE_FLOAT) ? VM_TYPE_FLOAT : VM_TYPE_INT;
+                    _mv[_d] = _res;
+                    break;
+                }
+                case VM_OP_SUB: {
+                    var _d = buffer_read(buf, buffer_s32);
+                    var _a = buffer_read(buf, buffer_s32);
+                    var _b = buffer_read(buf, buffer_s32);
+                    _mt[_d] = (_mt[_a] == VM_TYPE_FLOAT || _mt[_b] == VM_TYPE_FLOAT) ? VM_TYPE_FLOAT : VM_TYPE_INT;
+                    _mv[_d] = _mv[_a] - _mv[_b];
+                    break;
+                }
+                case VM_OP_MUL: {
+                    var _d = buffer_read(buf, buffer_s32);
+                    var _a = buffer_read(buf, buffer_s32);
+                    var _b = buffer_read(buf, buffer_s32);
+                    _mt[_d] = (_mt[_a] == VM_TYPE_FLOAT || _mt[_b] == VM_TYPE_FLOAT) ? VM_TYPE_FLOAT : VM_TYPE_INT;
+                    _mv[_d] = _mv[_a] * _mv[_b];
+                    break;
+                }
+                case VM_OP_DIV: {
+                    var _d = buffer_read(buf, buffer_s32);
+                    var _a = buffer_read(buf, buffer_s32);
+                    var _b = buffer_read(buf, buffer_s32);
+                    _mt[_d] = (_mt[_a] == VM_TYPE_FLOAT || _mt[_b] == VM_TYPE_FLOAT) ? VM_TYPE_FLOAT : VM_TYPE_INT;
+                    _mv[_d] = (_mv[_b] != 0) ? _mv[_a] / _mv[_b] : 0;
+                    break;
+                }
+                case VM_OP_MOD: {
+                    var _d = buffer_read(buf, buffer_s32);
+                    var _a = buffer_read(buf, buffer_s32);
+                    var _b = buffer_read(buf, buffer_s32);
+                    _mt[_d] = VM_TYPE_INT;
+                    _mv[_d] = (_mv[_b] != 0) ? _mv[_a] mod _mv[_b] : 0;
+                    break;
+                }
 
-					if (_cond != 0 && _cond != false) {
-						if (_true_ip != -1) { buffer_seek(buf, buffer_seek_start, _true_ip); continue; }
-					} else {
-						if (_false_ip != -1) { buffer_seek(buf, buffer_seek_start, _false_ip); continue; }
-					}
-					break;
-				}
+                // ==================== 比较 ====================
+                case VM_OP_EQ: {
+                    var _d = buffer_read(buf, buffer_s32);
+                    var _a = buffer_read(buf, buffer_s32);
+                    var _b = buffer_read(buf, buffer_s32);
+                    _mt[_d] = VM_TYPE_INT;
+                    _mv[_d] = (_mv[_a] == _mv[_b]) ? 1 : 0;
+                    break;
+                }
+                case VM_OP_NEQ: {
+                    var _d = buffer_read(buf, buffer_s32);
+                    var _a = buffer_read(buf, buffer_s32);
+                    var _b = buffer_read(buf, buffer_s32);
+                    _mt[_d] = VM_TYPE_INT;
+                    _mv[_d] = (_mv[_a] != _mv[_b]) ? 1 : 0;
+                    break;
+                }
+                case VM_OP_GT: {
+                    var _d = buffer_read(buf, buffer_s32);
+                    var _a = buffer_read(buf, buffer_s32);
+                    var _b = buffer_read(buf, buffer_s32);
+                    _mt[_d] = VM_TYPE_INT;
+                    _mv[_d] = (_mv[_a] > _mv[_b]) ? 1 : 0;
+                    break;
+                }
+                case VM_OP_GTE: {
+                    var _d = buffer_read(buf, buffer_s32);
+                    var _a = buffer_read(buf, buffer_s32);
+                    var _b = buffer_read(buf, buffer_s32);
+                    _mt[_d] = VM_TYPE_INT;
+                    _mv[_d] = (_mv[_a] >= _mv[_b]) ? 1 : 0;
+                    break;
+                }
+                case VM_OP_LT: {
+                    var _d = buffer_read(buf, buffer_s32);
+                    var _a = buffer_read(buf, buffer_s32);
+                    var _b = buffer_read(buf, buffer_s32);
+                    _mt[_d] = VM_TYPE_INT;
+                    _mv[_d] = (_mv[_a] < _mv[_b]) ? 1 : 0;
+                    break;
+                }
+                case VM_OP_LTE: {
+                    var _d = buffer_read(buf, buffer_s32);
+                    var _a = buffer_read(buf, buffer_s32);
+                    var _b = buffer_read(buf, buffer_s32);
+                    _mt[_d] = VM_TYPE_INT;
+                    _mv[_d] = (_mv[_a] <= _mv[_b]) ? 1 : 0;
+                    break;
+                }
 
-				case VM_OP_ASSIGN: {
-					var _target_reg = buffer_read(buf, buffer_u8);
-					var _val = VM_ReadValue(vm, buf);
-					VM_SetReg(vm, _target_reg, _val);
-					break;
-				}
+                // ==================== CALL ====================
+                case VM_OP_CALL: {
+                    var _func_id = buffer_read(buf, buffer_u16);
+                    var _arg_count = buffer_read(buf, buffer_u8);
+                    var _dst = buffer_read(buf, buffer_s32);
+                    var _args = array_create(_arg_count);
 
-				case VM_OP_MEM_WRITE: {
-					var _idx = VM_ReadValue(vm, buf);
-					var _val = VM_ReadValue(vm, buf);
-					vm.memory[_idx] = _val;
-					break;
-				}
+                    for (var _i = 0; _i < _arg_count; _i++) {
+                        var _addr = buffer_read(buf, buffer_s32);
+                        _args[_i] = vm_read_mem(vm, _addr);
+                    }
 
-				case VM_OP_MEM_READ: {
-					var _idx = VM_ReadValue(vm, buf);
-					var _target_reg = buffer_read(buf, buffer_u8);
-					var _val = vm.memory[_idx];
-					if (is_undefined(_val)) _val = 0;
-					VM_SetReg(vm, _target_reg, _val);
-					break;
-				}
+                    if (_func_id < 0 || _func_id >= array_length(vm.functions)) {
+                        shell_print("VM Error: 未注册函数ID " + string(_func_id));
+                        return -1;
+                    }
 
-				case VM_OP_HALT: {
-					return VM_GetReg(vm, VM_REG_RESULT);
-				}
+                    var _fn = vm.functions[_func_id];
+                    var _result = script_execute_ext(_fn, _args);
 
-				default: {
-					shell_print("VM Error: 未知操作码 " + string(_op));
-					return -1;
-				}
-			}
-		}
+                    if (_dst != VM_DST_VOID) {
+                        if (is_string(_result)) {
+                            _mt[_dst] = VM_TYPE_STRING;
+                        } else if (is_real(_result)) {
+                            _mt[_dst] = VM_TYPE_INT;  // GML 脚本通常返回 int
+                        }
+                        _mv[_dst] = _result;
+                    }
+                    break;
+                }
 
-		return VM_GetReg(vm, VM_REG_RESULT);
+                // ==================== IF ====================
+                case VM_OP_IF: {
+                    var _cond_addr = buffer_read(buf, buffer_s32);
+                    var _true_ip = buffer_read(buf, buffer_s32);
+                    var _false_ip = buffer_read(buf, buffer_s32);
 
-	} catch (_err) {
-		shell_print("VM Error: " + string(_err));
-		return -1;
-	}
+                    var _cond = _mv[_cond_addr];
+                    if (!is_real(_cond)) _cond = 0;
+
+                    if (_cond != 0) {
+                        if (_true_ip != -1) {
+                            buffer_seek(buf, buffer_seek_start, _true_ip);
+                            continue;
+                        }
+                    } else {
+                        if (_false_ip != -1) {
+                            buffer_seek(buf, buffer_seek_start, _false_ip);
+                            continue;
+                        }
+                    }
+                    break;
+                }
+
+                // ==================== JMP ====================
+                case VM_OP_JMP: {
+                    var _ip = buffer_read(buf, buffer_s32);
+                    buffer_seek(buf, buffer_seek_start, _ip);
+                    continue;
+                }
+
+                // ==================== HALT ====================
+                case VM_OP_HALT: {
+                    return 0;
+                }
+
+                default: {
+                    shell_print("VM Error: 未知操作码 " + string(_op));
+                    return -1;
+                }
+            }
+        }
+
+        return 0;
+
+    } catch (_err) {
+        shell_print("VM Error: " + string(_err));
+        return -1;
+    }
 }
 
-/// @function VM_Destroy(vm)
-function VM_Destroy(vm) {
-	ds_map_destroy(vm.registers);
-	ds_map_destroy(vm.function_map);
+
+// ============================================================
+// 全局初始化和块管理
+// ============================================================
+global.banned_cards_online = ds_map_create();
+global._VM_card_level_cap = -1;
+global._VM_max_slots = -1;
+global._VM_strings = [];
+
+global._VM_ROOM_READY_ENTRY = undefined;
+global._VM_room_ready_done   = false;
+global._VM_BATTLE_START        = undefined;
+global._VM_battle_start_done    = false;
+global._VM_CARD_CREATED      = undefined;
+global._VM_CARD_DESTROYED    = undefined;
+global._VM_CARD_DAMAGED      = undefined;
+global._VM_ENEMY_SPAWNED     = undefined;
+global._VM_ENEMY_KILLED      = undefined;
+global._VM_ENEMY_DAMAGED     = undefined;
+global._VM_WAVE_START        = undefined;
+global._VM_WAVE_END          = undefined;
+global._VM_SUBWAVE_START     = undefined;
+global._VM_SUBWAVE_END       = undefined;
+global._VM_PLAYER_DAMAGED    = undefined;
+
+global._VM_hook_queue = [];       // 待执行 hook 队列，每个元素 {buf, id}
+
+function VM_QueueHook(buf, key, id) {
+    if (buffer_exists(buf)) array_push(global._VM_hook_queue, {buf: buf, key: key, id: id});
 }
 
-// ============================================================
-// 使用示例
-// ============================================================
-/*
-var vm = VM_Create();
-VM_RegisterFunction(vm, "add",  function(a, b) { return a + b; });
-VM_RegisterFunction(vm, "mult", function(a, b) { return a * b; });
+/**
+ * Function Description
+ */
+function VM_FlushHooks() {
+    while (array_length(global._VM_hook_queue) > 0) {
+        var _q = global._VM_hook_queue;
+        global._VM_hook_queue = [];
+        for (var _i = 0; _i < array_length(_q); _i++) {
+            var _e = _q[_i];
+            if (_e.key == "card")        global._VM_last_created_card   = _e.id;
+            if (_e.key == "card_del")    global._VM_last_destroyed_card = _e.id;
+            if (_e.key == "enemy")       global._VM_last_created_enemy  = _e.id;
+            if (_e.key == "enemy_kill")  global._VM_last_killed_enemy   = _e.id;
+            VM_Execute(global.__vm, _e.buf);
+        }
+    }
+}
 
-// struct 格式 → 编码为二进制
-var code = [
-	{ op: "ASSIGN", target: "R0", value: 10 },
-	{ op: "ASSIGN", target: "R1", value: 20 },
-	{ op: "CALL", func: "add", args: ["R0", "R1"], target: "R2" },
-	{ op: "IF", cond: "R2", true: 5, false: -1 },
-	{ op: "CALL", func: "mult", args: ["R2", 2], target: "R2" },
-	{ op: "MEM_WRITE", index: 0, value: "R2" },
-	{ op: "MEM_READ", index: 0, target: "R3" },
-	{ op: "HALT" },
-];
+global._VM_last_boss          = -1;
+global._VM_last_created_enemy = -1;
+global._VM_last_killed_enemy  = -1;
+global._VM_last_created_card  = -1;
+global._VM_last_destroyed_card = -1;
 
-var buf = VM_Encode(vm, code);
-var result = VM_Execute(vm, buf);
-show_debug_message("Result: " + string(result));
+global.__vm = VM_Create();
+VM_RegisterFunction(global.__vm, VM_BanCard);         // 0
+VM_RegisterFunction(global.__vm, VM_SetCardLevelCap);  // 1
+VM_RegisterFunction(global.__vm, VM_SetMaxSlots);       // 2
+VM_RegisterFunction(global.__vm, VM_ShellPrint);        // 3
+VM_RegisterFunction(global.__vm, VM_ShowNotice);        // 4
+VM_RegisterFunction(global.__vm, VM_CreatePlatform);    // 5
+VM_RegisterFunction(global.__vm, VM_SpawnPlant);       // 6
+VM_RegisterFunction(global.__vm, VM_SpawnEnemy);       // 7
+VM_RegisterFunction(global.__vm, VM_SpawnBoss);        // 8
+VM_RegisterFunction(global.__vm, VM_LoadSprite);       // 9
+VM_RegisterFunction(global.__vm, VM_SpawnObject);      // 10
+VM_RegisterFunction(global.__vm, VM_SetProp);          // 11
+VM_RegisterFunction(global.__vm, VM_GetWave);               // 12
+VM_RegisterFunction(global.__vm, VM_GetSubwave);            // 13
+VM_RegisterFunction(global.__vm, VM_GetProp);               // 14
+VM_RegisterFunction(global.__vm, VM_GetLastBoss);           // 15
+VM_RegisterFunction(global.__vm, VM_GetLastCreatedEnemy);   // 16
+VM_RegisterFunction(global.__vm, VM_GetLastKilledEnemy);    // 17
+VM_RegisterFunction(global.__vm, VM_GetLastCreatedCard);    // 18
+VM_RegisterFunction(global.__vm, VM_GetLastDestroyedCard);  // 19
+VM_RegisterFunction(global.__vm, VM_GetFlame);              // 20
+VM_RegisterFunction(global.__vm, VM_SetFlame);              // 21
+VM_RegisterFunction(global.__vm, VM_SetTerrain);            // 22
+VM_RegisterFunction(global.__vm, VM_ClearPlants);           // 23
+VM_RegisterFunction(global.__vm, VM_Random);                // 24
+global._sync_vm_bin_buf = undefined;
 
-buffer_delete(buf);
-VM_Destroy(vm);
-*/
+/// @function VM_InitRoomEntry(buf)
+function VM_InitRoomEntry(buf) {
+    ds_map_clear(global.banned_cards_online);
+    global._VM_card_level_cap = -1;
+    global._VM_max_slots = -1;
+    global._VM_ROOM_READY_ENTRY = undefined;
+    global._VM_room_ready_done   = false;
+    global._VM_BATTLE_START      = undefined;
+    global._VM_CARD_CREATED      = undefined;
+    global._VM_CARD_DESTROYED    = undefined;
+    global._VM_CARD_DAMAGED      = undefined;
+    global._VM_ENEMY_SPAWNED     = undefined;
+    global._VM_ENEMY_KILLED      = undefined;
+    global._VM_ENEMY_DAMAGED     = undefined;
+    global._VM_WAVE_START        = undefined;
+    global._VM_WAVE_END          = undefined;
+    global._VM_PLAYER_DAMAGED    = undefined;
+    global._sync_vm_bin_buf = undefined;
+    global._VM_strings = [];
+
+    if (!buffer_exists(buf)) return;
+
+    buffer_seek(buf, buffer_seek_start, 0);
+    var _buf_size = buffer_get_size(buf);
+
+    // ---- 读字符串池 ----
+    var _str_count = buffer_read(buf, buffer_s32);
+    for (var _i = 0; _i < _str_count; _i++) {
+        var _len = buffer_read(buf, buffer_s32);
+        var _tmp = buffer_create(_len + 1, buffer_fixed, 1);
+        for (var _j = 0; _j < _len; _j++) {
+            buffer_write(_tmp, buffer_u8, buffer_read(buf, buffer_u8));
+        }
+        buffer_write(_tmp, buffer_u8, 0);
+        buffer_seek(_tmp, buffer_seek_start, 0);
+        array_push(global._VM_strings, buffer_read(_tmp, buffer_string));
+        buffer_delete(_tmp);
+    }
+
+    // ---- 读块数据 ----
+    while (buffer_tell(buf) < _buf_size) {
+        var _block_len = buffer_read(buf, buffer_s32);
+        var _name_idx  = buffer_read(buf, buffer_s32);
+
+        var _block_name = "";
+        if (_name_idx >= 0 && _name_idx < array_length(global._VM_strings)) {
+            _block_name = global._VM_strings[_name_idx];
+        }
+
+        var _bc_buf = buffer_create(_block_len, buffer_fixed, 1);
+        for (var _j = 0; _j < _block_len; _j++) {
+            buffer_write(_bc_buf, buffer_u8, buffer_read(buf, buffer_u8));
+        }
+        buffer_seek(_bc_buf, buffer_seek_start, 0);
+
+        switch (_block_name) {
+            case "_VM_ROOM_READY_ENTRY":
+                global._VM_ROOM_READY_ENTRY = _bc_buf;
+                global.__vm.strings = global._VM_strings;
+                VM_Execute(global.__vm, _bc_buf);
+                break;
+            case "_VM_BATTLE_START":
+                global._VM_BATTLE_START = _bc_buf;
+                break;
+            case "_VM_CARD_CREATED":
+                global._VM_CARD_CREATED = _bc_buf;
+                break;
+            case "_VM_CARD_DESTROYED":
+                global._VM_CARD_DESTROYED = _bc_buf;
+                break;
+            case "_VM_CARD_DAMAGED":
+                global._VM_CARD_DAMAGED = _bc_buf;
+                break;
+            case "_VM_ENEMY_SPAWNED":
+                global._VM_ENEMY_SPAWNED = _bc_buf;
+                break;
+            case "_VM_ENEMY_KILLED":
+                global._VM_ENEMY_KILLED = _bc_buf;
+                break;
+            case "_VM_ENEMY_DAMAGED":
+                global._VM_ENEMY_DAMAGED = _bc_buf;
+                break;
+            case "_VM_WAVE_START":
+                global._VM_WAVE_START = _bc_buf;
+                break;
+            case "_VM_WAVE_END":
+                global._VM_WAVE_END = _bc_buf;
+                break;
+            case "_VM_PLAYER_DAMAGED":
+                global._VM_PLAYER_DAMAGED = _bc_buf;
+                break;
+            default:
+                buffer_delete(_bc_buf);
+                break;
+        }
+    }
+}
