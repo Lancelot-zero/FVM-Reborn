@@ -39,6 +39,7 @@ global._sync_keys = [
 	"is_hole",
 	"is_reversed",
 	// 状态机
+	"hp_modified",
 	"state",
 	"skill_timer",
 	"jump_times",
@@ -98,6 +99,9 @@ global.boss_spawn_sync_list = [
 	obj_mouse_train_1_bullet,
 	obj_mouse_train_1_body,
 	obj_mouse_train_2_body,
+	obj_mouse_train_3_body,
+	obj_mouse_train_3_explode,
+	obj_mouse_train_3_butter,
 	// iron_man
 	obj_iron_man,
 	// machine

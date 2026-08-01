@@ -1,24 +1,39 @@
-function move_files () {
-    var _user_profile = environment_get_variable("LOCALAPPDATA")
-    var _local_folder = global.laboratory_manager.file_util.transfer_path_to_windows( _user_profile + "\\FVM_Reborn")
+function init_native_log() {
+    var _local_log_file = global.native_util.get_path_in_local_appdata("\\FVM_Reborn\\native\\latest.log")
+	var _error_code = native_set_native_log_file_path(_local_log_file)
+	if (_error_code != 0) {
+        global.native_util.show_error(_error_code, "设置日志路径失败")
+	}
 
-    var _saves_old = global.laboratory_manager.file_util.transfer_path_to_windows( _user_profile + "\\美食大战老鼠_重生\\saves")
-    var _saves_new = global.laboratory_manager.file_util.transfer_path_to_windows( _user_profile + "\\FVM_Reborn\\saves")
+}
+
+function move_files () {
+    var _local_folder = global.native_util.get_path_in_local_appdata("\\FVM_Reborn")
+    var _saves_old = global.native_util.get_path_in_local_appdata("\\FVM_Reborn\\美食大战老鼠_重生\\saves")
+    var _saves_new = global.native_util.get_path_in_local_appdata("\\FVM_Reborn\\saves")
     var _save_folder_new_exists = native_folder_exists(_saves_new)
     var _save_folder_old_exists = native_folder_exists(_saves_old)
-    if ((_save_folder_new_exists == 0) &&( _save_folder_old_exists == 1)) {
+    if ((_save_folder_new_exists == 0) && (_save_folder_old_exists == 1)) {
         var _copy_result = native_copy_folder(_saves_old, _local_folder)
-        if (_copy_result) {
+        if (_copy_result == 0) {
             show_message_async("存档已自动迁移到[" + _saves_new + "]")
+        } else {
+            global.native_util.show_error(_copy_result, "存档迁移失败")
         }
-    } 
+    }
 
-    var _local_laboratory = global.laboratory_manager.file_util.transfer_path_to_windows(working_directory + "laboratory")
-    var _appdata_laboratory = global.laboratory_manager.file_util.transfer_path_to_windows( _user_profile + "\\FVM_Reborn\\laboratory")
+    var _local_laboratory = global.native_util.transfer_path_to_windows(working_directory + "laboratory")
     var _local_laboratory_exists = native_folder_exists(_local_laboratory)
     if (_local_laboratory_exists == 1) {
-        native_copy_folder(_local_laboratory, _local_folder)
-        native_delete_folder(_local_laboratory)
+        var _lab_copy_result = native_copy_folder(_local_laboratory, _local_folder)
+        if (_lab_copy_result != 0) {
+            global.native_util.show_error(_lab_copy_result, "实验室目录迁移失败")
+        } else {
+            var _lab_delete_result = native_delete_folder(_local_laboratory)
+            if (_lab_delete_result != 0) {
+                global.native_util.show_error(_lab_delete_result, "旧实验室目录删除失败")
+            }
+        }
     }
 }
 
@@ -39,8 +54,10 @@ Music_Init()
 global.laboratory_manager = new LaboratoryManager()
 global.laboratory_manager.init()
 global.gui_stack = new GuiStack()
-move_files()
+global.native_util = new NativeUtil()
 
+init_native_log()
+move_files()
 
 // 初始化全局键位映射
 global.keybind_map = ds_map_create();

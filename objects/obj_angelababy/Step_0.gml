@@ -21,10 +21,13 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 }
 
 if !appear{
-	var enemy_row = boss_random(self, 0,global.grid_rows-1)
+	skill_group = skill_group_list[boss_random(self, 0, array_length(skill_group_list) - 1)]
+	skill_group = array_shuffle(skill_group)
+	var enemy_row = boss_random(self, 0, global.grid_rows - 1)
 	var enemy_pos = {}
-	skill_choose = boss_random(self, 2,2)
-	skill_change_style = boss_random(self, 0,1)
+	skill_choose = skill_group[skill_count]
+	skill_count ++
+	skill_change_style = boss_random(self, 0, 1)
 	if skill_choose == 2{
 		enemy_pos = get_world_position_from_grid(9,enemy_row)
 	}

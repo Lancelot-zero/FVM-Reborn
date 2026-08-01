@@ -26,4 +26,5 @@ with obj_battle{
 		}
 	}
 }
+ds_list_destroy(avaliable_pos)
 instance_destroy(hpbar_inst)

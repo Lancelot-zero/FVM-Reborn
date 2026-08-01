@@ -157,7 +157,6 @@ load_file(global.save_slot)
 //	set_material_amount("advanced_crystal",999999999)
 //	global.save_data.unlocked_items.elite_unlocked = true
 	
-//	complete_level("tower_cake_20_2")
 //}
 global.player_name = global.save_data.player.name
 global.total_time = global.save_data.player.total_time

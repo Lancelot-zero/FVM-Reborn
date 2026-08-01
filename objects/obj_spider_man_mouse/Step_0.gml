@@ -13,7 +13,7 @@ if !appear{
 	skill_choose = boss_random(self, 0,2)
 	if skill_choose == 2{
 		enemy_row = 3
-		enemy_pos = get_world_position_from_grid(5,enemy_row)
+		enemy_pos = get_world_position_from_grid(9,enemy_row)
 	}
 	else if skill_choose == 0{
 		enemy_row = 3
@@ -222,27 +222,26 @@ switch state{
 			// 创建已选坐标数组
 			var selected_coords = [];
 
-			// 循环直到选出4个不同的坐标
-			while (array_length(selected_coords) < 2) {
-			    // 生成随机坐标
-			    var rand_x = boss_random(self, 1, 7);
-			    var rand_y = boss_random(self, 1, global.grid_rows - 2);
-			    var new_coord = [rand_x, rand_y];
-    
-			    // 检查是否已存在
-			    var exists = false;
-			    for (var i = 0; i < array_length(selected_coords); i++) {
-			        if (selected_coords[i][0] == new_coord[0] && selected_coords[i][1] == new_coord[1]) {
-			            exists = true;
-			            break;
-			        }
-			    }
-    
-			    // 如果不存在则添加
-			    if (!exists) {
-			        array_push(selected_coords, new_coord);
-			    }
+			var col_1 = 0
+			var col_2 = 0
+			
+			with obj_card_parent{
+				if grid_col <= 6{
+					if grid_row == 0 || grid_row == 1{
+						if grid_col >= col_1{
+							col_1 = grid_col
+						}
+					}
+					if grid_row == global.grid_rows-1 || grid_row == global.grid_rows-2{
+						if grid_col >= col_2{
+							col_2 = grid_col
+						}
+					}
+				}
 			}
+			selected_coords[0] = [col_1-1,1]
+			selected_coords[1] = [col_2-1,global.grid_rows-1]
+			
 			target_coord = selected_coords
 		}
 		
@@ -301,7 +300,7 @@ switch state{
 			}
 			if skill_choose == 2{
 				enemy_row = 3
-				enemy_pos = get_world_position_from_grid(5,enemy_row)
+				enemy_pos = get_world_position_from_grid(9,enemy_row)
 			}
 			else if skill_choose == 0{
 				enemy_row = 3

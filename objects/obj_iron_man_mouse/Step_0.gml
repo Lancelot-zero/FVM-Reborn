@@ -335,12 +335,28 @@ switch state{
 					var current_choose = boss_random(self, 0,1)
 					if hp <= maxhp * hurt_rate{
 						current_choose = boss_random(self, 0,2)
+			/*  先使用旧方案
+				skill_group = skill_group_list[1]
+				skill_group = array_shuffle(skill_group)
+				skill_choose = skill_group[skill_count]
+				skill_count ++
+				appear = true
+			}
+			else{
+				if skill_count >= array_length(skill_group){
+					if hp > 0.5 * maxhp{
+						skill_group = skill_group_list[1]
+			*/
+
 					}
-					if current_choose != skill_choose{
-						skill_choose = current_choose
-						break
+					else{
+						skill_group = skill_group_list[0]
 					}
+					skill_group = array_shuffle(skill_group)
+					skill_count = 0
 				}
+				skill_choose = skill_group[skill_count]
+				skill_count ++
 			}
 			if skill_choose == 0{
 				target_pos.row = global.grid_rows-1

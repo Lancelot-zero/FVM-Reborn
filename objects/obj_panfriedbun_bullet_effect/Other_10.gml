@@ -2,7 +2,7 @@ var _x = x;
 var _y = y;
 var _range = 200
 
-if shape < 2{
+if shape < 1{
 	with (obj_enemy_parent) {	
 		if (hp > 0 && ((abs(x - other.x) <= 1.5 * global.grid_cell_size_x && grid_row == other.grid_row) || (abs(grid_row-other.grid_row) <= 1 && abs(x - other.x) <= 100)) and can_hit(other.target_type,target_type)) {
 			if hp > other.damage{

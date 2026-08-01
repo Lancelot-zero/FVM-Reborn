@@ -614,7 +614,8 @@ function maps_init(){
 					"boss_music":mus_floating_island_daytime_boss,
 					"pre_level":"tower_cake_20_2",
 					"rewards":[
-						{"card_id":"takoyaki","target_shape":2}
+						{"card_id":"takoyaki","target_shape":2},
+						{"card_id":"beef_hotpot","target_shape":1}
 					]
 				},
 				{
@@ -628,7 +629,8 @@ function maps_init(){
 					"boss_music":mus_floating_island_daytime_boss,
 					"pre_level":"tower_cake_21_1",
 					"rewards":[
-						{"card_id":"aquarius_elve","target_shape":2}
+						{"card_id":"aquarius_elve","target_shape":2},
+						{"card_id":"spicy_pot","target_shape":1}
 					]
 				},
 				{
@@ -642,7 +644,8 @@ function maps_init(){
 					"boss_music":mus_floating_island_night_boss,
 					"pre_level":"tower_cake_21_2",
 					"rewards":[
-						{"card_id":"chocolate_pult","target_shape":2}
+						{"card_id":"chocolate_pult","target_shape":2},
+						{"card_id":"pan_fried_bun","target_shape":1}
 					]
 				},
 				{
@@ -893,6 +896,138 @@ function maps_init(){
 						{"card_id":"tang_hu_lu","target_shape":2}
 					]
 				},
+				//{
+				//	"id":"tower_cake_31_1",
+				//	"name":"魔塔31层-先锋",
+				//	"level_file":"tower/tower-31-1.json",
+				//	"hard_level_file":"tower/tower-31-1_hard.json",
+				//	"level_sprite":spr_pepper_floating_isle_daytime,
+				//	"pre_music":mus_floating_island_daytime_pre,
+				//	"elite_music":mus_floating_island_daytime_elite,
+				//	"boss_music":mus_floating_island_daytime_boss,
+				//	"pre_level":"tower_cake_30_2",
+				//	"rewards":[]
+				//},
+				//{
+				//	"id":"tower_cake_31_2",
+				//	"name":"魔塔31层-精英",
+				//	"level_file":"tower/tower-31-2.json",
+				//	"hard_level_file":"tower/tower-31-2_hard.json",
+				//	"level_sprite":spr_pepper_floating_isle_daytime,
+				//	"pre_music":mus_floating_island_daytime_pre,
+				//	"elite_music":mus_floating_island_daytime_elite,
+				//	"boss_music":mus_floating_island_daytime_boss,
+				//	"pre_level":"tower_cake_31_1",
+				//	"rewards":[]
+				//},
+				//{
+				//	"id":"tower_cake_32_1",
+				//	"name":"魔塔32层-先锋",
+				//	"level_file":"tower/tower-32-1.json",
+				//	"hard_level_file":"tower/tower-32-1_hard.json",
+				//	"level_sprite":spr_pepper_floating_isle_night,
+				//	"pre_music":mus_floating_island_night_pre,
+				//	"elite_music":mus_floating_island_night_elite,
+				//	"boss_music":mus_floating_island_night_boss,
+				//	"pre_level":"tower_cake_31_2",
+				//	"rewards":[]
+				//},
+				//{
+				//	"id":"tower_cake_32_2",
+				//	"name":"魔塔32层-精英",
+				//	"level_file":"tower/tower-32-2.json",
+				//	"hard_level_file":"tower/tower-32-2_hard.json",
+				//	"level_sprite":spr_pepper_floating_isle_night,
+				//	"pre_music":mus_floating_island_night_pre,
+				//	"elite_music":mus_floating_island_night_elite,
+				//	"boss_music":mus_floating_island_night_boss,
+				//	"pre_level":"tower_cake_32_1",
+				//	"rewards":[]
+				//},
+				//{
+				//	"id":"tower_cake_33_1",
+				//	"name":"魔塔33层-先锋",
+				//	"level_file":"tower/tower-33-1.json",
+				//	"hard_level_file":"tower/tower-33-1_hard.json",
+				//	"level_sprite":spr_lilac_rainbow_daytime,
+				//	"pre_music":mus_floating_island_daytime_pre,
+				//	"elite_music":mus_floating_island_daytime_elite,
+				//	"boss_music":mus_floating_island_daytime_boss,
+				//	"pre_level":"tower_cake_32_2",
+				//	"rewards":[]
+				//},
+				//{
+				//	"id":"tower_cake_33_2",
+				//	"name":"魔塔33层-精英",
+				//	"level_file":"tower/tower-33-2.json",
+				//	"hard_level_file":"tower/tower-33-2_hard.json",
+				//	"level_sprite":spr_lilac_rainbow_daytime,
+				//	"pre_music":mus_floating_island_daytime_pre,
+				//	"elite_music":mus_floating_island_daytime_elite,
+				//	"boss_music":mus_floating_island_daytime_boss,
+				//	"pre_level":"tower_cake_33_1",
+				//	"rewards":[]
+				//},
+				//{
+				//	"id":"tower_cake_34_1",
+				//	"name":"魔塔34层-先锋",
+				//	"level_file":"tower/tower-34-1.json",
+				//	"hard_level_file":"tower/tower-34-1_hard.json",
+				//	"level_sprite":spr_lilac_rainbow_night,
+				//	"pre_music":mus_floating_island_night_pre,
+				//	"elite_music":mus_floating_island_night_elite,
+				//	"boss_music":mus_floating_island_night_boss,
+				//	"pre_level":"tower_cake_33_2",
+				//	"rewards":[]
+				//},
+				//{
+				//	"id":"tower_cake_34_2",
+				//	"name":"魔塔34层-精英",
+				//	"level_file":"tower/tower-34-2.json",
+				//	"hard_level_file":"tower/tower-34-2_hard.json",
+				//	"level_sprite":spr_lilac_rainbow_night,
+				//	"pre_music":mus_floating_island_night_pre,
+				//	"elite_music":mus_floating_island_night_elite,
+				//	"boss_music":mus_floating_island_night_boss,
+				//	"pre_level":"tower_cake_34_1",
+				//	"rewards":[]
+				//},
+				//{
+				//	"id":"tower_cake_35_1",
+				//	"name":"魔塔35层-先锋",
+				//	"level_file":"tower/tower-35-1.json",
+				//	"hard_level_file":"tower/tower-35-1_hard.json",
+				//	"level_sprite":spr_spices_central_isle,
+				//	"pre_music":mus_floating_island_crown_pre,
+				//	"elite_music":mus_floating_island_crown_elite,
+				//	"boss_music":mus_floating_island_daytime_boss,
+				//	"pre_level":"tower_cake_34_2",
+				//	"rewards":[]
+				//},
+				//{
+				//	"id":"tower_cake_35_2",
+				//	"name":"魔塔35层-精英",
+				//	"level_file":"tower/tower-35-2.json",
+				//	"hard_level_file":"tower/tower-35-2_hard.json",
+				//	"level_sprite":spr_spices_central_isle,
+				//	"pre_music":mus_floating_island_crown_pre,
+				//	"elite_music":mus_floating_island_crown_elite,
+				//	"boss_music":mus_floating_island_daytime_boss,
+				//	"pre_level":"tower_cake_35_1",
+				//	"rewards":[]
+				//},
+				//{
+				//	"id":"tower_cake_35_3",
+				//	"name":"魔塔35层-巅峰",
+				//	"level_file":"tower/tower-35-3.json",
+				//	"hard_level_file":"tower/tower-35-3_hard.json",
+				//	"level_sprite":spr_spices_central_isle,
+				//	"pre_music":mus_floating_island_crown_pre,
+				//	"elite_music":mus_floating_island_crown_elite,
+				//	"boss_music":mus_floating_island_daytime_boss,
+				//	"pre_level":"tower_cake_35_2",
+				//	"rewards":[]
+				//},
 			]
 		}
 	)
@@ -1342,7 +1477,7 @@ function maps_init(){
 					"pre_music":mus_floating_island_daytime_pre,
 					"elite_music":mus_floating_island_daytime_elite,
 					"boss_music":mus_floating_island_daytime_boss,
-					"player_level_require":99,
+					"player_level_require":51,
 					"pre_level_require":[]
 				},
 				{
@@ -1358,7 +1493,7 @@ function maps_init(){
 					"pre_music":mus_floating_island_night_pre,
 					"elite_music":mus_floating_island_night_elite,
 					"boss_music":mus_floating_island_night_boss,
-					"player_level_require":99,
+					"player_level_require":52,
 					"pre_level_require":[]
 				},
 				{
@@ -1374,7 +1509,7 @@ function maps_init(){
 					"pre_music":mus_floating_island_daytime_pre,
 					"elite_music":mus_floating_island_daytime_elite,
 					"boss_music":mus_floating_island_daytime_boss,
-					"player_level_require":99,
+					"player_level_require":53,
 					"pre_level_require":[]
 				},
 				{
@@ -1390,7 +1525,7 @@ function maps_init(){
 					"pre_music":mus_floating_island_night_pre,
 					"elite_music":mus_floating_island_night_elite,
 					"boss_music":mus_floating_island_night_boss,
-					"player_level_require":99,
+					"player_level_require":54,
 					"pre_level_require":[]
 				},
 				{
@@ -1406,7 +1541,7 @@ function maps_init(){
 					"pre_music":mus_floating_island_crown_pre,
 					"elite_music":mus_floating_island_crown_elite,
 					"boss_music":mus_floating_island_daytime_boss,
-					"player_level_require":99,
+					"player_level_require":55,
 					"pre_level_require":[]
 				},
 				{
@@ -1426,6 +1561,15 @@ function maps_init(){
 					"pre_level_require":[]
 				},
 			]
+		}
+	)
+	
+	register_map(
+		"undersea_vortex",
+		{
+			"map_name":"海底旋涡",
+			"map_sprite":spr_undersea_vortex,
+			"levels_data":[]
 		}
 	)
 }
