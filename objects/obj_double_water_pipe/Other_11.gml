@@ -6,7 +6,7 @@ if b_count == 1 || (b_count >= 2 && shape >= 1){
 	inst.move_speed = 8
 	inst.row = grid_row
 	if card_equipped_attire_id(plant_id) == "water_pipe_libra"{
-		inst.sprite_index = get_load_sprite("spr_water_pipe_libra_bullet")
+		inst.sprite_index = spr_water_pipe_libra_bullet
 	}
 }
 
@@ -16,7 +16,7 @@ inst2.move_speed = -8
 inst2.row = grid_row
 inst2.image_angle = 180
 if card_equipped_attire_id(plant_id) == "water_pipe_libra"{
-	inst2.sprite_index = get_load_sprite("spr_water_pipe_libra_bullet")
+	inst2.sprite_index = spr_water_pipe_libra_bullet
 }
 
 audio_play_sound(snd_shot, 0, 0);

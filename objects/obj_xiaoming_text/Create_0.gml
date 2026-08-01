@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_xiaoming_text_1");  //转化额外添加保证触发
  // Inherit the parent event
 event_inherited();
 

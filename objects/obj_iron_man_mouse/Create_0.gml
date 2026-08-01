@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_iron_man_mouse_idle");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 
@@ -12,10 +11,10 @@ appear = false
 wait_time = 0
 skill_choose = 0
 skill_count = 0
-sprite_index = get_load_sprite("spr_iron_man_mouse_drop")
+sprite_index = spr_iron_man_mouse_drop
 is_boss = true
 step_ready = false;	frame_count = 0;
-death_spr = get_load_sprite("spr_iron_man_mouse_death")
+death_spr = spr_iron_man_mouse_death
 
 hpbar_inst = instance_create_depth(450,1040,-900,obj_boss_hpbar)
 hpbar_inst.target_boss = id

@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_captain_america_mouse_idle");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 
@@ -11,7 +10,7 @@ maxhp = 90000
 immune_to_ash = true
 wait_time = 120
 cave = noone
-sprite_index = get_load_sprite("spr_captain_america_mouse_appear1")
+sprite_index = spr_captain_america_mouse_appear1
 is_boss = true
 step_ready = false;	frame_count = 0;
 

@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_garbage_track_mouse");  //转化额外添加保证触发
  // Inherit the parent event
 event_inherited();
 

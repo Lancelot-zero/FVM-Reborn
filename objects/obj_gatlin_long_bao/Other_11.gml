@@ -3,11 +3,11 @@ inst.damage = atk
 inst.move_speed = 8
 inst.row = grid_row
 if card_equipped_attire_id(plant_id) == "gatling_popcorn"{
-	inst.sprite_index = get_load_sprite("spr_gatling_popcorn_bullet")
+	inst.sprite_index = spr_gatling_popcorn_bullet
 	if shape == 1{
-		inst.sprite_index = get_load_sprite("spr_gatling_popcorn_bullet_1")
+		inst.sprite_index = spr_gatling_popcorn_bullet_1
 	}
 	if shape == 2{
-		inst.sprite_index = get_load_sprite("spr_gatling_popcorn_bullet_2")
+		inst.sprite_index = spr_gatling_popcorn_bullet_2
 	}
 }

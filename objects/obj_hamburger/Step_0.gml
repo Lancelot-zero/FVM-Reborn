@@ -45,9 +45,9 @@ if state == CARD_STATE.RELAX{
 		relax_timer = 0
 		timer = 0
 		attack_timer = 0
-		sprite_index = get_load_sprite("spr_hamburger")
-		if shape == 1 sprite_index = get_load_sprite("spr_hamburger_1")
-		if shape == 2 sprite_index = get_load_sprite("spr_hamburger_2")
+		sprite_index = spr_hamburger
+		if shape == 1 sprite_index = spr_hamburger_1
+		if shape == 2 sprite_index = spr_hamburger_2
 		image_index = 0
 	}
 }
@@ -62,9 +62,9 @@ if state != CARD_STATE.SLEEP && state != CARD_STATE.RELAX{
 			if enemy_hitted{
 				relax_timer = 0
 		        state = CARD_STATE.RELAX;
-				sprite_index = get_load_sprite("spr_hamburger_eat")
-				if shape == 1 sprite_index = get_load_sprite("spr_hamburger_eat_1")
-				if shape == 2 sprite_index = get_load_sprite("spr_hamburger_eat_2")
+				sprite_index = spr_hamburger_eat
+				if shape == 1 sprite_index = spr_hamburger_eat_1
+				if shape == 2 sprite_index = spr_hamburger_eat_2
 				enemy_hitted = false
 			}
 			attack_timer = 0;

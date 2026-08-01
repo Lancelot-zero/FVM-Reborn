@@ -3,7 +3,7 @@
 if hp <= 0 && state != ENEMY_STATE.DEAD{
 	state = ENEMY_STATE.DEAD
 	timer = 0 
-	sprite_index = get_load_sprite("spr_arson_mouse")
+	sprite_index = spr_arson_mouse
 }
 event_inherited();
 
@@ -20,7 +20,7 @@ if (throw_timer <= 0 || state == ENEMY_STATE.ATTACK) && !throwed && grid_col <= 
 if state == ENEMY_STATE.APPEAR{
 	
 	if timer <= (10*flash_speed * 5 - 1){
-		sprite_index = get_load_sprite("spr_arson_mouse_ready")
+		sprite_index = spr_arson_mouse_ready
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/flash_speed) mod 10
 		}
@@ -29,7 +29,7 @@ if state == ENEMY_STATE.APPEAR{
 		}
 	}
 	else{
-		sprite_index = get_load_sprite("spr_arson_mouse_throw")
+		sprite_index = spr_arson_mouse_throw
 		if hp > maxhp * hurt_rate{
 			image_index = floor((timer-10*flash_speed * 5)/flash_speed) mod 9
 		}
@@ -39,7 +39,7 @@ if state == ENEMY_STATE.APPEAR{
 	}
 	if timer >= (flash_speed * 59 - 1) or hp <= 0{
 		state = ENEMY_STATE.NORMAL
-		sprite_index = get_load_sprite("spr_arson_mouse")
+		sprite_index = spr_arson_mouse
 		move_speed = 0.3
 	}
 	if timer ==( 6 * flash_speed - 1 + 10 * flash_speed * 5){

@@ -1,6 +1,6 @@
 // Inherit the parent event
 if hp <= 0 && state != ENEMY_STATE.DEAD{
-	sprite_index = get_load_sprite("spr_panda_mouse")
+	sprite_index = spr_panda_mouse
 	state = ENEMY_STATE.DEAD
 	timer = 0
 }
@@ -13,7 +13,7 @@ if global.is_paused || is_frozen || is_stun || is_scare{
 
 if hp <= maxhp * hurt_rate && state != ENEMY_STATE.ACTING && state != ENEMY_STATE.DEAD && state != ENEMY_STATE.APPEAR && grid_col > 4 && not throwed{
 	timer = 0
-	sprite_index = get_load_sprite("spr_panda_mouse_throw")
+	sprite_index = spr_panda_mouse_throw
 	state = ENEMY_STATE.APPEAR
 	throwed = true
 }
@@ -66,7 +66,7 @@ if state == ENEMY_STATE.APPEAR{
 	if timer >= 14 * flash_speed -1{
 		state = ENEMY_STATE.NORMAL
 		timer = 0
-		sprite_index = get_load_sprite("spr_panda_mouse")
+		sprite_index = spr_panda_mouse
 	}
 	if timer == 7 * flash_speed - 1{
 		var inst = instance_create_depth(x+35,y-125,depth-1,obj_little_panda_mouse)

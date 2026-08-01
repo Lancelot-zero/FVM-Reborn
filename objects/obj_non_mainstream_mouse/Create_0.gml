@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_non_mainstream_mouse");  //转化额外添加保证触发
  // Inherit the parent event
 event_inherited();
 hp = 660
@@ -9,4 +8,4 @@ attack_anim = 6
 death_anim = 14
 dance_cooldown = 0
 
-spr_list = [get_load_sprite("spr_non_mainstream_mouse_dance_1"),get_load_sprite("spr_non_mainstream_mouse_dance_2"),get_load_sprite("spr_non_mainstream_mouse_dance_3")]
+spr_list = [spr_non_mainstream_mouse_dance_1,spr_non_mainstream_mouse_dance_2,spr_non_mainstream_mouse_dance_3]

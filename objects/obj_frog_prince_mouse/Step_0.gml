@@ -2,31 +2,31 @@
 if hp <= 0 && state != ENEMY_STATE.DEAD{
 	timer = 0
 		state = ENEMY_STATE.DEAD
-		sprite_index = get_load_sprite("spr_frog_prince_mouse")
+		sprite_index = spr_frog_prince_mouse
 		move_anim = 10
 		attack_anim = 6
 		move_speed = 0.3
 }
 event_inherited();
 if grid_col <0 {
-	sprite_index = get_load_sprite("spr_frog_prince_mouse_land")
+	sprite_index = spr_frog_prince_mouse_land
 }
 if global.is_paused or is_frozen or is_stun{
 	exit
 }
-if state == ENEMY_STATE.ATTACK && sprite_index == get_load_sprite("spr_frog_prince_mouse_frog"){
+if state == ENEMY_STATE.ATTACK && sprite_index == spr_frog_prince_mouse_frog{
 	timer = 0
 	state = ENEMY_STATE.ACTING
 }
 if state == ENEMY_STATE.ACTING{
 	if hp <= 0{
 		state = ENEMY_STATE.NORMAL
-		sprite_index = get_load_sprite("spr_frog_prince_mouse")
+		sprite_index = spr_frog_prince_mouse
 		move_anim = 10
 		attack_anim = 6
 		move_speed = 0.3
 	}
-	if sprite_index == get_load_sprite("spr_frog_prince_mouse_enter"){
+	if sprite_index == spr_frog_prince_mouse_enter{
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/flash_speed) mod 10
 		}
@@ -44,9 +44,9 @@ if state == ENEMY_STATE.ACTING{
 		if timer >= flash_speed * 10 or hp <= 0{
 			audio_play_sound(snd_enter_water,0,0)
 			state = ENEMY_STATE.NORMAL
-			sprite_index = get_load_sprite("spr_frog_prince_mouse_frog")
+			sprite_index = spr_frog_prince_mouse_frog
 			if hp <= 0{
-				sprite_index = get_load_sprite("spr_frog_prince_mouse")
+				sprite_index = spr_frog_prince_mouse
 				move_anim = 10
 				attack_anim = 6
 				move_speed = 0.3
@@ -86,7 +86,7 @@ if state == ENEMY_STATE.ACTING{
 		if timer >= flash_speed * 10 or hp <= 0{
 			audio_play_sound(snd_enter_water,0,0)
 			state = ENEMY_STATE.NORMAL
-			sprite_index = get_load_sprite("spr_frog_prince_mouse")
+			sprite_index = spr_frog_prince_mouse
 			move_anim = 10
 			attack_anim = 6
 			move_speed = 0.3

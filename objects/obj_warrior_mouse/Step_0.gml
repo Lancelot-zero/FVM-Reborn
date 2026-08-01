@@ -1,7 +1,7 @@
 // Inherit the parent event
 if dash{
 	move_speed = 1.2
-	sprite_index = get_load_sprite("spr_warrior_mouse_summon")
+	sprite_index = spr_warrior_mouse_summon
 	move_anim = 6
 	if hp <= 0{
 		move_anim = 12
@@ -10,10 +10,10 @@ if dash{
 }
 else{
 	if state == ENEMY_STATE.ACTING{
-		sprite_index = get_load_sprite("spr_warrior_mouse_summon")
+		sprite_index = spr_warrior_mouse_summon
 	}
 	else{
-		sprite_index = get_load_sprite("spr_warrior_mouse")
+		sprite_index = spr_warrior_mouse
 	}
 }
 event_inherited();
@@ -45,7 +45,7 @@ if dash && (state == ENEMY_STATE.ATTACK or timer > 4.5*60){
 if state == ENEMY_STATE.ACTING{
 	if hp <= 0{
 		timer = 0
-		sprite_index = get_load_sprite("spr_warrior_mouse")
+		sprite_index = spr_warrior_mouse
 		state = ENEMY_STATE.DEAD
 	}
 	if hp > maxhp * hurt_rate{
@@ -81,7 +81,7 @@ if state == ENEMY_STATE.ACTING{
 		}
 		
 		state = ENEMY_STATE.NORMAL
-		sprite_index = get_load_sprite("spr_warrior_mouse")
+		sprite_index = spr_warrior_mouse
 	}
 	summon_cooldown = 900
 }

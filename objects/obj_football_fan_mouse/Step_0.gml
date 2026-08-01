@@ -1,10 +1,10 @@
 // Inherit the parent event
 
 if hp > maxhp - helmet_hp{
-	sprite_index = get_load_sprite("spr_football_fan_mouse_helmet")
+	sprite_index = spr_football_fan_mouse_helmet
 }
 else{
-	sprite_index = get_load_sprite("spr_football_fan_mouse")
+	sprite_index = spr_football_fan_mouse
 }
 
 if hp <= maxhp - helmet_hp && not armor_dropped{

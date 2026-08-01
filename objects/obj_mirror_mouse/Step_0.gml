@@ -2,7 +2,7 @@
 if hp <= 0 && state != ENEMY_STATE.DEAD{
 	state = ENEMY_STATE.DEAD
 	timer = 0
-	sprite_index = get_load_sprite("spr_mirror_mouse")
+	sprite_index = spr_mirror_mouse
 }
 
 event_inherited();
@@ -20,7 +20,7 @@ if state != ENEMY_STATE.DEAD{
 		if state != ENEMY_STATE.ACTING{
 			timer = 0
 			state = ENEMY_STATE.ACTING
-			sprite_index = get_load_sprite("spr_mirror_mouse_acting")
+			sprite_index = spr_mirror_mouse_acting
 		}
 	}
 
@@ -54,7 +54,7 @@ if state != ENEMY_STATE.DEAD{
 		}
 		if timer == flash_speed * 33 - 1{
 			state = ENEMY_STATE.NORMAL
-			sprite_index = get_load_sprite("spr_mirror_mouse")
+			sprite_index = spr_mirror_mouse
 			timer = 0
 			perform_timer = 0
 		}

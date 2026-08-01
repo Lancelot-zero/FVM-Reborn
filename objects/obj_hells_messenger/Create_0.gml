@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_hells_messenger_idle");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 
@@ -10,8 +9,8 @@ maxhp = 30000
 immune_to_ash = true
 wait_time = 240
 cave = noone
-sprite_index = get_load_sprite("spr_hells_messenger_appear")
-idle_spr = get_load_sprite("spr_hells_messenger_idle")
+sprite_index = spr_hells_messenger_appear
+idle_spr = spr_hells_messenger_idle
 is_boss = true
 step_ready = false;	frame_count = 0;
 

@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_sawblade_mouse");  //转化额外添加保证触发
  // Inherit the parent event
 event_inherited();
 hp = 500
@@ -14,5 +13,5 @@ target_type = "underground"
 
 special_ash = true
 state = ENEMY_STATE.DIG
-sprite_index = get_load_sprite("spr_sawblade_mouse_dig")
+sprite_index = spr_sawblade_mouse_dig
 anim_timer = 0

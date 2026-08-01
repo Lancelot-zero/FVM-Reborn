@@ -1,11 +1,11 @@
 // Inherit the parent event
 
 if hp > maxhp - helmet_hp{
-	sprite_index = get_load_sprite("spr_egg_iron_pan_mouse_helmet")
+	sprite_index = spr_egg_iron_pan_mouse_helmet
 	hit_sound = snd_hit3
 }
 else{
-	sprite_index = get_load_sprite("spr_egg_iron_pan_mouse")
+	sprite_index = spr_egg_iron_pan_mouse
 	hit_sound = snd_hit1
 }
 if hp <= maxhp - helmet_hp && not armor_dropped{

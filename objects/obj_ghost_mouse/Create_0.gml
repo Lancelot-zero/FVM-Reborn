@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_ghost_mouse");  //转化额外添加保证触发
 event_inherited();
 move_anim = 9
 attack_anim = 1

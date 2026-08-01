@@ -22,15 +22,15 @@ else if state == "idle"{
 	image_index = 5
 	if timer == 45{
 		var inst = instance_create_depth(x,y-60,-800,obj_engineer_bullet_effect)
-		inst.sprite_index = get_load_sprite("spr_messenger_fog")
+		inst.sprite_index = spr_messenger_fog
 		var inst2 = instance_create_depth(x-global.grid_cell_size_x,y-60,-800,obj_engineer_bullet_effect)
-		inst2.sprite_index = get_load_sprite("spr_messenger_fog")
+		inst2.sprite_index = spr_messenger_fog
 		var inst3 = instance_create_depth(x+global.grid_cell_size_x,y-60,-800,obj_engineer_bullet_effect)
-		inst3.sprite_index = get_load_sprite("spr_messenger_fog")
+		inst3.sprite_index = spr_messenger_fog
 		var inst4 = instance_create_depth(x,y-60-global.grid_cell_size_y,-800,obj_engineer_bullet_effect)
-		inst4.sprite_index = get_load_sprite("spr_messenger_fog")
+		inst4.sprite_index = spr_messenger_fog
 		var inst5 = instance_create_depth(x,y-60+global.grid_cell_size_y,-800,obj_engineer_bullet_effect)
-		inst5.sprite_index = get_load_sprite("spr_messenger_fog")
+		inst5.sprite_index = spr_messenger_fog
 	}
 	if timer == 180{
 		with obj_card_parent{

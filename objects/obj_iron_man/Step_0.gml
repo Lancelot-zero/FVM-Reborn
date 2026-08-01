@@ -27,7 +27,7 @@ if timer == 57*5+2 || timer == 87*5+2 || timer == 120*5+2 || timer == 154*5+2{
 				obj_task_manager.card_loss++
 			}
 			var effect_inst = instance_create_depth(x,y-30,-800,obj_coke_bomb_explode)
-			effect_inst.sprite_index = get_load_sprite("spr_iron_man_mouse_laser")
+			effect_inst.sprite_index = spr_iron_man_mouse_laser
 			instance_destroy()
 		}
 	}

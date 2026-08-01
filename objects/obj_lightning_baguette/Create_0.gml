@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_lightning_baguette");  //转化额外添加保证触发
 // obj_small_furnace 的 Create 事件
 //plant_id = "small_fire";  // 唯一标识符
 event_inherited();  // 继承父对象属性
@@ -10,12 +9,12 @@ event_user(0)
 
 // ========== 特定属性默认值 ==========
 
-sprite_index = get_load_sprite("spr_lightning_baguette")
+sprite_index = spr_lightning_baguette
 if shape == 1{
-	sprite_index = get_load_sprite("spr_lightning_baguette_1")
+	sprite_index = spr_lightning_baguette_1
 }
 if shape == 2{
-	sprite_index = get_load_sprite("spr_lightning_baguette_2")
+	sprite_index = spr_lightning_baguette_2
 }
 idle_anim = 9
 flash_speed = 5

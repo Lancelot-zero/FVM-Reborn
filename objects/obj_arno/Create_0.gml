@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_arno_disappear");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 
@@ -10,7 +9,7 @@ maxhp = 8000
 immune_to_ash = true
 wait_time = 12 * 5 - 1
 cave = noone
-sprite_index = get_load_sprite("spr_arno_appear")
+sprite_index = spr_arno_appear
 is_boss = true
 step_ready = false;	frame_count = 0;
 

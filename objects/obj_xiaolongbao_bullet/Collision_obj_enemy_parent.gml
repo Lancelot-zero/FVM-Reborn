@@ -15,14 +15,14 @@
 		}
 		if burnt == 0{
 			var effect_inst = instance_create_depth(x,y,depth,obj_xiaolongbao_bullet_effect)
-			if sprite_index == get_load_sprite("spr_gatling_popcorn_bullet"){
-				effect_inst.sprite_index = get_load_sprite("spr_gatling_popcorn_bullet_effect")
+			if sprite_index == spr_gatling_popcorn_bullet{
+				effect_inst.sprite_index = spr_gatling_popcorn_bullet_effect
 			}
-			if sprite_index == get_load_sprite("spr_gatling_popcorn_bullet_1"){
-				effect_inst.sprite_index = get_load_sprite("spr_gatling_popcorn_bullet_effect_1")
+			if sprite_index == spr_gatling_popcorn_bullet_1{
+				effect_inst.sprite_index = spr_gatling_popcorn_bullet_effect_1
 			}
-			if sprite_index == get_load_sprite("spr_gatling_popcorn_bullet_2"){
-				effect_inst.sprite_index = get_load_sprite("spr_gatling_popcorn_bullet_effect_2")
+			if sprite_index == spr_gatling_popcorn_bullet_2{
+				effect_inst.sprite_index = spr_gatling_popcorn_bullet_effect_2
 			}
 		}
 		else{

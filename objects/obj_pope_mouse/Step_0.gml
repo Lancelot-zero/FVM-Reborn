@@ -2,7 +2,7 @@
 if hp <= 0 && state != ENEMY_STATE.DEAD{
 	state = ENEMY_STATE.DEAD
 	timer = 0
-	sprite_index = get_load_sprite("spr_pope_mouse")
+	sprite_index = spr_pope_mouse
 }
 
 event_inherited();
@@ -20,7 +20,7 @@ if state != ENEMY_STATE.DEAD{
 		if state != ENEMY_STATE.ACTING{
 			timer = 0
 			state = ENEMY_STATE.ACTING
-			sprite_index = get_load_sprite("spr_pope_mouse_perform")
+			sprite_index = spr_pope_mouse_perform
 		}
 	}
 
@@ -48,7 +48,7 @@ if state != ENEMY_STATE.DEAD{
 				}
 			}
 			state = ENEMY_STATE.NORMAL
-			sprite_index = get_load_sprite("spr_pope_mouse")
+			sprite_index = spr_pope_mouse
 			timer = 0
 			perform_timer = 0
 		}

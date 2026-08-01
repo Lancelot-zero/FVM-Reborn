@@ -54,12 +54,12 @@ if state == CARD_STATE.AWAKE{
 	wake_timer++
 	image_index = floor(wake_timer/current_flash_speed) mod 3 + 11
 	if wake_timer >= 3*current_flash_speed{
-		sprite_index = get_load_sprite("spr_kettle_bomb");
+		sprite_index = spr_kettle_bomb;
 		if shape == 1{
-			sprite_index = get_load_sprite("spr_kettle_bomb_1")
+			sprite_index = spr_kettle_bomb_1
 		}
 		else if shape == 2{
-			sprite_index = get_load_sprite("spr_kettle_bomb_2")
+			sprite_index = spr_kettle_bomb_2
 		}
 		image_index = 0
 		attack_timer = 0

@@ -1,6 +1,10 @@
 sprite_index = get_load_sprite("spr_mouse_train_2_head_idle");  //转化额外添加保证触发
+sprite_index = get_load_sprite("spr_mouse_train_2_head_idle");  //转化额外添加保证触发
 ///@desc 初始化变量
 event_inherited();
+
+step_ready = false
+frame_count = 0
 
 mouse_id = "mouse_train_3"
 jump_times = 0
@@ -50,6 +54,7 @@ if obj_battle.boss_count > 0{
 
 ///@desc 按方向创建新的车厢
 function create_train_body(amount,dir){
+	if(global.network.mode=="client")return;
 	for(var i = 0 ; i < amount ; i++){
 		if dir == 0{
 			var inst = instance_create_depth(x+210*(i+1),y,depth,obj_mouse_train_3_body)
@@ -82,6 +87,7 @@ function create_train_body(amount,dir){
 
 ///@desc 在当前列末尾创建新的车厢
 function create_train_body_order(amount,dir,body_move_time){
+	if(global.network.mode=="client")return;
 	for(var i = 0 ; i < amount ; i++){
 		if dir == 0{
 			var inst = instance_create_depth(x+210*(array_length(train_body_list)+1),y,depth,obj_mouse_train_3_body)
@@ -114,6 +120,7 @@ function create_train_body_order(amount,dir,body_move_time){
 
 ///@desc 按位置创建新的车厢
 function create_train_body_pos(amount,dir,body_x,body_y,body_move_time){
+	if(global.network.mode=="client")return;
 	for(var i = 0 ; i < amount ; i++){
 		if dir == 0{
 			var inst = instance_create_depth(body_x,body_y,depth,obj_mouse_train_3_body)
@@ -146,6 +153,7 @@ function create_train_body_pos(amount,dir,body_x,body_y,body_move_time){
 
 ///@desc 移除指定位置的车厢
 function remove_train_body(index){
+	if(global.network.mode=="client")return;
 	if instance_exists(train_body_list[index]){
 		instance_destroy(train_body_list[index])
 		array_delete(train_body_list,index,1)
@@ -154,6 +162,7 @@ function remove_train_body(index){
 
 ///@desc 移除所有车厢
 function clear_train_body(){
+	if(global.network.mode=="client")return;
 	for(var i = 0 ; i < array_length(train_body_list) ; i++){
 		if instance_exists(train_body_list[i]){
 			instance_destroy(train_body_list[i])

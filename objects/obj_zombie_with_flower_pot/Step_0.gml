@@ -1,19 +1,19 @@
 // Inherit the parent event
 if hp <= 0 && state != ENEMY_STATE.DEAD{
 	state = ENEMY_STATE.DEAD
-	sprite_index = get_load_sprite("spr_zombie_with_flower_pot")
+	sprite_index = spr_zombie_with_flower_pot
 	timer = 0
 }
 
 if shield_hp > 0{
-	sprite_index = get_load_sprite("spr_zombie_with_flower_pot_shield")
+	sprite_index = spr_zombie_with_flower_pot_shield
 	move_anim = 12
 	attack_anim = 6
 	move_speed = 0.36
 }
 else{
-	if sprite_index != get_load_sprite("spr_zombie_with_flower_pot_drop"){
-		sprite_index = get_load_sprite("spr_zombie_with_flower_pot")
+	if sprite_index != spr_zombie_with_flower_pot_drop{
+		sprite_index = spr_zombie_with_flower_pot
 	}
 	move_anim = 8
 	attack_anim = 4
@@ -23,7 +23,7 @@ else{
 if shield_hp <= 0 && not dropped && hp > 0{
 	timer = 0
 	state = ENEMY_STATE.ACTING
-	sprite_index = get_load_sprite("spr_zombie_with_flower_pot_drop")
+	sprite_index = spr_zombie_with_flower_pot_drop
 	dropped = true
 }
 event_inherited();
@@ -39,6 +39,6 @@ if dropped && state == ENEMY_STATE.ACTING{
 	}
 	if timer >= flash_speed * 10 or hp <= 0{
 		state = ENEMY_STATE.NORMAL
-		sprite_index = get_load_sprite("spr_zombie_with_flower_pot")
+		sprite_index = spr_zombie_with_flower_pot
 	}
 }

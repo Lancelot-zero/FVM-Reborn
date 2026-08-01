@@ -176,6 +176,7 @@ struct Room {
     double battle_started_at = 0;
     std::unordered_map<std::string, std::vector<uint8_t>> file_cache;
     std::unordered_map<std::string, std::vector<std::pair<SOCKET, std::string>>> file_pending;
+    std::vector<uint8_t> raw_payload;    // MSG_ENTER_ROOM_READY 原始二进制
     std::unordered_map<std::string, std::string> msgs;  // name → 最新消息
 
     int member_count() const {
@@ -661,7 +662,9 @@ void handle_client(SOCKET sock) {
         write_str(sock, MSG_CHAT,
             "[系统] 你已加入房间 " + room.id + "\n"
             "[系统] 你的名字是 " + cli.name + "，可使用 \\listcommand 查看命令，或等待房主操作");
-        if (!room.data.empty())
+        if (!room.raw_payload.empty())
+            write_pkt(sock, 13, room.raw_payload.data(), (int)room.raw_payload.size());
+        else if (!room.data.empty())
             write_pkt(sock, 13, room.data.c_str(), (int)room.data.size() + 1);
     }
     write_str(sock, MSG_CHAT, "[系统] 输入文字即可聊天");
@@ -731,7 +734,7 @@ void handle_client(SOCKET sock) {
 
         // 监控房间状态
         if (mid == 13 && cli.role == 0) {  // MSG_ENTER_ROOM_READY
-            room.data = std::string((char*)pkt_body.data() + 4, pkt_len - 4);
+            room.raw_payload.assign(pkt_body.begin() + 4, pkt_body.begin() + pkt_len);
             room.state = "lobby";
             room.file_cache.clear();
             room.file_pending.clear();

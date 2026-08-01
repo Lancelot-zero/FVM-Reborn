@@ -8,7 +8,7 @@ if button_pushed{
 			show_notice("等待房主操作",60);
 			return;
 		}
-		audio_pause_sound(get_load_audio("mus_readyroom"))
+		audio_pause_sound(mus_readyroom)
 		//global.gui_stack.to(room_battle)
 		var list_name = obj_readyroom_manager._get_needed_sprites();
 		sprite_manager_load_battle(list_name);

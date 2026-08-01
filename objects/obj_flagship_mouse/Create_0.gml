@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_rowboat_mouse");  //转化额外添加保证触发
  // Inherit the parent event
 event_inherited();
 
@@ -17,7 +16,7 @@ attack_range = 120
 
 state = ENEMY_STATE.APPEAR
 appear_timer = 0
-sprite_index = get_load_sprite("spr_flagship_mouse_appear")
+sprite_index = spr_flagship_mouse_appear
 image_alpha = 0
 
 atk_cycle = 1

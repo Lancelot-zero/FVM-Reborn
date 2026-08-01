@@ -5,7 +5,7 @@ if global.is_paused{
 
 if (hp <= 0) {
 	var inst = instance_create_depth(x,y-45,depth,obj_coke_bomb_explode)
-	inst.sprite_index = get_load_sprite("spr_arson_mouse_bullet_effect")
+	inst.sprite_index = spr_arson_mouse_bullet_effect
 	inst.image_xscale = 0.8
 	inst.image_yscale = 0.8
 	instance_destroy()
@@ -29,7 +29,7 @@ if hp > 0 && state != ENEMY_STATE.DEAD{
 		image_index = floor(anim_timer/flash_speed) mod 6
 		if hp <= (maxhp-helmet_hp) || x <= global.grid_offset_x + 350{
 			state = ENEMY_STATE.ACTING
-			sprite_index = get_load_sprite("spr_kamikaze_glider_mouse_drop")
+			sprite_index = spr_kamikaze_glider_mouse_drop
 			move_speed = 1.2
 			anim_timer = 0
 		}
@@ -40,7 +40,7 @@ if hp > 0 && state != ENEMY_STATE.DEAD{
 		image_index = floor(anim_timer/flash_speed) mod 8
 		if anim_timer >= flash_speed * 8-1{
 			state = ENEMY_STATE.DIG
-			sprite_index = get_load_sprite("spr_kamikaze_glider_mouse_land")
+			sprite_index = spr_kamikaze_glider_mouse_land
 			anim_timer = 0
 			helmet_hp = 0
 		}
@@ -61,7 +61,7 @@ if hp > 0 && state != ENEMY_STATE.DEAD{
 			}
 			var effect_pos = get_world_position_from_grid(grid_col,grid_row)
 			var inst = instance_create_depth(effect_pos.x,effect_pos.y,depth,obj_coke_bomb_explode)
-			inst.sprite_index = get_load_sprite("spr_kamikaze_glider_mouse_effect")
+			inst.sprite_index = spr_kamikaze_glider_mouse_effect
 			instance_destroy()
 		}
 	}

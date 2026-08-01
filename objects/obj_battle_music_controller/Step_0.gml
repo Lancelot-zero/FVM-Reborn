@@ -1,3 +1,4 @@
+if (is_string(battle_music)) battle_music = get_load_audio(battle_music);
 if (!audio_exists(battle_music)) exit;
 
 if audio_is_paused(battle_music) and not global.is_paused{

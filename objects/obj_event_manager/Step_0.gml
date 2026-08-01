@@ -1,4 +1,9 @@
 if global.is_paused{
+	
+	if (buffer_exists(global._VM_BATTLE_START) && !global._VM_battle_start_done) {
+		VM_Execute(global.__vm, global._VM_BATTLE_START);
+		global._VM_battle_start_done = true;
+	}
 	exit
 }
 

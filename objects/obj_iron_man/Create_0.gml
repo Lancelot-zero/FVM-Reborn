@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_iron_man_mouse_skill_2_iron");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 

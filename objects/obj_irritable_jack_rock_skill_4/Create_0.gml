@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_irritable_jack_head_skill_3");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 
@@ -11,7 +10,7 @@ special_ash = true
 mouse_id = "irritable_jack_rock"
 move_speed = 1
 
-prev_spr = get_load_sprite("spr_irritable_jack_head_skill_3")
-next_spr = get_load_sprite("spr_irritable_jack_head_skill_4")
+prev_spr = spr_irritable_jack_head_skill_3
+next_spr = spr_irritable_jack_head_skill_4
 
 immune_to_ash = true

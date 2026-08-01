@@ -53,9 +53,9 @@ inst.target_enemy = target
 inst.banding_card_obj = id
 inst.row = grid_row
 if card_equipped_attire_id(plant_id) == "takoyaki_cancer"{
-	inst.sprite_index = get_load_sprite("spr_takoyaki_cancer_bullet")
+	inst.sprite_index = spr_takoyaki_cancer_bullet
 	if shape >= 2{
-		inst.sprite_index = get_load_sprite("spr_takoyaki_cancer_bullet_1")
+		inst.sprite_index = spr_takoyaki_cancer_bullet_1
 	}
 }
 if shape == 2{
@@ -67,9 +67,9 @@ if shape == 2{
 	inst2.banding_card_obj = id
 	inst2.row = grid_row
 	if card_equipped_attire_id(plant_id) == "takoyaki_cancer"{
-	inst2.sprite_index = get_load_sprite("spr_takoyaki_cancer_bullet")
+	inst2.sprite_index = spr_takoyaki_cancer_bullet
 	if shape >= 2{
-		inst2.sprite_index = get_load_sprite("spr_takoyaki_cancer_bullet_1")
+		inst2.sprite_index = spr_takoyaki_cancer_bullet_1
 	}
 }
 }

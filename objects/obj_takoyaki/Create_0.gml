@@ -1,18 +1,17 @@
-sprite_index = get_load_sprite("spr_takoyaki");  //转化额外添加保证触发
 // obj_small_furnace 的 Create 事件
 // 唯一标识符
 event_inherited();  // 继承父对象属性
 plant_id = "takoyaki"; 
 // 设置对象类型和精灵
 obj_type = object_index;
-sprite_index = get_load_sprite("spr_takoyaki");
+sprite_index = spr_takoyaki;
 current_level = 1
 event_user(0)
 if shape == 1{
-	sprite_index = get_load_sprite("spr_takoyaki_1")
+	sprite_index = spr_takoyaki_1
 }
 else if shape == 2{
-	sprite_index = get_load_sprite("spr_takoyaki_2")
+	sprite_index = spr_takoyaki_2
 }
 if card_equipped_attire_id(plant_id) != -1{
 	var spr_list = get_attire_info(card_equipped_attire_id(plant_id)).spr

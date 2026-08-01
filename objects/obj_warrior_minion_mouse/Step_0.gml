@@ -8,10 +8,10 @@ if not summon{
 }
 
 	if state == ENEMY_STATE.ACTING{
-		sprite_index = get_load_sprite("spr_warrior_minion_mouse_summon")
+		sprite_index = spr_warrior_minion_mouse_summon
 	}
 	else{
-		sprite_index = get_load_sprite("spr_warrior_minion_mouse")
+		sprite_index = spr_warrior_minion_mouse
 	}
 
 event_inherited();
@@ -24,7 +24,7 @@ if state == ENEMY_STATE.ACTING{
 	
 	if timer >= flash_speed * 10 or hp <= 0{
 		state = ENEMY_STATE.NORMAL
-		sprite_index = get_load_sprite("spr_warrior_minion_mouse")
+		sprite_index = spr_warrior_minion_mouse
 		summon = true
 	}
 }

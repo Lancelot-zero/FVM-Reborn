@@ -2,8 +2,6 @@ if global.is_paused{
 	exit
 }
 	
-if (global.network.mode == "client" && !step_ready) exit;
-
 timer++
 
 if state == "start"{
@@ -35,3 +33,4 @@ if image_alpha <= 0{
 }
 
 }
+

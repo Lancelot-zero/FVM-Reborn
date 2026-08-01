@@ -58,6 +58,7 @@ class Room:
         self.battle_started_at = 0.0
         self.file_cache = {}       # filename → bytes
         self.file_pending = {}     # filename → [(writer, purpose), ...]
+        self.raw_payload = None    # MSG_ENTER_ROOM_READY 原始二进制
         self.msgs = {}             # name → 最新聊天内容 (≤20字)
 
     @property
@@ -553,8 +554,11 @@ class Relay:
             self.write_str(writer, MSG_CHAT,
                 f"[系统] 你已加入房间 {room.id}\n"
                 f"[系统] 你的名字是 {name}，可使用 \\listcommand 查看命令，或等待房主操作")
-            # 同步房间状态给新客户端
-            if room.data:
+            # 同步房间状态给新客户端（保留原始二进制数据）
+            if hasattr(room, "raw_payload") and room.raw_payload:
+                msg_id = 13  # MSG_ENTER_ROOM_READY
+                self.write_pkt(writer, msg_id, room.raw_payload)
+            elif room.data:
                 msg_id = 13  # MSG_ENTER_ROOM_READY
                 self.write_pkt(writer, msg_id, room.data.encode() + NUL)
         self.write_str(writer, MSG_CHAT, f"[系统] 输入文字即可聊天")
@@ -600,7 +604,7 @@ class Relay:
 
                 # 监控关键消息，更新房间状态
                 if msg_id == 13 and role == 0:  # MSG_ENTER_ROOM_READY
-                    room.data = payload.decode("utf-8").rstrip("\x00")
+                    room.raw_payload = payload      # 保留原始二进制，不解码
                     room.state = "lobby"
                     room.file_cache.clear()
                     room.file_pending.clear()

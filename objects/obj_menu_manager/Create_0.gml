@@ -20,7 +20,7 @@ _entrance_list.set_position(600,20)
 
 if not instance_exists(obj_menu_music_controller){
 	var mus_inst = instance_create_depth(0,0,0,obj_menu_music_controller)
-	mus_inst.menu_music = get_load_audio("mus_town")
+	mus_inst.menu_music = mus_town
 }
 if not instance_exists(obj_world_map_button){
 	instance_create_depth(1670,80,0,obj_world_map_button)

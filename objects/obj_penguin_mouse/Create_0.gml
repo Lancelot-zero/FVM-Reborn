@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_penguin_mouse_bomb");  //转化额外添加保证触发
 event_inherited();
 hp = 170
 maxhp = 170

@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_irritable_jack_fire_mouse");  //转化额外添加保证触发
  // Inherit the parent event
 event_inherited();
 

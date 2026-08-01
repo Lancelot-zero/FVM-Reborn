@@ -45,7 +45,7 @@ if x >= target_x - 10 && x <= target_x + 10{
 	
 	//var inst_y = get_world_position_from_grid(target_col,row).y
 	var inst = instance_create_depth(x,y,-200,obj_coke_bomb_explode)
-	inst.sprite_index = get_load_sprite("spr_arson_mouse_bullet_effect")
+	inst.sprite_index = spr_arson_mouse_bullet_effect
 	inst.image_xscale = 1
 	inst.image_yscale = 1
 	instance_destroy()

@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_mouse_train_2_head_idle");  //转化额外添加保证触发
 ///@desc 初始化变量
 event_inherited();
 
@@ -12,7 +11,7 @@ immune_to_ash = true
 wait_time = 120
 move_time = 250
 cave = noone
-sprite_index = get_load_sprite("spr_mouse_train_2_head_appear1")
+sprite_index = spr_mouse_train_2_head_appear1
 is_boss = true
 step_ready = false;	frame_count = 0;
 train_dir = 0

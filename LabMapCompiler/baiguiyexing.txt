@@ -1,0 +1,12 @@
+// 百鬼夜行 — 开局创建老鼠列车3号
+_VM_ROOM_READY_ENTRY {
+    VM_ShowNotice("百鬼夜行")
+    halt
+}
+
+_VM_BATTLE_START {
+    VM_SpawnBoss("mouse_train_2", 2, 200000)
+    VM_SpawnBoss("mouse_train_3", 5, 200000)
+    VM_ShowNotice("列车2号+3号 出击！")
+    halt
+}

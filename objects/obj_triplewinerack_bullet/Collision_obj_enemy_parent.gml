@@ -15,11 +15,11 @@ if other.hp > 0 and row == other.grid_row  and can_hit(target_type,other.target_
 	if burnt == 0{
 		var inst = instance_create_depth(x,y,depth,obj_coffeecup_bullet_effect)
 		inst.sprite_index = spr_triplewinerack_bullet_effect
-		if sprite_index == get_load_sprite("spr_wine_rack_sagittarius_bullet"){
-			inst.sprite_index = get_load_sprite("spr_wine_rack_sagittarius_bullet_effect")
+		if sprite_index == spr_wine_rack_sagittarius_bullet{
+			inst.sprite_index = spr_wine_rack_sagittarius_bullet_effect
 		}
-		if sprite_index == get_load_sprite("spr_wine_rack_sagittarius_bullet_1"){
-			inst.sprite_index = get_load_sprite("spr_wine_rack_sagittarius_bullet_effect_1")
+		if sprite_index == spr_wine_rack_sagittarius_bullet_1{
+			inst.sprite_index = spr_wine_rack_sagittarius_bullet_effect_1
 		}
 	}
 	else if burnt == 1{

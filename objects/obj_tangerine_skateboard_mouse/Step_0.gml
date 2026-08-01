@@ -1,6 +1,6 @@
 // Inherit the parent event
 if skipped or hp <= 0{
-	sprite_index = get_load_sprite("spr_tangerine_skateboard_mouse")
+	sprite_index = spr_tangerine_skateboard_mouse
 	move_anim = 14
 	attack_anim = 4
 	death_anim = 14

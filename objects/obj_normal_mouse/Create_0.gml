@@ -1,9 +1,8 @@
-sprite_index = get_load_sprite("spr_normal_mouse");  //转化额外添加保证触发
 event_inherited()
 image_xscale = 1.8
 image_yscale = 1.8
 image_speed = 0
-//sprite_index = get_load_sprite("spr_mario_mouse_idle")
+//sprite_index = spr_mario_mouse_idle
 atk = 10 //每次攻击伤害
 atk_cycle = 0.6 * 60 //攻击间隔
 move_speed = 0.32 //移动速度（像素/秒）

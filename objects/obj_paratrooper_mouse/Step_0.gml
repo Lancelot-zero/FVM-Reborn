@@ -6,7 +6,7 @@ if global.is_paused{
 if (hp <= 0 && state != ENEMY_STATE.DEAD) {
 	state = ENEMY_STATE.DEAD
 	timer = 0
-	sprite_index = get_load_sprite("spr_paratrooper_mouse")
+	sprite_index = spr_paratrooper_mouse
 }
 if !appear{
 	target_col = irandom_range(2,6)
@@ -56,7 +56,7 @@ if hp > 0 && state != ENEMY_STATE.DEAD{
 			target_type = "normal"
 			state = ENEMY_STATE.NORMAL
 			timer = 0
-			sprite_index = get_load_sprite("spr_paratrooper_mouse")
+			sprite_index = spr_paratrooper_mouse
 			
 		}
 		

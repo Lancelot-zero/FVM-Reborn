@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_hulk_mouse_idle");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 
@@ -11,7 +10,7 @@ maxhp = 120000
 immune_to_ash = true
 wait_time = 480
 cave = noone
-sprite_index = get_load_sprite("spr_hulk_mouse_appear")
+sprite_index = spr_hulk_mouse_appear
 is_boss = true
 step_ready = false;	frame_count = 0;
 

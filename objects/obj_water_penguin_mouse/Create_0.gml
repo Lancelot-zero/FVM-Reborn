@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_water_penguin_mouse_land");  //转化额外添加保证触发
 event_inherited();
 hp = 100
 maxhp = 100

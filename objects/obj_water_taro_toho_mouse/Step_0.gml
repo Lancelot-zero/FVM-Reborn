@@ -3,27 +3,27 @@ if hp <= 0 && state != ENEMY_STATE.DEAD{
 		timer = 0
 		state = ENEMY_STATE.DEAD
 		if (grid_col < 0 || grid_col >= global.grid_cols || grid_row < 0 || grid_row >= global.grid_rows){
-			sprite_index = get_load_sprite("spr_water_taro_toho_mouse_land")
+			sprite_index = spr_water_taro_toho_mouse_land
 		}
 		else{
 			if global.grid_terrains[grid_row][grid_col].type == "water"{
-				sprite_index = get_load_sprite("spr_water_taro_toho_mouse")
+				sprite_index = spr_water_taro_toho_mouse
 			}
 			else{
-				sprite_index = get_load_sprite("spr_water_taro_toho_mouse_land")
+				sprite_index = spr_water_taro_toho_mouse_land
 			}
 		}
 		
 	}
 if (grid_col < 0 || grid_col >= global.grid_cols || grid_row < 0 || grid_row >= global.grid_rows) {
-	sprite_index = get_load_sprite("spr_water_taro_toho_mouse_land")
+	sprite_index = spr_water_taro_toho_mouse_land
 
 }
 else{
 	if global.grid_terrains[grid_row][grid_col].type == "water"{
-		if sprite_index == get_load_sprite("spr_water_taro_toho_mouse_land"){
+		if sprite_index == spr_water_taro_toho_mouse_land{
 			state = ENEMY_STATE.ACTING
-			sprite_index = get_load_sprite("spr_water_taro_toho_mouse_enter")
+			sprite_index = spr_water_taro_toho_mouse_enter
 			timer = 0
 			audio_play_sound(snd_enter_water,0,0)
 			reversed = false
@@ -32,9 +32,9 @@ else{
 
 	}
 	else{
-		if sprite_index == get_load_sprite("spr_water_taro_toho_mouse"){
+		if sprite_index == spr_water_taro_toho_mouse{
 			state = ENEMY_STATE.ACTING
-			sprite_index = get_load_sprite("spr_water_taro_toho_mouse_enter")
+			sprite_index = spr_water_taro_toho_mouse_enter
 			timer = 0
 			audio_play_sound(snd_enter_water,0,0)
 			reversed = true
@@ -69,10 +69,10 @@ if state = ENEMY_STATE.ACTING{
 	if timer >= flash_speed * 9 or hp <= 0{
 		state = ENEMY_STATE.NORMAL
 		if reversed{
-			sprite_index = get_load_sprite("spr_water_taro_toho_mouse_land")
+			sprite_index = spr_water_taro_toho_mouse_land
 		}
 		else{
-			sprite_index = get_load_sprite("spr_water_taro_toho_mouse")
+			sprite_index = spr_water_taro_toho_mouse
 		}
 	}
 }

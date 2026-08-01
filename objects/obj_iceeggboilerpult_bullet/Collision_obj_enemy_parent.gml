@@ -10,8 +10,8 @@ if !hit_enemy{
 			}
 		}
 		var effect_inst = instance_create_depth(x,y,depth,obj_iceeggboilerpult_bullet_effect)
-		if sprite_index == get_load_sprite("spr_ice_egg_pisces_bullet"){
-			effect_inst.sprite_index = get_load_sprite("spr_ice_egg_pisces_bullet_effect")
+		if sprite_index == spr_ice_egg_pisces_bullet{
+			effect_inst.sprite_index = spr_ice_egg_pisces_bullet_effect
 		}
 		hit_enemy = true
 		hitted_enemy = other.id

@@ -98,6 +98,7 @@ function VM_ShowNotice(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p) {
     show_notice(_msg, 120);
 }
 function VM_CreatePlatform(col, row, width, length, axis, distance, idle, spr) {
+    if (global.network.mode == "client") return -1;
     var _pos = get_world_position_from_grid(col, row);
     var _plat = instance_create_depth(
         _pos.x - global.grid_cell_size_x / 2,
@@ -255,6 +256,7 @@ function VM_SetProp(inst_id, prop, value) {
 /// @function VM_SpawnObject(obj_name, col, row)
 /// @return 实例 ID
 function VM_SpawnObject(obj_name, col, row) {
+    if (global.network.mode == "client") return -1;
     if (!string_starts_with(obj_name, "obj_"))
         obj_name = "obj_" + obj_name;
     var _obj = asset_get_index(obj_name);
@@ -268,6 +270,7 @@ function VM_SpawnObject(obj_name, col, row) {
 /// @function VM_SpawnPlant(card_id, col, row, shape, level, skill)
 /// @return 植物实例 ID
 function VM_SpawnPlant(card_id, col, row, shape, level, skill) {
+    if (global.network.mode == "client") return -1;
     if (is_undefined(shape)) shape = 0;
     if (is_undefined(level)) level = 0;
     if (is_undefined(skill)) skill = 0;
@@ -284,6 +287,7 @@ function VM_SpawnPlant(card_id, col, row, shape, level, skill) {
 /// @function VM_SpawnEnemy(type, row, hp_override)
 /// @return 敌人实例 ID
 function VM_SpawnEnemy(type, row, hp_override) {
+    if (global.network.mode == "client") return -1;
     var _info = global.enemy_map[? type];
     if (is_undefined(_info)) return -1;
     var _pos = get_world_position_from_grid(global.grid_cols, row);
@@ -307,6 +311,7 @@ function VM_SpawnEnemy(type, row, hp_override) {
 /// @function VM_SpawnBoss(type, row, hp_override)
 /// @return BOSS 实例 ID
 function VM_SpawnBoss(type, row, hp_override) {
+    if (global.network.mode == "client") return -1;
     var _info = global.enemy_map[? type];
     if (is_undefined(_info)) return -1;
     var _pos = get_world_position_from_grid(10, row);

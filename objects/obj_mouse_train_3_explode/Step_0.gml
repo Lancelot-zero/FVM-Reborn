@@ -54,3 +54,5 @@ depth = base_depth ; // 僵尸比植物稍微靠后一点（在护罩外侧和�
 
 grid_col = zombie_grid.col;
 grid_row = zombie_grid.row;
+
+frame_count++;

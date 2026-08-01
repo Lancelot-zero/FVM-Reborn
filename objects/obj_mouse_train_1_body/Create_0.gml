@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_mouse_train_1_body_idle");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 
@@ -12,7 +11,7 @@ immune_to_ash = true
 wait_time = 120
 move_time = 250
 cave = noone
-sprite_index = get_load_sprite("spr_mouse_train_1_body_idle")
+sprite_index = spr_mouse_train_1_body_idle
 is_boss = true
 step_ready = false;	frame_count = 0;
 

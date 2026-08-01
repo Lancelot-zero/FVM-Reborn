@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_ice_residue_ball");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 

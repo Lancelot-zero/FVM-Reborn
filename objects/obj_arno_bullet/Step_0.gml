@@ -28,13 +28,13 @@ if x >= target_x - 10 && x <= target_x + 10{
 			instance_destroy()
 		}
 	}
-	if sprite_index == get_load_sprite("spr_arno_bullet"){
+	if sprite_index == spr_arno_bullet{
 		var inst_y = get_world_position_from_grid(target_col,row).y
 		instance_create_depth(target_x,inst_y+15,-200,obj_arno_bullet_effect)
 	}
-	else if sprite_index == get_load_sprite("spr_ice_residue_bullet"){
+	else if sprite_index == spr_ice_residue_bullet{
 		var inst = instance_create_depth(x,y,-200,obj_arno_bullet_effect)
-		inst.sprite_index = get_load_sprite("spr_ice_residue_bullet_effect")
+		inst.sprite_index = spr_ice_residue_bullet_effect
 	}
 	instance_destroy()
 }

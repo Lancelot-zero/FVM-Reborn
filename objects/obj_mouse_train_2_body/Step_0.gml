@@ -22,10 +22,10 @@ if !instance_exists(train_head){
 switch state{
 	case BOSS_STATE.IDLE:
 		if !skill_3_style{
-			sprite_index = get_load_sprite("spr_mouse_train_2_body_idle1")
+			sprite_index = spr_mouse_train_2_body_idle1
 		}
 		else{
-			sprite_index = get_load_sprite("spr_mouse_train_2_body_idle2")
+			sprite_index = spr_mouse_train_2_body_idle2
 		}
 		if train_head.hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 4
@@ -48,18 +48,18 @@ switch state{
 		if timer <= 5 * 9 - 1{
 			if !skill_3_style{
 				if train_dir == 0{
-					sprite_index = get_load_sprite("spr_mouse_train_2_body_appear1")
+					sprite_index = spr_mouse_train_2_body_appear1
 				}
 				else{
-					sprite_index = get_load_sprite("spr_mouse_train_2_body_appear2")
+					sprite_index = spr_mouse_train_2_body_appear2
 				}
 			}
 			else{
 				if train_dir == 0{
-					sprite_index = get_load_sprite("spr_mouse_train_2_body_appear3")
+					sprite_index = spr_mouse_train_2_body_appear3
 				}
 				else{
-					sprite_index = get_load_sprite("spr_mouse_train_2_body_appear4")
+					sprite_index = spr_mouse_train_2_body_appear4
 				}
 			}
 			if train_head.hp > maxhp * hurt_rate{
@@ -71,10 +71,10 @@ switch state{
 		}
 		else{
 			if !skill_3_style{
-				sprite_index = get_load_sprite("spr_mouse_train_2_body_idle1")
+				sprite_index = spr_mouse_train_2_body_idle1
 			}
 			else{
-				sprite_index = get_load_sprite("spr_mouse_train_2_body_idle2")
+				sprite_index = spr_mouse_train_2_body_idle2
 			}
 			if train_head.hp > maxhp * hurt_rate{
 				image_index = floor(timer/5) mod 4
@@ -99,10 +99,10 @@ switch state{
 	
 	case BOSS_STATE.SKILL1:
 		if grid_row == 0{
-			sprite_index = get_load_sprite("spr_mouse_train_2_body_skill_1_2")
+			sprite_index = spr_mouse_train_2_body_skill_1_2
 		}
 		else{
-			sprite_index = get_load_sprite("spr_mouse_train_2_body_skill_1_1")
+			sprite_index = spr_mouse_train_2_body_skill_1_1
 		}
 		if timer <= 10 * 5 - 1{
 			if train_head.hp > maxhp * hurt_rate{
@@ -141,13 +141,13 @@ switch state{
 	case BOSS_STATE.SKILL2:
 		
 		if grid_row == 0{
-			sprite_index = get_load_sprite("spr_mouse_train_2_body_skill_2_2")
+			sprite_index = spr_mouse_train_2_body_skill_2_2
 		}
 		else if grid_row == global.grid_rows-1{
-			sprite_index = get_load_sprite("spr_mouse_train_2_body_skill_2_1")
+			sprite_index = spr_mouse_train_2_body_skill_2_1
 		}
 		else{
-			sprite_index = get_load_sprite("spr_mouse_train_2_body_skill_2_3")
+			sprite_index = spr_mouse_train_2_body_skill_2_3
 		}
 		if train_head.hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 63
@@ -166,7 +166,7 @@ switch state{
 		
 	case BOSS_STATE.SKILL3:
 		
-		sprite_index = get_load_sprite("spr_mouse_train_2_body_skill_3")
+		sprite_index = spr_mouse_train_2_body_skill_3
 		if train_head.hp > maxhp * hurt_rate{
 			image_index = floor(timer/5) mod 63
 		}
@@ -236,10 +236,10 @@ switch state{
 	case BOSS_STATE.DISAPPEAR:
 		if timer <= move_time - 9 * 5{
 			if !skill_3_style{
-				sprite_index = get_load_sprite("spr_mouse_train_2_body_idle1")
+				sprite_index = spr_mouse_train_2_body_idle1
 			}
 			else{
-				sprite_index = get_load_sprite("spr_mouse_train_2_body_idle2")
+				sprite_index = spr_mouse_train_2_body_idle2
 			}
 			if train_head.hp > maxhp * hurt_rate{
 				image_index = floor(timer/5) mod 4
@@ -251,18 +251,18 @@ switch state{
 		else{
 			if !skill_3_style{
 				if train_dir == 0{
-					sprite_index = get_load_sprite("spr_mouse_train_2_body_disappear1")
+					sprite_index = spr_mouse_train_2_body_disappear1
 				}
 				else{
-					sprite_index = get_load_sprite("spr_mouse_train_2_body_disappear2")
+					sprite_index = spr_mouse_train_2_body_disappear2
 				}
 			}
 			else{
 				if train_dir == 0{
-					sprite_index = get_load_sprite("spr_mouse_train_2_body_disappear3")
+					sprite_index = spr_mouse_train_2_body_disappear3
 				}
 				else{
-					sprite_index = get_load_sprite("spr_mouse_train_2_body_disappear4")
+					sprite_index = spr_mouse_train_2_body_disappear4
 				}
 			}
 			if train_head.hp > maxhp * hurt_rate{
@@ -290,7 +290,7 @@ switch state{
 		break
 	
 	case BOSS_STATE.DEATH:
-		sprite_index = get_load_sprite("spr_mouse_train_2_body_death")
+		sprite_index = spr_mouse_train_2_body_death
 		image_index = floor(timer/5) mod image_number
 		if timer >= image_number * 5{
 			image_alpha -= 0.1

@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_melon_shield_outer_1");  //转化额外添加保证触发
 // obj_small_furnace 的 Create 事件
 //plant_id = "small_fire";  // 唯一标识符
 event_inherited();  // 继承父对象属性
@@ -13,14 +12,14 @@ event_user(0)
 inner_inst = instance_create_depth(x,y-18,depth+2,obj_melon_shield_inner)
 inner_inst.parent_plant = id
 
-sprite_list = [get_load_sprite("spr_melon_shield_outer_1"),get_load_sprite("spr_melon_shield_outer_2"),get_load_sprite("spr_melon_shield_outer_3")]
+sprite_list = [spr_melon_shield_outer_1,spr_melon_shield_outer_2,spr_melon_shield_outer_3]
 if shape == 1{
-	sprite_list = [get_load_sprite("spr_melon_shield_1_outer_1"),get_load_sprite("spr_melon_shield_1_outer_2"),get_load_sprite("spr_melon_shield_1_outer_3")]
-	inner_inst.sprite_index = get_load_sprite("spr_melon_shield_inner_2")
+	sprite_list = [spr_melon_shield_1_outer_1,spr_melon_shield_1_outer_2,spr_melon_shield_1_outer_3]
+	inner_inst.sprite_index = spr_melon_shield_inner_2
 }
 if shape == 2{
-	sprite_list = [get_load_sprite("spr_melon_shield_2_outer_1"),get_load_sprite("spr_melon_shield_2_outer_2"),get_load_sprite("spr_melon_shield_2_outer_3")]
-	inner_inst.sprite_index = get_load_sprite("spr_melon_shield_inner_3")
+	sprite_list = [spr_melon_shield_2_outer_1,spr_melon_shield_2_outer_2,spr_melon_shield_2_outer_3]
+	inner_inst.sprite_index = spr_melon_shield_inner_3
 	inner_inst.y -= 5
 }
 sprite_index = sprite_list[0]

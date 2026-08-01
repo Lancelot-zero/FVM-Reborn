@@ -1,6 +1,8 @@
 sprite_index = get_load_sprite("spr_mouse_train_2_body_idle1");  //转化额外添加保证触发
+sprite_index = get_load_sprite("spr_mouse_train_2_body_idle1");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
+step_ready = false
 
 mouse_id = "mouse_train_3"
 jump_times = 0
@@ -31,3 +33,5 @@ y_move_speed = 0
 
 train_head = id
 is_reversed = false
+
+frame_count = 0

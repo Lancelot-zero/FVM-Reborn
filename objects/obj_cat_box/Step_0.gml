@@ -3,13 +3,13 @@ if global.is_paused{
 }
 
 if hp <= 0.33*max_hp{
-	sprite_index = get_load_sprite("spr_cat_box_3")
+	sprite_index = spr_cat_box_3
 }
 else if hp <= 0.66*max_hp{
-	sprite_index = get_load_sprite("spr_cat_box_2")
+	sprite_index = spr_cat_box_2
 }
 else{
-	sprite_index = get_load_sprite("spr_cat_box_1")
+	sprite_index = spr_cat_box_1
 }
 event_inherited(); 
 if is_frozen{

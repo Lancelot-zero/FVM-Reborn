@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_wooden_plate");  //转化额外添加保证触发
 event_inherited();  // 继承父对象属性
 plant_id = "wooden_plate"; 
 // 设置对象类型和精灵
@@ -16,11 +15,11 @@ flash_speed = 8
 idle_anim = 8
 plant_type = "lilypad"
 if shape == 0{
-	sprite_index = get_load_sprite("spr_wooden_plate")
+	sprite_index = spr_wooden_plate
 }
 else if shape == 1{
-	sprite_index = get_load_sprite("spr_wooden_plate_1")
+	sprite_index = spr_wooden_plate_1
 }
 else if shape == 2{
-	sprite_index = get_load_sprite("spr_wooden_plate_2")
+	sprite_index = spr_wooden_plate_2
 }

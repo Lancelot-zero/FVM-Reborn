@@ -4,7 +4,7 @@ if global.is_paused{
 }
 
 if (hp <= 0) {
-	sprite_index = get_load_sprite("spr_aircraft_carrier")
+	sprite_index = spr_aircraft_carrier
 	if state != ENEMY_STATE.DEAD{
 	    timer = 0;
 	    state = ENEMY_STATE.DEAD;
@@ -44,13 +44,13 @@ if hp > 0 && state != ENEMY_STATE.DEAD{
 			anim_timer = 0
 			state = ENEMY_STATE.ACTING
 			if grid_row == 0{
-				sprite_index = get_load_sprite("spr_aircraft_carrier_release_2")
+				sprite_index = spr_aircraft_carrier_release_2
 			}
 			else if grid_row == global.grid_rows-1{
-				sprite_index = get_load_sprite("spr_aircraft_carrier_release_3")
+				sprite_index = spr_aircraft_carrier_release_3
 			}
 			else{
-				sprite_index = get_load_sprite("spr_aircraft_carrier_release_1")
+				sprite_index = spr_aircraft_carrier_release_1
 			}
 		}
 	}
@@ -75,7 +75,7 @@ if hp > 0 && state != ENEMY_STATE.DEAD{
 		if anim_timer == 53*flash_speed - 1{
 			state = ENEMY_STATE.DIG
 			anim_timer = 0
-			sprite_index = get_load_sprite("spr_aircraft_carrier")
+			sprite_index = spr_aircraft_carrier
 		}
 	}
 	if state == ENEMY_STATE.DIG{

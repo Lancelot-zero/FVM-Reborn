@@ -1,4 +1,3 @@
-sprite_index = get_load_sprite("spr_magician_mouse");  //转化额外添加保证触发
  // Inherit the parent event
 event_inherited();
 
@@ -21,4 +20,4 @@ anim_timer = 0
 atk_cycle = 1
 atk = 2000
 
-sprite_index = get_load_sprite("spr_magician_mouse")
+sprite_index = spr_magician_mouse
