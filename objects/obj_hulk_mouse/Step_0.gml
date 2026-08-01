@@ -53,7 +53,7 @@ switch state{
 		}
 		
 		if timer >= wait_time{
-			if damage_take >= 0.05 * maxhp{
+			if damage_take >= 0.1 * maxhp{
 				skill_dropped = true
 			}
 			timer = 0
