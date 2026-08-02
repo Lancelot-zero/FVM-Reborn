@@ -82,7 +82,7 @@ global.eat_order = ds_list_create();
 ds_list_add(global.eat_order,"shield","shield_outer","normal","lilypad");
 
 // 网格植物存储数据结构
-global.grid_plants = ds_grid_create(global.grid_cols, global.grid_rows);
+global.grid_plants = ds_grid_create(global.grid_cols+64, global.grid_rows+64);
 
 //重置任务进度
 with obj_task_manager{
@@ -90,8 +90,8 @@ with obj_task_manager{
 }
 
 // 初始化网格
-for (var col = 0; col < global.grid_cols; col++) {
-    for (var row = 0; row < global.grid_rows; row++) {
+for (var col = 0; col < global.grid_cols + 64; col++) {
+    for (var row = 0; row < global.grid_rows + 64; row++) {
         // 每个网格存储一个 ds_list，包含该网格的所有植物实例
         var plant_list = ds_list_create();
         ds_grid_set(global.grid_plants, col, row, plant_list);

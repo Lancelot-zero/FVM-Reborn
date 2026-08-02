@@ -111,12 +111,19 @@ else if (state == "moving") {
 	        var r_step  = -move_direction;
             
 	        for (var c = cur_start_c; c < cur_start_c + width; c++) {
-	            if (c >= global.grid_cols || c < 0) continue;
+                    var _sc = c; if (_sc < 0) _sc = _sc + global.grid_cols + 64; if (_sc >= global.grid_cols + 64) continue
 	            for (var r = r_start; r != r_end; r += r_step) {
+                        var _sr = r; if (_sr < 0) _sr = _sr + global.grid_rows + 64; if (_sr >= global.grid_rows + 64) continue
 	                var target_r = r + move_direction;
-	                if ((r >= 0 && r < global.grid_rows) && (target_r >= 0 && target_r < global.grid_rows)) {
-	                    var old_list = ds_grid_get(global.grid_plants, c, r);
-	                    var new_list = ds_grid_get(global.grid_plants, c, target_r);
+	                if (target_r < 0) {
+	                	target_r = target_r + global.grid_rows + 64
+	                }
+	                if (target_r >= global.grid_rows + 64) {
+	                	target_r = target_r - global.grid_rows - 64
+	                }
+	                if (target_r >= 0 && target_r < global.grid_rows + 64) {
+	                    var old_list = ds_grid_get(global.grid_plants, _sc, _sr);
+	                    var new_list = ds_grid_get(global.grid_plants, _sc, target_r);
 	                    for (var i = 0; i < ds_list_size(old_list); i++) {
 	                        var plant = ds_list_find_value(old_list, i);
 	                        ds_list_add(new_list, plant);
@@ -126,8 +133,8 @@ else if (state == "moving") {
 	                        }
 	                    }
 	                    ds_list_clear(old_list);
-	                    ds_grid_set(global.grid_plants, c, target_r, new_list);
-	                    ds_grid_set(global.grid_plants, c, r, old_list);
+	                    ds_grid_set(global.grid_plants, _sc, target_r, new_list);
+	                    ds_grid_set(global.grid_plants, _sc, _sr, old_list);
 	                }
 	            }
 	        }
@@ -138,12 +145,19 @@ else if (state == "moving") {
 	        var c_step  = -move_direction;
             
 	        for (var r = cur_start_r; r < cur_start_r + length; r++) {
-	            if (r >= global.grid_rows || r < 0) continue;
+                var _sr = r; if (_sr < 0) _sr = _sr + global.grid_rows + 64; if (_sr >= global.grid_rows + 64) continue
 	            for (var c = c_start; c != c_end; c += c_step) {
+                        var _sc = c; if (_sc < 0) _sc = _sc + global.grid_cols + 64; if (_sc >= global.grid_cols + 64) continue
 	                var target_c = c + move_direction;
-	                if ((c >= 0 && c < global.grid_cols) && (target_c >= 0 && target_c < global.grid_cols)) {
-	                    var old_list = ds_grid_get(global.grid_plants, c, r);
-	                    var new_list = ds_grid_get(global.grid_plants, target_c, r);
+	                if (target_c < 0) {
+	                	target_c = target_c + global.grid_cols + 64
+	                }
+	                if (target_c >= global.grid_cols + 64) {
+	                	target_c = target_c - global.grid_cols - 64
+	                }
+	                if (target_c >= 0 && target_c < global.grid_cols + 64) {
+	                    var old_list = ds_grid_get(global.grid_plants, _sc, _sr);
+	                    var new_list = ds_grid_get(global.grid_plants, target_c, _sr);
 	                    for (var i = 0; i < ds_list_size(old_list); i++) {
 	                        var plant = ds_list_find_value(old_list, i);
 	                        ds_list_add(new_list, plant);
@@ -153,8 +167,8 @@ else if (state == "moving") {
 	                        }
 	                    }
 	                    ds_list_clear(old_list);
-	                    ds_grid_set(global.grid_plants, target_c, r, new_list);
-	                    ds_grid_set(global.grid_plants, c, r, old_list);
+	                    ds_grid_set(global.grid_plants, target_c, _sr, new_list);
+	                    ds_grid_set(global.grid_plants, _sc, _sr, old_list);
 	                }
 	            }
 	        }
@@ -211,8 +225,12 @@ else if (state == "moving") {
     
     for (var c = move_cur_start_c; c < move_cur_start_c + width; c++) {
         for (var r = move_cur_start_r; r < move_cur_start_r + length; r++) {
-            if (r >= 0 && r < global.grid_rows && c >= 0 && c < global.grid_cols) {
-                var plant_list = ds_grid_get(global.grid_plants, c, r);
+            var _wc = c
+            var _wr = r
+            if (_wc < 0) _wc = _wc + global.grid_cols + 64
+            if (_wr < 0) _wr = _wr + global.grid_rows + 64
+            if (_wr >= 0 && _wr < global.grid_rows + 64 && _wc >= 0 && _wc < global.grid_cols + 64) {
+                var plant_list = ds_grid_get(global.grid_plants, _wc, _wr);
                 for (var i = 0; i < ds_list_size(plant_list); i++) {
                     var plant = ds_list_find_value(plant_list, i);
                     if (instance_exists(plant)) {
@@ -284,8 +302,12 @@ else if (state == "moving") {
         
         for (var c = fin_cur_start_c; c < fin_cur_start_c + width; c++) {
             for (var r = fin_cur_start_r; r < fin_cur_start_r + length; r++) {
-                if (r >= 0 && r < global.grid_rows && c >= 0 && c < global.grid_cols) {
-                    var fin_plant_list = ds_grid_get(global.grid_plants, c, r);
+                var _wc = c
+                var _wr = r
+                if (_wc < 0) _wc = _wc + global.grid_cols + 64
+                if (_wr < 0) _wr = _wr + global.grid_rows + 64
+                if (_wr >= 0 && _wr < global.grid_rows + 64 && _wc >= 0 && _wc < global.grid_cols + 64) {
+                    var fin_plant_list = ds_grid_get(global.grid_plants, _wc, _wr);
                     for (var i = 0; i < ds_list_size(fin_plant_list); i++) {
                         var fin_plant = ds_list_find_value(fin_plant_list, i);
                         if (instance_exists(fin_plant)) {

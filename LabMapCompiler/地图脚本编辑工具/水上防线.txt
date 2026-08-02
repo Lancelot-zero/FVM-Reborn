@@ -1,0 +1,48 @@
+// ================================================================
+// 水上防线 — 全图水+三行陆地+移动炮台，每波水上敌人
+// ================================================================
+
+_VM_ROOM_READY_ENTRY {
+    VM_SetCardLevelCap(10)
+    VM_SetMaxSlots(8)
+    VM_BanCard("small_fire")
+    VM_BanCard("large_fire")
+    VM_BanCard("goblet_lamp")
+}
+
+_VM_BATTLE_START {
+    VM_ClearPlants(-1, -1)
+    VM_SetTerrain(-1, -1, "water")
+    VM_SetFlame(5000)
+
+    // 三行陆地（种防御卡用）
+    VM_SetTerrain(-1, 2, "normal")
+    VM_SetTerrain(-1, 3, "normal")
+    VM_SetTerrain(-1, 4, "normal")
+
+    // 三个左右移动平台，5x1
+    VM_CreatePlatform(6, 1, 5, 1, 1, 2, 480, "spr_lilac_rainbow_platform_night_1")
+    VM_CreatePlatform(6, 3, 5, 1, 1, 2, 480, "spr_lilac_rainbow_platform_night_2")
+    VM_CreatePlatform(6, 5, 5, 1, 1, 2, 480, "spr_lilac_rainbow_platform_night_6")
+
+    // 上下移动大平台，4x5
+    VM_CreatePlatform(1, 0, 4, 5, 0, 2, 480, "spr_fennel_raft_platform_daytime")
+}
+
+_VM_WAVE_START {
+    wave = VM_GetWave()
+    if (wave == 0) {
+        VM_SpawnEnemy("diver_mouse", 1, 150)
+        VM_SpawnEnemy("paper_boat_mouse", 3, 120)
+        VM_SpawnEnemy("duck_mouse", 5, 200)
+    }
+    if (wave == 2) {
+        VM_SpawnEnemy("submarine_mouse", 2, 1000)
+        VM_SpawnEnemy("rowboat_mouse", 4, 800)
+        VM_ShowNotice("海怪来袭！")
+    }
+    if (wave == 4) {
+        VM_SpawnBoss("pink_paul", 3, 15000)
+        VM_ShowNotice("粉红保罗登场！")
+    }
+}

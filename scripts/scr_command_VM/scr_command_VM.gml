@@ -434,10 +434,14 @@ function VM_Execute(vm, buf) {
                     if (_type == VM_TYPE_STRING) {
                         _mt[_dst] = VM_TYPE_STRING;
                         _mv[_dst] = buffer_read(buf, buffer_u16);
-                    } else {
-                        _mt[_dst] = _type;
-                        _mv[_dst] = buffer_read(buf, buffer_s32);
-                    }
+                    } else  if (_type == VM_TYPE_FLOAT) {
+						_mt[_dst] = VM_TYPE_FLOAT
+						_mv[_dst] = buffer_read(buf, buffer_f32)
+					} else {
+						_mt[_dst] = _type
+						_mv[_dst] = buffer_read(buf, buffer_s32)
+					}
+  
                     break;
                 }
 

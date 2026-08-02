@@ -1,0 +1,95 @@
+// ================================================================
+// 板块切换 — 8 阶段闭环
+// R2 U9 R1[等] U9 L2 D9 L1[等] D9
+// ================================================================
+
+_VM_ROOM_READY_ENTRY {
+    VM_BanCard("small_fire")
+    //VM_BanCard("large_fire")
+    VM_BanCard("goblet_lamp")
+    VM_SetCardLevelCap(11)
+    VM_SetMaxSlots(12)
+}
+
+_VM_BATTLE_START {
+    VM_ClearPlants(-1, -1)
+    VM_SetTerrain(-1, -1, "obstacle")
+    VM_SetFlame(3000)
+
+    p1 = VM_CreatePlatform(0, 0, 6, 7, 1, 0, 0, "spr_marinade_garden_platform")
+    p2 = VM_CreatePlatform(0, 9, 6, 7, 1, 0, 0, "spr_marinade_garden_platform")
+    p3 = VM_CreatePlatform(0,18, 6, 7, 1, 0, 0, "spr_marinade_garden_platform")
+
+    phase = 0
+}
+
+_VM_PLATFORM_IDLE_END {
+    if (VM_GetLastIdlePlatform() == p1) {
+
+        if (phase == 0) {
+            ax = 1
+            dist = 2
+            dir = 1
+        }
+        if (phase == 1) {
+            ax = 0
+            dist = 9
+            dir = -1
+        }
+        if (phase == 2) {
+            ax = 1
+            dist = 1
+            dir = 1
+        }
+        if (phase == 3) {
+            ax = 0
+            dist = 9
+            dir = -1
+        }
+        if (phase == 4) {
+            ax = 1
+            dist = 2
+            dir = -1
+        }
+        if (phase == 5) {
+            ax = 0
+            dist = 9
+            dir = 1
+        }
+        if (phase == 6) {
+            ax = 1
+            dist = 1
+            dir = -1
+        }
+        if (phase == 7) {
+            ax = 0
+            dist = 9
+            dir = 1
+        }
+
+        idle = 1
+        if (phase == 2) {
+            idle = 480
+        }
+        if (phase == 6) {
+            idle = 480
+        }
+
+        VM_SetPlatformParams(p1, ax, dist, idle, dir)
+        VM_SetPlatformParams(p2, ax, dist, idle, dir)
+        VM_SetPlatformParams(p3, ax, dist, idle, dir)
+
+        if (ax == 1) {
+            VM_SetProp(p1, "move_speed", 0.0025)
+            VM_SetProp(p2, "move_speed", 0.0025)
+            VM_SetProp(p3, "move_speed", 0.0025)
+        }
+        if (ax == 0) {
+            VM_SetProp(p1, "move_speed", 0.2)
+            VM_SetProp(p2, "move_speed", 0.2)
+            VM_SetProp(p3, "move_speed", 0.2)
+        }
+
+        phase = (phase + 1) % 8
+    }
+}

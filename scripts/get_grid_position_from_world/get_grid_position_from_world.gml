@@ -10,6 +10,18 @@ function get_grid_position_from_world(wx, wy) {
     // 计算网格索引
     var col = floor(rel_x / global.grid_cell_size_x);
     var row = floor(rel_y / global.grid_cell_size_y);
+    if (col < 0) {
+        col = col + global.grid_cols + 64
+    }
+    if (col >= global.grid_cols + 64) {
+        col = col - global.grid_cols - 64
+    }
+    if (row < 0) {
+        row = row + global.grid_rows + 64
+    }
+    if (row >= global.grid_rows + 64) {
+        row = row - global.grid_rows - 64
+    }
     
     // 计算网格中心位置
     var center_x = global.grid_offset_x + col * global.grid_cell_size_x + global.grid_cell_size_x / 2;

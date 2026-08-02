@@ -1,0 +1,39 @@
+// ================================================================
+// 杀敌奖励 — 每个敌人 +100 火苗
+// ================================================================
+
+_VM_BATTLE_START {
+    VM_ClearPlants(-1, -1)
+    VM_SetFlame(200)
+}
+
+_VM_ENEMY_KILLED {
+    flame = VM_GetFlame()
+    reward = flame + 100
+    VM_SetFlame(reward)
+    new_flame = VM_GetFlame()
+    VM_ShellPrint("击杀敌人 +100，剩余:", new_flame)
+}
+
+_VM_WAVE_START {
+    wave = VM_GetWave()
+    if (wave == 0) {
+        VM_SpawnEnemy("normal_mouse", 2, 100)
+        VM_SpawnEnemy("normal_mouse", 3, 100)
+        VM_SpawnEnemy("normal_mouse", 1, 100)
+    }
+    if (wave == 1) {
+        VM_SpawnEnemy("football_fan_mouse", 2, 250)
+        VM_SpawnEnemy("skateboard_mouse", 3, 180)
+        VM_SpawnEnemy("kangaroo", 4, 200)
+    }
+    if (wave == 2) {
+        VM_SpawnEnemy("iron_pan_mouse", 2, 500)
+        VM_SpawnEnemy("arson_mouse", 3, 400)
+        VM_SpawnEnemy("flute_mouse", 1, 600)
+    }
+    if (wave == 3) {
+        VM_SpawnBoss("arno", 2, 8000)
+        VM_ShowNotice("BOSS 来了！")
+    }
+}
