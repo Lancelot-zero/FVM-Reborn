@@ -40,7 +40,7 @@ if state == CARD_STATE.IDLE{
 			ice_sprite = spr_mouse_frozen
 		}
 		if other.shape == 2{
-			if (health > 0 && point_distance(x, y, _x, _y) < _range && grid_row >= other.grid_row-1&&grid_row <= other.grid_row+1) {
+			if (point_distance(x, y, _x, _y) < _range && grid_row >= other.grid_row-1&&grid_row <= other.grid_row+1) {
 		        if (hp > other.atk) {
 		            // 对免疫灰烬的敌人只造成伤害
 		            hp -= other.atk;
@@ -58,7 +58,7 @@ if state == CARD_STATE.IDLE{
 		            //effect_create_above(ef_explosion, x, y, 1, c_yellow);
 		        }
 				ice_timer += 1500
-				frozen_timer += other.cycle
+				//frozen_timer += other.cycle
 		    }
 			
 		}

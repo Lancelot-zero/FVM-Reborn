@@ -11,3 +11,4 @@ state = "appear"
 special_ash = true
 mouse_id = "mouse_train_3"
 target_type = "normal"
+hp_modified = true

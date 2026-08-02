@@ -215,7 +215,7 @@ switch state{
 			for(var i = 0 ; i < 4 ; i++){
 				for(var j = 0 ; j < 4 ; j++){
 					var mouse_pos1 = get_world_position_from_grid(1+i*2,j*2)
-					var inst1 = instance_create_depth(mouse_pos1.x-25,mouse_pos1.y+38,-800,obj_machine_iron_pan_mouse)
+					var inst1 = instance_create_depth(mouse_pos1.x,mouse_pos1.y+38,-800,obj_machine_iron_pan_mouse)
 					inst1.grid_row = j*2
 				}
 			}
@@ -262,6 +262,15 @@ switch state{
 			var mouse_pos4 = get_world_position_from_grid(6,5)
 			var inst4 = instance_create_depth(mouse_pos4.x,mouse_pos4.y+38,-800,obj_mouse_train_3_explode)
 			inst4.grid_row = 5
+			
+			inst1.maxhp *= (1 + ((maxhp-200000)/200000)*0.5)
+			inst1.hp = inst1.maxhp
+			inst2.maxhp *= (1 + ((maxhp-200000)/200000)*0.5)
+			inst2.hp = inst2.maxhp
+			inst3.maxhp *= (1 + ((maxhp-200000)/200000)*0.5)
+			inst3.hp = inst3.maxhp
+			inst4.maxhp *= (1 + ((maxhp-200000)/200000)*0.5)
+			inst4.hp = inst4.maxhp
 		}
 		
 		if timer >= 10{
@@ -345,7 +354,7 @@ switch state{
 			inst.target_row = 0
 		}
 		
-		if array_get_index(skill_3_col,grid_col) == -1 && grid_col >= 0 && grid_col <= 8{
+		if array_get_index(skill_3_col,grid_col) == -1 && grid_col >= 1 && grid_col <= 8{
 			var mucus_pos = get_world_position_from_grid(grid_col,grid_row)
 			var inst = instance_create_depth(mucus_pos.x,mucus_pos.y,0,obj_mouse_train_3_butter)
 			inst.target_col = grid_col

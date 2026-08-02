@@ -1,11 +1,13 @@
 var __count__ = 1
-if shape >= 2 __count__ = 3
+if shape >= 2 __count__ = 2
 var start = 0
-if shape >= 2 start = -1
 
 for(var i = 0 ; i < __count__ ; i++){
 	if grid_row + start + i > -1 && grid_row + start + i < global.grid_rows{
-		var grid_pos = get_world_position_from_grid(-1,grid_row+start+i)
+		var grid_pos = get_world_position_from_grid(-1,grid_row)
+		if i == 1{
+			grid_pos = get_world_position_from_grid(10,grid_row)
+		}
 		var cat_inst = instance_create_depth(grid_pos.x - 10, grid_pos.y+10, 0,obj_cat);
 		cat_inst.row = grid_row
 		cat_inst.idle_anim = 0
@@ -21,6 +23,10 @@ for(var i = 0 ; i < __count__ ; i++){
 		}
 		if shape == 2{
 			cat_inst.sprite_index = spr_bull_firework_bullet_2
+		}
+		if i == 1{
+			cat_inst.image_xscale = -1.8
+			cat_inst.move_speed = -8
 		}
 	}
 }
