@@ -120,6 +120,39 @@ function VM_CreatePlatform(col, row, width, length, axis, distance, idle, spr) {
     // 网络同步
     if (global.network.mode == "server") {
         add_net_id(_plat.id);
+        // 广播平台创建给所有客户端
+        var _nid = global.network.map_instance_id_net_id[? _plat.id];
+        var _props = {};
+        // 采集 _sync_keys 白名单中的属性
+        for (var _k = 0; _k < array_length(global._sync_keys); _k++) {
+            var _key = global._sync_keys[_k];
+            if (variable_instance_exists(_plat.id, _key)) {
+                _props[$ _key] = variable_instance_get(_plat.id, _key);
+            }
+        }
+        // sprite_index 转为字符串名，跨客户端兼容懒加载
+        if (variable_struct_exists(_props, "sprite_index")) {
+            var _sid = _props[$ "sprite_index"];
+            if (ds_map_exists(global._pid_reverse, _sid)) {
+                _props[$ "sprite_index"] = global._pid_reverse[? _sid];
+            } else {
+                _props[$ "sprite_index"] = sprite_get_name(_sid);
+            }
+        }
+        var _action = [{
+            op: "spawn",
+            obj: "obj_platform",
+            x: _plat.x,
+            y: _plat.y,
+            depth: _plat.depth,
+            net_id: _nid,
+            props: _props
+        }];
+        var _json = json_stringify(_action);
+        var _cl = global.network.connected_clients;
+        for (var _i = 0; _i < array_length(_cl); _i++) {
+            send_message(_cl[_i], MSG_EVENT_ACTIONS, _json);
+        }
     }
     return _plat.id;
 }
@@ -129,6 +162,11 @@ function VM_CreatePlatform(col, row, width, length, axis, distance, idle, spr) {
 function VM_LoadSprite(name) {
     if (file_exists(name)) {
         return sprite_add(name, 1, false, false, 0, 0);
+    }
+    // 回退：在 laboratory 目录下找
+    var _lab_path = "laboratory/" + name;
+    if (file_exists(_lab_path)) {
+        return sprite_add(_lab_path, 1, false, false, 0, 0);
     }
     return get_load_sprite(name);
 }
@@ -186,6 +224,34 @@ function VM_SetFlame(amount) {
 /// @return [min, max] 之间随机整数
 function VM_Random(min, max) {
     return irandom_range(min, max);
+}
+
+/// @function VM_GetLastIdlePlatform()
+/// @return 刚结束 idle 的平台实例 ID
+function VM_GetLastIdlePlatform() {
+    return real(global._VM_last_idle_platform);
+}
+
+/// @function VM_SetPlatformParams(plat_id, axis, distance, idle, direction)
+/// @param plat_id   平台实例 ID
+/// @param axis      移动轴: 0=上下 1=左右
+/// @param distance  移动距离（格）
+/// @param idle      边界停顿时间（帧）
+/// @param direction 移动方向: 1=正向 -1=反向
+/// @description 以当前位置为新起点重新设定移动参数
+function VM_SetPlatformParams(plat_id, axis, distance, idle, direction) {
+    var _plat = plat_id;
+    if (!instance_exists(_plat) || _plat.object_index != obj_platform) return;
+    // 以当前位置为新起点
+    var _is_x = (_plat.move_axis == "x");
+    _plat.start_col += (_is_x ? _plat.current_offset : 0);
+    _plat.start_row += (!_is_x ? _plat.current_offset : 0);
+    _plat.current_offset = 0;
+    // 设置新参数
+    _plat.move_axis = (axis == 0) ? "y" : "x";
+    _plat.move_distance = distance;
+    _plat.boundary_idle_duration = idle;
+    _plat.move_direction = direction;
 }
 
 /// @function VM_GetWave()
@@ -582,6 +648,8 @@ global._VM_WAVE_END          = undefined;
 global._VM_SUBWAVE_START     = undefined;
 global._VM_SUBWAVE_END       = undefined;
 global._VM_PLAYER_DAMAGED    = undefined;
+global._VM_PLATFORM_IDLE_END = undefined;
+global._VM_last_idle_platform = -1;
 
 global._VM_hook_queue = [];       // 待执行 hook 队列，每个元素 {buf, id}
 
@@ -602,6 +670,7 @@ function VM_FlushHooks() {
             if (_e.key == "card_del")    global._VM_last_destroyed_card = _e.id;
             if (_e.key == "enemy")       global._VM_last_created_enemy  = _e.id;
             if (_e.key == "enemy_kill")  global._VM_last_killed_enemy   = _e.id;
+            if (_e.key == "platform_idle") global._VM_last_idle_platform = _e.id;
             VM_Execute(global.__vm, _e.buf);
         }
     }
@@ -639,6 +708,8 @@ VM_RegisterFunction(global.__vm, VM_SetFlame);              // 21
 VM_RegisterFunction(global.__vm, VM_SetTerrain);            // 22
 VM_RegisterFunction(global.__vm, VM_ClearPlants);           // 23
 VM_RegisterFunction(global.__vm, VM_Random);                // 24
+VM_RegisterFunction(global.__vm, VM_GetLastIdlePlatform);   // 25
+VM_RegisterFunction(global.__vm, VM_SetPlatformParams);     // 26
 global._sync_vm_bin_buf = undefined;
 
 /// @function VM_InitRoomEntry(buf)
@@ -657,9 +728,23 @@ function VM_InitRoomEntry(buf) {
     global._VM_ENEMY_DAMAGED     = undefined;
     global._VM_WAVE_START        = undefined;
     global._VM_WAVE_END          = undefined;
+    global._VM_SUBWAVE_START     = undefined;
+    global._VM_SUBWAVE_END       = undefined;
     global._VM_PLAYER_DAMAGED    = undefined;
+    global._VM_PLATFORM_IDLE_END = undefined;
     global._sync_vm_bin_buf = undefined;
     global._VM_strings = [];
+    global.__vm.strings = global._VM_strings;
+    global.__vm.mem_type = array_create(array_length(global.__vm.mem_type), VM_TYPE_INT);
+    global.__vm.mem_val  = array_create(array_length(global.__vm.mem_val), 0);
+    global._VM_hook_queue = [];
+    global._VM_battle_start_done = false;
+    global._VM_last_boss          = -1;
+    global._VM_last_created_enemy = -1;
+    global._VM_last_killed_enemy  = -1;
+    global._VM_last_created_card  = -1;
+    global._VM_last_destroyed_card = -1;
+    global._VM_last_idle_platform = -1;
 
     if (!buffer_exists(buf)) return;
 
@@ -699,7 +784,6 @@ function VM_InitRoomEntry(buf) {
         switch (_block_name) {
             case "_VM_ROOM_READY_ENTRY":
                 global._VM_ROOM_READY_ENTRY = _bc_buf;
-                global.__vm.strings = global._VM_strings;
                 VM_Execute(global.__vm, _bc_buf);
                 break;
             case "_VM_BATTLE_START":
@@ -729,8 +813,17 @@ function VM_InitRoomEntry(buf) {
             case "_VM_WAVE_END":
                 global._VM_WAVE_END = _bc_buf;
                 break;
+            case "_VM_SUBWAVE_START":
+                global._VM_SUBWAVE_START = _bc_buf;
+                break;
+            case "_VM_SUBWAVE_END":
+                global._VM_SUBWAVE_END = _bc_buf;
+                break;
             case "_VM_PLAYER_DAMAGED":
                 global._VM_PLAYER_DAMAGED = _bc_buf;
+                break;
+            case "_VM_PLATFORM_IDLE_END":
+                global._VM_PLATFORM_IDLE_END = _bc_buf;
                 break;
             default:
                 buffer_delete(_bc_buf);

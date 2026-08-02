@@ -7,6 +7,30 @@
 #include <string>
 #include <cstring>
 #include <cstdint>
+#include <cstdlib>
+#include <clocale>
+#include <io.h>
+
+using namespace std;
+
+// UTF-8 → 系统编码（GBK）用于终端输出
+static string utf8_to_local(const string& u8) {
+    wchar_t wbuf[4096];
+    int wi = 0;
+    for (size_t i = 0; i < u8.size() && wi < 4095; ) {
+        unsigned char c = u8[i]; unsigned int cp; int len;
+        if (c < 0x80)      { cp = c; len = 1; }
+        else if (c < 0xE0) { cp = ((c&0x1F)<<6) | (u8[i+1]&0x3F); len = 2; }
+        else if (c < 0xF0) { cp = ((c&0x0F)<<12) | ((u8[i+1]&0x3F)<<6) | (u8[i+2]&0x3F); len = 3; }
+        else               { cp = ((c&0x07)<<18) | ((u8[i+1]&0x3F)<<12) | ((u8[i+2]&0x3F)<<6) | (u8[i+3]&0x3F); len = 4; }
+        wbuf[wi++] = (wchar_t)cp;
+        i += len;
+    }
+    wbuf[wi] = 0;
+    char mb[8192];
+    wcstombs(mb, wbuf, 8192);
+    return string(mb);
+}
 
 using namespace std;
 
@@ -149,10 +173,13 @@ private:
     vector<pair<int, vector<uint8_t>>> blocks_;
     ByteBuf* cur_buf_ = nullptr;
     int temp_base_ = 0;        // 临时槽位起点（= 用户变量数）
-    map<int, int> slot_type_;  // 槽位 → 类型 (MEM_INT/MEM_FLOAT/MEM_STRING)
+    map<int, int> slot_type_;     // 槽位 → 类型 (MEM_INT/MEM_FLOAT/MEM_STRING)
+    map<int, string> slot_str_;   // 槽位 → 字面量字符串值（仅字面量槽位有）
 
     void set_type(int slot, int t) { slot_type_[slot] = t; }
     int  get_type(int slot) { auto it = slot_type_.find(slot); return (it != slot_type_.end()) ? it->second : MEM_INT; }
+    void set_str(int slot, const string& s) { slot_str_[slot] = s; }
+    bool get_str(int slot, string& out) { auto it = slot_str_.find(slot); if (it != slot_str_.end()) { out = it->second; return true; } return false; }
     bool is_num(int t) { return t == MEM_INT || t == MEM_FLOAT; }
     int  infer_bin_type(int ta, int tb) {
         if (!is_num(ta) || !is_num(tb)) {
@@ -306,6 +333,61 @@ private:
         cur_buf_->s32(dst);
         for (int a : args) {
             cur_buf_->s32(a);
+        }
+    }
+
+    // ========== 参数校验 ==========
+    void check_call_args(int func_id, const vector<int>& args) {
+        auto& def = FUNC_DEFS[func_id];
+        int expected = def.param_count;
+
+        // 变长函数不校验
+        if (expected < 0) return;
+
+        // 校验参数个数
+        if ((int)args.size() != expected) {
+            cerr << "第" << cur_.line << "行: " << def.name
+                 << " 期望 " << expected << " 个参数，实际传入 "
+                 << args.size() << " 个" << endl;
+            return;
+        }
+
+        // 校验每个参数类型
+        if (expected == 0) return;
+        auto& ptypes = def.param_types;
+        for (int i = 0; i < expected; i++) {
+            int expect_t = (i < (int)ptypes.size()) ? ptypes[i] : PT_INT;
+            if (expect_t == PT_ANY) continue;
+            int actual_t = get_type(args[i]);
+            if (actual_t != expect_t) {
+                cerr << "第" << cur_.line << "行: " << def.name
+                     << " 第" << (i + 1) << " 个参数期望 "
+                     << param_type_name(expect_t) << "，实际是 "
+                     << param_type_name(actual_t) << endl;
+                continue;
+            }
+            // 字符串参数：校验字面量值是否在合法集合中
+            if (expect_t == PT_STRING) {
+                string sval;
+                if (!get_str(args[i], sval)) continue;
+                const vector<const char*>* pset = nullptr;
+                switch (func_id) {
+                    case 0:                    // VM_BanCard → 卡片ID
+                    case 6:  pset = &VALID_CARD_IDS; break;   // VM_SpawnPlant
+                    case 7:                     // VM_SpawnEnemy
+                    case 8:  pset = &VALID_ENEMY_IDS; break;  // VM_SpawnBoss
+                    case 10: pset = &VALID_OBJECT_NAMES; break; // VM_SpawnObject
+                }
+                if (pset && !str_in_set(sval, *pset)) {
+                    cerr << "第" << cur_.line << "行: " << def.name
+                         << " 第" << (i + 1) << " 个参数 \"" << sval
+                         << "\" 不是合法值" << endl;
+                }
+                // VM_LoadSprite 外部加载禁止 spr_ 前缀
+                if (func_id == 9 && sval.size() >= 4 && sval.substr(0, 4) == "spr_") {
+                    cerr << "第" << cur_.line << "行: VM_LoadSprite 禁止 spr_ 前缀，请用外部图片文件" << endl;
+                }
+            }
         }
     }
 
@@ -495,6 +577,7 @@ private:
                 vector<int> args;
                 gen_args(args);
                 match(TK_RPAREN);
+                check_call_args(fid, args);
                 emit_call(fid, args, VOID_DST);
                 return;
             }
@@ -646,10 +729,12 @@ private:
             return t;
         }
         if (check(TK_STRING)) {
-            int si = strings_.add(cur_.str_val);
+            string str_val = cur_.str_val;
+            int si = strings_.add(str_val);
             next();
             int t = alloc_temp();
             set_type(t, MEM_STRING);
+            set_str(t, str_val);
             cur_buf_->u8(OP_ASSIGN);
             cur_buf_->s32(t);
             cur_buf_->u8(MEM_STRING);
@@ -666,6 +751,7 @@ private:
                 vector<int> args;
                 gen_args(args);
                 match(TK_RPAREN);
+                check_call_args(fi, args);
                 int t = alloc_temp();
                 emit_call(fi, args, t);
                 return t;
@@ -730,10 +816,12 @@ private:
                 cur_buf_->s32(bits);
                 args.push_back(t);
             } else if (check(TK_STRING)) {
-                int si = strings_.add(cur_.str_val);
+                string str_val = cur_.str_val;
+                int si = strings_.add(str_val);
                 next();
                 int t = alloc_temp();
                 set_type(t, MEM_STRING);
+                set_str(t, str_val);
                 cur_buf_->u8(OP_ASSIGN);
                 cur_buf_->s32(t);
                 cur_buf_->u8(MEM_STRING);
@@ -790,33 +878,72 @@ void write_binary(const string& path, const StringPool& strings,
     }
 
     out.close();
-    cout << "编译成功: " << path << " (" << blocks.size() << " 个块, "
-         << strings.size() << " 个字符串)" << endl;
+    cout << utf8_to_local("编译成功: ") << path << " (" << blocks.size() << utf8_to_local(" 个块, ")
+         << strings.size() << utf8_to_local(" 个字符串)") << endl;
+}
+
+// ============================================================
+// 辅助
+// ============================================================
+static string derive_output(const string& input) {
+    size_t pos = input.rfind(".txt");
+    if (pos != string::npos && pos == input.size() - 4)
+        return input.substr(0, pos) + ".bin";
+    return input + ".bin";
+}
+
+static int compile_one(const string& src_path, const string& out_path) {
+    ifstream in(src_path);
+    if (!in) {
+        cerr << "Error: 无法读取 " << src_path << endl;
+        return 1;
+    }
+    stringstream ss;
+    ss << in.rdbuf();
+    string src = ss.str();
+    in.close();
+    Compiler compiler(src);
+    string err;
+    if (!compiler.compile(err)) {
+        cerr << "编译错误 (" << src_path << "): " << err << endl;
+        return 1;
+    }
+    write_binary(out_path, compiler.strings(), compiler.blocks());
+    return 0;
 }
 
 // ============================================================
 // 入口
 // ============================================================
 int main(int argc, char* argv[]) {
-    if (argc < 3) {
-        cerr << "用法: LabMapCompiler source.txt output.bin" << endl;
-        return 1;
+    setlocale(LC_ALL, "");
+
+    // ---- 无参数：遍历当前目录下所有 .txt ----
+    if (argc < 2) {
+        int total = 0, ok = 0;
+        _finddata_t fd;
+        intptr_t hFind = _findfirst("*.txt", &fd);
+        if (hFind != -1) {
+            do {
+                string name = fd.name;
+                string out = derive_output(name);
+                cout << utf8_to_local("编译: ") << name << " -> " << out << endl;
+                int ret = compile_one(name, out);
+                if (ret == 0) ok++;
+                total++;
+            } while (_findnext(hFind, &fd) == 0);
+            _findclose(hFind);
+        }
+        if (total == 0) {
+            cerr << utf8_to_local("当前目录没有 .txt 文件") << endl;
+            return 1;
+        }
+        cout << utf8_to_local("完成: ") << ok << "/" << total << utf8_to_local(" 个文件") << endl;
+        return (ok == total) ? 0 : 1;
     }
 
-    ifstream in(argv[1]);
-    if (!in) { cerr << "Error: 无法读取 " << argv[1] << endl; return 1; }
-    stringstream ss;
-    ss << in.rdbuf();
-    string src = ss.str();
-    in.close();
-
-    Compiler compiler(src);
-    string err;
-    if (!compiler.compile(err)) {
-        cerr << "编译错误: " << err << endl;
-        return 1;
-    }
-
-    write_binary(argv[2], compiler.strings(), compiler.blocks());
-    return 0;
+    // ---- 1 或 2 个参数 ----
+    string in_path = argv[1];
+    string out_path = (argc >= 3) ? argv[2] : derive_output(in_path);
+    return compile_one(in_path, out_path);
 }

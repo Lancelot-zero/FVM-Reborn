@@ -369,8 +369,6 @@ if (hp <= 0 && state != ENEMY_STATE.DEAD) {
 
 // 透明度处理
 if (image_alpha <= 0 && state == ENEMY_STATE.DEAD) {
-		global._VM_last_killed_enemy = id;
-		if (buffer_exists(global._VM_ENEMY_KILLED)) VM_Execute(global.__vm, global._VM_ENEMY_KILLED);
     instance_destroy();
 }
 

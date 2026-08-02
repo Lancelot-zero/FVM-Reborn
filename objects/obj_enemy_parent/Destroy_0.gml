@@ -1,3 +1,7 @@
+// VM hook: 敌人销毁时触发
+global._VM_last_killed_enemy = id;
+if (buffer_exists(global._VM_ENEMY_KILLED)) VM_Execute(global.__vm, global._VM_ENEMY_KILLED);
+
 if !global.laboretory_room{
 	var is_drop = random_range(0,100)
 	if is_drop < 10{
