@@ -42,9 +42,9 @@ enum ParamType {
 
 inline const char* param_type_name(int t) {
     switch (t) {
-        case PT_INT:    return "整数";
-        case PT_FLOAT:  return "浮点数";
-        case PT_STRING: return "字符串";
+        case PT_INT:    return "int";
+        case PT_FLOAT:  return "float";
+        case PT_STRING: return "string";
         default:        return "?";
     }
 }
@@ -57,9 +57,9 @@ static const int VOID_DST = -1;
 // ============================================================
 struct FuncDef {
     const char* name;
-    int param_count;                    // -1=变长(不校验), >=0=固定个数
-    std::vector<int> param_types;       // 空=全部默认 int
-    // 所有参数在字节码中都是内存地址(u32)
+    int param_count;                    // -1=varargs, >=0=fixed count
+    std::vector<int> param_types;       // empty=all default INT
+    int return_type;                    // PT_INT(default) / PT_STRING / PT_FLOAT
 };
 
 // ============================================================
@@ -80,6 +80,7 @@ static const std::vector<const char*> BLOCK_NAMES = {
     "_VM_SUBWAVE_END",
     "_VM_PLAYER_DAMAGED",
     "_VM_PLATFORM_IDLE_END",
+    "_VM_FRAME",
 };
 
 // ============================================================
@@ -181,6 +182,9 @@ static std::vector<FuncDef> FUNC_DEFS = {
     {"VM_Random",            2},                                                     // 24
     {"VM_GetLastIdlePlatform",0},                                                    // 25
     {"VM_SetPlatformParams", 5},                                                     // 26
+    {"VM_SetMapBackground", 2,  {PT_STRING, PT_FLOAT}},                             // 27
+    {"VM_SetDrawSlot",    5,  {PT_INT, PT_STRING, PT_INT, PT_INT, PT_FLOAT}},      // 28
+    {"VM_GetLoadedSpriteName", 1,  {PT_INT},  PT_STRING},                            // 29
 };
 
 // ============================================================

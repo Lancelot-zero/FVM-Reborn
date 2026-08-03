@@ -101,6 +101,7 @@ if (a_cnt == 0) {
 | `_VM_ENEMY_SPAWNED` | 敌人出现 |
 | `_VM_ENEMY_KILLED` | 敌人死亡 |
 | `_VM_PLATFORM_IDLE_END` | 平台 idle 结束，即将开始移动 |
+| `_VM_FRAME` | ⚠️ 每帧执行，**禁止写复杂逻辑**（加血、刷怪等）。仅用于简单高频操作如更新 UI 绘制槽 |
 
 ---
 
@@ -183,7 +184,9 @@ if (a_cnt == 0) {
 |---|---|
 | `VM_Random(最小值, 最大值)` | 随机整数 |
 | `VM_SetFlame(数量)` | 设置火苗数 |
-| `VM_LoadSprite("贴图名")` | ⚠️ 尚未完善，暂勿使用。加载外部贴图，**禁止 `spr_` 前缀** |
+| `VM_LoadSprite("贴图名")` | 加载贴图到内存，**禁止 `spr_` 前缀**（用 `s_spr_` 代替）。服务端从本地加载，客户端走网络懒加载 |
+| `VM_SetMapBackground("贴图名", 步长)` | 渐变切换地图背景，步长控制过渡速度（如 0.02） |
+| `VM_SetDrawSlot(槽位, "贴图名", x, y, alpha)` | 设置帧绘制槽。槽位 0~7，alpha 0~1，贴图名为空时清除。配合 `_VM_FRAME` 使用 |
 | `VM_ShellPrint(...)` | 控制台打印，可拼多个参数 |
 | `VM_ShowNotice(...)` | 屏幕通知，可拼多个参数 |
 | `VM_SetPlatformParams(实例,轴,距离,停顿,方向)` | 以当前位置为新起点，重设平台移动参数 |

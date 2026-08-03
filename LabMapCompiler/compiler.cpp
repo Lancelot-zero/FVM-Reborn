@@ -8,29 +8,9 @@
 #include <cstring>
 #include <cstdint>
 #include <cstdlib>
-#include <clocale>
 #include <io.h>
 
 using namespace std;
-
-// UTF-8 → 系统编码（GBK）用于终端输出
-static string utf8_to_local(const string& u8) {
-    wchar_t wbuf[4096];
-    int wi = 0;
-    for (size_t i = 0; i < u8.size() && wi < 4095; ) {
-        unsigned char c = u8[i]; unsigned int cp; int len;
-        if (c < 0x80)      { cp = c; len = 1; }
-        else if (c < 0xE0) { cp = ((c&0x1F)<<6) | (u8[i+1]&0x3F); len = 2; }
-        else if (c < 0xF0) { cp = ((c&0x0F)<<12) | ((u8[i+1]&0x3F)<<6) | (u8[i+2]&0x3F); len = 3; }
-        else               { cp = ((c&0x07)<<18) | ((u8[i+1]&0x3F)<<12) | ((u8[i+2]&0x3F)<<6) | (u8[i+3]&0x3F); len = 4; }
-        wbuf[wi++] = (wchar_t)cp;
-        i += len;
-    }
-    wbuf[wi] = 0;
-    char mb[8192];
-    wcstombs(mb, wbuf, 8192);
-    return string(mb);
-}
 
 using namespace std;
 
@@ -53,10 +33,10 @@ enum TokenType {
 static const char* tk_name(TokenType t) {
     switch (t) {
         case TK_EOF: return "EOF";
-        case TK_IDENT: return "标识符";
-        case TK_INT: return "整数";
-        case TK_FLOAT: return "浮点数";
-        case TK_STRING: return "字符串";
+        case TK_IDENT: return "identifier";
+        case TK_INT: return "integer";
+        case TK_FLOAT: return "float";
+        case TK_STRING: return "string";
         case TK_LBRACE: return "{"; case TK_RBRACE: return "}";
         case TK_LPAREN: return "("; case TK_RPAREN: return ")";
         case TK_ASSIGN: return "="; case TK_COMMA: return ",";
@@ -183,7 +163,7 @@ private:
     bool is_num(int t) { return t == MEM_INT || t == MEM_FLOAT; }
     int  infer_bin_type(int ta, int tb) {
         if (!is_num(ta) || !is_num(tb)) {
-            cerr << "错误: 字符串不能参与算术运算" << endl;
+            cerr << "Error: strings cannot participate in arithmetic" << endl;
             return MEM_INT;
         }
         return (ta == MEM_FLOAT || tb == MEM_FLOAT) ? MEM_FLOAT : MEM_INT;
@@ -307,7 +287,7 @@ private:
     bool match(TokenType t) { if (check(t)) { next(); return true; } return false; }
     Token expect(TokenType t, string& err) {
         if (cur_.type != t) {
-            err = "第" + to_string(cur_.line) + "行: 期望 " + tk_name(t) + ", 遇到 " + tk_name(cur_.type);
+            err = "Line " + to_string(cur_.line) + ": expected " + tk_name(t) + ", got " + tk_name(cur_.type);
             return cur_;
         }
         return next();
@@ -346,9 +326,9 @@ private:
 
         // 校验参数个数
         if ((int)args.size() != expected) {
-            cerr << "第" << cur_.line << "行: " << def.name
-                 << " 期望 " << expected << " 个参数，实际传入 "
-                 << args.size() << " 个" << endl;
+            cerr << "Line " << cur_.line << ": " << def.name
+                 << " expects " << expected << " args, got "
+                 << args.size() << endl;
             return;
         }
 
@@ -360,9 +340,9 @@ private:
             if (expect_t == PT_ANY) continue;
             int actual_t = get_type(args[i]);
             if (actual_t != expect_t) {
-                cerr << "第" << cur_.line << "行: " << def.name
-                     << " 第" << (i + 1) << " 个参数期望 "
-                     << param_type_name(expect_t) << "，实际是 "
+                cerr << "Line " << cur_.line << ": " << def.name
+                     << " arg " << (i + 1) << " expects "
+                     << param_type_name(expect_t) << ", got "
                      << param_type_name(actual_t) << endl;
                 continue;
             }
@@ -379,13 +359,13 @@ private:
                     case 10: pset = &VALID_OBJECT_NAMES; break; // VM_SpawnObject
                 }
                 if (pset && !str_in_set(sval, *pset)) {
-                    cerr << "第" << cur_.line << "行: " << def.name
-                         << " 第" << (i + 1) << " 个参数 \"" << sval
-                         << "\" 不是合法值" << endl;
+                    cerr << "Line " << cur_.line << ": " << def.name
+                         << " arg " << (i + 1) << " \"" << sval
+                         << "\" is not a valid value" << endl;
                 }
                 // VM_LoadSprite 外部加载禁止 spr_ 前缀
                 if (func_id == 9 && sval.size() >= 4 && sval.substr(0, 4) == "spr_") {
-                    cerr << "第" << cur_.line << "行: VM_LoadSprite 禁止 spr_ 前缀，请用外部图片文件" << endl;
+                    cerr << "Line " << cur_.line << ": VM_LoadSprite forbids spr_ prefix, use external image files" << endl;
                 }
             }
         }
@@ -413,7 +393,7 @@ private:
         if (bi >= 0) {
             strings_.add(name);
             next();
-            if (!match(TK_LBRACE)) { err = "第" + to_string(cur_.line) + "行: 块名后需要 {"; return false; }
+            if (!match(TK_LBRACE)) { err = "Line " + to_string(cur_.line) + ": expected { after block name"; return false; }
             return true;
         }
 
@@ -448,14 +428,14 @@ private:
         next();
         if (check(TK_LPAREN)) {
             int fi = find_func(name);
-            if (fi < 0) { err = "第" + to_string(cur_.line) + "行: 未知函数名 " + name; return false; }
+            if (fi < 0) { err = "Line " + to_string(cur_.line) + ": unknown function " + name; return false; }
             next();
             collect_args();
-            if (!match(TK_RPAREN)) { err = "第" + to_string(cur_.line) + "行: 缺少 )"; return false; }
+            if (!match(TK_RPAREN)) { err = "Line " + to_string(cur_.line) + ": missing )"; return false; }
         } else if (check(TK_ASSIGN)) {
-            if (find_block(name) >= 0) { err = "第" + to_string(cur_.line) + "行: 不能给块名赋值"; return false; }
-            if (find_func(name) >= 0) { err = "第" + to_string(cur_.line) + "行: 不能给函数名赋值"; return false; }
-            if (name == "if" || name == "else" || name == "halt") { err = "第" + to_string(cur_.line) + "行: 关键字"; return false; }
+            if (find_block(name) >= 0) { err = "Line " + to_string(cur_.line) + ": cannot assign to block name"; return false; }
+            if (find_func(name) >= 0) { err = "Line " + to_string(cur_.line) + ": cannot assign to function name"; return false; }
+            if (name == "if" || name == "else" || name == "halt") { err = "Line " + to_string(cur_.line) + ": keyword"; return false; }
             vars_.alloc(name);
             next();
             collect_expr();
@@ -754,6 +734,7 @@ private:
                 check_call_args(fi, args);
                 int t = alloc_temp();
                 emit_call(fi, args, t);
+                set_type(t, FUNC_DEFS[fi].return_type);
                 return t;
             }
             // 变量 → 直接返回其槽位
@@ -834,7 +815,7 @@ private:
                     next();
                 } else {
                     // 可能是函数调用表达式，先求值
-                    cerr << "第" << cur_.line << "行: 参数不支持复杂表达式，请先赋给变量" << endl;
+                    cerr << "Line " << cur_.line << ": expressions not supported in args, assign to variable first" << endl;
                     next();
                 }
             } else {
@@ -852,7 +833,7 @@ private:
 void write_binary(const string& path, const StringPool& strings,
                   const vector<pair<int, vector<uint8_t>>>& blocks) {
     ofstream out(path, ios::binary);
-    if (!out) { cerr << "Error: 无法写入文件 " << path << endl; return; }
+    if (!out) { cerr << "Error: cannot write file " << path << endl; return; }
 
     auto w_int = [&](int32_t v) {
         out.put((char)(v & 0xFF));
@@ -878,8 +859,8 @@ void write_binary(const string& path, const StringPool& strings,
     }
 
     out.close();
-    cout << utf8_to_local("编译成功: ") << path << " (" << blocks.size() << utf8_to_local(" 个块, ")
-         << strings.size() << utf8_to_local(" 个字符串)") << endl;
+    cout << "Compiled: " << path << " (" << blocks.size() << " blocks, "
+         << strings.size() << " strings)" << endl;
 }
 
 // ============================================================
@@ -895,7 +876,7 @@ static string derive_output(const string& input) {
 static int compile_one(const string& src_path, const string& out_path) {
     ifstream in(src_path);
     if (!in) {
-        cerr << "Error: 无法读取 " << src_path << endl;
+        cerr << "Error: cannot read " << src_path << endl;
         return 1;
     }
     stringstream ss;
@@ -905,7 +886,7 @@ static int compile_one(const string& src_path, const string& out_path) {
     Compiler compiler(src);
     string err;
     if (!compiler.compile(err)) {
-        cerr << "编译错误 (" << src_path << "): " << err << endl;
+        cerr << "Compile error (" << src_path << "): " << err << endl;
         return 1;
     }
     write_binary(out_path, compiler.strings(), compiler.blocks());
@@ -916,8 +897,6 @@ static int compile_one(const string& src_path, const string& out_path) {
 // 入口
 // ============================================================
 int main(int argc, char* argv[]) {
-    setlocale(LC_ALL, "");
-
     // ---- 无参数：遍历当前目录下所有 .txt ----
     if (argc < 2) {
         int total = 0, ok = 0;
@@ -927,7 +906,7 @@ int main(int argc, char* argv[]) {
             do {
                 string name = fd.name;
                 string out = derive_output(name);
-                cout << utf8_to_local("编译: ") << name << " -> " << out << endl;
+                cout << "Compiling: " << name << " -> " << out << endl;
                 int ret = compile_one(name, out);
                 if (ret == 0) ok++;
                 total++;
@@ -935,10 +914,10 @@ int main(int argc, char* argv[]) {
             _findclose(hFind);
         }
         if (total == 0) {
-            cerr << utf8_to_local("当前目录没有 .txt 文件") << endl;
+            cerr << "No .txt files in current directory" << endl;
             return 1;
         }
-        cout << utf8_to_local("完成: ") << ok << "/" << total << utf8_to_local(" 个文件") << endl;
+        cout << "Done: " << ok << "/" << total << " files" << endl;
         return (ok == total) ? 0 : 1;
     }
 
