@@ -14,6 +14,8 @@ global._pending_map=ds_map_create();	// 等待队列
 global._audio_cache = ds_map_create();  // name → audio id
 global._audio_reverse = ds_map_create(); // audio id → name
 
+global._project_root = ""
+
 /// @function get_load_sprite(_name)
 /// @desc 返回占位精灵（空白条带，帧数匹配原精灵），引擎可正常推进 image_index
 /// @param {String} _name  精灵名称，如 "spr_blonde_mary_idle"

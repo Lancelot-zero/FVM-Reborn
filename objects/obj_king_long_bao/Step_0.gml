@@ -32,26 +32,39 @@ if is_slowdown{
 	current_flash_speed *= 2
 }
 
+	if (global.network.mode != "client") {
 with obj_card_parent{
 	if (feature_type == "bun" || feature_type == "king_bun")&&id!=other.id{
 		if grid_row == other.grid_row && grid_col == other.grid_col{
 			for(var i = 0 ; i < array_length(other.bun_card_info) ; i++){
 				if plant_id == other.bun_card_info[i].card_id{
 					var can_absorb = false
+						var _added = 0
 					for(var j = 0 ; j < other.bun_card_info[i].bun_amount ; j++){
 						if other.bun_count < other.max_bun{
 							other.bun_count++
 							array_push(other.bullet_list,{"bullet_type":other.bun_card_info[i].bullet_type,"damage":atk})
 							can_absorb = true
+								_added++
 						}
 					}
 					if can_absorb{
 						other.state = CARD_STATE.GROW
 						instance_destroy()
+								// 广播吸收给客户端
+								if (global.network.mode == "server" && ds_map_exists(global.network.map_instance_id_net_id, other.id)) {
+									var _nid = global.network.map_instance_id_net_id[? other.id];
+									var _bullet_name = object_get_name(other.bun_card_info[i].bullet_type);
+									var _cl = global.network.connected_clients;
+									for (var _c = 0; _c < array_length(_cl); _c++) {
+										send_message(_cl[_c], MSG_BUN_ABSORB, _nid, _added, _bullet_name, atk);
+									}
+								}
 					}
 					break
 				}
 			}
+	}
 		}
 	}
 }

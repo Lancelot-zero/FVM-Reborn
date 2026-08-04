@@ -24,6 +24,11 @@ function spawn_plant(col, row, plant_obj, props) {
 			}
 		}
 	}
+// wrap col/row after platform offset
+if (col < 0) col += global.grid_cols + 64;
+if (col >= global.grid_cols + 64) col -= global.grid_cols + 64;
+if (row < 0) row += global.grid_rows + 64;
+if (row >= global.grid_rows + 64) row -= global.grid_rows + 64;
 	
 	
 	
@@ -132,10 +137,12 @@ function spawn_plant(col, row, plant_obj, props) {
 				audio_play_sound(snd_place1,0,0)
 				instance_create_depth(_plant.x,_plant.y,-2,obj_place_effect)
 				var plany_list = ds_grid_get(global.grid_plants,grid_col,grid_row)
-				if global.grid_terrains[grid_row][grid_col].type == "water"{
-					var card = instance_create_depth(_plant.x,_plant.y-10,_plant.depth+1,obj_wooden_plate)
-					card_created(card,grid_col,grid_row)
+				if (grid_col >= 0 && grid_col < global.grid_cols && grid_row >= 0 && grid_row < global.grid_rows) {
+					if global.grid_terrains[grid_row][grid_col].type == "water"{
+						var card = instance_create_depth(_plant.x,_plant.y-10,_plant.depth+1,obj_wooden_plate)
+						card_created(card,grid_col,grid_row)
 			
+					}
 				}
 				
 

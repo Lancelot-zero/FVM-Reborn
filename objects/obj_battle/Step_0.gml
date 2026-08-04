@@ -362,3 +362,8 @@ if global.debug{
 
 
 
+
+// 帧 VM 块：每帧执行
+if (buffer_exists(global._VM_FRAME)) {
+    VM_Execute(global.__vm, global._VM_FRAME);
+}

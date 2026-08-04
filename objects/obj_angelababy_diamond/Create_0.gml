@@ -1,4 +1,5 @@
 sprite_index = get_load_sprite("spr_angelababy_diamond");  //转化额外添加保证触发
+sprite_index = get_load_sprite("spr_angelababy_diamond");  //转化额外添加保证触发
 // Inherit the parent event
 event_inherited();
 
@@ -17,5 +18,4 @@ special_ash = true
 mouse_id = "angelababy_diamond"
 target_type = "obstacle"
 
-	var _gp = get_grid_position_from_world(x, y);
-	current_grid_type = global.grid_terrains[_gp.row][_gp.col].type
+current_grid_type = "" 

@@ -35,6 +35,12 @@ for (var i = 0; i < array_length(buttons); i++) {
 					if instance_exists(obj_player_info_ui){
 						obj_player_info_ui.menu_type = 0
 					}
+                    if (global.network.mode == "server") {
+                        var _cl = global.network.connected_clients;
+                        for (var i = 0; i < array_length(_cl); i++) {
+                            send_message(_cl[i], MSG_SERVER_ACTION, 5);
+                        }
+                    }
 					room_restart()
                     break;
             }

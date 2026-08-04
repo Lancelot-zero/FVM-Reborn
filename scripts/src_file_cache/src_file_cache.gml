@@ -83,6 +83,7 @@ function file_cache_set_expected_audio(_name, _field) {
 
 function file_cache_is_expected(_filename) {
     if (_filename == global.file_cache.expected_sprite) return true;
+    if (ds_map_exists(global._sprite_cache, _filename)) return true;
     var _keys = struct_get_names(global.file_cache.expected_audio);
     for (var _i = 0; _i < array_length(_keys); _i++) {
         if (global.file_cache.expected_audio[$ _keys[_i]] == _filename) return true;
@@ -143,8 +144,15 @@ function file_cache_handle_receive(_filename, _purpose, _size, _data) {
         var _spr = sprite_add(_path, 1, false, false, 0, 0);
         if (_spr != -1) {
             file_cache_set_sprite(_filename, _spr);
+            // 更新 sprite manager：真精灵替换占位
+            if (ds_map_exists(global._sprite_cache, _filename)) {
+                ds_map_add(global._sprite_cache, _filename, _spr);
+                ds_map_add(global._pid_reverse, _spr, _filename);
+                ds_map_add(global._sprite_state, _filename, full_load);
+            }
             if (_purpose == "map_sprite") {
                 global.level_data[$ "level_sprite"] = _spr;
+                global.map_sprite_target = _spr;
             }
             show_debug_message("[客户端] 精灵已注册: " + _filename + (_purpose == "map_sprite" ? " -> level_sprite" : ""));
         }
@@ -157,21 +165,30 @@ function file_cache_load_sprite(_name, _default, _fingerprint, _purpose = "map_s
     // 1. 先查内存缓存
     if (file_cache_has_sprite(_name)) {
         show_debug_message("[客户端] 精灵命中缓存: " + _name);
-        return file_cache_get_sprite(_name);
+        var _spr = file_cache_get_sprite(_name);
+        if (!ds_map_exists(global._pid_reverse, _spr)) {
+            ds_map_add(global._pid_reverse, _spr, _name);
+            ds_map_add(global._sprite_cache, _name, _spr);
+            ds_map_add(global._sprite_state, _name, full_load);
+        }
+        return _spr;
     }
     // 2. 再查本地文件（cache/ 和 laboratory/）
-    if (!is_undefined(_fingerprint) && string_length(_fingerprint) > 0) {
+    if (!is_undefined(_fingerprint)) {
         var _safe = file_cache_sanitize_name(_name);
         var _dirs = ["cache", "laboratory"];
         for (var _i = 0; _i < 2; _i++) {
             var _path = _dirs[_i] + "/" + _safe;
             if (file_exists(_path)) {
                 var _local_fp = file_cache_compute_fingerprint(_path);
-                if (_local_fp == _fingerprint) {
+                if (_local_fp == _fingerprint||_fingerprint=="") {
                     var _spr = sprite_add(_path, 1, false, false, 0, 0);
                     if (_spr != -1) {
                         file_cache_set_sprite(_name, _spr);
                         file_cache_set_fingerprint(_name, _fingerprint);
+                        ds_map_add(global._pid_reverse, _spr, _name);
+                        ds_map_add(global._sprite_cache, _name, _spr);
+                        ds_map_add(global._sprite_state, _name, full_load);
                         show_debug_message("[客户端] 精灵本地命中: " + _path);
                         return _spr;
                     }
@@ -179,10 +196,16 @@ function file_cache_load_sprite(_name, _default, _fingerprint, _purpose = "map_s
             }
         }
     }
-    // 3. 缓存和本地都没有，发网络请求
-    show_debug_message("[客户端] 精灵使用缺省，请求: " + _name);
+    // 3. 缓存和本地都没有 → 占位 + 发网络请求
+    show_debug_message("[客户端] 精灵使用占位，请求: " + _name);
+    var _tmp = working_directory + "_ph_empty.png";
+    var _placeholder = sprite_add(_tmp, 1, false, false, 0, 0);
+    ds_map_add(global._pid_reverse, _placeholder, _name);
+    ds_map_add(global._sprite_cache, _name, _placeholder);
+    ds_map_add(global._sprite_state, _name, empty_load);
+    file_cache_set_sprite(_name, _placeholder);
     send_message(global.network.server_socket, MSG_REQUEST_FILE, _name, _purpose);
-    return _default;
+    return _placeholder;
 }
 
 function file_cache_load_audio(_name, _field, _default, _fingerprint) {
@@ -221,6 +244,25 @@ function file_cache_load_audio(_name, _field, _default, _fingerprint) {
 // ========== 清空缓存 ==========
 
 function file_cache_clear() {
+    // 清理 sprite manager 注册：遍历 file_cache.sprites，按 name 删除对应条目
+    var _keys = ds_map_keys_to_array(global.file_cache.sprites);
+    for (var _i = 0; _i < array_length(_keys); _i++) {
+        var _name = _keys[_i];
+        var _spr = global.file_cache.sprites[? _name];
+        // 从 _sprite_cache 移除（name → sprite）
+        if (ds_map_exists(global._sprite_cache, _name)) {
+            ds_map_delete(global._sprite_cache, _name);
+        }
+        // 从 _sprite_state 移除
+        if (ds_map_exists(global._sprite_state, _name)) {
+            ds_map_delete(global._sprite_state, _name);
+        }
+        // 从 _pid_reverse 移除（sprite → name），占位和真精灵都清
+        if (ds_map_exists(global._pid_reverse, _spr)) {
+            ds_map_delete(global._pid_reverse, _spr);
+        }
+    }
+
     ds_map_destroy(global.file_cache.sprites);
     global.file_cache.sprites = ds_map_create();
     ds_map_destroy(global.file_cache.audio);

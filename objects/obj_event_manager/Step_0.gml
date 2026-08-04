@@ -1,9 +1,9 @@
-if global.is_paused{
+if (buffer_exists(global._VM_BATTLE_START) && !global._VM_battle_start_done) {
+	VM_Execute(global.__vm, global._VM_BATTLE_START);
+	global._VM_battle_start_done = true;
+}
 	
-	if (buffer_exists(global._VM_BATTLE_START) && !global._VM_battle_start_done) {
-		VM_Execute(global.__vm, global._VM_BATTLE_START);
-		global._VM_battle_start_done = true;
-	}
+if global.is_paused{
 	exit
 }
 
@@ -14,11 +14,6 @@ if (global.network.mode == "server"){
 	_evt_pre_terrains = json_stringify(global.grid_terrains);
     _evt_pre_row      = json_stringify(global.row_feature);
     _evt_pre_map_spr_index = obj_battle.map_spr_index;
-}
-
-if (buffer_exists(global._VM_BATTLE_START) && !global._VM_battle_start_done) {
-	VM_Execute(global.__vm, global._VM_BATTLE_START);
-	global._VM_battle_start_done = true;
 }
 
 

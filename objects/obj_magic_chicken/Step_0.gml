@@ -73,15 +73,6 @@ if attack_timer == 15 * current_flash_speed - 1&& global.network.mode != "client
 			new_card[$ "shape"] = target_card_info[$ "shape"]
 			new_card[$ "skill"] = target_card_info[$ "skill"]
 			new_card[$ "current_level"] = target_card_info[$ "level"]
-			var _si = target_card_info[$ "sprite_index"];
-			if (is_string(_si)) {
-				if (ds_map_exists(global._sprite_cache, _si)) {
-					_si = get_load_sprite(_si);
-				} else {
-					_si = asset_get_index(_si);
-				}
-			}
-			new_card[$ "sprite_index"] = _si;
 		}
 		card_created(new_card, logical_col, logical_row)
 		

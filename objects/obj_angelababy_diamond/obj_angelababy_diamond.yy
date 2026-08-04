@@ -37,8 +37,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_angelababy_diamond",
-    "path":"sprites/spr_angelababy_diamond/spr_angelababy_diamond.yy",
+    "name":"spr_cloud_daytime",
+    "path":"sprites/spr_cloud_daytime/spr_cloud_daytime.yy",
   },
   "spriteMaskId":null,
   "visible":true,

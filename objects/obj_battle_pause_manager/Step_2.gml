@@ -165,6 +165,12 @@ if (keyboard_check_pressed(vk_escape)) {
 if (keyboard_check_pressed(ord("R"))) {
 	if global.game_over{
 		if obj_game_over.sprite_index == spr_lose{
+                if (global.network.mode == "server") {
+                    var _cl = global.network.connected_clients;
+                    for (var i = 0; i < array_length(_cl); i++) {
+                        send_message(_cl[i], MSG_SERVER_ACTION, 5);
+                    }
+                }
 			room_restart()
 		}
 	}

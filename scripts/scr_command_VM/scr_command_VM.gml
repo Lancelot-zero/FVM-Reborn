@@ -91,7 +91,8 @@ function VM_CreatePlatform(col_addr, row_addr, width_addr, length_addr, axis_add
     var distance = vm_read_mem(global.__vm, distance_addr);
     var idle = vm_read_mem(global.__vm, idle_addr);
     var spr = vm_read_mem(global.__vm, spr_addr);
-    if (global.network.mode == "client") return -1;
+    var _VM_id = ++global._VM_create_counter;
+    if (global.network.mode == "client") return -_VM_id;
     var _pos = get_world_position_from_grid(col, row);
     var _plat = instance_create_depth(
         _pos.x - global.grid_cell_size_x / 2,
@@ -107,11 +108,14 @@ function VM_CreatePlatform(col_addr, row_addr, width_addr, length_addr, axis_add
     _plat.initial_offset = 0;
     _plat.initial_idle_duration = 0;
     _plat.boundary_idle_duration = idle;
+    _plat._VM_id = _VM_id;
+	
     if (!is_undefined(spr) && spr != "") {
-        _plat.sprite_index = _VM_LoadSpriteFile(spr);
+        _plat.sprite_index = get_load_sprite(spr);
     }
     // 网络同步
     if (global.network.mode == "server") {
+        ds_map_add(global._VM_id_to_real, _VM_id, _plat.id);
         add_net_id(_plat.id);
         // 广播平台创建给所有客户端
         var _nid = global.network.map_instance_id_net_id[? _plat.id];
@@ -146,18 +150,32 @@ function VM_CreatePlatform(col_addr, row_addr, width_addr, length_addr, axis_add
         for (var _i = 0; _i < array_length(_cl); _i++) {
             send_message(_cl[_i], MSG_EVENT_ACTIONS, _json);
         }
+        // 通过 MSG_MODIFY_PROP 同步 VM_id
+        var _vm_prop = {};
+        _vm_prop[$ "_VM_id"] = _VM_id;
+        var _vm_json = json_stringify(_vm_prop);
+        for (var _i = 0; _i < array_length(_cl); _i++) {
+            send_message(_cl[_i], MSG_MODIFY_PROP, _nid, _vm_json);
+        }
     }
     return real(_plat.id);
 }
 
 /// @function _VM_LoadSpriteFile(name)
 function _VM_LoadSpriteFile(name) {
+    // 先查缓存
+    if (ds_map_exists(global._sprite_cache, name)) {
+        return global._sprite_cache[? name];
+    }
     if (variable_global_exists("network") && global.network.mode == "client") {
         return file_cache_load_sprite(name, -1, "", "");
     }
     var _paths = [];
     if (variable_global_exists("_file_cache_json_path")) {
-        array_push(_paths, laboratory_resolve_datafile_path(name, global._file_cache_json_path));
+        // 优先从 JSON 同目录找
+        var _prefix = global._file_cache_json_path;
+        if (!string_ends_with(_prefix, "/") && !string_ends_with(_prefix, "\\")) _prefix += "/";
+        array_push(_paths, _prefix + name);
     }
     array_push(_paths, "laboratory/" + name);
     array_push(_paths, name);
@@ -302,10 +320,19 @@ function VM_Random(min_addr, max_addr) {
     return irandom_range(vm_read_mem(global.__vm, min_addr), vm_read_mem(global.__vm, max_addr));
 }
 
+/// @function VM_ClientWrapId(real_id)
+/// @description 客户端将真实实例 ID 反转为 -VM_id，保证 VM 内一致
+function VM_ClientWrapId(real_id) {
+    if (global.network.mode != "client" || real_id < 0) return real_id;
+    var _vmid = ds_map_find_value(global._VM_real_to_vm_id, real_id);
+    if (is_undefined(_vmid)) return real_id;
+    return -_vmid;
+}
+
 /// @function VM_GetLastIdlePlatform()
 /// @return 刚结束 idle 的平台实例 ID
 function VM_GetLastIdlePlatform() {
-    return real(global._VM_last_idle_platform);
+    return VM_ClientWrapId(real(global._VM_last_idle_platform));
 }
 
 /// @function VM_SetPlatformParams(plat_id, axis, distance, idle, direction)
@@ -321,6 +348,11 @@ function VM_SetPlatformParams(plat_id_addr, axis_addr, distance_addr, idle_addr,
     var distance = vm_read_mem(global.__vm, distance_addr);
     var idle = vm_read_mem(global.__vm, idle_addr);
     var _direction = vm_read_mem(global.__vm, direction_addr);
+    if (plat_id < 0) {
+        var _real = ds_map_find_value(global._VM_id_to_real, -plat_id);
+        if (is_undefined(_real)) return;
+        plat_id = _real;
+    }
     var _plat = plat_id;
     if (!instance_exists(_plat) || _plat.object_index != obj_platform) return;
     // 以当前位置为新起点
@@ -350,31 +382,31 @@ function VM_GetSubwave() {
 /// @function VM_GetLastBoss()
 /// @return 最新创建的 BOSS 实例 ID
 function VM_GetLastBoss() {
-    return  real(global._VM_last_boss);
+    return VM_ClientWrapId(real(global._VM_last_boss));
 }
 
 /// @function VM_GetLastCreatedEnemy()
 /// @return 最新创建的敌人实例 ID
 function VM_GetLastCreatedEnemy() {
-    return  real(global._VM_last_created_enemy);
+    return VM_ClientWrapId(real(global._VM_last_created_enemy));
 }
 
 /// @function VM_GetLastKilledEnemy()
 /// @return 最新死亡的敌人实例 ID
 function VM_GetLastKilledEnemy() {
-    return  real(global._VM_last_killed_enemy);
+    return VM_ClientWrapId(real(global._VM_last_killed_enemy));
 }
 
 /// @function VM_GetLastCreatedCard()
 /// @return 最新创建的卡片实例 ID
 function VM_GetLastCreatedCard() {
-    return  real(global._VM_last_created_card);
+    return VM_ClientWrapId(real(global._VM_last_created_card));
 }
 
 /// @function VM_GetLastDestroyedCard()
 /// @return 最新销毁的卡片实例 ID
 function VM_GetLastDestroyedCard() {
-    return  real(global._VM_last_destroyed_card);
+    return VM_ClientWrapId(real(global._VM_last_destroyed_card));
 }
 
 /// @function VM_GetProp(inst_id, prop)
@@ -382,6 +414,11 @@ function VM_GetLastDestroyedCard() {
 function VM_GetProp(inst_id_addr, prop_addr) {
     var inst_id = vm_read_mem(global.__vm, inst_id_addr);
     var prop = vm_read_mem(global.__vm, prop_addr);
+    if (inst_id < 0) {
+        var _real = ds_map_find_value(global._VM_id_to_real, -inst_id);
+        if (is_undefined(_real)) return undefined;
+        inst_id = _real;
+    }
     if (!instance_exists(inst_id)) return undefined;
     return variable_instance_get(inst_id, prop);
 }
@@ -391,6 +428,11 @@ function VM_SetProp(inst_id_addr, prop_addr, value_addr) {
     var inst_id = vm_read_mem(global.__vm, inst_id_addr);
     var prop = vm_read_mem(global.__vm, prop_addr);
     var value = vm_read_mem(global.__vm, value_addr);
+    if (inst_id < 0) {
+        var _real = ds_map_find_value(global._VM_id_to_real, -inst_id);
+        if (is_undefined(_real)) return;
+        inst_id = _real;
+    }
     if (!instance_exists(inst_id)) return;
     variable_instance_set(inst_id, prop, value);
     if (global.network.mode == "server") {
@@ -411,7 +453,8 @@ function VM_SpawnObject(obj_name_addr, col_addr, row_addr) {
     var obj_name = vm_read_mem(global.__vm, obj_name_addr);
     var col = vm_read_mem(global.__vm, col_addr);
     var row = vm_read_mem(global.__vm, row_addr);
-    if (global.network.mode == "client") return -1;
+    var _VM_id = ++global._VM_create_counter;
+    if (global.network.mode == "client") return -_VM_id;
     if (!string_starts_with(obj_name, "obj_"))
         obj_name = "obj_" + obj_name;
     var _obj = asset_get_index(obj_name);
@@ -419,7 +462,44 @@ function VM_SpawnObject(obj_name_addr, col_addr, row_addr) {
         show_debug_message("[VM_SpawnObject] 对象不存在: " + obj_name);
         return -1;
     }
-    return real(spawn_plant(col, row, _obj, {}));
+    var _depth = -1200;
+    var _y_off = -35;
+    switch (obj_name) {
+        case "obj_mouse_hole":   _depth = -5;   _y_off = 0;   break;
+        case "obj_pharaoh_hole": _depth = -5;   _y_off = 0;   break;
+        case "obj_cloud":        _depth = 10;   _y_off = -10; break;
+    }
+    var _c1 = (col == -1) ? 0 : col;
+    var _c2 = (col == -1) ? global.grid_cols - 1 : col;
+    var _r1 = (row == -1) ? 0 : row;
+    var _r2 = (row == -1) ? global.grid_rows - 1 : row;
+    var _last = -1;
+    for (var _r = _r1; _r <= _r2; _r++) {
+        for (var _c = _c1; _c <= _c2; _c++) {
+            var _pos = get_world_position_from_grid(_c, _r);
+            var _inst = instance_create_depth(_pos.x, _pos.y + _y_off, _depth, _obj);
+            if (_inst < 0) continue;
+            _inst.row = _r;
+            _inst.col = _c;
+            _last = _inst;
+            _inst._VM_id = _VM_id;
+        }
+    }
+    if (global.network.mode == "server" && _last != -1) {
+        ds_map_add(global._VM_id_to_real, _VM_id, _last);
+        // 通过 MSG_MODIFY_PROP 同步 VM_id
+        var _nid = ds_map_exists(global.network.map_instance_id_net_id, _last) ? global.network.map_instance_id_net_id[? _last] : -1;
+        if (_nid != -1) {
+            var _vm_prop = {};
+            _vm_prop[$ "_VM_id"] = _VM_id;
+            var _vm_json = json_stringify(_vm_prop);
+            var _list = global.network.connected_clients;
+            for (var _i = 0; _i < array_length(_list); _i++) {
+                send_message(_list[_i], MSG_MODIFY_PROP, _nid, _vm_json);
+            }
+        }
+    }
+    return real(_last);
 }
 
 /// @function VM_SpawnPlant(card_id, col, row, shape, level, skill)
@@ -431,7 +511,8 @@ function VM_SpawnPlant(card_id_addr, col_addr, row_addr, shape_addr, level_addr,
     var shape = vm_read_mem(global.__vm, shape_addr);
     var level = vm_read_mem(global.__vm, level_addr);
     var skill = vm_read_mem(global.__vm, skill_addr);
-    if (global.network.mode == "client") return -1;
+    var _VM_id = ++global._VM_create_counter;
+    if (global.network.mode == "client") return -_VM_id;
     if (is_undefined(shape)) shape = 0;
     if (is_undefined(level)) level = 0;
     if (is_undefined(skill)) skill = 0;
@@ -441,6 +522,21 @@ function VM_SpawnPlant(card_id_addr, col_addr, row_addr, shape_addr, level_addr,
     var _props = { current_level: level, skill: skill };
     var _plant = spawn_plant(col, row, _obj, _props);
     global._VM_last_created_card = _plant;
+    _plant._VM_id = _VM_id;
+    if (global.network.mode == "server") {
+        ds_map_add(global._VM_id_to_real, _VM_id, _plant);
+        // 通过 MSG_MODIFY_PROP 同步 VM_id
+        var _nid = ds_map_exists(global.network.map_instance_id_net_id, _plant) ? global.network.map_instance_id_net_id[? _plant] : -1;
+        if (_nid != -1) {
+            var _vm_prop = {};
+            _vm_prop[$ "_VM_id"] = _VM_id;
+            var _vm_json = json_stringify(_vm_prop);
+            var _list = global.network.connected_clients;
+            for (var _i = 0; _i < array_length(_list); _i++) {
+                send_message(_list[_i], MSG_MODIFY_PROP, _nid, _vm_json);
+            }
+        }
+    }
     // card_created 已挂 hook，此处不重复
     return real(_plant);
 }
@@ -451,7 +547,8 @@ function VM_SpawnEnemy(type_addr, row_addr, hp_override_addr) {
     var type = vm_read_mem(global.__vm, type_addr);
     var row = vm_read_mem(global.__vm, row_addr);
     var hp_override = vm_read_mem(global.__vm, hp_override_addr);
-    if (global.network.mode == "client") return -1;
+    var _VM_id = ++global._VM_create_counter;
+    if (global.network.mode == "client") return -_VM_id;
     var _info = global.enemy_map[? type];
     if (is_undefined(_info)) return -1;
     var _pos = get_world_position_from_grid(global.grid_cols, row);
@@ -460,12 +557,20 @@ function VM_SpawnEnemy(type_addr, row_addr, hp_override_addr) {
         _enemy.hp = hp_override;
         _enemy.maxhp = hp_override;
     }
+    _enemy._VM_id = _VM_id;
     if (global.network.mode == "server") {
+        ds_map_add(global._VM_id_to_real, _VM_id, _enemy.id);
         add_net_id(_enemy.id);
         var _nid = global.network.map_instance_id_net_id[? _enemy.id];
         var _list = global.network.connected_clients;
         for (var _i = 0; _i < array_length(_list); _i++)
             send_message(_list[_i], MSG_SPAWN_ENEMY, _nid, _pos.x + 30, _pos.y + 3, object_get_name(_info._obj));
+        // 通过 MSG_MODIFY_PROP 同步 VM_id
+        var _vm_prop = {};
+        _vm_prop[$ "_VM_id"] = _VM_id;
+        var _vm_json = json_stringify(_vm_prop);
+        for (var _i = 0; _i < array_length(_list); _i++)
+            send_message(_list[_i], MSG_MODIFY_PROP, _nid, _vm_json);
     }
     global._VM_last_created_enemy = _enemy.id;
     if (buffer_exists(global._VM_ENEMY_SPAWNED)) VM_QueueHook(global._VM_ENEMY_SPAWNED, "enemy", _enemy.id);
@@ -478,7 +583,8 @@ function VM_SpawnBoss(type_addr, row_addr, hp_override_addr) {
     var type = vm_read_mem(global.__vm, type_addr);
     var row = vm_read_mem(global.__vm, row_addr);
     var hp_override = vm_read_mem(global.__vm, hp_override_addr);
-    if (global.network.mode == "client") return -1;
+    var _VM_id = ++global._VM_create_counter;
+    if (global.network.mode == "client") return -_VM_id;
     var _info = global.enemy_map[? type];
     if (is_undefined(_info)) return -1;
     var _pos = get_world_position_from_grid(10, row);
@@ -487,13 +593,21 @@ function VM_SpawnBoss(type_addr, row_addr, hp_override_addr) {
         _boss.hp = hp_override;
         _boss.maxhp = hp_override;
     }
+    _boss._VM_id = _VM_id;
     obj_battle.boss_count++;
     if (global.network.mode == "server") {
+        ds_map_add(global._VM_id_to_real, _VM_id, _boss.id);
         add_net_id(_boss.id);
         var _nid = global.network.map_instance_id_net_id[? _boss.id];
         var _list = global.network.connected_clients;
         for (var _i = 0; _i < array_length(_list); _i++)
             send_message(_list[_i], MSG_SPAWN_BOSS, _nid, _pos.x - 80, _pos.y + 30, object_get_name(_info._obj), _boss.hp, _boss.maxhp, row);
+        // 通过 MSG_MODIFY_PROP 同步 VM_id
+        var _vm_prop = {};
+        _vm_prop[$ "_VM_id"] = _VM_id;
+        var _vm_json = json_stringify(_vm_prop);
+        for (var _i = 0; _i < array_length(_list); _i++)
+            send_message(_list[_i], MSG_MODIFY_PROP, _nid, _vm_json);
     }
     global._VM_last_boss = _boss.id;
     return real(_boss.id);
@@ -515,6 +629,7 @@ function vm_read_mem(vm, addr) {
 
 /// @function VM_Execute(vm, buf)
 function VM_Execute(vm, buf) {
+    if (!buffer_exists(buf)) return 0;
     try {
         if (global._VM_debug_mode) return VM_Execute_debug(vm, buf);
         buffer_seek(buf, buffer_seek_start, 0);
@@ -743,6 +858,7 @@ function VM_Execute(vm, buf) {
 
 /// @function VM_Execute_debug(vm, buf) [DEBUG VERSION]
 function VM_Execute_debug(vm, buf) {
+    if (!buffer_exists(buf)) return 0;
     try {
         buffer_seek(buf, buffer_seek_start, 0);
         var _size = buffer_get_size(buf);
@@ -1053,6 +1169,9 @@ global._VM_last_created_enemy = -1;
 global._VM_last_killed_enemy  = -1;
 global._VM_last_created_card  = -1;
 global._VM_last_destroyed_card = -1;
+global._VM_create_counter = 0;
+global._VM_id_to_real      = ds_map_create();  // VM_id → 真实 instance id
+global._VM_real_to_vm_id   = ds_map_create();  // 真实 instance id → VM_id (客户端反向)
 
 global.__vm = VM_Create();
 VM_RegisterFunction(global.__vm, VM_BanCard);         // 0
@@ -1089,6 +1208,7 @@ global._sync_vm_bin_buf = undefined;
 
 /// @function VM_InitRoomEntry(buf)
 function VM_InitRoomEntry(buf) {
+				
     ds_map_clear(global.banned_cards_online);
     global._VM_card_level_cap = -1;
     global._VM_max_slots = -1;
@@ -1122,6 +1242,9 @@ function VM_InitRoomEntry(buf) {
     global._VM_last_created_card  = -1;
     global._VM_last_destroyed_card = -1;
     global._VM_last_idle_platform = -1;
+    global._VM_create_counter = 0;
+    ds_map_clear(global._VM_id_to_real);
+    ds_map_clear(global._VM_real_to_vm_id);
 
     if (!buffer_exists(buf)) return;
 
@@ -1165,6 +1288,10 @@ function VM_InitRoomEntry(buf) {
         buffer_seek(_bc_buf, buffer_seek_start, 0);
 
         switch (_block_name) {
+            case "_VM_CONST_INIT":
+                VM_Execute(global.__vm, _bc_buf);
+                buffer_delete(_bc_buf);
+                break;
             case "_VM_ROOM_READY_ENTRY":
                 global._VM_ROOM_READY_ENTRY = _bc_buf;
                 VM_Execute(global.__vm, _bc_buf);

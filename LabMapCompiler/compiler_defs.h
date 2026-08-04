@@ -141,8 +141,8 @@ static const std::vector<const char*> VALID_CARD_IDS = {
 
 // 物件名（VM_SpawnObject）
 static const std::vector<const char*> VALID_OBJECT_NAMES = {
-    "obj_obstacle","obj_lava","obj_wind_tunnel","obj_mouse_hole",
-    "obj_pharaoh_hole","obj_buzz_wind","obj_cloud","obj_ladder",
+    "obstacle","lava","wind_tunnel","mouse_hole",
+    "pharaoh_hole","buzz_wind","cloud","ladder",
 };
 
 /// 检查字符串是否在集合中

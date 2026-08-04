@@ -35,6 +35,7 @@ global.__stop_msg_loop = false;
 #macro MSG_MODIFY_PROP          25  // S→C: 修改实例属性(net_id, json)
 #macro MSG_REQUEST_FILE         26  // C→S: 请求文件(文件名,用途)
 #macro MSG_TRANSFER_FILE        27  // S→C: 传输文件(文件名, 用途, 大小, 字节流)
+#macro MSG_BUN_ABSORB           28  // S→C: 国王包子吸收 (king_net_id, bun_amount, bullet_name, damage)
 #macro MSG_PLATFORM_TICK        29  // S→C: 平台帧同步拍子，客户端收到后驱动所有平台step一次
 
 /// @function add_net_id(ins_id, net_id)
@@ -436,6 +437,10 @@ function parse_network_message(buf, _sock) {
                 for (var _k = 0; _k < array_length(_keys); _k++) {
                     var _key = _keys[_k];
                     var _val = _props[$ _key];
+                    if (_key == "_VM_id") {
+                        ds_map_add(global._VM_id_to_real, _val, _inst);
+                        ds_map_add(global._VM_real_to_vm_id, _inst, _val);
+                    }
                     if (_key == "sprite_index" && is_string(_val)) {
                         _val = get_load_sprite(_val);
                     }
@@ -466,6 +471,27 @@ function parse_network_message(buf, _sock) {
             buffer_seek(buf, buffer_seek_relative, _size);
             show_debug_message("[解析] 收到 MSG_TRANSFER_FILE: " + _filename + " 用途:" + _purpose + " (" + string(_size) + " bytes)");
             file_cache_handle_receive(_filename, _purpose, _size, _data);
+            break;
+        }
+		
+        case MSG_BUN_ABSORB:
+        {
+            var _net_id = buffer_read(buf, buffer_s32);
+            var _bun_amount = buffer_read(buf, buffer_u8);
+            var _bullet_name = buffer_read(buf, buffer_string);
+            var _damage = buffer_read(buf, buffer_s32);
+            var _king = global.network.map_net_id_instance_id[? _net_id];
+            if (instance_exists(_king)) {
+                var _bullet_type = asset_get_index(_bullet_name);
+                if (_bullet_type < 0) _bullet_type = obj_xiaolongbao_bullet;
+                for (var _j = 0; _j < _bun_amount; _j++) {
+                    if (_king.bun_count < _king.max_bun) {
+                        _king.bun_count++;
+                        array_push(_king.bullet_list, {"bullet_type": _bullet_type, "damage": _damage});
+                    }
+                }
+                _king.state = CARD_STATE.GROW;
+            }
             break;
         }
 
@@ -736,7 +762,10 @@ function parse_network_message(buf, _sock) {
 			}
 			global.wait_sprite_load = true;
 			global.gui_stack.to(room_battle)
-				global.__stop_msg_loop = true;
+			global.__stop_msg_loop = true;
+			
+
+			
 			break;
 		}
 		
@@ -1132,6 +1161,12 @@ function send_message(socket, msg_id) {
             buffer_write(buf, buffer_s32, argument[4]);
             buffer_copy(argument[5], 0, buffer_get_size(argument[5]), buf, buffer_tell(buf));
             buffer_seek(buf, buffer_seek_relative, buffer_get_size(argument[5]));
+            break;
+        case MSG_BUN_ABSORB:              // 参数: king_net_id(s32), bun_amount(u8), bullet_name(string), damage(s32)
+            buffer_write(buf, buffer_s32, argument[2]);
+            buffer_write(buf, buffer_u8, argument[3]);
+            buffer_write(buf, buffer_string, argument[4]);
+            buffer_write(buf, buffer_s32, argument[5]);
             break;
         case MSG_PLATFORM_TICK:            // 参数: json(string)
             buffer_write(buf, buffer_string, argument[2]);

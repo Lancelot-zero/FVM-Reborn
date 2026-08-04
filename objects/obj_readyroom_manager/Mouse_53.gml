@@ -7,7 +7,7 @@ if hover_card_index != -1 && !is_submenu_open{
 		audio_play_sound(snd_button,0,0)
 		var card_id = global.player_deck[| hover_card_index*2];
 		if !is_undefined(global.banned_cards_online[? card_id]){
-			show_notice("暂不支持此卡片", 60)
+			show_notice("该关卡暂不支持此卡片使用", 60)
 			return;
 		}
 		// 联机模式禁止选择 king 小笼包（吸收机制与联机架构冲突）

@@ -1,0 +1,155 @@
+// ================================================================
+// 功能测试 — 覆盖所有块和函数
+// ================================================================
+
+// ========== 准备室：规则设置 ==========
+_VM_ROOM_READY_ENTRY {
+    // 规则设置
+    VM_BanCard("small_fire")
+    VM_BanCard("large_fire")
+    VM_BanCard("goblet_lamp")
+    VM_SetCardLevelCap(10)
+    VM_SetMaxSlots(8)
+
+    // 变长函数
+    VM_ShellPrint("[准备室] 规则已设置，卡槽=", 8, " 星级上限=", 10)
+    VM_ShowNotice("欢迎来到功能测试！")
+}
+
+// ========== 战斗开始：造地图 ==========
+_VM_BATTLE_START {
+    // 地图
+    VM_ClearPlants(-1, -1)
+    VM_SetTerrain(-1, -1, "obstacle")
+    VM_SetTerrain(-1, 2, "normal")
+    VM_SetTerrain(-1, 3, "normal")
+
+    // 火苗
+    VM_SetFlame(3000)
+
+    // 创建平台（hook 控制）
+    test_cnt = 0
+    test_plat = VM_CreatePlatform(0, 0, 4, 5, 0, 0, 0, "spr_fennel_raft_platform_daytime")
+
+    // 第二个平台（普通来回）
+    VM_CreatePlatform(6, 3, 5, 1, 1, 2, 480, "spr_lilac_rainbow_platform_night_1")
+
+    // 种卡
+    VM_SpawnPlant("xiao_long_bao", 1, 2, 0, 5, 0)
+
+    // 随机数演示
+    r = VM_Random(1, 100)
+    VM_ShellPrint("[战斗开始] 随机数:", r)
+
+    // 自定义属性读写（演示 VM_GetProp / VM_SetProp）
+    VM_SetProp(test_plat, "_label", 42)
+    label = VM_GetProp(test_plat, "_label")
+    VM_ShellPrint("[战斗开始] 平台标签值:", label)
+
+    VM_ShowNotice("战斗开始！全功能测试")
+}
+
+// ========== 波次开始 ==========
+_VM_WAVE_START {
+    wave = VM_GetWave()
+    VM_ShellPrint("[波次开始] 第", wave, "波")
+
+    if (wave == 0) {
+        VM_SpawnEnemy("normal_mouse", 2, 100)
+        VM_SpawnEnemy("normal_mouse", 3, 100)
+    }
+    if (wave == 1) {
+        VM_SpawnEnemy("football_fan_mouse", 2, 280)
+        VM_SpawnEnemy("skateboard_mouse", 1, 170)
+    }
+    if (wave == 2) {
+        VM_SpawnBoss("arno", 2, 8000)
+        VM_ShowNotice("BOSS 阿诺登场！")
+    }
+}
+
+// ========== 波次结束 ==========
+_VM_WAVE_END {
+    wave = VM_GetWave()
+    flame = VM_GetFlame()
+    VM_ShellPrint("[波次结束] 第", wave, "波结束，火苗:", flame)
+}
+
+// ========== 子波开始 ==========
+_VM_SUBWAVE_START {
+    sub = VM_GetSubwave()
+    VM_ShellPrint("[子波开始]", sub)
+}
+
+// ========== 子波结束 ==========
+_VM_SUBWAVE_END {
+    VM_ShellPrint("[子波结束]")
+}
+
+// ========== 敌人出现 ==========
+_VM_ENEMY_SPAWNED {
+    enemy = VM_GetLastCreatedEnemy()
+    VM_ShellPrint("[敌人出现] id:", enemy)
+}
+
+// ========== 敌人死亡 ==========
+_VM_ENEMY_KILLED {
+    enemy = VM_GetLastKilledEnemy()
+    VM_ShellPrint("[敌人死亡] id:", enemy)
+}
+
+// ========== 敌人受伤 ==========
+_VM_ENEMY_DAMAGED {
+    VM_ShellPrint("[敌人受伤]")
+}
+
+// ========== 卡片被种下 ==========
+_VM_CARD_CREATED {
+    card = VM_GetLastCreatedCard()
+    VM_ShellPrint("[卡片创建] id:", card)
+}
+
+// ========== 卡片被销毁 ==========
+_VM_CARD_DESTROYED {
+    card = VM_GetLastDestroyedCard()
+    VM_ShellPrint("[卡片销毁] id:", card)
+}
+
+// ========== 卡片受伤 ==========
+_VM_CARD_DAMAGED {
+    VM_ShellPrint("[卡片受伤]")
+}
+
+// ========== 玩家受伤 ==========
+_VM_PLAYER_DAMAGED {
+    VM_ShellPrint("[玩家受伤]")
+}
+
+// ========== 平台 idle 结束：test_plat 循环换轴 ==========
+_VM_PLATFORM_IDLE_END {
+    plat = VM_GetLastIdlePlatform()
+    if (plat == test_plat) {
+        test_cnt = (test_cnt + 1) % 4
+        if (test_cnt == 0) {
+            VM_SetPlatformParams(test_plat, 0, 2, 480, 1)
+        }
+        if (test_cnt == 1) {
+            VM_SetPlatformParams(test_plat, 1, 2, 480, 1)
+        }
+        if (test_cnt == 2) {
+            VM_SetPlatformParams(test_plat, 0, 2, 480, -1)
+        }
+        if (test_cnt == 3) {
+            VM_SetPlatformParams(test_plat, 1, 2, 480, -1)
+        }
+        // 演示 VM_GetProp / VM_SetProp
+        dist = VM_GetProp(test_plat, "move_distance")
+        VM_ShellPrint("[平台] 当前距离:", dist)
+    }
+
+    // 演示 VM_GetLastBoss
+    boss = VM_GetLastBoss()
+    if (boss != -1) {
+        VM_ShellPrint("[平台事件] 上个BOSS:", boss)
+    }
+}

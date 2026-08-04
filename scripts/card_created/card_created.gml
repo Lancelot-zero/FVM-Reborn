@@ -12,7 +12,7 @@ function card_created(plant_inst, col, row) {
 		var level = variable_instance_get(plant_inst, "current_level") ?? 0;
 		var _meta = package_character(plant_inst);
 		var _sid = plant_inst.sprite_index;
-	var _sprite_name = ds_map_exists(global._pid_reverse, _sid) ? global._pid_reverse[? _sid] : sprite_get_name(_sid);
+		var _sprite_name = ds_map_exists(global._pid_reverse, _sid) ? global._pid_reverse[? _sid] : sprite_get_name(_sid);
 
 		if (plant_inst.object_index == obj_magic_chicken) {
 			var _target = variable_instance_get(plant_inst, "target_card") ?? "";
@@ -23,8 +23,8 @@ function card_created(plant_inst, col, row) {
 					skill:get_card_info(_target)[$ "skill"],
 					shape:get_card_info(_target)[$ "shape"],
 					level:get_card_info(_target)[$ "level"],
-					sprite_index: ds_map_exists(global._pid_reverse, global.prev_place_id_shape) ? global._pid_reverse[? global.prev_place_id_shape] : sprite_get_name(global.prev_place_id_shape),
-					plant_type: deck_get_card_data(_target, get_card_info(_target)[$ "shape"])[? "plant_type"]
+					plant_type: deck_get_card_data(_target, get_card_info(_target)[$ "shape"])[? "plant_type"],
+					//sprite_index: ds_map_exists(global._pid_reverse, global.prev_place_id_shape) ? global._pid_reverse[? global.prev_place_id_shape] : sprite_get_name(global.prev_place_id_shape),
 				}
 				_meta = {target_card:_target,target_card_info:target_card_info};
 			}
@@ -89,27 +89,13 @@ function card_created(plant_inst, col, row) {
 		} else if (plant_inst.object_index == obj_magic_chicken ) {
 			if (variable_instance_exists(plant_inst, "target_card_info")){
 				var _tci = plant_inst.target_card_info;
-				var _tci_sid = _tci[$ "sprite_index"];
-				if (!is_string(_tci_sid)) {
-					_tci_sid = ds_map_exists(global._pid_reverse, _tci_sid) ? global._pid_reverse[? _tci_sid] : sprite_get_name(_tci_sid);
-				}
 				var _tci_copy = {
 					skill: _tci[$ "skill"],
 					shape: _tci[$ "shape"],
 					level: _tci[$ "level"],
-					sprite_index: _tci_sid,
 					plant_type: _tci[$ "plant_type"]
 				};
-				_meta = { target_card: plant_inst.target_card, target_card_info: _tci_copy };
-			}else if _target!=""{
-				var target_card_info ={
-					skill:get_card_info(_target)[$ "skill"],
-					shape:get_card_info(_target)[$ "shape"],
-					level:get_card_info(_target)[$ "level"],
-					sprite_index: ds_map_exists(global._pid_reverse, global.prev_place_id_shape) ? global._pid_reverse[? global.prev_place_id_shape] : sprite_get_name(global.prev_place_id_shape),
-					plant_type: deck_get_card_data(_target, get_card_info(_target)[$ "shape"])[? "plant_type"]
-				}
-				_meta = {target_card:_target,target_card_info:target_card_info};
+				_meta = { target_card: plant_inst.target_card, target_card_info: _tci_copy };			
 			}else
 				_meta = {target_card:""}
 		} else {

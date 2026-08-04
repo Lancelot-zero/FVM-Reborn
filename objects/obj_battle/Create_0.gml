@@ -24,6 +24,12 @@ instance_create_depth(room_width-200,room_height-25,0,obj_level_progress_bar)
 global.selected_slot = noone;
 global.current_seed = noone;
 global._VM_battle_start_done = false;
+global.map_draw_slots = [];
+repeat (8) { array_push(global.map_draw_slots, { sprite: noone, x: 0, y: 0, alpha: 1 }); }
+global.map_sprite_current = global.level_data.level_sprite;
+global.map_sprite_target = global.level_data.level_sprite;
+global.map_fade_alpha = 0;
+global.map_fade_step = 0.02;
 global.grid_offset_x = 695
 global.grid_cell_size_x = 107
 global.grid_cell_size_y = 116
@@ -191,6 +197,14 @@ if is_real(global.level_file.version){
 global.prev_place_id = ""
 
 function enemy_subwave_summon(){
+    // 越界保护
+    if (is_undefined(global.level_file) || !variable_struct_exists(global.level_file, "waves")) return;
+    var _wave_count = array_length(global.level_file.waves);
+    if (current_wave < 0 || current_wave >= _wave_count) return;
+    var _subwaves = global.level_file.waves[current_wave].subwaves;
+    if (is_undefined(_subwaves)) return;
+    var _subwave_count = array_length(_subwaves);
+    if (current_subwave < 0 || current_subwave >= _subwave_count) return;
 	current_total_hp = 0
 	
     wave_timer = wave_max_time

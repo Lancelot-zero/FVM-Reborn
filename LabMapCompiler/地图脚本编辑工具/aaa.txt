@@ -1,0 +1,10 @@
+_VM_BATTLE_START {
+    VM_ShowNotice("加载自定义贴图")
+
+    // 加载贴图
+    VM_LoadSprite("marinade_garden_platform_2.png")
+
+    // 创建平台
+    // 列1 行0 宽6 高7 轴向1(左右) 移动2格 停顿600帧
+    a = VM_CreatePlatform(1, 0, 6, 7, 1, 2, 600, "marinade_garden_platform_2.png")
+}
