@@ -2,7 +2,16 @@
 	if global.is_paused{
 		exit
 	}
-	// 客户端：拦截死亡，等待服务端广播 MSG_UNIT_DEATH
+	
+	// 不在网格内，跳过
+if (grid_row > global.grid_rows+2&& grid_row < global.grid_rows+62||
+	grid_col > global.grid_cols+2&& grid_col < global.grid_cols+62){ 
+	visible = false;
+	exit;
+}else{
+	visible = true;
+}
+	
 	if (global.network.mode == "client" && hp <= 0) { exit; }
 
 	if ice_timer > 0{

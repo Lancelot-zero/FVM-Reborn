@@ -1164,6 +1164,49 @@ function VM_FlushHooks() {
     }
 }
 
+/// @function VM_HandleNotify(json)
+/// @param {string} json  服务端发来的虚拟机通知 JSON
+/// @description 处理服务端通过 MSG_VM_NOTIFY 下发的虚拟机通知
+function VM_HandleNotify(json) {
+    var _data = json_parse(json);
+    if (is_undefined(_data)) {
+        show_debug_message("[VM_HandleNotify] JSON 解析失败: " + json);
+        return;
+    }
+
+    var _hook = _data[$ "hook"];
+    if (is_undefined(_hook)) {
+        show_debug_message("[VM_HandleNotify] 缺少 hook 字段: " + json);
+        return;
+    }
+
+    show_debug_message("[VM_HandleNotify] hook=" + _hook + " wave=" + string(_data[$ "wave"]) + " subwave=" + string(_data[$ "subwave"]));
+
+    // 先同步波次状态
+    var _wave = _data[$ "wave"];
+    var _subwave = _data[$ "subwave"];
+    if (!is_undefined(_wave)) obj_battle.current_wave = _wave;
+    if (!is_undefined(_subwave)) obj_battle.current_subwave = _subwave;
+
+    switch (_hook) {
+        case "wave_start":
+            if (buffer_exists(global._VM_WAVE_START)) VM_Execute(global.__vm, global._VM_WAVE_START);
+            break;
+        case "wave_end":
+            if (buffer_exists(global._VM_WAVE_END)) VM_Execute(global.__vm, global._VM_WAVE_END);
+            break;
+        case "subwave_start":
+            if (buffer_exists(global._VM_SUBWAVE_START)) VM_Execute(global.__vm, global._VM_SUBWAVE_START);
+            break;
+        case "subwave_end":
+            if (buffer_exists(global._VM_SUBWAVE_END)) VM_Execute(global.__vm, global._VM_SUBWAVE_END);
+            break;
+        default:
+            show_debug_message("[VM_HandleNotify] 未知 hook: " + _hook);
+            break;
+    }
+}
+
 global._VM_last_boss          = -1;
 global._VM_last_created_enemy = -1;
 global._VM_last_killed_enemy  = -1;

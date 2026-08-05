@@ -37,6 +37,7 @@ global.__stop_msg_loop = false;
 #macro MSG_TRANSFER_FILE        27  // S→C: 传输文件(文件名, 用途, 大小, 字节流)
 #macro MSG_BUN_ABSORB           28  // S→C: 国王包子吸收 (king_net_id, bun_amount, bullet_name, damage)
 #macro MSG_PLATFORM_TICK        29  // S→C: 平台帧同步拍子，客户端收到后驱动所有平台step一次
+#macro MSG_VM_NOTIFY            30  // S→C: 虚拟机通知(JSON)
 
 /// @function add_net_id(ins_id, net_id)
 /// @description 为实例产生一个 net_id
@@ -989,6 +990,14 @@ function parse_network_message(buf, _sock) {
             break;
         }
 
+        case MSG_VM_NOTIFY:            // 参数: json(string)
+        {
+            var _json = buffer_read(buf, buffer_string);
+            show_debug_message("[解析] MSG_VM_NOTIFY: " + _json);
+            VM_HandleNotify(_json);
+            break;
+        }
+
         default:
         {
             show_debug_message("[解析] 警告：未知消息ID " + string(msg_id) + "，跳过该消息");
@@ -1169,6 +1178,9 @@ function send_message(socket, msg_id) {
             buffer_write(buf, buffer_s32, argument[5]);
             break;
         case MSG_PLATFORM_TICK:            // 参数: json(string)
+            buffer_write(buf, buffer_string, argument[2]);
+            break;
+        case MSG_VM_NOTIFY:                // 参数: json(string)
             buffer_write(buf, buffer_string, argument[2]);
             break;
 

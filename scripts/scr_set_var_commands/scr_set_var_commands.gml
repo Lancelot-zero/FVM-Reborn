@@ -2,7 +2,7 @@
 
 function spawn_plant(col, row, plant_obj, props) {
     // 边界检查
-    if (col < 0 || col >= global.grid_cols || row < 0 || row >= global.grid_rows) {
+    if (col < 0 || col >= global.grid_cols + 64 || row < 0 || row >= global.grid_rows + 64) {
         show_debug_message("[spawn_plant] 无效网格位置 (" + string(col) + ", " + string(row) + ")");
         return -1;
     }
