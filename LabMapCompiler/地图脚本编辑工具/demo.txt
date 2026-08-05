@@ -1,0 +1,19 @@
+// ========== 战斗开始：造地图 ==========
+_VM_BATTLE_START {
+    // 清除全图植物
+    VM_ClearPlants(-1, -1)
+
+    // ---- 在第3行第6列生成永久番茄障碍物 ----
+    barrier1 = VM_SpawnObject("barrier", 6, 3)
+
+    // 设置超大血量防止被打爆
+    VM_SetProp(barrier1, "maxhp", 999999999)
+    VM_SetProp(barrier1, "hp", 999999999)
+
+    // （可选）不可见：VM_SetProp(barrier1, "visible", 0)
+}
+
+// ========== 每帧：阻止障碍物自毁 ==========
+_VM_FRAME {
+    VM_SetProp(barrier1, "clear_timer", 0)
+}

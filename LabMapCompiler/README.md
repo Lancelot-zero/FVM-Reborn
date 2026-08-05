@@ -114,6 +114,7 @@ if (a_cnt == 0) {
 | `VM_BanCard("卡名")` | 禁用某张卡 |
 | `VM_SetCardLevelCap(等级)` | 卡片最高等级 |
 | `VM_SetMaxSlots(数量)` | 最多带几张卡 |
+| `VM_SpawnCats(1或0)` | 是否生成初始一排猫，默认开启。需在 `_VM_BATTLE_START` 中调用 |
 
 ### 地图
 

@@ -24,6 +24,7 @@ instance_create_depth(room_width-200,room_height-25,0,obj_level_progress_bar)
 global.selected_slot = noone;
 global.current_seed = noone;
 global._VM_battle_start_done = false;
+global._VM_spawn_cats = true;
 global.map_draw_slots = [];
 repeat (8) { array_push(global.map_draw_slots, { sprite: noone, x: 0, y: 0, alpha: 1 }); }
 global.map_draw_slots_front = [];
@@ -155,10 +156,11 @@ for(var i = 0 ; i < global.grid_rows ; i++){
 			
 		}
 	}
-	var new_x = global.grid_offset_x
-	var new_y = global.grid_offset_y + i * global.grid_cell_size_y
-	var grid_pos = get_grid_position_from_world(new_x,new_y)
-	var cat_inst = instance_create_depth(grid_pos.x - 10 - global.grid_cell_size_x, grid_pos.y+10, 0,obj_cat);
+	if (global._VM_spawn_cats) {
+		var new_x = global.grid_offset_x
+		var new_y = global.grid_offset_y + i * global.grid_cell_size_y
+		var grid_pos = get_grid_position_from_world(new_x,new_y)
+		var cat_inst = instance_create_depth(grid_pos.x - 10 - global.grid_cell_size_x, grid_pos.y+10, 0,obj_cat);
 	cat_inst.row = i
 	if global.row_feature[i] == "water"{
 		cat_inst.sprite_index = spr_crab
@@ -166,8 +168,8 @@ for(var i = 0 ; i < global.grid_rows ; i++){
 		cat_inst.awake_anim = 6
 		cat_inst.attack_anim = 9
 	}
+	}
 }
-
 //关卡波次
 current_wave = 0
 current_subwave = 0

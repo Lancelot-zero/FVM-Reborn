@@ -326,6 +326,13 @@ function VM_GameLose() {
     audio_play_sound(snd_lose, 0, 0);
 }
 
+/// @function VM_SpawnCats(enable)
+/// @param enable  是否生成初始一排猫，1=开启，0=关闭（默认关闭）
+function VM_SpawnCats(enable_addr) {
+    var enable = vm_read_mem(global.__vm, enable_addr);
+    global._VM_spawn_cats = (enable != 0);
+}
+
 /// @function VM_SetTerrain(col, row, type)
 /// @param col  列，-1=所有列
 /// @param row  行，-1=所有行
@@ -1281,6 +1288,7 @@ global._VM_last_destroyed_card = -1;
 global._VM_create_counter = 0;
 global._VM_id_to_real      = ds_map_create();  // VM_id → 真实 instance id
 global._VM_real_to_vm_id   = ds_map_create();  // 真实 instance id → VM_id (客户端反向)
+global._VM_spawn_cats = true;
 
 global.__vm = VM_Create();
 VM_RegisterFunction(global.__vm, VM_BanCard);         // 0
@@ -1316,6 +1324,7 @@ VM_RegisterFunction(global.__vm, VM_GetLoadedSpriteName, VM_TYPE_STRING);   // 2
 VM_RegisterFunction(global.__vm, VM_GameWin);   // 30
 VM_RegisterFunction(global.__vm, VM_GameLose);  // 31
 VM_RegisterFunction(global.__vm, VM_SetDrawSlot_front);  // 32
+VM_RegisterFunction(global.__vm, VM_SpawnCats, 1);      // 33
 global._sync_vm_bin_buf = undefined;
 
 /// @function VM_InitRoomEntry(buf)
@@ -1355,6 +1364,7 @@ function VM_InitRoomEntry(buf) {
     global._VM_last_destroyed_card = -1;
     global._VM_last_idle_platform = -1;
     global._VM_create_counter = 0;
+    global._VM_spawn_cats = true;
     ds_map_clear(global._VM_id_to_real);
     ds_map_clear(global._VM_real_to_vm_id);
 
