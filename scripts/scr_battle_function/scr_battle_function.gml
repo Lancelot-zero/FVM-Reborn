@@ -792,6 +792,22 @@ function parse_network_message(buf, _sock) {
 			global.level_data  = json_data[$ "level_data"];
 			global.level_file  = json_data[$ "level_file"];
 
+			// 从 target_level_id 提取 JSON 相对子目录，供 file_cache 本地查找
+			{
+			    var _lid = string_replace_all(global.level_id, "\\", "/");
+			    var _lab = string_pos("laboratory/", _lid);
+			    if (_lab > 0) {
+			        var _rel = string_copy(_lid, _lab, string_length(_lid) - _lab + 1);
+			        var _last = 0;
+			        for (var _j = string_length(_rel); _j > 0; _j--) {
+			            if (string_char_at(_rel, _j) == "/") { _last = _j; break; }
+			        }
+			        global._lab_json_subdir = (_last > 0) ? string_copy(_rel, 1, _last) : "";  // "laboratory/myset"
+			    } else {
+			        global._lab_json_subdir = "";
+			    }
+			}
+
 			// 读 .bin 数据：JSON 后剩余的全部内容
 			var _remain = buffer_get_size(buf) - buffer_tell(buf);
 			if (_remain > 0) {

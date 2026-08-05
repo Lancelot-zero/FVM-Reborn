@@ -5,9 +5,9 @@
 
 _VM_ROOM_READY_ENTRY {
     //cc="debug"
-    //VM_BanCard("small_fire")
+    VM_BanCard("small_fire")
     VM_BanCard("large_fire")
-    //VM_BanCard("goblet_lamp")
+    VM_BanCard("goblet_lamp")
     VM_SetCardLevelCap(11)
     VM_SetMaxSlots(12)
 }
@@ -15,7 +15,7 @@ _VM_ROOM_READY_ENTRY {
 _VM_BATTLE_START {
     VM_ClearPlants(-1, -1)
     VM_SetTerrain(-1, -1, "obstacle")
-    VM_SetFlame(3000)
+    VM_SetFlame(350)
 
     VM_LoadSprite("s_spr_marinade_garden_platform_1.png")
     VM_LoadSprite("s_spr_marinade_garden_platform_2.png")

@@ -26,6 +26,8 @@ global.current_seed = noone;
 global._VM_battle_start_done = false;
 global.map_draw_slots = [];
 repeat (8) { array_push(global.map_draw_slots, { sprite: noone, x: 0, y: 0, alpha: 1 }); }
+global.map_draw_slots_front = [];
+repeat (8) { array_push(global.map_draw_slots_front, { sprite: noone, x: 0, y: 0, alpha: 1 }); }
 global.map_sprite_current = global.level_data.level_sprite;
 global.map_sprite_target = global.level_data.level_sprite;
 global.map_fade_alpha = 0;
@@ -153,10 +155,10 @@ for(var i = 0 ; i < global.grid_rows ; i++){
 			
 		}
 	}
-	var new_x = global.grid_offset_x -1 * global.grid_cell_size_x
+	var new_x = global.grid_offset_x
 	var new_y = global.grid_offset_y + i * global.grid_cell_size_y
 	var grid_pos = get_grid_position_from_world(new_x,new_y)
-	var cat_inst = instance_create_depth(grid_pos.x - 10, grid_pos.y+10, 0,obj_cat);
+	var cat_inst = instance_create_depth(grid_pos.x - 10 - global.grid_cell_size_x, grid_pos.y+10, 0,obj_cat);
 	cat_inst.row = i
 	if global.row_feature[i] == "water"{
 		cat_inst.sprite_index = spr_crab

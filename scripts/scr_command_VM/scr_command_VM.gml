@@ -175,11 +175,13 @@ function _VM_LoadSpriteFile(name) {
         // 优先从 JSON 同目录找
         var _prefix = global._file_cache_json_path;
         if (!string_ends_with(_prefix, "/") && !string_ends_with(_prefix, "\\")) _prefix += "/";
-        array_push(_paths, _prefix + name);
+        array_push(_paths, _prefix + "../" + name);
     }
     array_push(_paths, "laboratory/" + name);
     array_push(_paths, name);
+    show_debug_message("[VM_LoadSprite] 查找贴图: " + name + "  json_path=" + (variable_global_exists("_file_cache_json_path") ? string(global._file_cache_json_path) : "(未设置)"));
     for (var _i = 0; _i < array_length(_paths); _i++) {
+        show_debug_message("[VM_LoadSprite]   尝试: " + _paths[_i] + "  exist=" + string(file_exists(_paths[_i])));
         if (file_exists(_paths[_i])) {
             var _spr = sprite_add(_paths[_i], 1, false, false, 0, 0);
             if (_spr != -1) {
@@ -243,6 +245,39 @@ function VM_SetDrawSlot(slot_addr, sprite_addr, x_addr, y_addr, alpha_addr) {
     global.map_draw_slots[slot].alpha = alpha;
 }
 
+/// @function VM_SetDrawSlot_front(slot, sprite, x, y, alpha)
+/// @param slot   槽位索引 0~7
+/// @param sprite  贴图名(string)或精灵ID(int)，空/""/-1/noone 时清除
+/// @param x      X 坐标
+/// @param y      Y 坐标
+/// @param alpha  透明度 0~1
+/// @desc 和 VM_SetDrawSlot 一致，但绘制在 obj_flame_manager（depth=-900）上，显示在火焰UI后面
+function VM_SetDrawSlot_front(slot_addr, sprite_addr, x_addr, y_addr, alpha_addr) {
+    var slot = vm_read_mem(global.__vm, slot_addr);
+    var sprite = vm_read_mem(global.__vm, sprite_addr);
+    var _x = vm_read_mem(global.__vm, x_addr);
+    var _y = vm_read_mem(global.__vm, y_addr);
+    var alpha = vm_read_mem(global.__vm, alpha_addr);
+    if (slot < 0 || slot >= 8) return;
+    if (sprite == "" || sprite == -1 || sprite == noone) {
+        global.map_draw_slots_front[slot].sprite = noone;
+        global.map_draw_slots_front[slot].x = 0;
+        global.map_draw_slots_front[slot].y = 0;
+        global.map_draw_slots_front[slot].alpha = 1;
+        return;
+    }
+    var _spr;
+    if (is_real(sprite)) {
+        _spr = sprite;
+    } else {
+        _spr = _VM_LoadSpriteFile(sprite);
+    }
+    global.map_draw_slots_front[slot].sprite = _spr;
+    global.map_draw_slots_front[slot].x = _x;
+    global.map_draw_slots_front[slot].y = _y;
+    global.map_draw_slots_front[slot].alpha = alpha;
+}
+
 /// @function VM_SetMapBackground(name, step)
 /// @param name  贴图名（内置精灵名或外部文件名）
 /// @param step  渐变步长，0~1 浮点数
@@ -258,6 +293,37 @@ function VM_SetMapBackground(name_addr, step_addr) {
     global.map_sprite_target = _spr;
     global.map_fade_alpha = 0;
     if (step > 0) global.map_fade_step = step;
+}
+
+/// @function VM_GameWin()
+/// @desc 触发胜利。客户端跳过，服务端弹出胜利界面并广播给客户端
+function VM_GameWin() {
+    if (global.network.mode == "client") return;
+    if (global.network.mode == "server") {
+        var _cl = global.network.connected_clients;
+        for (var i = 0; i < array_length(_cl); i++)
+            send_message(_cl[i], MSG_GAME_OVER, 1);
+    }
+    global.is_paused = true;
+    global.game_over = true;
+    var inst = instance_create_depth(room_width / 2, room_height / 2, -3001, obj_game_over);
+    inst.sprite_index = spr_win;
+    audio_play_sound(snd_win, 0, 0);
+}
+
+/// @function VM_GameLose()
+/// @desc 触发失败。客户端跳过，服务端弹出失败界面并广播给客户端
+function VM_GameLose() {
+    if (global.network.mode == "client") return;
+    if (global.network.mode == "server") {
+        var _cl = global.network.connected_clients;
+        for (var i = 0; i < array_length(_cl); i++)
+            send_message(_cl[i], MSG_GAME_OVER, 0);
+    }
+    global.is_paused = true;
+    global.game_over = true;
+    instance_create_depth(room_width / 2, room_height / 2, -3001, obj_game_over);
+    audio_play_sound(snd_lose, 0, 0);
 }
 
 /// @function VM_SetTerrain(col, row, type)
@@ -1247,6 +1313,9 @@ VM_RegisterFunction(global.__vm, VM_SetPlatformParams);     // 26
 VM_RegisterFunction(global.__vm, VM_SetMapBackground);      // 27
 VM_RegisterFunction(global.__vm, VM_SetDrawSlot);           // 28
 VM_RegisterFunction(global.__vm, VM_GetLoadedSpriteName, VM_TYPE_STRING);   // 29
+VM_RegisterFunction(global.__vm, VM_GameWin);   // 30
+VM_RegisterFunction(global.__vm, VM_GameLose);  // 31
+VM_RegisterFunction(global.__vm, VM_SetDrawSlot_front);  // 32
 global._sync_vm_bin_buf = undefined;
 
 /// @function VM_InitRoomEntry(buf)

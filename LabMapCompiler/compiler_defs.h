@@ -185,6 +185,9 @@ static std::vector<FuncDef> FUNC_DEFS = {
     {"VM_SetMapBackground", 2,  {PT_STRING, PT_FLOAT}},                             // 27
     {"VM_SetDrawSlot",    5,  {PT_INT, PT_STRING, PT_INT, PT_INT, PT_FLOAT}},      // 28
     {"VM_GetLoadedSpriteName", 1,  {PT_INT},  PT_STRING},                            // 29
+    {"VM_GameWin",               0},                                                // 30
+    {"VM_GameLose",              0},                                                // 31
+    {"VM_SetDrawSlot_front",     5,  {PT_INT, PT_STRING, PT_INT, PT_INT, PT_FLOAT}},  // 32
 };
 
 // ============================================================

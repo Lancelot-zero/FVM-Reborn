@@ -56,17 +56,29 @@ function file_cache_handle_request(_filename, _purpose, _client) {
     // 客户端发来的是相对路径，解析为房主本地完整路径来读文件，
     // 但发回时用原始相对路径，保证客户端 expected 校验和 relay 缓存能匹配
     var _rel = _filename;
+    var _paths = [];
     if (laboratory_path_is_relative(_filename)) {
-        _filename = laboratory_resolve_datafile_path(_filename, global._file_cache_json_path);
+        array_push(_paths, laboratory_resolve_datafile_path(_filename, global._file_cache_json_path));
+    } else {
+        array_push(_paths, _filename);
+        // 也尝试 JSON 同目录和 laboratory/（和 _VM_LoadSpriteFile 一致）
+        if (variable_global_exists("_file_cache_json_path")) {
+            var _prefix = global._file_cache_json_path;
+            if (!string_ends_with(_prefix, "/") && !string_ends_with(_prefix, "\\")) _prefix += "/";
+            array_push(_paths, _prefix + "../" + _filename);
+        }
+        array_push(_paths, "laboratory/" + _filename);
     }
-    if (file_exists(_filename)) {
-        var _buf = buffer_load(_filename);
-        if (buffer_exists(_buf)) {
-            var _size = buffer_get_size(_buf);
-            send_message(_client, MSG_TRANSFER_FILE, _rel, _purpose, _size, _buf);
-            buffer_delete(_buf);
-            show_debug_message("[服务端] 发送文件: " + _filename + " (" + string(_size) + " bytes)");
-            return;
+    for (var _i = 0; _i < array_length(_paths); _i++) {
+        if (file_exists(_paths[_i])) {
+            var _buf = buffer_load(_paths[_i]);
+            if (buffer_exists(_buf)) {
+                var _size = buffer_get_size(_buf);
+                send_message(_client, MSG_TRANSFER_FILE, _rel, _purpose, _size, _buf);
+                buffer_delete(_buf);
+                show_debug_message("[服务端] 发送文件: " + _paths[_i] + " (" + string(_size) + " bytes)");
+                return;
+            }
         }
     }
     show_debug_message("[服务端] 文件未找到: " + _filename);
@@ -176,7 +188,12 @@ function file_cache_load_sprite(_name, _default, _fingerprint, _purpose = "map_s
     // 2. 再查本地文件（cache/ 和 laboratory/）
     if (!is_undefined(_fingerprint)) {
         var _safe = file_cache_sanitize_name(_name);
-        var _dirs = ["cache", "laboratory"];
+        var _dirs = [];
+        if (variable_global_exists("_lab_json_subdir") && string_length(global._lab_json_subdir) > 0) {
+            array_push(_dirs, global._lab_json_subdir);
+        }
+        array_push(_dirs, "cache");
+        array_push(_dirs, "laboratory");
         for (var _i = 0; _i < 2; _i++) {
             var _path = _dirs[_i] + "/" + _safe;
             if (file_exists(_path)) {
@@ -217,7 +234,12 @@ function file_cache_load_audio(_name, _field, _default, _fingerprint) {
     // 2. 再查本地文件（cache/ 和 laboratory/）
     if (!is_undefined(_fingerprint) && string_length(_fingerprint) > 0) {
         var _safe = file_cache_sanitize_name(_name);
-        var _dirs = ["cache", "laboratory"];
+        var _dirs = [];
+        if (variable_global_exists("_lab_json_subdir") && string_length(global._lab_json_subdir) > 0) {
+            array_push(_dirs, global._lab_json_subdir);
+        }
+        array_push(_dirs, "cache");
+        array_push(_dirs, "laboratory");
         for (var _i = 0; _i < 2; _i++) {
             var _path = _dirs[_i] + "/" + _safe;
             if (file_exists(_path)) {

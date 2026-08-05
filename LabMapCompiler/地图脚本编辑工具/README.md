@@ -187,9 +187,12 @@ if (a_cnt == 0) {
 | `VM_LoadSprite("贴图名")` | 加载贴图到内存，**禁止 `spr_` 前缀**（用 `s_spr_` 代替）。服务端从本地加载，客户端走网络懒加载 |
 | `VM_SetMapBackground("贴图名", 步长)` | 渐变切换地图背景，步长控制过渡速度（如 0.02） |
 | `VM_SetDrawSlot(槽位, "贴图名", x, y, alpha)` | 设置帧绘制槽。槽位 0~7，alpha 0~1，贴图名为空时清除。配合 `_VM_FRAME` 使用 |
+| `VM_SetDrawSlot_front(槽位, "贴图名", x, y, alpha)` | 同 `VM_SetDrawSlot`，但绘制在火焰UI层（depth=-900），显示在火焰UI后面 |
 | `VM_ShellPrint(...)` | 控制台打印，可拼多个参数 |
 | `VM_ShowNotice(...)` | 屏幕通知，可拼多个参数 |
 | `VM_SetPlatformParams(实例,轴,距离,停顿,方向)` | 以当前位置为新起点，重设平台移动参数 |
+| `VM_GameWin()` | 触发胜利。客户端跳过；服务端弹出胜利界面并广播 |
+| `VM_GameLose()` | 触发失败。客户端跳过；服务端弹出失败界面并广播 |
 
 ---
 

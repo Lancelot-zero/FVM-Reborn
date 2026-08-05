@@ -78,6 +78,9 @@ function on_create_room() {
         VM_InitRoomEntry(undefined);
     }
 
+    var _json_dir = self.state.custom_stage.json_path
+    global._file_cache_json_path = _json_dir
+
     if (global.network.mode == "server") {
         var _json_struct = {
             target_level_id: global.level_id,
@@ -90,8 +93,6 @@ function on_create_room() {
         // 只发原始相对路径，不泄露房主本地完整路径
         var _raw_json = _parse_result.data
         var _resource_fingerprints = {}
-        var _json_dir = self.state.custom_stage.json_path
-        global._file_cache_json_path = _json_dir
 
         var _sprite_rel = ""
         var _sprite_path_raw = variable_struct_get(_raw_json, "map_sprite")
