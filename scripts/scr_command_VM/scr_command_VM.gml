@@ -60,6 +60,12 @@ function VM_BanCard(card_id_addr) {
     var card_id = vm_read_mem(global.__vm, card_id_addr);
     global.banned_cards_online[? card_id] = true;
 }
+function VM_BanGem(gem_name_addr) {
+    var gem_name = vm_read_mem(global.__vm, gem_name_addr);
+    if (array_get_index(global.banned_gems_online, gem_name) == -1) {
+        array_push(global.banned_gems_online, gem_name);
+    }
+}
 function VM_SetCardLevelCap(level_addr) {
     global._VM_card_level_cap = vm_read_mem(global.__vm, level_addr);
 }
@@ -379,6 +385,39 @@ function VM_ClearPlants(col_addr, row_addr) {
             }
         }
     }
+}
+
+/// @function VM_ClearMapObjects(col, row, obj_name)
+/// @param col      列，-1=所有列
+/// @param row      行，-1=所有行
+/// @param obj_name 对象名(字符串)，"all"=删除全部三种地图对象
+function VM_ClearMapObjects(col_addr, row_addr, obj_name_addr) {
+    var col = vm_read_mem(global.__vm, col_addr);
+    var row = vm_read_mem(global.__vm, row_addr);
+    var obj_name = vm_read_mem(global.__vm, obj_name_addr);
+    var _c1 = (col == -1) ? 0 : col;
+    var _c2 = (col == -1) ? global.grid_cols - 1 : col;
+    var _r1 = (row == -1) ? 0 : row;
+    var _r2 = (row == -1) ? global.grid_rows - 1 : row;
+    // 收集要删除的对象索引
+    var _targets;
+    if (obj_name == "all") {
+        _targets = [obj_obstacle, obj_wind_tunnel, obj_lava, obj_barrier];
+    } else {
+        if (!string_starts_with(obj_name, "obj_"))
+            obj_name = "obj_" + obj_name;
+        _targets = [asset_get_index(obj_name)];
+    }
+
+	for (var _t = 0; _t < array_length(_targets); _t++) {
+		var _obj = _targets[_t];
+		if (_obj < 0) continue;
+		with (_obj) {
+		    if (_r1<=row && row <= _r2 && _c1<=col && col <= _c2) {
+		        instance_destroy();
+		    }
+		}
+	}
 }
 
 /// @function VM_SetFlame(amount)
@@ -1187,6 +1226,7 @@ function VM_Execute_debug(vm, buf) {
 // 全局初始化和块管理
 // ============================================================
 global.banned_cards_online = ds_map_create();
+global.banned_gems_online = [];
 global._VM_card_level_cap = -1;
 global._VM_max_slots = -1;
 global._VM_strings = [];
@@ -1325,12 +1365,15 @@ VM_RegisterFunction(global.__vm, VM_GameWin);   // 30
 VM_RegisterFunction(global.__vm, VM_GameLose);  // 31
 VM_RegisterFunction(global.__vm, VM_SetDrawSlot_front);  // 32
 VM_RegisterFunction(global.__vm, VM_SpawnCats, 1);      // 33
+VM_RegisterFunction(global.__vm, VM_ClearMapObjects);    // 34
+VM_RegisterFunction(global.__vm, VM_BanGem);             // 35
 global._sync_vm_bin_buf = undefined;
 
 /// @function VM_InitRoomEntry(buf)
 function VM_InitRoomEntry(buf) {
 				
     ds_map_clear(global.banned_cards_online);
+    global.banned_gems_online = [];
     global._VM_card_level_cap = -1;
     global._VM_max_slots = -1;
     global._VM_ROOM_READY_ENTRY = undefined;

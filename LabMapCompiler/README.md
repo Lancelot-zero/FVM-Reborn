@@ -112,6 +112,7 @@ if (a_cnt == 0) {
 | 函数 | 说明 |
 |---|---|
 | `VM_BanCard("卡名")` | 禁用某张卡 |
+| `VM_BanGem("宝石名")` | 禁用某类宝石，角色放置时不生成对应宝石按钮 |
 | `VM_SetCardLevelCap(等级)` | 卡片最高等级 |
 | `VM_SetMaxSlots(数量)` | 最多带几张卡 |
 | `VM_SpawnCats(1或0)` | 是否生成初始一排猫，默认开启。需在 `_VM_BATTLE_START` 中调用 |
@@ -122,6 +123,7 @@ if (a_cnt == 0) {
 |---|---|
 | `VM_SetTerrain(列, 行, "类型")` | 设地形，-1=全部。类型：`"normal"` `"water"` `"obstacle"` |
 | `VM_ClearPlants(列, 行)` | 清除格子上的植物，-1=全部 |
+| `VM_ClearMapObjects(列, 行, "对象名")` | 清除格子上的地图对象，-1=全部。对象名：`"obstacle"` `"lava"` `"wind_tunnel"` `"barrier"`，传 `"all"` 全部删除 |
 
 ### 创建
 
@@ -135,7 +137,7 @@ if (a_cnt == 0) {
 | | 例: `VM_SpawnEnemy("normal_mouse", 2, 200)` |
 | `VM_SpawnBoss("BOSS类型",行,血量)` | 刷BOSS |
 | | 例: `VM_SpawnBoss("arno", 2, 80000)` |
-| `VM_SpawnObject("物件名",列,行)` | ⚠️ 测试中，暂勿使用。刷障碍物/熔岩/风洞等 |
+| `VM_SpawnObject("物件名",列,行)` | 刷地图对象：`obstacle` `lava` `wind_tunnel` `mouse_hole` 等 |
 
 ### 属性
 
@@ -308,10 +310,33 @@ magic_chicken  xinjiang_fried_noodles  king_long_bao  king_triple_long_bao
 chili_powder  tang_hu_lu  beef_hotpot  spicy_pot  pan_fried_bun
 ```
 
-### 物件名（VM_SpawnObject）— 9 个
+### 物件名（VM_SpawnObject / VM_ClearMapObjects）— 9 个
 
 ```
-obj_obstacle  obj_lava  obj_wind_tunnel  obj_mouse_hole
-obj_pharaoh_hole  obj_buzz_wind  obj_cloud  obj_ladder
+obstacle  lava  wind_tunnel  barrier  mouse_hole
+pharaoh_hole  buzz_wind  cloud  ladder
 ```
+
+### 宝石名（VM_BanGem）— 16 个
+
+| 宝石ID | 名称 | 槽位 | 按钮 |
+|---|---|---|---|
+| `laser_gem` | 激光宝石 | 主武器 | ✓ |
+| `bomb_gem` | 轰炸宝石 | 主武器 | ✓ |
+| `cateye_gem` | 猫眼宝石 | 主武器 | ✓ |
+| `freeze_gem` | 冰冻宝石 | 主武器 | ✓ |
+| `flame_recover_gem` | 回火宝石 | 主武器 | ✓ |
+| `starlight_gem` | 星光宝石 | 主武器 | ✓ |
+| `attack_gem` | 攻击宝石 | 主武器 | |
+| `gale_gem` | 疾风宝石 | 超级武器 | |
+| `power_gem` | 强力宝石 | 超级武器 | |
+| `transform_gem` | 转化宝石 | 超级武器 | |
+| `health_gem` | 生命宝石 | 副武器 | |
+| `produce_gem` | 生产宝石 | 副武器 | |
+| `slow_down_gem` | 迟缓宝石 | 副武器 | |
+| `bleed_gem` | 流血宝石 | 副武器 | |
+| `guard_gem` | 守护宝石 | 副武器 | |
+| `strength_gem` | 蓄力宝石 | 副武器 | |
+
+> VM_BanGem 只禁用带 ✓ 的宝石按钮。被动宝石（无按钮）禁用后虽不报错但无效果。
 

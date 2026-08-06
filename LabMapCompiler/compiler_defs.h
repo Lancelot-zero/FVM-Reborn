@@ -139,7 +139,7 @@ static const std::vector<const char*> VALID_CARD_IDS = {
     "chili_powder","tang_hu_lu","beef_hotpot","spicy_pot","pan_fried_bun",
 };
 
-// 物件名（VM_SpawnObject）
+// 物件名（VM_SpawnObject / VM_ClearMapObjects）
 static const std::vector<const char*> VALID_OBJECT_NAMES = {
     "obstacle","lava","wind_tunnel","mouse_hole",
     "pharaoh_hole","buzz_wind","cloud","ladder","barrier",
@@ -189,6 +189,8 @@ static std::vector<FuncDef> FUNC_DEFS = {
     {"VM_GameLose",              0},                                                // 31
     {"VM_SetDrawSlot_front",     5,  {PT_INT, PT_STRING, PT_INT, PT_INT, PT_FLOAT}},  // 32
     {"VM_SpawnCats",             1},                                                // 33
+    {"VM_ClearMapObjects",      3,  {PT_INT, PT_INT, PT_STRING}},                  // 34
+    {"VM_BanGem",               1,  {PT_STRING}},                                   // 35
 };
 
 // ============================================================

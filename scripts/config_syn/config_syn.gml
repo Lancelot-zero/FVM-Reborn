@@ -146,6 +146,7 @@ global.boss_spawn_sync_list = [
 	// 场景物件
 	obj_huge_wave_text,
 	obj_barrier,
+	obj_obstacle,
 	obj_lava_burn_effect,
 	obj_ladder,
 	obj_lava,

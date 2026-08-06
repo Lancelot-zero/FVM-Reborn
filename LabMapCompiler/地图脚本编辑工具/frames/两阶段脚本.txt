@@ -1,0 +1,96 @@
+// ================================================================
+// 两阶段脚本
+// 阶段1：8张frame循环切换背景
+// 阶段2（第3波触发）：切换final_background + front层渲染message 60帧
+// 障碍物持续刷新clear_timer防止自毁
+// ================================================================
+
+_VM_BATTLE_START {
+    VM_ClearPlants(-1, -1)
+    VM_SetTerrain(-1, -1, "normal")
+    VM_SetFlame(1000)
+
+    // ---- 加载8张frame贴图 ----
+    VM_LoadSprite("frame_01.png")
+    VM_LoadSprite("frame_02.png")
+    VM_LoadSprite("frame_03.png")
+    VM_LoadSprite("frame_04.png")
+    VM_LoadSprite("frame_05.png")
+    VM_LoadSprite("frame_06.png")
+    VM_LoadSprite("frame_07.png")
+    VM_LoadSprite("frame_08.png")
+
+    // ---- 加载阶段2贴图 ----
+    VM_LoadSprite("final_backage.png")
+    VM_LoadSprite("message.png")
+
+
+    // ---- 阶段控制变量 ----
+    phase = 0            // 0=阶段1(frame切换), 1=阶段2(最终背景)
+    frame_idx = 0        // 当前frame序号 0~7
+    frame_timer = 0      // frame切换计时器
+    msg_timer = 0        // message显示帧计数
+
+    // 初始背景设为第一帧
+    VM_SetMapBackground("frame_01.png", 0.5)
+}
+
+// ========== 波次开始：第3波触发阶段2 ==========
+_VM_WAVE_START {
+    wave = VM_GetWave()
+    if (wave == 3) {
+        phase = 1
+        VM_SetMapBackground("final_backage.png", 0.5)
+        msg_timer = 0
+        
+        // ---- 放置障碍物 ----
+        obs1 = VM_SpawnObject("barrier", 3, 2)
+        VM_SetProp(obs1, "maxhp", 999999999)
+        VM_SetProp(obs1, "hp", 999999999)
+
+        obs2 = VM_SpawnObject("barrier", 5, 3)
+        VM_SetProp(obs2, "maxhp", 999999999)
+        VM_SetProp(obs2, "hp", 999999999)
+
+        obs3 = VM_SpawnObject("barrier", 7, 4)
+        VM_SetProp(obs3, "maxhp", 999999999)
+        VM_SetProp(obs3, "hp", 999999999)
+    }
+}
+
+// ========== 每帧：背景切换 / 消息渲染 / 障碍物保活 ==========
+_VM_FRAME {
+    // ---- 阶段1：8张frame循环切换（每10帧换一张） ----
+    if (phase == 0) {
+        frame_timer = frame_timer + 1
+        if (frame_timer >= 10) {
+            frame_timer = 0
+            frame_idx = (frame_idx + 1) % 8
+
+            if (frame_idx == 0) { VM_SetMapBackground("frame_01.png", 0.5) }
+            if (frame_idx == 1) { VM_SetMapBackground("frame_02.png", 0.5) }
+            if (frame_idx == 2) { VM_SetMapBackground("frame_03.png", 0.5) }
+            if (frame_idx == 3) { VM_SetMapBackground("frame_04.png", 0.5) }
+            if (frame_idx == 4) { VM_SetMapBackground("frame_05.png", 0.5) }
+            if (frame_idx == 5) { VM_SetMapBackground("frame_06.png", 0.5) }
+            if (frame_idx == 6) { VM_SetMapBackground("frame_07.png", 0.5) }
+            if (frame_idx == 7) { VM_SetMapBackground("frame_08.png", 0.5) }
+        }
+    }
+
+    // ---- 阶段2：front层渲染message，持续60帧后清除 ----
+    if (phase == 1) {
+        if (msg_timer < 60) {
+            VM_SetDrawSlot_front(0, "message.png", 0, 0, 1)
+            msg_timer = msg_timer + 1
+        }
+        else
+        {
+            VM_SetDrawSlot_front(0, "", 0, 0, 0)
+        }
+        // ---- 刷新障碍物clear_timer，防止自毁 ----
+        VM_SetProp(obs1, "clear_timer", 0)
+        VM_SetProp(obs2, "clear_timer", 0)
+        VM_SetProp(obs3, "clear_timer", 0)
+    }
+}

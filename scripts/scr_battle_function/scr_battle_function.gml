@@ -1202,6 +1202,7 @@ function send_message(socket, msg_id) {
 
         default:
             show_debug_message("[警告] 未知消息ID: " + string(msg_id));
+            buffer_delete(buf);
             return;
     }
     
@@ -1223,5 +1224,7 @@ function send_message(socket, msg_id) {
 	var total_size = buffer_get_size(packet);
 	
     network_send_raw(socket, packet, 4+body_size);
-	
+
+    buffer_delete(buf);
+    buffer_delete(packet);
 }

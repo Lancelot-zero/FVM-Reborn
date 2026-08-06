@@ -28,6 +28,7 @@ if not is_placed{
 				var gem_list = global.save_data.equipped_items.main_weapon.gems
 				for(var i = 0 ; i < array_length(gem_list);i++){
 					var gem_id = gem_list[i]
+					if array_get_index(global.banned_gems_online, gem_id) != -1 { continue; }
 					var gem_info = get_gem_info(gem_id)
 					if gem_info.obj != noone{
 						instance_create_depth(390,213+gem_index*80,-500,gem_info.obj)
@@ -57,6 +58,7 @@ if not is_placed{
 			var gem_list = global.save_data.equipped_items.main_weapon.gems
 			for(var i = 0 ; i < array_length(gem_list);i++){
 				var gem_id = gem_list[i]
+				if array_get_index(global.banned_gems_online, gem_id) != -1 { continue; }
 				var gem_info = get_gem_info(gem_id)
 				if gem_info.obj != noone{
 					instance_create_depth(390,213+gem_index*80,-500,gem_info.obj)
