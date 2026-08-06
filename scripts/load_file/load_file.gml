@@ -46,6 +46,10 @@ function load_file(file_slot) {
 				global.save_data.attires = []
 				global.save_data.version = 1.6
 			}
+			if global.save_data.version == 1.6{
+				global.save_data.player.crown_version = "0.0.0"
+				global.save_data.version = 1.7
+			}
 		}
         return true;
     } catch(e) {
@@ -63,7 +67,8 @@ function reset_file(file_slot){
                 "level": 1,
                 "experience": 0,
 				"name":"Player",
-				"total_time":0
+				"total_time":0,
+				"crown_version":"0.0.0"
             },
             "unlocked_cards": [
                 {"id": "small_fire", "level": 0, "shape": 0,"skill":0,"max_level":0,"max_shape":0},

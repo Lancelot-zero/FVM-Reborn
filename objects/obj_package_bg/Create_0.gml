@@ -28,6 +28,10 @@ var btn4 = instance_create_depth(x-1020,y-454,depth-1,obj_packageselect_btn)
 btn4.type = "Player Info"
 btn4.button_index = 2
 btn4.sprite_index = spr_packageselect_btn_4
+var btn6 = instance_create_depth(x-870,y-454,depth-1,obj_packageselect_btn)
+btn6.type = "Player Info"
+btn6.button_index = 3
+btn6.sprite_index = spr_packageselect_btn_6
 
 hover_card_index = -1; // 当前悬停的卡片索引
 hover_weapon_index = -1

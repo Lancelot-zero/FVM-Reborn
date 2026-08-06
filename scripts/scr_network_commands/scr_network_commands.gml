@@ -326,7 +326,7 @@ function sh_connectpubserver(args) {
     var _result = network_connect_raw(_sock, _ip, _port);
     if (_result >= 0) {
 		
-		send_message(_sock, MSG_CHAT,"/connectroom " + global.game_version + " " + string(_id) + " " + global.save_data.player.name);
+		send_message(_sock, MSG_CHAT,"/connectroom " + global.network_game_version + " " + string(_id) + " " + global.save_data.player.name);
         global.network.mode = "client";
         global.network.server_socket = _sock;
 		global.network.client_able = false;
