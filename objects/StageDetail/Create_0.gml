@@ -68,18 +68,18 @@ function on_create_room() {
     global.level_id = self.state.custom_stage.id
     global.level_file = _parse_result.data
 
+    var _json_dir = self.state.custom_stage.json_path
+    global._file_cache_json_path = _json_dir
+
     // VM 初始化：读取同名 .bin 文件（如果存在）
     var _bin_buf = undefined;
-    var _bin_path = string_replace(self.state.custom_stage.json_path, ".json", ".bin");
+    var _bin_path = string_replace(_json_dir, ".json", ".bin");
     if (file_exists(_bin_path)) {
         _bin_buf = buffer_load(_bin_path);
         VM_InitRoomEntry(_bin_buf);
     } else {
         VM_InitRoomEntry(undefined);
     }
-
-    var _json_dir = self.state.custom_stage.json_path
-    global._file_cache_json_path = _json_dir
 
     if (global.network.mode == "server") {
         var _json_struct = {

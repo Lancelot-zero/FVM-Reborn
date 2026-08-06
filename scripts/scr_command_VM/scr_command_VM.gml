@@ -409,13 +409,11 @@ function VM_ClearMapObjects(col_addr, row_addr, obj_name_addr) {
         _targets = [asset_get_index(obj_name)];
     }
 
-	var _row = row;
-	var _col = col;
 	for (var _t = 0; _t < array_length(_targets); _t++) {
 		var _obj = _targets[_t];
 		if (_obj < 0) continue;
 		with (_obj) {
-		    if (_r1 <= _row && _row <= _r2 && _c1 <= _col && _col <= _c2) {
+		    if (_r1 <= row && row <= _r2 && _c1 <= col && col <= _c2) {
 		        instance_destroy();
 		    }
 		}

@@ -24,7 +24,6 @@ instance_create_depth(room_width-200,room_height-25,0,obj_level_progress_bar)
 global.selected_slot = noone;
 global.current_seed = noone;
 global._VM_battle_start_done = false;
-global._VM_spawn_cats = true;
 global.map_draw_slots = [];
 repeat (8) { array_push(global.map_draw_slots, { sprite: noone, x: 0, y: 0, alpha: 1 }); }
 global.map_draw_slots_front = [];

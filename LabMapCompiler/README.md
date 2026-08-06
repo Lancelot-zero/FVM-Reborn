@@ -133,7 +133,7 @@ if (a_cnt == 0) {
 |---|---|
 | `VM_SetTerrain(列, 行, "类型")` | 设地形，-1=全部。类型：`"normal"` `"water"` `"obstacle"` |
 | `VM_ClearPlants(列, 行)` | 清除格子上的植物，-1=全部 |
-| `VM_ClearMapObjects(列, 行, "对象名")` | 清除格子上的地图对象，-1=全部。对象名：`"obstacle"` `"lava"` `"wind_tunnel"` `"barrier"`，传 `"all"` 全部删除 |
+| `VM_ClearMapObjects(列, 行, "对象名")` | ⚠️ **暂不可用**：部分对象缺少 row/col 变量导致清除失败 |
 
 ### 创建
 

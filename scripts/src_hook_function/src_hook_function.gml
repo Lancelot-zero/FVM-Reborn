@@ -156,11 +156,12 @@ function __sprite_resolve(_spr){
 			&& !(ds_map_exists(global._pending_map, _name) && global._pending_map[? _name])){
 			sprite_manager_load_async([_name]);
 		}
-		if (!is_undefined(_real)) {
+		if (!is_undefined(_real) && sprite_exists(_real)) {
 			return _real;
 		}
 	}
-	return _spr;
+	if (sprite_exists(_spr)) return _spr;
+	return spr_cloud_daytime;
 }
 
 function draw_self_define(){
