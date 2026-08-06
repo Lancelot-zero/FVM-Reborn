@@ -106,6 +106,20 @@ switch state{
 			image_index = floor(timer /5) mod 30 + 30
 		}
 		
+		if timer == 12 * 5 - 1{
+			awake_card_id_list = []
+			with obj_card_parent{
+				if state != CARD_STATE.SLEEP && abs(grid_row-other.grid_row) <= 1{
+					state = CARD_STATE.SLEEP
+					array_push(other.awake_card_id_list,id)
+				}
+			}
+			awake_timer = 600
+			for(var i = 0 ; i < 3 ; i++){
+				instance_create_depth(x+150,y-75+(global.grid_cell_size_y*(i-1)),-800,obj_mermaid_mary_music)
+			}
+		}
+		
 		if timer >= 30*5-1{
 			jump_times = 0
 			timer = 0
@@ -121,6 +135,14 @@ switch state{
 		}
 		else{
 			image_index = floor(timer /5) mod 30 + 30
+		}
+		
+		if timer == 16 * 5 + 2{
+			var erase_col = irandom_range(1,7)
+			var erase_row = irandom_range(1,global.grid_rows-2)
+			var missile = instance_create_depth(x-35,y-280,-800,obj_iron_man_bullet)
+			missile.target_col = erase_col
+			missile.target_row = erase_row
 		}
 		
 		if timer >= 30*5-1{
@@ -183,6 +205,17 @@ switch state{
 
 timer ++
 
+if awake_timer > -1{
+	awake_timer --
+}
+if awake_timer == 0{
+	with obj_card_parent{
+		if array_get_index(other.awake_card_id_list,id) != -1{
+			state = CARD_STATE.IDLE
+		}
+	}
+	awake_card_id_list = []
+}
 
 // 透明度处理
 if (image_alpha <= 0 && state == BOSS_STATE.DEATH) {

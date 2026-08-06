@@ -22,6 +22,7 @@ appear = false
 avaliable_pos = ds_list_create()
 
 awake_card_id_list = []
+awake_timer = -1
 
 hpbar_inst = instance_create_depth(450,1040,-900,obj_boss_hpbar)
 hpbar_inst.target_boss = id
