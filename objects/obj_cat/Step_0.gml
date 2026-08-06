@@ -43,7 +43,7 @@ if state == "awake"{
 }
 if state == "attack"{
 	x += move_speed
-	if x > 2200{
+	if x > 2200 || x < -200{
 		instance_destroy()
 	}
 }

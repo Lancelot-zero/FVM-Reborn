@@ -81,10 +81,27 @@ else if info_button_select == 2{
 	draw_set_halign(fa_left);
 	draw_set_valign(fa_middle);
 	draw_set_color(c_white);
-	draw_text(x - 1220, y - 380, "等级"+string(global.save_data.player.level));
+	draw_text(x - 1220, y - 380, "等级："+string(global.save_data.player.level));
 	draw_text(x - 1220, y - 320, "最大技能等级："+string(global.save_data.unlocked_items.max_skill_level));
 	draw_text(x - 1220, y - 260, "卡槽数："+string(global.save_data.unlocked_items.max_slot));
 	draw_text(x - 1220, y - 200, "铲子："+string(global.save_data.unlocked_items.shovel));
+	draw_set_color(c_white);
+	draw_set_halign(fa_left);
+	draw_set_valign(fa_bottom);
+	draw_set_font(font_yuan)
+}
+else if info_button_select == 3{
+	//绘制解锁信息
+	draw_set_halign(fa_left);
+	draw_set_valign(fa_middle);
+	draw_set_color(c_white);
+	if global.save_data.player.crown_version != "0.0.0"{
+		draw_sprite_ext(spr_player_crown_icon,0,x-1180,y-350,1.8,1.8,0,c_white,1)
+		draw_text(x - 1120, y - 350,$"你在v{global.save_data.player.crown_version}通关了全部魔塔关卡。");
+	}
+	else{
+		draw_text(x - 1220, y - 380, "你还没有完成全部魔塔关卡。");
+	}
 	draw_set_color(c_white);
 	draw_set_halign(fa_left);
 	draw_set_valign(fa_bottom);

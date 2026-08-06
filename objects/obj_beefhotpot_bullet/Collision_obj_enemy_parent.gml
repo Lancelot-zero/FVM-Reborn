@@ -1,5 +1,7 @@
+if global.is_paused{
+	exit
+}
 if attack_timer mod 12 == 1{
-
 	if other.hp > 0 and row == other.grid_row and can_hit(target_type,other.target_type) and
 	((shape <= 1 && other.x - x <= 4.5*global.grid_cell_size_x) or (shape >= 1 && other.x - x <= 5.5*global.grid_cell_size_x)){
 		with(other){

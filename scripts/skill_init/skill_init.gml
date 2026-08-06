@@ -69,4 +69,6 @@ function skill_init(){
 	register_card_skill("beef_hotpot","cycle",[5*60,4.9*60,4.8*60,4.6*60,4.4*60,4.2*60,4*60,3.8*60,3.6*60])
 	register_card_skill("spicy_pot","cycle",[5*60,4.8*60,4.6*60,4.4*60,4.2*60,4*60,3.8*60,3.6*60,3.4*60])
 	register_card_skill("pan_fried_bun","cycle",[4*60,3.8*60,3.6*60,3.4*60,3.2*60,3*60,2.8*60,2.6*60,2.4*60])
+	register_card_skill("coal_starfish","cycle",[1.3*60,1.25*60,1.2*60,1.15*60,1.1*60,1.05*60,1*60,0.9*60,0.8*60])
+	register_card_skill("curry_lobster_cannon","cycle",[6*60,5.8*60,5.6*60,5.4*60,5.2*60,5*60,4.8*60,4.6*60,4.35*60])
 }
