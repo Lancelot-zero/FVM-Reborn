@@ -48,6 +48,9 @@ if (keyboard_check_pressed(vk_space)) {
 								if global.level_data.id == "snowcap_volcano"{
 									global.save_data.unlocked_items.shovel = "gold"
 								}
+								if global.level_data.id == "tower_cake_35_3"{
+									global.save_data.player.crown_version = global.game_version
+								}
 								if global.level_file.rewards[1].player_level >= global.save_data.player.level{
 									global.save_data.player.level = global.level_file.rewards[1].player_level
 								}

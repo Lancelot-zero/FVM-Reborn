@@ -949,7 +949,7 @@ function maps_init(){
 					"boss_music":mus_floating_island_night_boss,
 					"pre_level":"tower_cake_32_1",
 					"rewards":[
-						{"card_id":"dragon_fruit","target_shape":2}
+						{"card_id":"beef_hotpot","target_shape":2}
 					]
 				},
 				{
@@ -963,7 +963,7 @@ function maps_init(){
 					"boss_music":mus_floating_island_daytime_boss,
 					"pre_level":"tower_cake_32_2",
 					"rewards":[
-						{"card_id":"beef_hotpot","target_shape":2}
+						{"card_id":"dragon_fruit","target_shape":2}
 					]
 				},
 				{
@@ -977,7 +977,8 @@ function maps_init(){
 					"boss_music":mus_floating_island_daytime_boss,
 					"pre_level":"tower_cake_33_1",
 					"rewards":[
-						{"card_id":"durian","target_shape":2}
+						{"card_id":"spicy_pot","target_shape":2},
+						{"card_id":"pan_fried_bun","target_shape":2}
 					]
 				},
 				{
@@ -991,8 +992,7 @@ function maps_init(){
 					"boss_music":mus_floating_island_night_boss,
 					"pre_level":"tower_cake_33_2",
 					"rewards":[
-						{"card_id":"spicy_pot","target_shape":2},
-						{"card_id":"pan_fried_bun","target_shape":2}
+						{"card_id":"durian","target_shape":2}
 					]
 				},
 				{
@@ -1006,7 +1006,7 @@ function maps_init(){
 					"boss_music":mus_floating_island_night_boss,
 					"pre_level":"tower_cake_34_1",
 					"rewards":[
-						{"card_id":"chocolate_cannon","target_shape":2}
+						{"card_id":"whisky_bomb","target_shape":2}
 					]
 				},
 				{
@@ -1020,7 +1020,7 @@ function maps_init(){
 					"boss_music":mus_floating_island_daytime_boss,
 					"pre_level":"tower_cake_34_2",
 					"rewards":[
-						{"card_id":"whisky_bomb","target_shape":2}
+						{"card_id":"chocolate_cannon","target_shape":2}
 					]
 				},
 				{
@@ -1596,8 +1596,8 @@ function maps_init(){
 					"name":"金枪鱼洋流",
 					"button_spr":spr_levelselect_button_undersea,
 					"button_index":0,
-					"button_x":450,
-					"button_y":350,
+					"button_x":400,
+					"button_y":310,
 					"level_file":"undersea/tuna_current.json",
 					"hard_level_file":"undersea/tuna_current_hard.json",
 					"level_sprite":spr_tuna_current,

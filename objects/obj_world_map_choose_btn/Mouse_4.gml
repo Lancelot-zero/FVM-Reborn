@@ -19,5 +19,10 @@ if unlocked{
 	}
 }
 else{
-	show_notice("达到"+string(level_require)+"级以解锁此地图",60)
+	if level_require > 80{
+		show_notice("暂未开放，敬请期待！",60)
+	}
+	else{
+		show_notice("达到"+string(level_require)+"级以解锁此地图",60)
+	}
 }

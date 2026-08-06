@@ -26,6 +26,7 @@ avaliable_pos = ds_list_create()
 missle_coord = []
 
 skill_change_style = 0
+skill_turn = 0
 t_amount = 0
 
 x_move_speed = 0
