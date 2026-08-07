@@ -29,7 +29,6 @@ with obj_enemy_parent{
 	}
 }
 var c_min_time = wave_min_time
-var c_max_time = wave_max_time
 if is_real(global.level_file.version){
 	if global.level_file.version >= 1.3{
 		if current_wave < total_wave{
@@ -38,17 +37,16 @@ if is_real(global.level_file.version){
 				if global.level_file.waves[current_wave].subwaves[current_subwave].local_min_wave_time >0{
 					c_min_time = global.level_file.waves[current_wave].subwaves[current_subwave].local_min_wave_time
 				}
-				if global.level_file.waves[current_wave].subwaves[current_subwave].local_max_wave_time >0{
-					c_max_time = global.level_file.waves[current_wave].subwaves[current_subwave].local_max_wave_time
-				}
 			}
 		}
 		
 	}
 }
 if current_wave_hp <= hp_ratio * current_total_hp && level_stage != "boss"{
-	if wave_timer < (c_max_time - c_min_time) && wave_timer > 30{
-		wave_timer = 30
+	if current_wave_max_time > c_min_time{
+		if wave_timer < (current_wave_max_time - c_min_time) && wave_timer > 30{
+			wave_timer = 30
+		}
 	}
 }
 if not global.is_paused{

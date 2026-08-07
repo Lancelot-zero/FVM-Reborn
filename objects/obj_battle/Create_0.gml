@@ -181,6 +181,7 @@ if is_real(global.level_file.version){
 	}
 }
 
+current_wave_max_time = wave_max_time
 global.prev_place_id = ""
 
 function enemy_subwave_summon(){
@@ -201,6 +202,8 @@ function enemy_subwave_summon(){
 			}
 		}
 	}
+	
+	current_wave_max_time = wave_timer
     
     var subwave_enemy = global.level_file.waves[current_wave].subwaves
     enemy_list = subwave_enemy[current_subwave].enemy_list
