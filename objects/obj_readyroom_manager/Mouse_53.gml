@@ -10,12 +10,7 @@ if hover_card_index != -1 && !is_submenu_open{
 			show_notice("该关卡暂不支持此卡片使用", 60)
 			return;
 		}
-		// 联机模式禁止选择 king 小笼包（吸收机制与联机架构冲突）
-		if global.network.mode != "offline" && (card_id == "king_long_bao" || card_id == "king_triple_long_bao"){
-			show_notice("联机模式暂不支持此卡片", 60)
-		}else{
-			add_to_deck(card_id,get_card_info_simple(card_id).shape)
-		}
+		add_to_deck(card_id,get_card_info_simple(card_id).shape)
 	}
 }
 if hover_slot_index != -1 && !is_submenu_open{

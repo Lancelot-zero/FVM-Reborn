@@ -122,12 +122,74 @@ function parse_network_message(buf, _sock) {
 				_props[$ "sprite_index"] =get_load_sprite( _sprite_name);
 			}
 			
-			var obj_index = asset_get_index(object_name);
-			if (obj_index==-1)obj_index = obj_xiao_long_bao;
-            var _plant = spawn_plant(col, row, obj_index, _props);
-			network_apply_plant_level(_plant);
-            add_net_id(_plant.id);
+				var obj_index = asset_get_index(object_name);
+				if (obj_index==-1)obj_index = obj_xiao_long_bao;
 
+				// ====== 国王吸收预检 ======
+				var _card_id = string_delete(object_name, 1, 4);  // "obj_xiao_long_bao" → "xiao_long_bao"
+				var _plant_list = ds_grid_get(global.grid_plants, col, row);
+				var _absorbed = false;
+
+				for (var _i = 0; _i < ds_list_size(_plant_list); _i++) {
+					var _king = ds_list_find_value(_plant_list, _i);
+					if (!instance_exists(_king)) continue;
+					if (_king.feature_type != "king_bun" && _king.feature_type != "king_tbun") continue;
+
+					// 国王已满
+					if (_king.bun_count >= _king.max_bun) continue;
+
+					// 匹配国王的 bun_card_info
+					var _info = _king.bun_card_info;
+					var _match_j = -1;
+					for (var _j = 0; _j < array_length(_info); _j++) {
+						if (_card_id == _info[_j].card_id) { _match_j = _j; break; }
+					}
+					if (_match_j == -1) continue;
+
+					// 查表获取 atk（不创建临时实例）
+					var _upgrade_data = get_plant_data_with_skill(_card_id, shape, level, skill);
+					var _atk = (_upgrade_data != undefined) ? _upgrade_data[? "atk"] : 10;
+
+					// 执行吸收
+					var _added = 0;
+					for (var _k = 0; _k < _info[_match_j].bun_amount; _k++) {
+						if (_king.bun_count < _king.max_bun) {
+							_king.bun_count++;
+							array_push(_king.bullet_list,
+								{"bullet_type": _info[_match_j].bullet_type, "damage": _atk});
+							_added++;
+						}
+					}
+					// 黑心三向国王额外多吸收1发
+					if (_king.feature_type == "king_tbun" && _king.shape >= 2) {
+						if (_king.bun_count < _king.max_bun) {
+							_king.bun_count++;
+							_added++;
+							array_push(_king.bullet_list,
+								{"bullet_type": _info[_match_j].bullet_type, "damage": _atk});
+						}
+					}
+									_king.state = CARD_STATE.GROW;
+				_king.upgrade_timer = 0;
+					_absorbed = true;
+
+					// 广播 MSG_BUN_ABSORB 给所有客户端
+					if (ds_map_exists(global.network.map_instance_id_net_id, _king.id)) {
+						var _nid = global.network.map_instance_id_net_id[? _king.id];
+						var _bullet_name = object_get_name(_info[_match_j].bullet_type);
+						var _cl = global.network.connected_clients;
+						for (var _c = 0; _c < array_length(_cl); _c++) {
+							send_message(_cl[_c], MSG_BUN_ABSORB, _nid, _added, _bullet_name, _atk);
+						}
+					}
+					break;
+				}
+
+				if (!_absorbed) {
+					var _plant = spawn_plant(col, row, obj_index, _props);
+					network_apply_plant_level(_plant);
+					add_net_id(_plant.id);
+				}
             show_debug_message("[解析] MSG_UNIT_REQUEST: type=" + object_name + " Lv=" + string(level) + " shape=" + string(shape) + " skill=" + string(skill) + " sprite=" + _sprite_name + " meta="+meta);
             break;
         }
@@ -491,7 +553,8 @@ function parse_network_message(buf, _sock) {
                         array_push(_king.bullet_list, {"bullet_type": _bullet_type, "damage": _damage});
                     }
                 }
-                _king.state = CARD_STATE.GROW;
+                				_king.state = CARD_STATE.GROW;
+				_king.upgrade_timer = 0;
             }
             break;
         }

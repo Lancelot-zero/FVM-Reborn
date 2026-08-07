@@ -78,11 +78,19 @@ if (row >= global.grid_rows + 64) row -= global.grid_rows + 64;
 			if (variable_instance_exists(_plant, "target_card_info") && variable_struct_exists(_plant.target_card_info, "plant_type")) {
 				_replace_type = _plant.target_card_info[$ "plant_type"];
 			}
-			if (_old.plant_type == _replace_type) {
-				card_destroyed(_old);
-				instance_destroy(_old);
+			// king_bun/bun/tbun 互不替换（吸收机制由 Step 事件处理）
+				var _new_ft = "normal";
+				if (variable_instance_exists(_plant, "feature_type")) { _new_ft = _plant.feature_type; }
+				var _old_ft = "normal";
+				if (variable_instance_exists(_old, "feature_type")) { _old_ft = _old.feature_type; }
+				var _ft_skip = ((_new_ft == "bun" || _new_ft == "king_bun") && (_old_ft == "bun" || _old_ft == "king_bun"))
+				            || ((_new_ft == "tbun" || _new_ft == "king_tbun") && (_old_ft == "tbun" || _old_ft == "king_tbun"));
+
+				if (_old.plant_type == _replace_type && !_ft_skip) {
+					card_destroyed(_old);
+					instance_destroy(_old);
+				}
 			}
-		}
 		// 格子上有 player 时，normal 类型不允许种植
 		if (_has_player && _replace_type == "normal") {
 			instance_destroy(_plant);

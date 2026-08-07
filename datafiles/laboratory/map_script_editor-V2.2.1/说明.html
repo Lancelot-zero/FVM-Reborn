@@ -166,6 +166,30 @@ if (wave == 3) {
 </tr>
 </tbody>
 </table>
+<h3 id="函数放置要求">函数放置要求 </h3>
+<p>部分函数<strong>必须放在特定块</strong>才能生效，放错块会导致设置不生效或在错误的时机执行。</p>
+<table>
+<thead>
+<tr>
+<th>必须所在块</th>
+<th>函数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>_VM_ROOM_READY_ENTRY</code></td>
+<td><code>VM_BanCard</code> <code>VM_BanGem</code> <code>VM_SetCardLevelCap</code> <code>VM_SetMaxSlots</code> <code>VM_SpawnCats</code> <code>VM_SetTerrain</code> <code>VM_CreatePlatform</code> <code>VM_SetPlatformParams</code> <code>VM_SetMapBackground</code></td>
+</tr>
+<tr>
+<td><code>_VM_BATTLE_START</code> 或 <code>_VM_WAVE_START</code></td>
+<td><code>VM_SpawnObject</code> <code>VM_SpawnPlant</code> <code>VM_SpawnEnemy</code> <code>VM_SpawnBoss</code></td>
+</tr>
+<tr>
+<td>任意块</td>
+<td><code>VM_ClearPlants</code> <code>VM_ClearMapObjects</code> <code>VM_SetDrawSlot</code> <code>VM_SetDrawSlot_front</code> <code>VM_SetFlame</code> <code>VM_GetFlame</code> <code>VM_GameWin</code> <code>VM_GameLose</code> <code>VM_ShellPrint</code> <code>VM_ShowNotice</code> <code>VM_Random</code> <code>VM_GetWave</code> <code>VM_GetSubwave</code> <code>VM_GetProp</code> <code>VM_SetProp</code> <code>VM_GetLastBoss</code> <code>VM_GetLastCreatedEnemy</code> <code>VM_GetLastKilledEnemy</code> <code>VM_GetLastCreatedCard</code> <code>VM_GetLastDestroyedCard</code> <code>VM_GetLastIdlePlatform</code></td>
+</tr>
+</tbody>
+</table>
 <hr>
 <h2 id="全部函数">全部函数 </h2>
 <h3 id="规则设置">规则设置 </h3>
@@ -182,12 +206,20 @@ if (wave == 3) {
 <td>禁用某张卡</td>
 </tr>
 <tr>
+<td><code>VM_BanGem("宝石名")</code></td>
+<td>禁用某类宝石，角色放置时不生成对应宝石按钮</td>
+</tr>
+<tr>
 <td><code>VM_SetCardLevelCap(等级)</code></td>
 <td>卡片最高等级</td>
 </tr>
 <tr>
 <td><code>VM_SetMaxSlots(数量)</code></td>
 <td>最多带几张卡</td>
+</tr>
+<tr>
+<td><code>VM_SpawnCats(1或0)</code></td>
+<td>是否生成初始一排猫，默认开启。需在 <code>_VM_BATTLE_START</code> 中调用</td>
 </tr>
 </tbody>
 </table>
@@ -207,6 +239,10 @@ if (wave == 3) {
 <tr>
 <td><code>VM_ClearPlants(列, 行)</code></td>
 <td>清除格子上的植物，-1=全部</td>
+</tr>
+<tr>
+<td><code>VM_ClearMapObjects(列, 行, "对象名")</code></td>
+<td>清除格子上的地图对象，-1=全部。对象名：<code>"obstacle"</code> <code>"lava"</code> <code>"wind_tunnel"</code> <code>"barrier"</code>，传 <code>"all"</code> 全部删除</td>
 </tr>
 </tbody>
 </table>
@@ -253,7 +289,7 @@ if (wave == 3) {
 </tr>
 <tr>
 <td><code>VM_SpawnObject("物件名",列,行)</code></td>
-<td>⚠️ 测试中，暂勿使用。刷障碍物/熔岩/风洞等</td>
+<td>刷地图对象：<code>obstacle</code> <code>lava</code> <code>wind_tunnel</code> <code>mouse_hole</code> 等</td>
 </tr>
 </tbody>
 </table>
@@ -421,7 +457,7 @@ if (wave == 3) {
 </tr>
 <tr>
 <td><code>VM_LoadSprite("贴图名")</code></td>
-<td>加载贴图到内存，<strong>禁止 <code>spr_</code> 前缀</strong>。服务端从本地加载，客户端走网络懒加载</td>
+<td>加载贴图到内存，<strong>禁止 <code>spr_</code> 前缀</strong>（用 <code>s_spr_</code> 代替）。服务端从本地加载，客户端走网络懒加载</td>
 </tr>
 <tr>
 <td><code>VM_SetMapBackground("贴图名", 步长)</code></td>
@@ -430,6 +466,10 @@ if (wave == 3) {
 <tr>
 <td><code>VM_SetDrawSlot(槽位, "贴图名", x, y, alpha)</code></td>
 <td>设置帧绘制槽。槽位 0~7，alpha 0~1，贴图名为空时清除。配合 <code>_VM_FRAME</code> 使用</td>
+</tr>
+<tr>
+<td><code>VM_SetDrawSlot_front(槽位, "贴图名", x, y, alpha)</code></td>
+<td>同 <code>VM_SetDrawSlot</code>，但绘制在火焰UI层（depth=-900），显示在火焰UI后面</td>
 </tr>
 <tr>
 <td><code>VM_ShellPrint(...)</code></td>
@@ -442,6 +482,14 @@ if (wave == 3) {
 <tr>
 <td><code>VM_SetPlatformParams(实例,轴,距离,停顿,方向)</code></td>
 <td>以当前位置为新起点，重设平台移动参数</td>
+</tr>
+<tr>
+<td><code>VM_GameWin()</code></td>
+<td>触发胜利。客户端跳过；服务端弹出胜利界面并广播</td>
+</tr>
+<tr>
+<td><code>VM_GameLose()</code></td>
+<td>触发失败。客户端跳过；服务端弹出失败界面并广播</td>
 </tr>
 </tbody>
 </table>
@@ -542,10 +590,122 @@ oden_pot  whisky_bomb  cotton_candy  durian  dragon_fruit
 pineapple_explosive_bread  ice_cream  lightning_baguette  bull_firework
 magic_chicken  xinjiang_fried_noodles  king_long_bao  king_triple_long_bao
 chili_powder  tang_hu_lu  beef_hotpot  spicy_pot  pan_fried_bun
-</code></pre><h3 id="物件名vm_spawnobject-9-个">物件名（VM_SpawnObject）— 9 个 </h3>
-<pre data-role="codeBlock" data-info="" class="language-text"><code>obj_obstacle  obj_lava  obj_wind_tunnel  obj_mouse_hole
-obj_pharaoh_hole  obj_buzz_wind  obj_cloud  obj_ladder
-</code></pre>
+</code></pre><h3 id="物件名vm_spawnobject--vm_clearmapobjects-9-个">物件名（VM_SpawnObject / VM_ClearMapObjects）— 9 个 </h3>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>obstacle  lava  wind_tunnel  barrier  mouse_hole
+pharaoh_hole  buzz_wind  cloud  ladder
+</code></pre><h3 id="宝石名vm_bangem-16-个">宝石名（VM_BanGem）— 16 个 </h3>
+<table>
+<thead>
+<tr>
+<th>宝石ID</th>
+<th>名称</th>
+<th>槽位</th>
+<th>按钮</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>laser_gem</code></td>
+<td>激光宝石</td>
+<td>主武器</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>bomb_gem</code></td>
+<td>轰炸宝石</td>
+<td>主武器</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>cateye_gem</code></td>
+<td>猫眼宝石</td>
+<td>主武器</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>freeze_gem</code></td>
+<td>冰冻宝石</td>
+<td>主武器</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>flame_recover_gem</code></td>
+<td>回火宝石</td>
+<td>主武器</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>starlight_gem</code></td>
+<td>星光宝石</td>
+<td>主武器</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>attack_gem</code></td>
+<td>攻击宝石</td>
+<td>主武器</td>
+<td></td>
+</tr>
+<tr>
+<td><code>gale_gem</code></td>
+<td>疾风宝石</td>
+<td>超级武器</td>
+<td></td>
+</tr>
+<tr>
+<td><code>power_gem</code></td>
+<td>强力宝石</td>
+<td>超级武器</td>
+<td></td>
+</tr>
+<tr>
+<td><code>transform_gem</code></td>
+<td>转化宝石</td>
+<td>超级武器</td>
+<td></td>
+</tr>
+<tr>
+<td><code>health_gem</code></td>
+<td>生命宝石</td>
+<td>副武器</td>
+<td></td>
+</tr>
+<tr>
+<td><code>produce_gem</code></td>
+<td>生产宝石</td>
+<td>副武器</td>
+<td></td>
+</tr>
+<tr>
+<td><code>slow_down_gem</code></td>
+<td>迟缓宝石</td>
+<td>副武器</td>
+<td></td>
+</tr>
+<tr>
+<td><code>bleed_gem</code></td>
+<td>流血宝石</td>
+<td>副武器</td>
+<td></td>
+</tr>
+<tr>
+<td><code>guard_gem</code></td>
+<td>守护宝石</td>
+<td>副武器</td>
+<td></td>
+</tr>
+<tr>
+<td><code>strength_gem</code></td>
+<td>蓄力宝石</td>
+<td>副武器</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>VM_BanGem 只禁用带 ✓ 的宝石按钮。被动宝石（无按钮）禁用后虽不报错但无效果。</p>
+</blockquote>
+
       </div>
       
       

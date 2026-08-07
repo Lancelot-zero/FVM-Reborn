@@ -3,8 +3,8 @@
 // 帧块：每5帧切换，8张图循环
 // ============================================================
 
-_VM_BATTLE_START {
-    cnt = 0
+_VM_ROOM_READY_ENTRY{
+    VM_SpawnCats(0)
     VM_LoadSprite("resize_frame_01.png")
     VM_LoadSprite("resize_frame_02.png")
     VM_LoadSprite("resize_frame_03.png")
@@ -15,6 +15,12 @@ _VM_BATTLE_START {
     VM_LoadSprite("resize_frame_08.png")
     VM_LoadSprite("water and fire 2nd_1.png")
     VM_LoadSprite("water and fire 2nd_2.png")
+}
+
+_VM_BATTLE_START {
+    VM_SpawnCats(0)
+    cnt = 0
+
 
 }
 

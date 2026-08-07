@@ -1,10 +1,6 @@
 /// @function add_to_deck(card_id, shape)
 /// @desc 添加指定形态的卡牌到当前出战卡组
 function add_to_deck(card_id, shape) {
-    // 联机模式禁止 king 小笼包（吸收机制与联机架构冲突）
-    if global.network.mode != "offline" && (card_id == "king_long_bao" || card_id == "king_triple_long_bao"){
-        return false
-    }
     if !is_undefined(global.banned_cards_online[? card_id]){
         return false
     }
@@ -15,7 +11,7 @@ function add_to_deck(card_id, shape) {
         deck_entry[? "card_id"] = card_id;
         deck_entry[? "shape"] = shape;
         deck_entry[? "data"] = card_data;
-        
+
         ds_list_add(global.selected_deck, deck_entry);
 		return true
     }
