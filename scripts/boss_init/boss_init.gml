@@ -25,4 +25,5 @@ function boss_init(){
 	register_boss("hulk_mouse",{"name":"绿巨鼠","hp":120000,"icon":spr_hulk_mouse_icon})
 	register_boss("mouse_train_3",{"name":"列车终极","hp":200000,"icon":spr_mouse_train_icon})
 	register_boss("mermaid_mary",{"name":"人鱼玛丽","hp":50000,"icon":spr_blonde_mary_icon})
+	register_boss("machine_shark_1",{"name":"机械鲨鱼","hp":80000,"icon":spr_rumble_icon})
 }

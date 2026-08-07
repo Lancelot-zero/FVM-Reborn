@@ -3,8 +3,8 @@ event_inherited();
 
 mouse_id = "mermaid_wave"
 
-hp = 500
-maxhp = 500
+hp = 1000
+maxhp = 1000
 
 state = "appear"
 
