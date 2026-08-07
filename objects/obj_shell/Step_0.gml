@@ -97,6 +97,15 @@ if (!isOpen) {
 		consoleString = "";
 		cursorPos = 1;
 		targetScrollPosition = maxScrollPosition;
+	} else  if (self._key_combo_pressed([metaKey], ord("V"))) {
+	    // Paste from system clipboard
+	    var _clipboard_text = clipboard_get_text();
+	    if (_clipboard_text != "") {
+	            if (!insertMode) { consoleString = string_delete(consoleString, cursorPos, string_length(_clipboard_text)); }
+	            consoleString = string_insert(_clipboard_text, consoleString, cursorPos);
+	            cursorPos += string_length(_clipboard_text);
+	            targetScrollPosition = maxScrollPosition;
+	    }
 	} else if (self._key_combo_pressed([metaKey], vk_backspace) || (metaKey == vk_control && ord(keyboard_string) == 127)) {
 		// delete characters from the cursor position to the preceding space or start of the line
 		var precedingSpaceIndex = 1;

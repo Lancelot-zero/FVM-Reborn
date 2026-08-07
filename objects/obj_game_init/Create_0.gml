@@ -49,6 +49,7 @@ global.game_version = "2.2.1"
 global.level_data_index = 0
 global.debug = 0
 global.laboretory_room = false
+global.game_version = "2.2.2"
 global.tower_level_click = false
 global.sudo_authed = false
 Music_Init()

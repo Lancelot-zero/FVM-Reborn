@@ -80,7 +80,7 @@ var grid_pos = get_grid_position_from_world(x, y);
 if global.network.mode=="client"{
 	exit;
 }
-	
+/*	
     // 检查是否在网格范围内
     if (col < 0 || col >= global.grid_cols || row < 0 || row >= global.grid_rows) {
         exit
@@ -104,3 +104,5 @@ if global.network.mode=="client"{
 	       }
 	    }
 	}
+
+*/
