@@ -66,6 +66,18 @@ function VM_BanGem(gem_name_addr) {
         array_push(global.banned_gems_online, gem_name);
     }
 }
+/// @function VM_SetRowFeature(row, feature)
+/// @param row     行，-1=所有行
+/// @param feature 行属性，如 "land" / "water"
+function VM_SetRowFeature(row_addr, feature_addr) {
+    var row = vm_read_mem(global.__vm, row_addr);
+    var feature = vm_read_mem(global.__vm, feature_addr);
+    var _r1 = (row == -1) ? 0 : row;
+    var _r2 = (row == -1) ? global.grid_rows - 1 : row;
+    for (var _r = _r1; _r <= _r2; _r++) {
+        global.row_feature[_r] = feature;
+    }
+}
 function VM_SetCardLevelCap(level_addr) {
     global._VM_card_level_cap = vm_read_mem(global.__vm, level_addr);
 }
@@ -87,6 +99,18 @@ function VM_ShowNotice(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p) {
         if (!is_undefined(_addrs[_n])) _msg += string(vm_read_mem(global.__vm, _addrs[_n]));
     }
     show_notice(_msg, 120);
+}
+function VM_ShowNoticeDur(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p) {
+    var _addrs = [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p];
+    var _msg = "";
+    var _dur = 120;
+    for (var _n = 0; _n < 16; _n++) {
+        if (!is_undefined(_addrs[_n])) {
+            if (_n == 15) { _dur = vm_read_mem(global.__vm, _addrs[_n]); }
+            else { _msg += string(vm_read_mem(global.__vm, _addrs[_n])); }
+        }
+    }
+    show_notice(_msg, _dur);
 }
 function VM_CreatePlatform(col_addr, row_addr, width_addr, length_addr, axis_addr, distance_addr, idle_addr, spr_addr) {
     var col = vm_read_mem(global.__vm, col_addr);
@@ -378,10 +402,115 @@ function VM_ClearPlants(col_addr, row_addr) {
     for (var _r = _r1; _r <= _r2; _r++) {
         for (var _c = _c1; _c <= _c2; _c++) {
             var _list = ds_grid_get(global.grid_plants, _c, _r);
-            while (ds_list_size(_list) > 0) {
-                var _plant = ds_list_find_value(_list, 0);
+            for (var _i = ds_list_size(_list) - 1; _i >= 0; _i--) {
+                var _plant = ds_list_find_value(_list, _i);
+                if (instance_exists(_plant) && _plant.plant_id == "player") continue;
                 card_destroyed(_plant);
                 instance_destroy(_plant);
+            }
+        }
+    }
+}
+
+/// @function VM_ClearPlantsByType(name)
+/// @param name 卡片 plant_id，-1=清除所有植物（跳过角色）
+function VM_ClearPlantsByType(name_addr) {
+    var name = vm_read_mem(global.__vm, name_addr);
+    if (name == -1) {
+        with (obj_card_parent) {
+            if (plant_id == "player") continue;
+            card_destroyed(id);
+            instance_destroy();
+        }
+        return;
+    }
+    var _card_data = deck_get_card_data(name, 0);
+    if (is_undefined(_card_data)) return;
+    var _obj = _card_data[? "obj"];
+    with (_obj) {
+        if (plant_id == "player") continue;
+        card_destroyed(id);
+        instance_destroy();
+    }
+}
+
+/// @function VM_SetCardProp(col, row, name, prop, value)
+/// @param col   列，-1=所有列
+/// @param row   行，-1=所有行
+/// @param name  卡片 plant_id，"all"=所有卡片（跳过角色）
+/// @param prop  属性名
+/// @param value 值
+function VM_SetCardProp(col_addr, row_addr, name_addr, prop_addr, value_addr) {
+    var col = vm_read_mem(global.__vm, col_addr);
+    var row = vm_read_mem(global.__vm, row_addr);
+    var name = vm_read_mem(global.__vm, name_addr);
+    var prop = vm_read_mem(global.__vm, prop_addr);
+    var value = vm_read_mem(global.__vm, value_addr);
+    var _all = (name == "all");
+    var _c1 = (col == -1) ? 0 : col;
+    var _c2 = (col == -1) ? global.grid_cols - 1 : col;
+    var _r1 = (row == -1) ? 0 : row;
+    var _r2 = (row == -1) ? global.grid_rows - 1 : row;
+    for (var _r = _r1; _r <= _r2; _r++) {
+        for (var _c = _c1; _c <= _c2; _c++) {
+            var _list = ds_grid_get(global.grid_plants, _c, _r);
+            for (var _i = ds_list_size(_list) - 1; _i >= 0; _i--) {
+                var _plant = ds_list_find_value(_list, _i);
+                if (!instance_exists(_plant)) continue;
+                if (_plant.plant_id == "player") continue;
+                if (!_all && _plant.plant_id != name) continue;
+                variable_instance_set(_plant, prop, value);
+            }
+        }
+    }
+}
+
+/// @function VM_SetEnemyProp(name, prop, value)
+/// @param name  敌人类型（mouse_id），"all"=所有敌人（跳过BOSS）
+/// @param prop  属性名
+/// @param value 值
+function VM_SetEnemyProp(name_addr, prop_addr, value_addr) {
+    var name = vm_read_mem(global.__vm, name_addr);
+    var prop = vm_read_mem(global.__vm, prop_addr);
+    var value = vm_read_mem(global.__vm, value_addr);
+    var _all = (name == "all");
+    if (_all) {
+        with (obj_enemy_parent) {
+            if (is_boss) continue;
+            variable_instance_set(id, prop, value);
+        }
+        return;
+    }
+    var _info = global.enemy_map[? name];
+    if (is_undefined(_info)) return;
+    var _obj = _info._obj;
+    with (_obj) {
+        if (is_boss) continue;
+        variable_instance_set(id, prop, value);
+    }
+}
+
+/// @function VM_WakePlants(col, row)
+/// @param col 列，-1=所有列
+/// @param row 行，-1=所有行
+/// @description 唤醒指定格子内处于睡眠的卡片
+function VM_WakePlants(col_addr, row_addr) {
+    var col = vm_read_mem(global.__vm, col_addr);
+    var row = vm_read_mem(global.__vm, row_addr);
+    var _c1 = (col == -1) ? 0 : col;
+    var _c2 = (col == -1) ? global.grid_cols - 1 : col;
+    var _r1 = (row == -1) ? 0 : row;
+    var _r2 = (row == -1) ? global.grid_rows - 1 : row;
+    for (var _r = _r1; _r <= _r2; _r++) {
+        for (var _c = _c1; _c <= _c2; _c++) {
+            var _list = ds_grid_get(global.grid_plants, _c, _r);
+            for (var _i = ds_list_size(_list) - 1; _i >= 0; _i--) {
+                var _plant = ds_list_find_value(_list, _i);
+                if (!instance_exists(_plant)) continue;
+                if (_plant.plant_id == "player") continue;
+                if (_plant.state == CARD_STATE.SLEEP) {
+                    _plant.awake_buff_timer = 1;
+                }
             }
         }
     }
@@ -408,12 +537,13 @@ function VM_ClearMapObjects(col_addr, row_addr, obj_name_addr) {
             obj_name = "obj_" + obj_name;
         _targets = [asset_get_index(obj_name)];
     }
-
+	
+	var _all = (col == -1 && row == -1);
 	for (var _t = 0; _t < array_length(_targets); _t++) {
 		var _obj = _targets[_t];
 		if (_obj < 0) continue;
 		with (_obj) {
-		    if (_r1 <= row && row <= _r2 && _c1 <= col && col <= _c2) {
+		    if (_all || (_r1 <= row && row <= _r2 && _c1 <= col && col <= _c2)) {
 		        instance_destroy();
 		    }
 		}
@@ -623,8 +753,6 @@ function VM_SpawnPlant(card_id_addr, col_addr, row_addr, shape_addr, level_addr,
     var shape = vm_read_mem(global.__vm, shape_addr);
     var level = vm_read_mem(global.__vm, level_addr);
     var skill = vm_read_mem(global.__vm, skill_addr);
-    var _VM_id = ++global._VM_create_counter;
-    if (global.network.mode == "client") return -_VM_id;
     if (is_undefined(shape)) shape = 0;
     if (is_undefined(level)) level = 0;
     if (is_undefined(skill)) skill = 0;
@@ -632,25 +760,45 @@ function VM_SpawnPlant(card_id_addr, col_addr, row_addr, shape_addr, level_addr,
     if (is_undefined(_card_data)) return -1;
     var _obj = _card_data[? "obj"];
     var _props = { current_level: level, skill: skill };
-    var _plant = spawn_plant(col, row, _obj, _props);
-    global._VM_last_created_card = _plant;
-    _plant._VM_id = _VM_id;
-    if (global.network.mode == "server") {
-        ds_map_add(global._VM_id_to_real, _VM_id, _plant);
-        // 通过 MSG_MODIFY_PROP 同步 VM_id
-        var _nid = ds_map_exists(global.network.map_instance_id_net_id, _plant) ? global.network.map_instance_id_net_id[? _plant] : -1;
-        if (_nid != -1) {
-            var _vm_prop = {};
-            _vm_prop[$ "_VM_id"] = _VM_id;
-            var _vm_json = json_stringify(_vm_prop);
-            var _list = global.network.connected_clients;
-            for (var _i = 0; _i < array_length(_list); _i++) {
-                send_message(_list[_i], MSG_MODIFY_PROP, _nid, _vm_json);
+
+    // 批量生成：col=-1 整列所有行，row=-1 整行所有列
+    var _batch = (col == -1 || row == -1);
+    var _col_start = (col == -1) ? 0 : col;
+    var _col_end   = (col == -1) ? global.grid_cols + 63 : col;
+    var _row_start = (row == -1) ? 0 : row;
+    var _row_end   = (row == -1) ? global.grid_rows + 63 : row;
+
+    var _last = -1;
+    for (var _r = _row_start; _r <= _row_end; _r++) {
+        for (var _c = _col_start; _c <= _col_end; _c++) {
+            var _VM_id = ++global._VM_create_counter;
+            if (global.network.mode == "client") {
+                if (!_batch) return -_VM_id;
+                continue;
+            }
+            var _plant = spawn_plant(_c, _r, _obj, _props);
+            if (_plant < 0) continue;
+            _last = _plant;
+            _plant._VM_id = _VM_id;
+            if (global.network.mode == "server") {
+                ds_map_add(global._VM_id_to_real, _VM_id, _plant);
+                var _nid = ds_map_exists(global.network.map_instance_id_net_id, _plant) ? global.network.map_instance_id_net_id[? _plant] : -1;
+                if (_nid != -1) {
+                    var _vm_prop = {};
+                    _vm_prop[$ "_VM_id"] = _VM_id;
+                    var _vm_json = json_stringify(_vm_prop);
+                    var _list = global.network.connected_clients;
+                    for (var _i = 0; _i < array_length(_list); _i++) {
+                        send_message(_list[_i], MSG_MODIFY_PROP, _nid, _vm_json);
+                    }
+                }
             }
         }
     }
-    // card_created 已挂 hook，此处不重复
-    return real(_plant);
+
+    global._VM_last_created_card = _last;
+    if (_batch) return 0;
+    return real(_last);
 }
 
 /// @function VM_SpawnEnemy(type, row, hp_override)
@@ -1248,6 +1396,11 @@ global._VM_SUBWAVE_END       = undefined;
 global._VM_PLAYER_DAMAGED    = undefined;
 global._VM_PLATFORM_IDLE_END = undefined;
 global._VM_FRAME             = undefined;
+global._VM_TIMER_5f          = undefined;
+global._VM_TIMER_10f         = undefined;
+global._VM_TIMER_15f         = undefined;
+global._VM_TIMER_30f         = undefined;
+global._VM_TIMER_60f         = undefined;
 global._VM_last_idle_platform = -1;
 
 global._VM_debug_mode = false;
@@ -1367,6 +1520,12 @@ VM_RegisterFunction(global.__vm, VM_SetDrawSlot_front);  // 32
 VM_RegisterFunction(global.__vm, VM_SpawnCats, 1);      // 33
 VM_RegisterFunction(global.__vm, VM_ClearMapObjects);    // 34
 VM_RegisterFunction(global.__vm, VM_BanGem);             // 35
+VM_RegisterFunction(global.__vm, VM_SetRowFeature);     // 36
+VM_RegisterFunction(global.__vm, VM_ClearPlantsByType); // 37
+VM_RegisterFunction(global.__vm, VM_WakePlants);        // 38
+VM_RegisterFunction(global.__vm, VM_SetCardProp);      // 39
+VM_RegisterFunction(global.__vm, VM_SetEnemyProp);     // 40
+VM_RegisterFunction(global.__vm, VM_ShowNoticeDur);    // 41
 global._sync_vm_bin_buf = undefined;
 
 /// @function VM_InitRoomEntry(buf)
@@ -1392,6 +1551,11 @@ function VM_InitRoomEntry(buf) {
     global._VM_PLAYER_DAMAGED    = undefined;
     global._VM_PLATFORM_IDLE_END = undefined;
     global._VM_FRAME             = undefined;
+    global._VM_TIMER_5f          = undefined;
+    global._VM_TIMER_10f         = undefined;
+    global._VM_TIMER_15f         = undefined;
+    global._VM_TIMER_30f         = undefined;
+    global._VM_TIMER_60f         = undefined;
     global._sync_vm_bin_buf = undefined;
     global._VM_strings = [];
     global.__vm.strings = global._VM_strings;
@@ -1502,6 +1666,21 @@ function VM_InitRoomEntry(buf) {
                 break;
             case "_VM_FRAME":
                 global._VM_FRAME = _bc_buf;
+                break;
+            case "_VM_TIMER_5f":
+                global._VM_TIMER_5f = _bc_buf;
+                break;
+            case "_VM_TIMER_10f":
+                global._VM_TIMER_10f = _bc_buf;
+                break;
+            case "_VM_TIMER_15f":
+                global._VM_TIMER_15f = _bc_buf;
+                break;
+            case "_VM_TIMER_30f":
+                global._VM_TIMER_30f = _bc_buf;
+                break;
+            case "_VM_TIMER_60f":
+                global._VM_TIMER_60f = _bc_buf;
                 break;
             default:
                 buffer_delete(_bc_buf);

@@ -102,6 +102,11 @@ if (a_cnt == 0) {
 | `_VM_ENEMY_KILLED` | 敌人死亡 |
 | `_VM_PLATFORM_IDLE_END` | 平台 idle 结束，即将开始移动 |
 | `_VM_FRAME` | ⚠️ 每帧执行，**禁止写复杂逻辑**（加血、刷怪等）。仅用于简单高频操作如更新 UI 绘制槽 |
+| `_VM_TIMER_5f` | 每 5 帧执行 |
+| `_VM_TIMER_10f` | 每 10 帧执行 |
+| `_VM_TIMER_15f` | 每 15 帧执行 |
+| `_VM_TIMER_30f` | 每 30 帧执行 |
+| `_VM_TIMER_60f` | 每 60 帧执行 |
 
 ### 函数放置要求
 
@@ -111,7 +116,7 @@ if (a_cnt == 0) {
 |---|---|
 | `_VM_ROOM_READY_ENTRY` | `VM_BanCard` `VM_BanGem` `VM_SetCardLevelCap` `VM_SetMaxSlots` `VM_SpawnCats` `VM_SetTerrain` `VM_CreatePlatform` `VM_SetPlatformParams` `VM_SetMapBackground` |
 | `_VM_BATTLE_START` 或 `_VM_WAVE_START` | `VM_SpawnObject` `VM_SpawnPlant` `VM_SpawnEnemy` `VM_SpawnBoss` |
-| 任意块 | `VM_ClearPlants` `VM_ClearMapObjects` `VM_SetDrawSlot` `VM_SetDrawSlot_front` `VM_SetFlame` `VM_GetFlame` `VM_GameWin` `VM_GameLose` `VM_ShellPrint` `VM_ShowNotice` `VM_Random` `VM_GetWave` `VM_GetSubwave` `VM_GetProp` `VM_SetProp` `VM_GetLastBoss` `VM_GetLastCreatedEnemy` `VM_GetLastKilledEnemy` `VM_GetLastCreatedCard` `VM_GetLastDestroyedCard` `VM_GetLastIdlePlatform` |
+| 任意块 | `VM_ClearPlants` `VM_ClearPlantsByType` `VM_ClearMapObjects` `VM_SetDrawSlot` `VM_SetDrawSlot_front` `VM_SetFlame` `VM_GetFlame` `VM_GameWin` `VM_GameLose` `VM_ShellPrint` `VM_ShowNotice` `VM_ShowNoticeDur` `VM_Random` `VM_GetWave` `VM_GetSubwave` `VM_GetProp` `VM_SetProp` `VM_SetCardProp` `VM_SetEnemyProp` `VM_WakePlants` `VM_SetRowFeature` `VM_GetLastBoss` `VM_GetLastCreatedEnemy` `VM_GetLastKilledEnemy` `VM_GetLastCreatedCard` `VM_GetLastDestroyedCard` `VM_GetLastIdlePlatform` |
 
 ---
 
@@ -141,7 +146,7 @@ if (a_cnt == 0) {
 |---|---|
 | `VM_CreatePlatform(列,行,宽,高,轴向,距离,停顿帧,贴图)` | 创建移动平台。轴向 0=上下 1=左右 |
 | | 例: `a = VM_CreatePlatform(0, 0, 4, 5, 0, 2, 480, "spr_raft")` |
-| `VM_SpawnPlant("卡名",列,行,外形,星级,技能)` | 种卡 |
+| `VM_SpawnPlant("卡名",列,行,外形,星级,技能)` | 种卡。列/行=-1=整行/整列，返回0 |
 | | 例: `VM_SpawnPlant("small_fire", 1, 1, 0, 10, 0)` |
 | `VM_SpawnEnemy("敌人类型",行,血量)` | 刷敌人 |
 | | 例: `VM_SpawnEnemy("normal_mouse", 2, 200)` |
@@ -204,6 +209,12 @@ if (a_cnt == 0) {
 | `VM_ShellPrint(...)` | 控制台打印，可拼多个参数 |
 | `VM_ShowNotice(...)` | 屏幕通知，可拼多个参数 |
 | `VM_SetPlatformParams(实例,轴,距离,停顿,方向)` | 以当前位置为新起点，重设平台移动参数 |
+| `VM_SetRowFeature(行, "属性")` | 改行属性：`"land"` `"water"`，-1=所有行 |
+| `VM_ClearPlantsByType("卡名")` | 按卡片类型清除植物，`-1`=全部（跳过角色） |
+| `VM_WakePlants(列, 行)` | 唤醒指定格子睡眠中的卡片，-1=全部 |
+| `VM_SetCardProp(列, 行, "卡名", "属性", 值)` | 按格子和类型改卡片属性，"all"=全部卡片 |
+| `VM_SetEnemyProp("敌人类型", "属性", 值)` | 按类型改敌人属性，"all"=全部（跳过BOSS） |
+| `VM_ShowNoticeDur("消息", 帧数)` | 自定义显示时长的屏幕通知 |
 | `VM_GameWin()` | 触发胜利。客户端跳过；服务端弹出胜利界面并广播 |
 | `VM_GameLose()` | 触发失败。客户端跳过；服务端弹出失败界面并广播 |
 

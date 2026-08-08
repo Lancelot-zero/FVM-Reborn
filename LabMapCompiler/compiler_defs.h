@@ -81,6 +81,11 @@ static const std::vector<const char*> BLOCK_NAMES = {
     "_VM_PLAYER_DAMAGED",
     "_VM_PLATFORM_IDLE_END",
     "_VM_FRAME",
+    "_VM_TIMER_5f",
+    "_VM_TIMER_10f",
+    "_VM_TIMER_15f",
+    "_VM_TIMER_30f",
+    "_VM_TIMER_60f",
 };
 
 // ============================================================
@@ -191,6 +196,12 @@ static std::vector<FuncDef> FUNC_DEFS = {
     {"VM_SpawnCats",             1},                                                // 33
     {"VM_ClearMapObjects",      3,  {PT_INT, PT_INT, PT_STRING}},                  // 34
     {"VM_BanGem",               1,  {PT_STRING}},                                   // 35
+    {"VM_SetRowFeature",        2,  {PT_INT, PT_STRING}},                           // 36
+    {"VM_ClearPlantsByType",    1,  {PT_STRING}},                                   // 37
+    {"VM_WakePlants",           2,  {PT_INT, PT_INT}},                              // 38
+    {"VM_SetCardProp",          5,  {PT_INT, PT_INT, PT_STRING, PT_STRING, PT_ANY}},// 39
+    {"VM_SetEnemyProp",         3,  {PT_STRING, PT_STRING, PT_ANY}},               // 40
+    {"VM_ShowNoticeDur",       -1},                                                  // 41
 };
 
 // ============================================================

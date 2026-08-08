@@ -317,6 +317,17 @@ if wave_timer <= 0 && level_stage == "boss"{
 		}
 	}
 	else{
+		if (buffer_exists(global._VM_WAVE_END)) VM_Execute(global.__vm, global._VM_WAVE_END);
+		current_wave += 1
+		if (buffer_exists(global._VM_WAVE_START)) VM_Execute(global.__vm, global._VM_WAVE_START);
+		if (global.network.mode == "server") {
+			var _cl = global.network.connected_clients;
+			for (var _j = 0; _j < array_length(_cl); _j++) {
+				send_message(_cl[_j], MSG_VM_NOTIFY, json_stringify({hook: "wave_end", wave: current_wave - 1, subwave: current_subwave}));
+				send_message(_cl[_j], MSG_VM_NOTIFY, json_stringify({hook: "wave_start", wave: current_wave, subwave: 0}));
+				send_message(_cl[_j], MSG_PROGRESS_SYNC, current_wave, 0);
+			}
+		}
 		current_subwave = 0
 	}
 }
@@ -381,4 +392,19 @@ if global.debug{
 // 帧 VM 块：每帧执行
 if (buffer_exists(global._VM_FRAME)) {
     VM_Execute(global.__vm, global._VM_FRAME);
+}
+if (battle_time mod 5 == 0 && buffer_exists(global._VM_TIMER_5f)) {
+    VM_Execute(global.__vm, global._VM_TIMER_5f);
+}
+if (battle_time mod 10 == 0 && buffer_exists(global._VM_TIMER_10f)) {
+    VM_Execute(global.__vm, global._VM_TIMER_10f);
+}
+if (battle_time mod 15 == 0 && buffer_exists(global._VM_TIMER_15f)) {
+    VM_Execute(global.__vm, global._VM_TIMER_15f);
+}
+if (battle_time mod 30 == 0 && buffer_exists(global._VM_TIMER_30f)) {
+    VM_Execute(global.__vm, global._VM_TIMER_30f);
+}
+if (battle_time mod 60 == 0 && buffer_exists(global._VM_TIMER_60f)) {
+    VM_Execute(global.__vm, global._VM_TIMER_60f);
 }
