@@ -176,26 +176,48 @@ else{
 if (global.network.mode!="client"){
 
 
+if (global._VM_prev_subwave != current_subwave||global._VM_prev_wave != current_wave) {
+	if (global.network.mode == "server") {
+		var _cl = global.network.connected_clients;
+		for (var _j = 0; _j < array_length(_cl); _j++) {
+			if (buffer_exists(global._VM_SUBWAVE_END)&&current_subwave!=0)
+				send_message(_cl[_j], MSG_VM_NOTIFY, json_stringify({hook: "subwave_end", wave: global._VM_prev_wave, subwave: global._VM_prev_subwave}));
+			send_message(_cl[_j], MSG_PROGRESS_SYNC, current_wave, current_subwave);
+			if (buffer_exists(global._VM_SUBWAVE_START)) 
+				send_message(_cl[_j], MSG_VM_NOTIFY, json_stringify({hook: "subwave_start", wave: current_wave, subwave: current_subwave}));
+		}
+	}
+    if (buffer_exists(global._VM_SUBWAVE_END)&&current_subwave!=0) VM_Execute(global.__vm, global._VM_SUBWAVE_END);
+	global._VM_prev_subwave = current_subwave;
+    if (buffer_exists(global._VM_SUBWAVE_START)) VM_Execute(global.__vm, global._VM_SUBWAVE_START);
+    
+}
+
+
+if (global._VM_prev_wave != current_wave) {
+	if (global.network.mode == "server") {
+		var _cl = global.network.connected_clients;
+		for (var _j = 0; _j < array_length(_cl); _j++) {
+			if (buffer_exists(global._VM_WAVE_END)&&current_subwave!=0)
+				send_message(_cl[_j], MSG_VM_NOTIFY, json_stringify({hook: "wave_end", wave: global._VM_prev_wave, subwave: global._VM_prev_subwave}));
+			send_message(_cl[_j], MSG_PROGRESS_SYNC, current_wave, current_subwave);
+			if (buffer_exists(global._VM_WAVE_START)) 
+				send_message(_cl[_j], MSG_VM_NOTIFY, json_stringify({hook: "wave_start", wave: current_wave, subwave: current_subwave}));
+		}
+	}
+    if (buffer_exists(global._VM_WAVE_END)&&current_wave!=0) VM_Execute(global.__vm, global._VM_WAVE_END);
+	global._VM_prev_wave = current_wave;
+    if (buffer_exists(global._VM_WAVE_START)) VM_Execute(global.__vm, global._VM_WAVE_START);
+}
+
+
+
 if battle_time >= (global.level_file.first_wave_delay * 60) && level_stage == "ready" {
 
 	level_stage = "pre"
 	audio_play_sound(snd_mouse_wave_attack, 0, 0)
 
 	enemy_subwave_summon()
-	
-	// VM Hook: 第一波开始
-	if (buffer_exists(global._VM_WAVE_START)) VM_Execute(global.__vm, global._VM_WAVE_START);
-	if (buffer_exists(global._VM_SUBWAVE_START)) VM_Execute(global.__vm, global._VM_SUBWAVE_START);
-	
-	// 服务端同步进度条 + VM通知
-	if (global.network.mode == "server") {
-		var _cl = global.network.connected_clients;
-		for (var _j = 0; _j < array_length(_cl); _j++) {
-			send_message(_cl[_j], MSG_VM_NOTIFY, json_stringify({hook: "wave_start", wave: current_wave, subwave: current_subwave}));
-			send_message(_cl[_j], MSG_VM_NOTIFY, json_stringify({hook: "subwave_start", wave: current_wave, subwave: current_subwave}));
-			send_message(_cl[_j], MSG_PROGRESS_SYNC, current_wave, current_subwave);
-		}
-	}
 
 	current_subwave += 1;
 }
@@ -228,6 +250,7 @@ if wave_data.boss_wave && level_stage != "boss" && global.save_data.unlocked_ite
 			boss_count ++
 		}
 	}
+	
 	with obj_battle_music_controller{
 		new_battle_music = global.level_data.boss_music
 		event_user(0)
@@ -268,31 +291,10 @@ if wave_timer <= 0 && level_stage == "pre"{
 			enemy_subwave_summon()
 		}
 		if current_subwave < current_total_subwaves-1{
-			if (buffer_exists(global._VM_SUBWAVE_END)) VM_Execute(global.__vm, global._VM_SUBWAVE_END);
 			current_subwave+=1
-			if (buffer_exists(global._VM_SUBWAVE_START)) VM_Execute(global.__vm, global._VM_SUBWAVE_START);
-			// 服务端同步子波进度 + VM通知
-			if (global.network.mode == "server") {
-				var _cl = global.network.connected_clients;
-				for (var _j = 0; _j < array_length(_cl); _j++) {
-					send_message(_cl[_j], MSG_VM_NOTIFY, json_stringify({hook: "subwave_end", wave: current_wave, subwave: current_subwave - 1}));
-					send_message(_cl[_j], MSG_VM_NOTIFY, json_stringify({hook: "subwave_start", wave: current_wave, subwave: current_subwave}));
-					send_message(_cl[_j], MSG_PROGRESS_SYNC, current_wave, current_subwave);
-				}
-			}
 		}
 		else if current_wave < total_wave{
-			if (buffer_exists(global._VM_WAVE_END)) VM_Execute(global.__vm, global._VM_WAVE_END);
 			current_wave += 1
-			if (buffer_exists(global._VM_WAVE_START)) VM_Execute(global.__vm, global._VM_WAVE_START);
-			if (global.network.mode == "server") {
-				var _cl = global.network.connected_clients;
-				for (var _j = 0; _j < array_length(_cl); _j++) {
-				send_message(_cl[_j], MSG_VM_NOTIFY, json_stringify({hook: "wave_end", wave: current_wave, subwave: current_subwave-1}));
-				send_message(_cl[_j], MSG_VM_NOTIFY, json_stringify({hook: "wave_start", wave: current_wave, subwave: current_subwave}));
-					send_message(_cl[_j], MSG_PROGRESS_SYNC, current_wave, current_subwave);
-				}
-			}
 			current_subwave = 0
 			audio_play_sound(snd_mouse_wave_attack,0,0)
 			instance_create_depth(room_width/2,room_height/2,-300,obj_huge_wave_text)
@@ -302,35 +304,13 @@ if wave_timer <= 0 && level_stage == "pre"{
 if wave_timer <= 0 && level_stage == "boss"{
 	enemy_subwave_summon()
 	if current_subwave < current_total_subwaves-1{
-		if (buffer_exists(global._VM_SUBWAVE_END)) VM_Execute(global.__vm, global._VM_SUBWAVE_END);
 		current_subwave+=1
-		if (buffer_exists(global._VM_SUBWAVE_START)) VM_Execute(global.__vm, global._VM_SUBWAVE_START);
-		
-		//  服务端同步消息
-		if (global.network.mode == "server") {
-			var _cl = global.network.connected_clients;
-			for (var _j = 0; _j < array_length(_cl); _j++) {
-				send_message(_cl[_j], MSG_VM_NOTIFY, json_stringify({hook: "subwave_end", wave: current_wave, subwave: current_subwave - 1}));
-				send_message(_cl[_j], MSG_VM_NOTIFY, json_stringify({hook: "subwave_start", wave: current_wave, subwave: current_subwave}));
-				send_message(_cl[_j], MSG_PROGRESS_SYNC, current_wave, current_subwave);
-			}
-		}
 	}
 	else{
-		if (buffer_exists(global._VM_WAVE_END)) VM_Execute(global.__vm, global._VM_WAVE_END);
-		current_wave += 1
-		if (buffer_exists(global._VM_WAVE_START)) VM_Execute(global.__vm, global._VM_WAVE_START);
-		if (global.network.mode == "server") {
-			var _cl = global.network.connected_clients;
-			for (var _j = 0; _j < array_length(_cl); _j++) {
-				send_message(_cl[_j], MSG_VM_NOTIFY, json_stringify({hook: "wave_end", wave: current_wave - 1, subwave: current_subwave}));
-				send_message(_cl[_j], MSG_VM_NOTIFY, json_stringify({hook: "wave_start", wave: current_wave, subwave: 0}));
-				send_message(_cl[_j], MSG_PROGRESS_SYNC, current_wave, 0);
-			}
-		}
 		current_subwave = 0
 	}
 }
+
 
 // 服务端每20步同步一次 HP 和位置
 if (global.network.mode == "server" && battle_time mod 20 == 0) {

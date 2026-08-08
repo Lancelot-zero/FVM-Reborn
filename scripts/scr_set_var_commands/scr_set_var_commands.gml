@@ -470,3 +470,112 @@ function sudo_check() {
     }
     return true;
 }
+
+function set_debug_mode(_mode) {
+    if (!sudo_check()) { show_debug_message("[debug] sudo required"); return; }
+    global.debug = (_mode == 1 || _mode == "on" || _mode == "true");
+    show_debug_message("[debug] game debug mode: " + string(global.debug));
+}
+
+function set_vm_debug_mode(_mode) {
+    if (!sudo_check()) { show_debug_message("[VM] sudo required"); return; }
+    global._VM_debug_mode = (_mode == 1 || _mode == "on" || _mode == "true");
+    show_debug_message("[VM] VM debug mode: " + string(global._VM_debug_mode));
+}
+
+function list_vm_blocks() {
+    var _blocks = [
+        "_VM_ROOM_READY_ENTRY",
+        "_VM_BATTLE_START",
+        "_VM_CARD_CREATED",
+        "_VM_CARD_DESTROYED",
+        "_VM_CARD_DAMAGED",
+        "_VM_ENEMY_SPAWNED",
+        "_VM_ENEMY_KILLED",
+        "_VM_ENEMY_DAMAGED",
+        "_VM_WAVE_START",
+        "_VM_WAVE_END",
+        "_VM_SUBWAVE_START",
+        "_VM_SUBWAVE_END",
+        "_VM_PLAYER_DAMAGED",
+        "_VM_PLATFORM_IDLE_END",
+        "_VM_FRAME",
+        "_VM_TIMER_5f",
+        "_VM_TIMER_10f",
+        "_VM_TIMER_15f",
+        "_VM_TIMER_30f",
+        "_VM_TIMER_60f",
+    ];
+    for (var _i = 0; _i < array_length(_blocks); _i++) {
+        var _name = _blocks[_i];
+        var _exists = buffer_exists(global[$ _name]);
+        show_debug_message("[VM] " + _name + ": " + (_exists ? "loaded" : "empty"));
+    }
+}
+
+function sh_debug(args) {
+    if (!sudo_check()) return "[debug] sudo required";
+    var _mode = (array_length(args) >= 2) ? args[1] : "on";
+    set_debug_mode(_mode);
+    return "[debug] game debug mode = " + string(global.debug);
+}
+
+function meta_debug() {
+    return {
+        description: "切换游戏 debug 模式: on/off",
+        arguments: ["on/off"],
+        suggestions: [["on", "off"]],
+        hidden: false,
+        deferred: false
+    };
+}
+
+function sh_vmdebug(args) {
+    if (!sudo_check()) return "[vmdebug] sudo required";
+    var _mode = (array_length(args) >= 2) ? args[1] : "on";
+    set_vm_debug_mode(_mode);
+    return "[vmdebug] VM debug mode = " + string(global._VM_debug_mode);
+}
+
+function meta_vmdebug() {
+    return {
+        description: "切换 VM debug 模式: on/off",
+        arguments: ["on/off"],
+        suggestions: [["on", "off"]],
+        hidden: false,
+        deferred: false
+    };
+}
+
+function sh_vmblocks(args) {
+    list_vm_blocks();
+    return "[vmblocks] 已输出到控制台";
+}
+
+function meta_vmblocks() {
+    return {
+        description: "列出当前加载的 VM 块",
+        arguments: [],
+        suggestions: [],
+        hidden: false,
+        deferred: false
+    };
+}
+
+function sh_fps(args) {
+    if (array_length(args) < 2) return "[fps] fps <帧数> (最低20)";
+    var _fps = real(args[1]);
+    if (_fps < 20) return "[fps] 帧数不能小于20";
+    game_set_speed(_fps, gamespeed_fps);
+    return "[fps] 已设置为 " + string(_fps) + " FPS";
+}
+
+function meta_fps() {
+    return {
+        description: "设置游戏 FPS (最低20)",
+        arguments: ["fps"],
+        suggestions: [["30", "60", "120", "144", "180", "240", "300"]],
+        hidden: false,
+        deferred: false
+    };
+}

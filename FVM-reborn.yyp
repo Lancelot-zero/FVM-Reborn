@@ -382,7 +382,6 @@
   ],
   "ForcedPrefabProjectReferences":[],
   "IncludedFiles":[
-    {"$GMIncludedFile":"","%Name":"2.1.0联机教程.pdf","CopyToMask":-1,"filePath":"datafiles","name":"2.1.0联机教程.pdf","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"baiguiyexing.bin","CopyToMask":-1,"filePath":"datafiles/laboratory/baiguiyexing fixed","name":"baiguiyexing.bin","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"baiguiyexing.json","CopyToMask":-1,"filePath":"datafiles/laboratory/baiguiyexing fixed","name":"baiguiyexing.json","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"baiguiyexing.txt","CopyToMask":-1,"filePath":"datafiles/laboratory/baiguiyexing fixed","name":"baiguiyexing.txt","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
@@ -673,7 +672,6 @@
     {"$GMIncludedFile":"","%Name":"FvmNativeSupport.dll","CopyToMask":-1,"filePath":"datafiles/native","name":"FvmNativeSupport.dll","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"relay_server.exe","CopyToMask":-1,"filePath":"datafiles","name":"relay_server.exe","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"scribble_license.txt","CopyToMask":-1,"filePath":"datafiles","name":"scribble_license.txt","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
-    {"$GMIncludedFile":"","%Name":"联机教程_old.pdf","CopyToMask":-1,"filePath":"datafiles","name":"联机教程_old.pdf","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"联机教程.pdf","CopyToMask":-1,"filePath":"datafiles","name":"联机教程.pdf","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
   ],
   "isEcma":false,

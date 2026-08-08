@@ -612,13 +612,13 @@ function VM_SetPlatformParams(plat_id_addr, axis_addr, distance_addr, idle_addr,
 /// @function VM_GetWave()
 /// @return 当前波次
 function VM_GetWave() {
-    return obj_battle.current_wave;
+    return global._VM_prev_wave;
 }
 
 /// @function VM_GetSubwave()
 /// @return 当前子波
 function VM_GetSubwave() {
-    return obj_battle.current_subwave;
+    return global._VM_prev_subwave;
 }
 
 /// @function VM_GetLastBoss()
@@ -764,9 +764,9 @@ function VM_SpawnPlant(card_id_addr, col_addr, row_addr, shape_addr, level_addr,
     // 批量生成：col=-1 整列所有行，row=-1 整行所有列
     var _batch = (col == -1 || row == -1);
     var _col_start = (col == -1) ? 0 : col;
-    var _col_end   = (col == -1) ? global.grid_cols + 63 : col;
+    var _col_end   = (col == -1) ? global.grid_cols-1 : col;
     var _row_start = (row == -1) ? 0 : row;
-    var _row_end   = (row == -1) ? global.grid_rows + 63 : row;
+    var _row_end   = (row == -1) ? global.grid_rows-1 : row;
 
     var _last = -1;
     for (var _r = _row_start; _r <= _row_end; _r++) {
@@ -1403,6 +1403,10 @@ global._VM_TIMER_30f         = undefined;
 global._VM_TIMER_60f         = undefined;
 global._VM_last_idle_platform = -1;
 
+
+global._VM_prev_wave = -1 
+global._VM_prev_subwave = -1
+
 global._VM_debug_mode = false;
 global._VM_loaded_sprite_indices = [];
 global._VM_hook_queue = [];       // 待执行 hook 队列，每个元素 {buf, id}
@@ -1451,8 +1455,14 @@ function VM_HandleNotify(json) {
     // 先同步波次状态
     var _wave = _data[$ "wave"];
     var _subwave = _data[$ "subwave"];
-    if (!is_undefined(_wave)) obj_battle.current_wave = _wave;
-    if (!is_undefined(_subwave)) obj_battle.current_subwave = _subwave;
+    if (!is_undefined(_wave)) {
+        obj_battle.current_wave = _wave;
+        global._VM_prev_wave = _wave;
+    }
+    if (!is_undefined(_subwave)) {
+        obj_battle.current_subwave = _subwave;
+        global._VM_prev_subwave = _subwave;
+    }
 
     switch (_hook) {
         case "wave_start":
@@ -1556,6 +1566,8 @@ function VM_InitRoomEntry(buf) {
     global._VM_TIMER_15f         = undefined;
     global._VM_TIMER_30f         = undefined;
     global._VM_TIMER_60f         = undefined;
+    global._VM_prev_wave         = -1;
+    global._VM_prev_subwave      = -1;
     global._sync_vm_bin_buf = undefined;
     global._VM_strings = [];
     global.__vm.strings = global._VM_strings;

@@ -1,6 +1,8 @@
 if (buffer_exists(global._VM_BATTLE_START) && !global._VM_battle_start_done) {
 	VM_Execute(global.__vm, global._VM_BATTLE_START);
 	global._VM_battle_start_done = true;
+	global._VM_prev_wave         = -1;
+    global._VM_prev_subwave      = -1;
 }
 	
 if global.is_paused{
