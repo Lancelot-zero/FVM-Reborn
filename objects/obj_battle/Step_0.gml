@@ -175,6 +175,7 @@ else{
 
 if (global.network.mode!="client"){
 
+if(global._VM_battle_start_done){
 
 if (global._VM_prev_subwave != current_subwave||global._VM_prev_wave != current_wave) {
 	if (global.network.mode == "server") {
@@ -210,7 +211,7 @@ if (global._VM_prev_wave != current_wave) {
     if (buffer_exists(global._VM_WAVE_START)) VM_Execute(global.__vm, global._VM_WAVE_START);
 }
 
-
+}
 
 if battle_time >= (global.level_file.first_wave_delay * 60) && level_stage == "ready" {
 

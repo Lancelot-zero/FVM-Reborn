@@ -202,6 +202,7 @@ static std::vector<FuncDef> FUNC_DEFS = {
     {"VM_SetCardProp",          5,  {PT_INT, PT_INT, PT_STRING, PT_STRING, PT_ANY}},// 39
     {"VM_SetEnemyProp",         3,  {PT_STRING, PT_STRING, PT_ANY}},               // 40
     {"VM_ShowNoticeDur",       -1},                                                  // 41
+    {"VM_SetEventEnabled",    1},                                                     // 42
 };
 
 // ============================================================

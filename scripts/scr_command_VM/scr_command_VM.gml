@@ -78,6 +78,12 @@ function VM_SetRowFeature(row_addr, feature_addr) {
         global.row_feature[_r] = feature;
     }
 }
+/// @function VM_SetEventEnabled(enabled)
+/// @param enabled 0=关闭 1=开启 事件系统
+function VM_SetEventEnabled(val_addr) {
+    var val = vm_read_mem(global.__vm, val_addr);
+    global._VM_event_enabled = (val != 0);
+}
 function VM_SetCardLevelCap(level_addr) {
     global._VM_card_level_cap = vm_read_mem(global.__vm, level_addr);
 }
@@ -531,7 +537,7 @@ function VM_ClearMapObjects(col_addr, row_addr, obj_name_addr) {
     // 收集要删除的对象索引
     var _targets;
     if (obj_name == "all") {
-        _targets = [obj_obstacle, obj_wind_tunnel, obj_lava, obj_barrier];
+        _targets = [obj_obstacle, obj_wind_tunnel, obj_lava, obj_barrier, obj_fog, obj_cloud];
     } else {
         if (!string_starts_with(obj_name, "obj_"))
             obj_name = "obj_" + obj_name;
@@ -1406,6 +1412,7 @@ global._VM_last_idle_platform = -1;
 
 global._VM_prev_wave = -1 
 global._VM_prev_subwave = -1
+global._VM_event_enabled = true
 
 global._VM_debug_mode = false;
 global._VM_loaded_sprite_indices = [];
@@ -1536,6 +1543,7 @@ VM_RegisterFunction(global.__vm, VM_WakePlants);        // 38
 VM_RegisterFunction(global.__vm, VM_SetCardProp);      // 39
 VM_RegisterFunction(global.__vm, VM_SetEnemyProp);     // 40
 VM_RegisterFunction(global.__vm, VM_ShowNoticeDur);    // 41
+VM_RegisterFunction(global.__vm, VM_SetEventEnabled);  // 42
 global._sync_vm_bin_buf = undefined;
 
 /// @function VM_InitRoomEntry(buf)
@@ -1568,6 +1576,7 @@ function VM_InitRoomEntry(buf) {
     global._VM_TIMER_60f         = undefined;
     global._VM_prev_wave         = -1;
     global._VM_prev_subwave      = -1;
+    global._VM_event_enabled     = true;
     global._sync_vm_bin_buf = undefined;
     global._VM_strings = [];
     global.__vm.strings = global._VM_strings;

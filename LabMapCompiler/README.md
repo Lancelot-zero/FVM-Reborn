@@ -114,7 +114,7 @@ if (a_cnt == 0) {
 
 | 必须所在块 | 函数 |
 |---|---|
-| `_VM_ROOM_READY_ENTRY` | `VM_BanCard` `VM_BanGem` `VM_SetCardLevelCap` `VM_SetMaxSlots` `VM_SpawnCats` `VM_SetTerrain` `VM_CreatePlatform` `VM_SetPlatformParams` `VM_SetMapBackground` |
+| `_VM_ROOM_READY_ENTRY` | `VM_BanCard` `VM_BanGem` `VM_SetCardLevelCap` `VM_SetMaxSlots` `VM_SpawnCats` `VM_SetTerrain` `VM_CreatePlatform` `VM_SetPlatformParams` `VM_SetMapBackground` `VM_SetEventEnabled` |
 | `_VM_BATTLE_START` 或 `_VM_WAVE_START` | `VM_SpawnObject` `VM_SpawnPlant` `VM_SpawnEnemy` `VM_SpawnBoss` |
 | 任意块 | `VM_ClearPlants` `VM_ClearPlantsByType` `VM_ClearMapObjects` `VM_SetDrawSlot` `VM_SetDrawSlot_front` `VM_SetFlame` `VM_GetFlame` `VM_GameWin` `VM_GameLose` `VM_ShellPrint` `VM_ShowNotice` `VM_ShowNoticeDur` `VM_Random` `VM_GetWave` `VM_GetSubwave` `VM_GetProp` `VM_SetProp` `VM_SetCardProp` `VM_SetEnemyProp` `VM_WakePlants` `VM_SetRowFeature` `VM_GetLastBoss` `VM_GetLastCreatedEnemy` `VM_GetLastKilledEnemy` `VM_GetLastCreatedCard` `VM_GetLastDestroyedCard` `VM_GetLastIdlePlatform` |
 
@@ -215,6 +215,7 @@ if (a_cnt == 0) {
 | `VM_SetCardProp(列, 行, "卡名", "属性", 值)` | 按格子和类型改卡片属性，"all"=全部卡片 |
 | `VM_SetEnemyProp("敌人类型", "属性", 值)` | 按类型改敌人属性，"all"=全部（跳过BOSS） |
 | `VM_ShowNoticeDur("消息", 帧数)` | 自定义显示时长的屏幕通知 |
+| `VM_SetEventEnabled(0或1)` | 开关事件系统（雾/云/蝙蝠等），默认开启 |
 | `VM_GameWin()` | 触发胜利。客户端跳过；服务端弹出胜利界面并广播 |
 | `VM_GameLose()` | 触发失败。客户端跳过；服务端弹出失败界面并广播 |
 

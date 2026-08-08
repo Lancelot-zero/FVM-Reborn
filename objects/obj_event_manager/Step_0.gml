@@ -1,10 +1,4 @@
-if (buffer_exists(global._VM_BATTLE_START) && !global._VM_battle_start_done) {
-	VM_Execute(global.__vm, global._VM_BATTLE_START);
-	global._VM_battle_start_done = true;
-	global._VM_prev_wave         = -1;
-    global._VM_prev_subwave      = -1;
-}
-	
+
 if global.is_paused{
 	exit
 }
@@ -20,7 +14,7 @@ if (global.network.mode == "server"){
 
 
 event_timer ++
-{//（旧代码）硬编码的事件和地图物件
+if(global._VM_event_enabled){//（旧代码）硬编码的事件和地图物件
 	if global.level_data.name == "布丁岛（日）" || global.level_data.name == "布丁岛（夜）"{
 		if event_timer mod 1800 == 5{
 			//(测试)生成老鼠洞
@@ -380,7 +374,7 @@ event_timer ++
 
 //为版本号大于1.5的关卡执行事件
 if is_real(global.level_file.version){
-	if global.level_file.version >= 1.5{
+	if global.level_file.version >= 1.5 && global._VM_event_enabled{
 		var event_list = struct_get(global.level_file,"events")
 		//遍历事件数组
 		for(var i = 0 ; i < array_length(event_list) ; i++){
@@ -1166,6 +1160,14 @@ if is_real(global.level_file.version){
 
 
 
+if (buffer_exists(global._VM_BATTLE_START) && !global._VM_battle_start_done) {
+	VM_Execute(global.__vm, global._VM_BATTLE_START);
+	global._VM_battle_start_done = true;
+	global._VM_prev_wave         = -1;
+    global._VM_prev_subwave      = -1;
+}
+	
+	
 // ====== 服务端：发送操作日志 ======
 if (global.network.mode == "server") {
 	var _actions = [];
@@ -1247,5 +1249,8 @@ if (global.network.mode == "server") {
 }
 
 
+
+
+	
 VM_FlushHooks();
 
