@@ -384,7 +384,6 @@ function VM_SetTerrain(col_addr, row_addr, type_addr) {
     for (var _r = _r1; _r <= _r2; _r++) {
         for (var _c = _c1; _c <= _c2; _c++) {
             global.grid_terrains[_r][_c].type = type;
-            if (type != "water") { global.row_feature[_r] = "land"; }
         }
     }
 }
