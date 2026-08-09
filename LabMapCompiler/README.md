@@ -101,6 +101,9 @@ if (a_cnt == 0) {
 | `_VM_ENEMY_SPAWNED` | 敌人出现 |
 | `_VM_ENEMY_KILLED` | 敌人死亡 |
 | `_VM_PLATFORM_IDLE_END` | 平台 idle 结束，即将开始移动 |
+| `_VM_MOUSE_LEFT` | 鼠标左键按下（单帧触发，按住不重复） |
+| `_VM_MOUSE_RIGHT` | 鼠标右键按下（单帧触发，按住不重复） |
+| `_VM_KEY_PRESSED` | 键盘任意按键按下（单帧触发），用 `VM_GetKeyPressed` 判断具体按键 |
 | `_VM_FRAME` | ⚠️ 每帧执行，**禁止写复杂逻辑**（加血、刷怪等）。仅用于简单高频操作如更新 UI 绘制槽 |
 | `_VM_TIMER_5f` | 每 5 帧执行 |
 | `_VM_TIMER_10f` | 每 10 帧执行 |

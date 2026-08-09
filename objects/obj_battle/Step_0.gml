@@ -374,6 +374,17 @@ if global.debug{
 if (buffer_exists(global._VM_FRAME)) {
     VM_Execute(global.__vm, global._VM_FRAME);
 }
+// 鼠标/键盘输入 VM 块
+if (buffer_exists(global._VM_MOUSE_LEFT) && mouse_check_button_pressed(mb_left)) {
+    VM_Execute(global.__vm, global._VM_MOUSE_LEFT);
+}
+if (buffer_exists(global._VM_MOUSE_RIGHT) && mouse_check_button_pressed(mb_right)) {
+    VM_Execute(global.__vm, global._VM_MOUSE_RIGHT);
+}
+if (buffer_exists(global._VM_KEY_PRESSED) && keyboard_check_pressed(vk_anykey)) {
+    global._VM_last_key = keyboard_lastkey;
+    VM_Execute(global.__vm, global._VM_KEY_PRESSED);
+}
 if (battle_time mod 5 == 0 && buffer_exists(global._VM_TIMER_5f)) {
     VM_Execute(global.__vm, global._VM_TIMER_5f);
 }
