@@ -116,7 +116,7 @@ if (a_cnt == 0) {
 |---|---|
 | `_VM_ROOM_READY_ENTRY` | `VM_BanCard` `VM_BanGem` `VM_SetCardLevelCap` `VM_SetMaxSlots` `VM_SpawnCats` `VM_SetTerrain` `VM_CreatePlatform` `VM_SetPlatformParams` `VM_SetMapBackground` `VM_SetEventEnabled` |
 | `_VM_BATTLE_START` 或 `_VM_WAVE_START` | `VM_SpawnObject` `VM_SpawnPlant` `VM_SpawnEnemy` `VM_SpawnBoss` |
-| 任意块 | `VM_ClearPlants` `VM_ClearPlantsByType` `VM_ClearMapObjects` `VM_SetDrawSlot` `VM_SetDrawSlot_front` `VM_SetFlame` `VM_GetFlame` `VM_GameWin` `VM_GameLose` `VM_ShellPrint` `VM_ShowNotice` `VM_ShowNoticeDur` `VM_Random` `VM_GetWave` `VM_GetSubwave` `VM_GetProp` `VM_SetProp` `VM_SetCardProp` `VM_SetEnemyProp` `VM_WakePlants` `VM_SetRowFeature` `VM_GetLastBoss` `VM_GetLastCreatedEnemy` `VM_GetLastKilledEnemy` `VM_GetLastCreatedCard` `VM_GetLastDestroyedCard` `VM_GetLastIdlePlatform` |
+| 任意块 | `VM_ClearPlants` `VM_ClearPlantsByType` `VM_ClearMapObjects` `VM_SetDrawSlot` `VM_SetDrawSlot_front` `VM_SetFlame` `VM_GetFlame` `VM_GameWin` `VM_GameLose` `VM_ShellPrint` `VM_ShowNotice` `VM_ShowNoticeDur` `VM_Random` `VM_GetWave` `VM_GetSubwave` `VM_GetProp` `VM_SetProp` `VM_SetCardProp` `VM_SetEnemyProp` `VM_WakePlants` `VM_SetRowFeature` `VM_GetLastBoss` `VM_GetLastCreatedEnemy` `VM_GetLastKilledEnemy` `VM_GetLastCreatedCard` `VM_GetLastDestroyedCard` `VM_GetLastIdlePlatform` `VM_GetMouseX` `VM_GetMouseY` `VM_GetMouseCol` `VM_GetMouseRow` `VM_GetTerrain` `VM_GetMousePressed` `VM_GetKeyDown` `VM_GetKeyPressed` `VM_GetEnemyCount` `VM_GetPlantCount` `VM_GetPlantCountAt` `VM_PlaySound` `VM_RefreshPlatformSnapshots` |
 
 ---
 
@@ -195,6 +195,24 @@ if (a_cnt == 0) {
 | `VM_GetLastKilledEnemy()` | 刚死的敌人ID |
 | `VM_GetLastBoss()` | 刚刷的BOSS ID |
 | `VM_GetLastIdlePlatform()` | 刚结束 idle 的平台 ID |
+| `VM_GetMouseX()` | 鼠标当前 X 坐标 |
+| `VM_GetMouseY()` | 鼠标当前 Y 坐标 |
+| `VM_GetMouseCol()` | 鼠标所在网格列 |
+| `VM_GetMouseRow()` | 鼠标所在网格行 |
+| `VM_GetTerrain(列, 行)` | 获取格子地形: 0=normal 1=water 2=obstacle -1=超出 |
+| `VM_GetMousePressed(按键)` | 鼠标按键是否按下，1=左 2=右 3=中，返回1/0 |
+| `VM_GetKeyDown("按键名")` | 键盘按键是否按住，返回1/0。不区分大小写 |
+| `VM_GetKeyPressed("按键名")` | 键盘按键是否刚按下（单帧触发），返回1/0 |
+| `VM_GetEnemyCount()` | 场上敌人数量 |
+| `VM_GetPlantCount()` | 场上植物数量 |
+| `VM_GetPlantCountAt(列, 行, "类型")` | 指定格子某类型卡片数量，`"all"`=全部 |
+
+> **按键名字符串**（`VM_GetKeyDown` / `VM_GetKeyPressed` 第1参）：
+> 
+> 字母: `"A"`~`"Z"`　数字: `"0"`~`"9"`　功能: `"f1"`~`"f12"`
+> 方向: `"up"` `"down"` `"left"` `"right"`
+> 特殊: `"space"` `"enter"` `"escape"` `"tab"` `"shift"` `"ctrl"` `"alt"` `"backspace"` `"delete"` `"home"` `"end"` `"pageup"` `"pagedown"`
+> 不区分大小写，未知按键名 shell 报错。
 
 ### 工具
 
@@ -209,6 +227,7 @@ if (a_cnt == 0) {
 | `VM_ShellPrint(...)` | 控制台打印，可拼多个参数 |
 | `VM_ShowNotice(...)` | 屏幕通知，可拼多个参数 |
 | `VM_SetPlatformParams(实例,轴,距离,停顿,方向)` | 以当前位置为新起点，重设平台移动参数 |
+| `VM_RefreshPlatformSnapshots()` | 刷新所有平台的地形快照（old_terrains），用于修改平台方向/路径后防止地形恢复错误 |
 | `VM_SetRowFeature(行, "属性")` | 改行属性：`"land"` `"water"`，-1=所有行 |
 | `VM_ClearPlantsByType("卡名")` | 按卡片类型清除植物，`-1`=全部（跳过角色） |
 | `VM_WakePlants(列, 行)` | 唤醒指定格子睡眠中的卡片，-1=全部 |
@@ -218,6 +237,7 @@ if (a_cnt == 0) {
 | `VM_SetEventEnabled(0或1)` | 开关事件系统（雾/云/蝙蝠等），默认开启 |
 | `VM_GameWin()` | 触发胜利。客户端跳过；服务端弹出胜利界面并广播 |
 | `VM_GameLose()` | 触发失败。客户端跳过；服务端弹出失败界面并广播 |
+| `VM_PlaySound("音效名")` | 播放内置音效，如 `"snd_place1"` `"snd_card_lift"` |
 
 ---
 

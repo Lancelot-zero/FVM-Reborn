@@ -614,6 +614,25 @@ function VM_SetPlatformParams(plat_id_addr, axis_addr, distance_addr, idle_addr,
     _plat.move_direction = _direction;
 }
 
+/// @function VM_RefreshPlatformSnapshots()
+/// @return 更新的平台数量
+/// @description 遍历所有平台，重新记录 old_terrains 快照（以当前地形为准）
+function VM_RefreshPlatformSnapshots() {
+	var _count = 0;
+	with (obj_platform) {
+		if (!variable_instance_exists(id, "old_terrains") || !ds_exists(old_terrains, ds_type_grid)) {
+			old_terrains = ds_grid_create(global.grid_cols, global.grid_rows);
+		}
+		for (var c = 0; c < global.grid_cols; c++) {
+			for (var r = 0; r < global.grid_rows; r++) {
+				ds_grid_set(old_terrains, c, r, global.grid_terrains[r][c].type);
+			}
+		}
+		_count++;
+	}
+	return _count;
+}
+
 /// @function VM_GetWave()
 /// @return 当前波次
 function VM_GetWave() {
@@ -654,6 +673,168 @@ function VM_GetLastCreatedCard() {
 /// @return 最新销毁的卡片实例 ID
 function VM_GetLastDestroyedCard() {
     return VM_ClientWrapId(real(global._VM_last_destroyed_card));
+}
+
+/// @function VM_GetMouseX()
+/// @return 鼠标当前 X 坐标
+function VM_GetMouseX() {
+	return mouse_x;
+}
+
+/// @function VM_GetMouseY()
+/// @return 鼠标当前 Y 坐标
+function VM_GetMouseY() {
+	return mouse_y;
+}
+
+/// @function VM_GetMouseCol()
+/// @return 鼠标所在网格列
+function VM_GetMouseCol() {
+	var _gp = get_grid_position_from_world(mouse_x, mouse_y);
+	return _gp.col;
+}
+
+/// @function VM_GetMouseRow()
+/// @return 鼠标所在网格行
+function VM_GetMouseRow() {
+	var _gp = get_grid_position_from_world(mouse_x, mouse_y);
+	return _gp.row;
+}
+
+/// @function VM_GetTerrain(col, row)
+/// @return 0=normal 1=water 2=obstacle -1=超出范围
+function VM_GetTerrain(col_addr, row_addr) {
+	var _col = vm_read_mem(global.__vm, col_addr);
+	var _row = vm_read_mem(global.__vm, row_addr);
+	if (_row < 0 || _row >= global.grid_rows || _col < 0 || _col >= global.grid_cols) return -1;
+	var _t = global.grid_terrains[_row][_col].type;
+	if (_t == "water") return 1;
+	if (_t == "obstacle") return 2;
+	return 0;
+}
+
+/// @function VM_GetMousePressed(button)
+/// @param button 1=左键 2=右键 3=中键
+/// @return 1=按下 0=未按下
+function VM_GetMousePressed(btn_addr) {
+	var _btn = vm_read_mem(global.__vm, btn_addr);
+	var _args = [];
+	if (_btn == 1) return mouse_check_button(mb_left) ? 1 : 0;
+	if (_btn == 2) return mouse_check_button(mb_right) ? 1 : 0;
+	if (_btn == 3) return mouse_check_button(mb_middle) ? 1 : 0;
+	return 0;
+}
+
+/// @function VM_GetKeyDown(key)
+/// @param key 按键名: 单字符="A".."Z"/"0".."9", 特殊="space"/"enter"/"escape"/"tab"/"shift"/"ctrl"/"alt"/"up"/"down"/"left"/"right"
+/// @return 1=按住 0=松开
+function VM_GetKeyDown(key_addr) {
+	var _key = vm_read_mem(global.__vm, key_addr);
+	var _code = _vm_key_name_to_code(_key);
+	return _code >= 0 ? (keyboard_check(_code) ? 1 : 0) : 0;
+}
+
+/// @function VM_GetKeyPressed(key)
+/// @param key 同上，字符串按键名
+/// @return 1=刚按下(单帧) 0=未按下
+function VM_GetKeyPressed(key_addr) {
+	var _key = vm_read_mem(global.__vm, key_addr);
+	var _code = _vm_key_name_to_code(_key);
+	return _code >= 0 ? (keyboard_check_pressed(_code) ? 1 : 0) : 0;
+}
+
+function _vm_key_name_to_code(_name) {
+	var _n = string_lower(_name);
+	switch (_n) {
+		case "space":  return vk_space;
+		case "enter":  return vk_enter;
+		case "escape": return vk_escape;
+		case "tab":    return vk_tab;
+		case "shift":  return vk_shift;
+		case "ctrl":   return vk_control;
+		case "alt":    return vk_alt;
+		case "up":     return vk_up;
+		case "down":   return vk_down;
+		case "left":   return vk_left;
+		case "right":  return vk_right;
+		case "backspace": return vk_backspace;
+		case "delete": return vk_delete;
+		case "home":   return vk_home;
+		case "end":    return vk_end;
+		case "pageup": return vk_pageup;
+		case "pagedown": return vk_pagedown;
+		case "f1": return vk_f1;
+		case "f2": return vk_f2;
+		case "f3": return vk_f3;
+		case "f4": return vk_f4;
+		case "f5": return vk_f5;
+		case "f6": return vk_f6;
+		case "f7": return vk_f7;
+		case "f8": return vk_f8;
+		case "f9": return vk_f9;
+		case "f10": return vk_f10;
+		case "f11": return vk_f11;
+		case "f12": return vk_f12;
+	}
+	if (string_length(_name) == 1) return ord(string_upper(_name));
+	shell_print("[VM] 未知按键名: " + string(_name));
+	return -1;
+}
+
+/// @function VM_GetEnemyCount()
+/// @return 场上敌人数量
+function VM_GetEnemyCount() {
+	return instance_number(obj_enemy_parent);
+}
+
+/// @function VM_GetPlantCount()
+/// @return 场上植物数量
+function VM_GetPlantCount() {
+	return instance_number(obj_card_parent);
+}
+
+/// @function VM_GetPlantCountAt(col, row, type)
+/// @param type "all" 统计全部, 否则按 plant_id 筛选
+/// @return 该格子符合条件的卡片数量
+function VM_GetPlantCountAt(col_addr, row_addr, type_addr) {
+	var _col = vm_read_mem(global.__vm, col_addr);
+	var _row = vm_read_mem(global.__vm, row_addr);
+	var _type = vm_read_mem(global.__vm, type_addr);
+	var _all_cols = (_col == -1);
+	var _all_rows = (_row == -1);
+	// 全场统计快速通道
+	if (_all_cols && _all_rows && _type == "all") return instance_number(obj_card_parent);
+	if (_all_cols && _all_rows) {
+		var _cnt = 0;
+		with (obj_card_parent) {
+			if (_type == "all" || plant_id == _type) _cnt++;
+		}
+		return _cnt;
+	}
+	var _c1 = _all_cols ? 0 : clamp(_col, 0, global.grid_cols - 1);
+	var _c2 = _all_cols ? global.grid_cols - 1 : _c1;
+	var _r1 = _all_rows ? 0 : clamp(_row, 0, global.grid_rows - 1);
+	var _r2 = _all_rows ? global.grid_rows - 1 : _r1;
+	var _count = 0;
+	for (var _c = _c1; _c <= _c2; _c++) {
+		for (var _r = _r1; _r <= _r2; _r++) {
+			var _list = ds_grid_get(global.grid_plants, _c, _r);
+			for (var i = 0; i < ds_list_size(_list); i++) {
+				var _p = ds_list_find_value(_list, i);
+				if (!instance_exists(_p)) continue;
+				if (_type == "all" || _p.plant_id == _type) _count++;
+			}
+		}
+	}
+	return _count;
+}
+
+/// @function VM_PlaySound(name)
+/// @param name 内置音效名 (如 "snd_place1")
+function VM_PlaySound(name_addr) {
+	var _name = vm_read_mem(global.__vm, name_addr);
+	var _snd = asset_get_index(_name);
+	if (_snd != -1) audio_play_sound(_snd, 0, 0);
 }
 
 /// @function VM_GetProp(inst_id, prop)
@@ -764,7 +945,10 @@ function VM_SpawnPlant(card_id_addr, col_addr, row_addr, shape_addr, level_addr,
     var _card_data = deck_get_card_data(card_id, shape);
     if (is_undefined(_card_data)) return -1;
     var _obj = _card_data[? "obj"];
-    var _props = { current_level: level, skill: skill };
+    var _props = {};
+	if(level!=-1)_props[$ "current_level"] =level;
+	if(skill!=-1)_props[$ "skill"] =skill;
+	if(shape!=-1)_props[$ "shape"] =shape;
 
     // 批量生成：col=-1 整列所有行，row=-1 整行所有列
     var _batch = (col == -1 || row == -1);
@@ -783,6 +967,7 @@ function VM_SpawnPlant(card_id_addr, col_addr, row_addr, shape_addr, level_addr,
             }
             var _plant = spawn_plant(_c, _r, _obj, _props);
             if (_plant < 0) continue;
+			network_apply_plant_level(_plant);
             _last = _plant;
             _plant._VM_id = _VM_id;
             if (global.network.mode == "server") {
@@ -1543,6 +1728,19 @@ VM_RegisterFunction(global.__vm, VM_SetCardProp);      // 39
 VM_RegisterFunction(global.__vm, VM_SetEnemyProp);     // 40
 VM_RegisterFunction(global.__vm, VM_ShowNoticeDur);    // 41
 VM_RegisterFunction(global.__vm, VM_SetEventEnabled);  // 42
+VM_RegisterFunction(global.__vm, VM_RefreshPlatformSnapshots);  // 43
+VM_RegisterFunction(global.__vm, VM_GetMouseX);  // 44
+VM_RegisterFunction(global.__vm, VM_GetMouseY);  // 45
+VM_RegisterFunction(global.__vm, VM_GetMouseCol);  // 46
+VM_RegisterFunction(global.__vm, VM_GetMouseRow);  // 47
+VM_RegisterFunction(global.__vm, VM_GetTerrain);  // 48
+VM_RegisterFunction(global.__vm, VM_GetMousePressed);  // 49
+VM_RegisterFunction(global.__vm, VM_GetKeyDown);  // 50
+VM_RegisterFunction(global.__vm, VM_GetKeyPressed);  // 51
+VM_RegisterFunction(global.__vm, VM_GetEnemyCount);  // 52
+VM_RegisterFunction(global.__vm, VM_GetPlantCount);  // 53
+VM_RegisterFunction(global.__vm, VM_GetPlantCountAt);  // 54
+VM_RegisterFunction(global.__vm, VM_PlaySound);  // 55
 global._sync_vm_bin_buf = undefined;
 
 /// @function VM_InitRoomEntry(buf)

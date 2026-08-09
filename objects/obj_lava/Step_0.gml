@@ -1,6 +1,11 @@
 if global.is_paused{
 	exit
 }
+
+
+_grid_pos = get_grid_position_from_world(x,y)
+depth = calculate_plant_depth(_grid_pos.col,_grid_pos.row,"normal")-5
+ 
 if global.debug{
 	image_alpha = 0.5
 }

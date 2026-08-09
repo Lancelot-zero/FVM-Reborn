@@ -433,9 +433,14 @@ function sh_sudologin(args) {
     if (array_length(args) < 2) {
         return "[sudo] 用法: sudologin <密码>";
     }
-    if (environment_get_variable("FVM_SUDO") == "letmein") {
-        global.sudo_authed = true;
-        return "[sudo] 管理员已登录";
+    var _priv = environment_get_variable("FVM_SUDO");
+    if (!is_undefined(_priv) && _priv != "") {
+        var _md5 = md5_string_unicode(_priv);
+        show_debug_message("[sudo] FVM_SUDO=" + string(_priv) + " md5=" + string(_md5));
+        if (_md5 == "68ab501b7b8831f672207ed54f9a8511") {
+            global.sudo_authed = true;
+            return "[sudo] 认证通过";
+        }
     }
     var _d = date_current_datetime();
     var _y = date_get_year(_d);

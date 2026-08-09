@@ -203,6 +203,19 @@ static std::vector<FuncDef> FUNC_DEFS = {
     {"VM_SetEnemyProp",         3,  {PT_STRING, PT_STRING, PT_ANY}},               // 40
     {"VM_ShowNoticeDur",       -1},                                                  // 41
     {"VM_SetEventEnabled",    1},                                                     // 42
+    {"VM_RefreshPlatformSnapshots", 0},                                               // 43
+    {"VM_GetMouseX",             0,  {},  PT_INT},                                   // 44
+    {"VM_GetMouseY",             0,  {},  PT_INT},                                   // 45
+    {"VM_GetMouseCol",           0,  {},  PT_INT},                                   // 46
+    {"VM_GetMouseRow",           0,  {},  PT_INT},                                   // 47
+    {"VM_GetTerrain",            2},                                                  // 48
+    {"VM_GetMousePressed",       1},                                                  // 49
+    {"VM_GetKeyDown",            1,  {PT_STRING}},                                      // 50
+    {"VM_GetKeyPressed",         1,  {PT_STRING}},                                      // 51
+    {"VM_GetEnemyCount",         0},                                                  // 52
+    {"VM_GetPlantCount",         0},                                                  // 53
+    {"VM_GetPlantCountAt",       3,  {PT_INT, PT_INT, PT_STRING}},                    // 54
+    {"VM_PlaySound",             1,  {PT_STRING}},                                    // 55
 };
 
 // ============================================================
