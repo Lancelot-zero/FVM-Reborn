@@ -37,7 +37,8 @@ function VM_Create(mem_size = 32768) {
         mem_val:  array_create(mem_size, 0),
         functions: [],
         func_ret_types: [],
-        strings: []
+        strings: [],
+        str_map: ds_map_create()
     };
     return vm;
 }
@@ -199,16 +200,13 @@ function VM_CreatePlatform(col_addr, row_addr, width_addr, length_addr, axis_add
 
 /// @function _VM_LoadSpriteFile(name)
 function _VM_LoadSpriteFile(name) {
-    // 先查缓存
-    if (ds_map_exists(global._sprite_cache, name)) {
-        return global._sprite_cache[? name];
-    }
+    if (ds_map_exists(global._VM_sprite_temp_cache, name))
+        return global._VM_sprite_temp_cache[? name];
     if (variable_global_exists("network") && global.network.mode == "client") {
         return file_cache_load_sprite(name, -1, "", "");
     }
     var _paths = [];
     if (variable_global_exists("_file_cache_json_path")) {
-        // 优先从 JSON 同目录找
         var _prefix = global._file_cache_json_path;
         if (!string_ends_with(_prefix, "/") && !string_ends_with(_prefix, "\\")) _prefix += "/";
         array_push(_paths, _prefix + "../" + name);
@@ -221,9 +219,33 @@ function _VM_LoadSpriteFile(name) {
         if (file_exists(_paths[_i])) {
             var _spr = sprite_add(_paths[_i], 1, false, false, 0, 0);
             if (_spr != -1) {
-                ds_map_add(global._pid_reverse, _spr, name);
-                ds_map_add(global._sprite_cache, name, _spr);
-                ds_map_add(global._sprite_state, name, full_load);
+                ds_map_add(global._VM_sprite_temp_cache, name, _spr);
+                return _spr;
+            }
+        }
+    }
+    return -1;
+}
+
+/// @function _VM_LoadSpriteFileEx(name, frames)
+function _VM_LoadSpriteFileEx(name, frames) {
+    if (ds_map_exists(global._VM_sprite_temp_cache, name))
+        return global._VM_sprite_temp_cache[? name];
+    if (variable_global_exists("network") && global.network.mode == "client")
+        return file_cache_load_sprite(name, -1, "", "");
+    var _paths = [];
+    if (variable_global_exists("_file_cache_json_path")) {
+        var _prefix = global._file_cache_json_path;
+        if (!string_ends_with(_prefix, "/") && !string_ends_with(_prefix, "\\")) _prefix += "/";
+        array_push(_paths, _prefix + "../" + name);
+    }
+    array_push(_paths, "laboratory/" + name);
+    array_push(_paths, name);
+    for (var _i = 0; _i < array_length(_paths); _i++) {
+        if (file_exists(_paths[_i])) {
+            var _spr = sprite_add(_paths[_i], frames, false, false, 0, 0);
+            if (_spr != -1) {
+                ds_map_add(global._VM_sprite_temp_cache, name, _spr);
                 return _spr;
             }
         }
@@ -238,6 +260,47 @@ function VM_LoadSprite(name_addr) {
     array_push(global._VM_loaded_sprite_indices, _pool_idx);
     var name = vm_read_mem(global.__vm, name_addr);
     return _VM_LoadSpriteFile(name);
+}
+
+/// @function VM_LoadSpriteFrames(name, frames)
+/// @param name   贴图文件名
+/// @param frames 帧数（自动均分切割）
+/// @return sprite index
+function VM_LoadSpriteFrames(name_addr, frames_addr) {
+	var _pool_idx = global.__vm.mem_val[name_addr];
+	array_push(global._VM_loaded_sprite_indices, _pool_idx);
+	var _name = vm_read_mem(global.__vm, name_addr);
+	var _frames = vm_read_mem(global.__vm, frames_addr);
+	if (is_undefined(_frames) || _frames <= 0) _frames = 1;
+	return _VM_LoadSpriteFileEx(_name, _frames);
+}
+
+/// @function VM_LoadSpritePerm(name, frames)
+/// @desc 加载贴图到永久缓存，不被 bin 重载清理
+/// @param name   贴图文件名
+/// @param frames 帧数 (-1=默认1)
+/// @return sprite index
+function VM_LoadSpritePerm(name_addr, frames_addr) {
+	var _name = vm_read_mem(global.__vm, name_addr);
+	var _frames = vm_read_mem(global.__vm, frames_addr);
+	if (is_undefined(_frames) || _frames <= 0) _frames = 1;
+	if (ds_map_exists(global._VM_sprite_cache, _name))
+		return global._VM_sprite_cache[? _name];
+	var _spr = sprite_add(_name, _frames, false, false, 0, 0);
+	if (_spr == -1) return -1;
+	ds_map_add(global._VM_sprite_cache, _name, _spr);
+	return _spr;
+}
+
+/// @function VM_FreeSpritePerm(name)
+/// @desc 释放永久缓存中的贴图
+/// @param name 贴图文件名
+function VM_FreeSpritePerm(name_addr) {
+	var _name = vm_read_mem(global.__vm, name_addr);
+	if (!ds_map_exists(global._VM_sprite_cache, _name)) return;
+	var _spr = global._VM_sprite_cache[? _name];
+	if (sprite_exists(_spr)) sprite_delete(_spr);
+	ds_map_delete(global._VM_sprite_cache, _name);
 }
 
 /// @function VM_GetLoadedSpriteName(index)
@@ -829,6 +892,542 @@ function VM_GetPlantCountAt(col_addr, row_addr, type_addr) {
 	return _count;
 }
 
+
+/// @function VM_GetPlantAt(col, row, layer)
+/// @param col   列，-1 查所有列
+/// @param row   行，-1 查所有行
+/// @param layer 层级名: "normal" "shield_inner" "lilypad" "shield_outer" "coffee"
+/// @return 该格子指定层第一个植物实例 ID，没找到返回 -1
+function VM_GetPlantAt(col_addr, row_addr, layer_addr) {
+	var _col = vm_read_mem(global.__vm, col_addr);
+	var _row = vm_read_mem(global.__vm, row_addr);
+	var _layer = vm_read_mem(global.__vm, layer_addr);
+	var _all_cols = (_col == -1);
+	var _all_rows = (_row == -1);
+	var _c1 = _all_cols ? 0 : clamp(_col, 0, global.grid_cols - 1);
+	var _c2 = _all_cols ? global.grid_cols - 1 : _c1;
+	var _r1 = _all_rows ? 0 : clamp(_row, 0, global.grid_rows - 1);
+	var _r2 = _all_rows ? global.grid_rows - 1 : _r1;
+	for (var _c = _c1; _c <= _c2; _c++) {
+		for (var _r = _r1; _r <= _r2; _r++) {
+			var _list = ds_grid_get(global.grid_plants, _c, _r);
+			for (var _i = 0; _i < ds_list_size(_list); _i++) {
+				var _p = ds_list_find_value(_list, _i);
+				if (!instance_exists(_p)) continue;
+				if (_layer == "all" || _p.plant_type == _layer) {
+					var _vmid = _p._VM_id;
+					if (is_undefined(_vmid)) _vmid = real(_p);
+					return VM_ClientWrapId(_vmid);
+				}
+			}
+		}
+	}
+	return -1;
+}
+
+/// @function VM_SwapPlants(col1, row1, col2, row2)
+/// @description 交换两个格子上所有植物的位置
+/// @param col1 第一个格子的列
+/// @param row1 第一个格子的行
+/// @param col2 第二个格子的列
+/// @param row2 第二个格子的行
+function VM_SwapPlants(col1_addr, row1_addr, col2_addr, row2_addr) {
+	var _c1 = vm_read_mem(global.__vm, col1_addr);
+	var _r1 = vm_read_mem(global.__vm, row1_addr);
+	var _c2 = vm_read_mem(global.__vm, col2_addr);
+	var _r2 = vm_read_mem(global.__vm, row2_addr);
+	if (_c1 < 0 || _c1 >= global.grid_cols || _r1 < 0 || _r1 >= global.grid_rows) return;
+	if (_c2 < 0 || _c2 >= global.grid_cols || _r2 < 0 || _r2 >= global.grid_rows) return;
+	if (_c1 == _c2 && _r1 == _r2) return;
+	if (global.network.mode == "client") return;
+	var _list1 = ds_grid_get(global.grid_plants, _c1, _r1);
+	var _list2 = ds_grid_get(global.grid_plants, _c2, _r2);
+	var _plants1 = [];
+	var _plants2 = [];
+	for (var i = 0; i < ds_list_size(_list1); i++) {
+		var _p = ds_list_find_value(_list1, i);
+		if (instance_exists(_p)) array_push(_plants1, _p);
+	}
+	for (var i = 0; i < ds_list_size(_list2); i++) {
+		var _p = ds_list_find_value(_list2, i);
+		if (instance_exists(_p)) array_push(_plants2, _p);
+	}
+	ds_list_clear(_list1);
+	ds_list_clear(_list2);
+	var _pos1 = get_world_position_from_grid(_c1, _r1);
+	var _pos2 = get_world_position_from_grid(_c2, _r2);
+	for (var i = 0; i < array_length(_plants1); i++) {
+		var _p = _plants1[i];
+		_p.x = _pos2.x;
+		_p.y = _pos2.y;
+		_p.col = _c2;
+		_p.row = _r2;
+		_p.depth = calculate_plant_depth(_c2, _r2, _p.plant_type);
+		ds_list_add(_list2, _p);
+	}
+	for (var i = 0; i < array_length(_plants2); i++) {
+		var _p = _plants2[i];
+		_p.x = _pos1.x;
+		_p.y = _pos1.y;
+		_p.col = _c1;
+		_p.row = _r1;
+		_p.depth = calculate_plant_depth(_c1, _r1, _p.plant_type);
+		ds_list_add(_list1, _p);
+	}
+	if (global.network.mode == "server") {
+			var _msg = json_stringify({hook: "call", func: "VM_SwapPlants", args: [_c1, _r1, _c2, _r2]});
+			var _cl = global.network.connected_clients;
+			for (var _i = 0; _i < array_length(_cl); _i++)
+				send_message(_cl[_i], MSG_VM_NOTIFY, _msg);
+		}
+}
+
+
+/// @function VM_SwapPlantRects(x1, y1, w, h, x2, y2)
+/// @description 交换两个等大矩形区域内所有植物的位置（支持重叠）
+/// @param x1, y1 第一个矩形的左上角 (列, 行)
+/// @param w, h  矩形宽高 (格子数)
+/// @param x2, y2 第二个矩形的左上角 (列, 行)
+function VM_SwapPlantRects(x1_addr, y1_addr, w_addr, h_addr, x2_addr, y2_addr) {
+	var _x1 = vm_read_mem(global.__vm, x1_addr);
+	var _y1 = vm_read_mem(global.__vm, y1_addr);
+	var _w  = vm_read_mem(global.__vm, w_addr);
+	var _h  = vm_read_mem(global.__vm, h_addr);
+	var _x2 = vm_read_mem(global.__vm, x2_addr);
+	var _y2 = vm_read_mem(global.__vm, y2_addr);
+	if (_w <= 0 || _h <= 0) return;
+	if (_x1 == _x2 && _y1 == _y2) return;
+	if (global.network.mode == "client") return;
+	
+	// 第一趟：收集快照（两边都在界内才收）
+	var _snap = ds_map_create();
+	for (var _dc = 0; _dc < _w; _dc++) {
+		for (var _dr = 0; _dr < _h; _dr++) {
+			var _c1 = _x1 + _dc;
+			var _r1 = _y1 + _dr;
+			var _c2 = _x2 + _dc;
+			var _r2 = _y2 + _dr;
+			var _in1 = (_c1 >= 0 && _c1 < global.grid_cols && _r1 >= 0 && _r1 < global.grid_rows);
+			var _in2 = (_c2 >= 0 && _c2 < global.grid_cols && _r2 >= 0 && _r2 < global.grid_rows);
+			if (!_in1 || !_in2) continue;
+			var _k1 = string(_c1) + "," + string(_r1);
+			if (!ds_map_exists(_snap, _k1)) {
+				var _arr = [];
+				var _list = ds_grid_get(global.grid_plants, _c1, _r1);
+				for (var i = 0; i < ds_list_size(_list); i++) {
+					var _p = ds_list_find_value(_list, i);
+					if (instance_exists(_p)) array_push(_arr, _p);
+				}
+				ds_map_add(_snap, _k1, _arr);
+			}
+			var _k2 = string(_c2) + "," + string(_r2);
+			if (!ds_map_exists(_snap, _k2)) {
+				var _arr = [];
+				var _list = ds_grid_get(global.grid_plants, _c2, _r2);
+				for (var i = 0; i < ds_list_size(_list); i++) {
+					var _p = ds_list_find_value(_list, i);
+					if (instance_exists(_p)) array_push(_arr, _p);
+				}
+				ds_map_add(_snap, _k2, _arr);
+			}
+		}
+	}
+	
+	// 第二趟：清空（每格只清一次）
+	var _cleared = ds_map_create();
+	for (var _dc = 0; _dc < _w; _dc++) {
+		for (var _dr = 0; _dr < _h; _dr++) {
+			var _c1 = _x1 + _dc;
+			var _r1 = _y1 + _dr;
+			var _c2 = _x2 + _dc;
+			var _r2 = _y2 + _dr;
+			var _in1 = (_c1 >= 0 && _c1 < global.grid_cols && _r1 >= 0 && _r1 < global.grid_rows);
+			var _in2 = (_c2 >= 0 && _c2 < global.grid_cols && _r2 >= 0 && _r2 < global.grid_rows);
+			if (!_in1 || !_in2) continue;
+			var _k1 = string(_c1) + "," + string(_r1);
+			if (!ds_map_exists(_cleared, _k1)) {
+				ds_list_clear(ds_grid_get(global.grid_plants, _c1, _r1));
+				ds_map_add(_cleared, _k1, true);
+			}
+			var _k2 = string(_c2) + "," + string(_r2);
+			if (!ds_map_exists(_cleared, _k2)) {
+				ds_list_clear(ds_grid_get(global.grid_plants, _c2, _r2));
+				ds_map_add(_cleared, _k2, true);
+			}
+		}
+	}
+	ds_map_destroy(_cleared);
+	
+	// 第三趟：放入（格A→格B，格B→格A，重叠格以A侧为准）
+	for (var _dc = 0; _dc < _w; _dc++) {
+		for (var _dr = 0; _dr < _h; _dr++) {
+			var _c1 = _x1 + _dc;
+			var _r1 = _y1 + _dr;
+			var _c2 = _x2 + _dc;
+			var _r2 = _y2 + _dr;
+			var _in1 = (_c1 >= 0 && _c1 < global.grid_cols && _r1 >= 0 && _r1 < global.grid_rows);
+			var _in2 = (_c2 >= 0 && _c2 < global.grid_cols && _r2 >= 0 && _r2 < global.grid_rows);
+			if (!_in1 || !_in2) continue;
+			var _k1 = string(_c1) + "," + string(_r1);
+			var _k2 = string(_c2) + "," + string(_r2);
+	
+			// A侧 → B侧
+			var _src = ds_map_find_value(_snap, _k1);
+			if (!is_undefined(_src)) {
+				var _pos = get_world_position_from_grid(_c2, _r2);
+				var _list = ds_grid_get(global.grid_plants, _c2, _r2);
+				for (var i = 0; i < array_length(_src); i++) {
+					var _p = _src[i];
+					_p.x = _pos.x;
+					_p.y = _pos.y;
+					_p.col = _c2;
+					_p.row = _r2;
+					_p.depth = calculate_plant_depth(_c2, _r2, _p.plant_type);
+					ds_list_add(_list, _p);
+				}
+				ds_map_add(_snap, _k1, undefined);
+			}
+	
+			// B侧 → A侧（未被A侧处理过的）
+			var _src = ds_map_find_value(_snap, _k2);
+			if (!is_undefined(_src)) {
+				var _pos = get_world_position_from_grid(_c1, _r1);
+				var _list = ds_grid_get(global.grid_plants, _c1, _r1);
+				for (var i = 0; i < array_length(_src); i++) {
+					var _p = _src[i];
+					_p.x = _pos.x;
+					_p.y = _pos.y;
+					_p.col = _c1;
+					_p.row = _r1;
+					_p.depth = calculate_plant_depth(_c1, _r1, _p.plant_type);
+					ds_list_add(_list, _p);
+				}
+				ds_map_add(_snap, _k2, undefined);
+			}
+		}
+	}
+	ds_map_destroy(_snap);
+	if (global.network.mode == "server") {
+			var _msg = json_stringify({hook: "call", func: "VM_SwapPlantRects", args: [_x1, _y1, _w, _h, _x2, _y2]});
+			var _cl = global.network.connected_clients;
+			for (var _i = 0; _i < array_length(_cl); _i++)
+				send_message(_cl[_i], MSG_VM_NOTIFY, _msg);
+		}
+	}
+
+/// @function VM_CompactColumn(col)
+/// @description 压缩整列植物：从上到下遍历，有空缺就把下面的往上搬运
+/// @param col 列号，-1=所有列
+function VM_CompactColumn(col_addr) {
+	var _col = vm_read_mem(global.__vm, col_addr);
+	var _c1 = (_col == -1) ? 0 : _col;
+	var _c2 = (_col == -1) ? global.grid_cols - 1 : _col;
+	if (_c1 < 0 || _c2 >= global.grid_cols) return;
+	if (global.network.mode == "client") return;
+	for (var _c = _c1; _c <= _c2; _c++) {
+		// 收集该列所有非空格子的植物快照
+		var _snap = [];
+		for (var _r = 0; _r < global.grid_rows; _r++) {
+			var _list = ds_grid_get(global.grid_plants, _c, _r);
+			var _arr = [];
+			for (var i = 0; i < ds_list_size(_list); i++) {
+				var _p = ds_list_find_value(_list, i);
+				if (instance_exists(_p)) array_push(_arr, _p);
+			}
+			if (array_length(_arr) > 0) array_push(_snap, _arr);
+		}
+		// 清空整列
+		for (var _r = 0; _r < global.grid_rows; _r++) {
+			ds_list_clear(ds_grid_get(global.grid_plants, _c, _r));
+		}
+		// 从第0行开始重新紧密放入
+		var _row = 0;
+		for (var _i = 0; _i < array_length(_snap); _i++) {
+			var _src = _snap[_i];
+			var _pos = get_world_position_from_grid(_c, _row);
+			var _list = ds_grid_get(global.grid_plants, _c, _row);
+			for (var j = 0; j < array_length(_src); j++) {
+				var _p = _src[j];
+				_p.x = _pos.x;
+				_p.y = _pos.y;
+				_p.row = _row;
+				_p.depth = calculate_plant_depth(_c, _row, _p.plant_type);
+				ds_list_add(_list, _p);
+	if (global.network.mode == "server") {
+			var _msg = json_stringify({hook: "call", func: "VM_CompactColumn", args: [_col]});
+			var _cl = global.network.connected_clients;
+			for (var _i = 0; _i < array_length(_cl); _i++)
+				send_message(_cl[_i], MSG_VM_NOTIFY, _msg);
+		}
+			}
+			_row++;
+		}
+	}
+}
+
+/// @function VM_CompactRow(row)
+/// @description 压缩整行植物：从左到右遍历，有空缺就把右边的往左搬运
+/// @param row 行号，-1=所有行
+function VM_CompactRow(row_addr) {
+	var _row = vm_read_mem(global.__vm, row_addr);
+	var _r1 = (_row == -1) ? 0 : _row;
+	var _r2 = (_row == -1) ? global.grid_rows - 1 : _row;
+	if (global.network.mode == "client") return;
+	if (_r1 < 0 || _r2 >= global.grid_rows) return;
+	for (var _r = _r1; _r <= _r2; _r++) {
+		// 收集该行所有非空格子的植物快照
+		var _snap = [];
+		for (var _c = 0; _c < global.grid_cols; _c++) {
+			var _list = ds_grid_get(global.grid_plants, _c, _r);
+			var _arr = [];
+			for (var i = 0; i < ds_list_size(_list); i++) {
+				var _p = ds_list_find_value(_list, i);
+				if (instance_exists(_p)) array_push(_arr, _p);
+			}
+			if (array_length(_arr) > 0) array_push(_snap, _arr);
+		}
+		// 清空整行
+		for (var _c = 0; _c < global.grid_cols; _c++) {
+			ds_list_clear(ds_grid_get(global.grid_plants, _c, _r));
+		}
+		// 从第0列开始重新紧密放入
+		var _col = 0;
+		for (var _i = 0; _i < array_length(_snap); _i++) {
+			var _src = _snap[_i];
+			var _pos = get_world_position_from_grid(_col, _r);
+			var _list = ds_grid_get(global.grid_plants, _col, _r);
+			for (var j = 0; j < array_length(_src); j++) {
+				var _p = _src[j];
+				_p.x = _pos.x;
+				_p.y = _pos.y;
+				_p.col = _col;
+				_p.depth = calculate_plant_depth(_col, _r, _p.plant_type);
+				ds_list_add(_list, _p);
+			}
+			_col++;
+		}
+	}
+	if (global.network.mode == "server") {
+			var _msg = json_stringify({hook: "call", func: "VM_CompactRow", args: [_row]});
+			var _cl = global.network.connected_clients;
+			for (var _i = 0; _i < array_length(_cl); _i++)
+				send_message(_cl[_i], MSG_VM_NOTIFY, _msg);
+		}
+}
+
+/// @function VM_CompactColumnRev(col)
+/// @description 压缩整列植物（反向）：从上到下遍历，有空缺就把上面的往下搬运
+/// @param col 列号，-1=所有列
+function VM_CompactColumnRev(col_addr) {
+	var _col = vm_read_mem(global.__vm, col_addr);
+	if (global.network.mode == "client") return;
+	var _c1 = (_col == -1) ? 0 : _col;
+	var _c2 = (_col == -1) ? global.grid_cols - 1 : _col;
+	if (_c1 < 0 || _c2 >= global.grid_cols) return;
+	for (var _c = _c1; _c <= _c2; _c++) {
+		var _snap = [];
+		for (var _r = 0; _r < global.grid_rows; _r++) {
+			var _list = ds_grid_get(global.grid_plants, _c, _r);
+			var _arr = [];
+			for (var i = 0; i < ds_list_size(_list); i++) {
+				var _p = ds_list_find_value(_list, i);
+				if (instance_exists(_p)) array_push(_arr, _p);
+			}
+			if (array_length(_arr) > 0) array_push(_snap, _arr);
+		}
+		for (var _r = 0; _r < global.grid_rows; _r++) {
+			ds_list_clear(ds_grid_get(global.grid_plants, _c, _r));
+		}
+		// 从底行开始往上紧密放入
+		var _row = global.grid_rows - array_length(_snap);
+		for (var _i = 0; _i < array_length(_snap); _i++) {
+			var _src = _snap[_i];
+			var _pos = get_world_position_from_grid(_c, _row);
+			var _list = ds_grid_get(global.grid_plants, _c, _row);
+			for (var j = 0; j < array_length(_src); j++) {
+				var _p = _src[j];
+				_p.x = _pos.x;
+				_p.y = _pos.y;
+				_p.row = _row;
+				_p.depth = calculate_plant_depth(_c, _row, _p.plant_type);
+				ds_list_add(_list, _p);
+	if (global.network.mode == "server") {
+			var _msg = json_stringify({hook: "call", func: "VM_CompactColumnRev", args: [_col]});
+			var _cl = global.network.connected_clients;
+			for (var _i = 0; _i < array_length(_cl); _i++)
+				send_message(_cl[_i], MSG_VM_NOTIFY, _msg);
+		}
+			}
+			_row++;
+		}
+	}
+}
+
+/// @function VM_CompactRowRev(row)
+/// @description 压缩整行植物（反向）：从左到右遍历，有空缺就把左边的往右搬运
+/// @param row 行号，-1=所有行
+function VM_CompactRowRev(row_addr) {
+	var _row = vm_read_mem(global.__vm, row_addr);
+	var _r1 = (_row == -1) ? 0 : _row;
+	if (global.network.mode == "client") return;
+	var _r2 = (_row == -1) ? global.grid_rows - 1 : _row;
+	if (_r1 < 0 || _r2 >= global.grid_rows) return;
+	for (var _r = _r1; _r <= _r2; _r++) {
+		var _snap = [];
+		for (var _c = 0; _c < global.grid_cols; _c++) {
+			var _list = ds_grid_get(global.grid_plants, _c, _r);
+			var _arr = [];
+			for (var i = 0; i < ds_list_size(_list); i++) {
+				var _p = ds_list_find_value(_list, i);
+				if (instance_exists(_p)) array_push(_arr, _p);
+			}
+			if (array_length(_arr) > 0) array_push(_snap, _arr);
+		}
+		for (var _c = 0; _c < global.grid_cols; _c++) {
+			ds_list_clear(ds_grid_get(global.grid_plants, _c, _r));
+		}
+		// 从最右列开始往左紧密放入
+		var _col = global.grid_cols - array_length(_snap);
+		for (var _i = 0; _i < array_length(_snap); _i++) {
+			var _src = _snap[_i];
+			var _pos = get_world_position_from_grid(_col, _r);
+			var _list = ds_grid_get(global.grid_plants, _col, _r);
+			for (var j = 0; j < array_length(_src); j++) {
+	if (global.network.mode == "server") {
+			var _msg = json_stringify({hook: "call", func: "VM_CompactRowRev", args: [_row]});
+			var _cl = global.network.connected_clients;
+			for (var _i = 0; _i < array_length(_cl); _i++)
+				send_message(_cl[_i], MSG_VM_NOTIFY, _msg);
+		}
+				var _p = _src[j];
+				_p.x = _pos.x;
+				_p.y = _pos.y;
+				_p.col = _col;
+				_p.depth = calculate_plant_depth(_col, _r, _p.plant_type);
+				ds_list_add(_list, _p);
+			}
+			_col++;
+		}
+	}
+}
+	
+
+/// @function VM_SpawnPlantsRandom(x, y, w, h, shape, level, skill, card1, card2, ..., card9)
+/// @description 在矩形区域内随机种植植物，每格从 card1..card9 中随机选一个
+/// @param x,y     左上角 (列, 行)
+/// @param w,h     宽高 (格子数)
+/// @param shape   共享形状 (-1=默认)
+/// @param level   共享等级 (-1=默认)
+/// @param skill   共享技能 (-1=默认)
+/// @param cardN   植物卡片名 (最多9个)，空串/-1=跳过
+/// @note 客户端不可调用，服务端自动同步
+function VM_SpawnPlantsRandom(x_addr, y_addr, w_addr, h_addr,
+	shape_addr, level_addr, skill_addr,
+	ca1, ca2, ca3, ca4, ca5, ca6, ca7, ca8, ca9) {
+	if (global.network.mode == "client") return;
+	var _x = vm_read_mem(global.__vm, x_addr);
+	var _y = vm_read_mem(global.__vm, y_addr);
+	var _w = vm_read_mem(global.__vm, w_addr);
+	var _h = vm_read_mem(global.__vm, h_addr);
+	if (_w <= 0 || _h <= 0) return;
+	var _shape = vm_read_mem(global.__vm, shape_addr);
+	var _level = vm_read_mem(global.__vm, level_addr);
+	var _skill = vm_read_mem(global.__vm, skill_addr);
+	if (is_undefined(_shape)) _shape = -1;
+	if (is_undefined(_level)) _level = -1;
+	if (is_undefined(_skill)) _skill = -1;
+	// 收集有效卡片名
+	var _cards = [];
+	var _all = [ca1, ca2, ca3, ca4, ca5, ca6, ca7, ca8, ca9];
+	for (var _n = 0; _n < 9; _n++) {
+		if (is_undefined(_all[_n])) continue;
+		var _c = vm_read_mem(global.__vm, _all[_n]);
+		if (_c == -1 || _c == "") continue;
+		array_push(_cards, _c);
+	}
+	if (array_length(_cards) == 0) return;
+	var _c1 = clamp(_x, 0, global.grid_cols - 1);
+	var _c2 = clamp(_x + _w - 1, 0, global.grid_cols - 1);
+	var _r1 = clamp(_y, 0, global.grid_rows - 1);
+	var _r2 = clamp(_y + _h - 1, 0, global.grid_rows - 1);
+	for (var _c = _c1; _c <= _c2; _c++) {
+		for (var _r = _r1; _r <= _r2; _r++) {
+			// 格子已有植物则跳过
+			if (ds_list_size(ds_grid_get(global.grid_plants, _c, _r)) > 0) continue;
+			var _card = _cards[irandom(array_length(_cards) - 1)];
+			var _card_data = deck_get_card_data(_card, _shape);
+			if (is_undefined(_card_data)) continue;
+			var _props = {};
+			if (_level != -1) _props[$ "current_level"] = _level;
+			if (_skill != -1) _props[$ "skill"] = _skill;
+			if (_shape != -1) _props[$ "shape"] = _shape;
+			var _plant = spawn_plant(_c, _r, _card_data[? "obj"], _props);
+			if (_plant >= 0) {
+				network_apply_plant_level(_plant);
+				var _VM_id = ++global._VM_create_counter;
+				_plant._VM_id = _VM_id;
+				if (global.network.mode == "server") {
+					ds_map_add(global._VM_id_to_real, _VM_id, _plant);
+					var _nid = ds_map_exists(global.network.map_instance_id_net_id, _plant) ? global.network.map_instance_id_net_id[? _plant] : -1;
+					if (_nid != -1) {
+						var _vm_p = {};
+						_vm_p[$ "_VM_id"] = _VM_id;
+						var _list = global.network.connected_clients;
+						for (var _i = 0; _i < array_length(_list); _i++)
+							send_message(_list[_i], MSG_MODIFY_PROP, _nid, json_stringify(_vm_p));
+					}
+				}
+			}
+		}
+	}
+}
+
+/// @function VM_CreateButton(x, y, sprite, scale, idle, hover, press)
+/// @desc 创建一个可点击按钮，点击时触发 _VM_BUTTON_CLICKED 块
+/// @param x,y     世界坐标
+/// @param sprite  贴图名（完整精灵名，如 "spr_my_btn"）
+/// @param scale   缩放倍数 (-1 默认 1)
+/// @param idle    空闲态子帧 (-1 默认 0)
+/// @param hover   悬停态子帧 (-1 默认 1)
+/// @param press   按下态子帧 (-1 默认 2)
+/// @return 按钮实例 ID
+function VM_CreateButton(x_addr, y_addr, sprite_addr, scale_addr, idle_addr, hover_addr, press_addr) {
+	var _x = vm_read_mem(global.__vm, x_addr);
+	var _y = vm_read_mem(global.__vm, y_addr);
+	var _spr_name = vm_read_mem(global.__vm, sprite_addr);
+	var _scale = vm_read_mem(global.__vm, scale_addr);
+	var _idle = vm_read_mem(global.__vm, idle_addr);
+	var _hover = vm_read_mem(global.__vm, hover_addr);
+	var _press = vm_read_mem(global.__vm, press_addr);
+	if (is_undefined(_scale) || _scale == -1) _scale = 1;
+	if (is_undefined(_idle)  || _idle == -1) _idle = 0;
+	if (is_undefined(_hover) || _hover == -1) _hover = 1;
+	if (is_undefined(_press) || _press == -1) _press = 2;
+	var _spr = get_load_sprite(_spr_name);
+	var _btn = instance_create_layer(_x, _y, "Assets", Button);
+	_btn.set_sprite(_spr).set_scale(_scale).set_position(_x, _y).set_frames(_idle, _hover, _press);
+	return real(_btn);
+}
+
+/// @function VM_GetLastClickedButton()
+/// @return 最后被点击的 Button 实例 ID，没有返回 -1
+function VM_GetLastClickedButton() {
+	return real(global._VM_last_clicked_button);
+}
+
+/// @function VM_ApplyPlantLevel(inst_id)
+/// @description 应用植物的星级/技能/形态属性，刷新血量攻速等实际数值
+/// @param inst_id 植物实例 ID
+function VM_ApplyPlantLevel(inst_id_addr) {
+	var _inst = vm_read_mem(global.__vm, inst_id_addr);
+	if (_inst < 0) {
+		var _real = ds_map_find_value(global._VM_id_to_real, -_inst);
+		if (is_undefined(_real)) return;
+		_inst = _real;
+	}
+	if (!instance_exists(_inst)) return;
+	network_apply_plant_level(_inst);
+}
 /// @function VM_PlaySound(name)
 /// @param name 内置音效名 (如 "snd_place1")
 function VM_PlaySound(name_addr) {
@@ -1243,15 +1842,28 @@ function VM_Execute(vm, buf) {
                     var _result = script_execute_ext(_fn, _args);
 
                     if (_dst != VM_DST_VOID) {
-                        var _ret_type = vm.func_ret_types[_func_id];
-                        if (_ret_type == VM_TYPE_STRING) {
+                        if (is_string(_result)) {
                             _mt[_dst] = VM_TYPE_STRING;
-                        } else if (is_string(_result)) {
-                            _mt[_dst] = VM_TYPE_STRING;
+                            var _idx;
+                            if (ds_map_exists(vm.str_map, _result)) {
+                                _idx = vm.str_map[? _result];
+                            } else {
+                                _idx = array_length(vm.strings);
+                                array_push(vm.strings, _result);
+                                vm.str_map[? _result] = _idx;
+                            }
+                            _mv[_dst] = _idx;
                         } else if (is_real(_result)) {
+                            if (floor(_result) == _result) {
+                                _mt[_dst] = VM_TYPE_INT;
+                            } else {
+                                _mt[_dst] = VM_TYPE_FLOAT;
+                            }
+                            _mv[_dst] = _result;
+                        } else {
                             _mt[_dst] = VM_TYPE_INT;
+                            _mv[_dst] = 0;
                         }
-                        _mv[_dst] = _result;
                     }
                     break;
                 }
@@ -1498,15 +2110,28 @@ function VM_Execute_debug(vm, buf) {
                     shell_print("[" + string(_pos) + "] CALL  func" + string(_func_id) + _arg_str + " -> " + _dst_str + " = " + string(_result));
 
                     if (_dst != VM_DST_VOID) {
-                        var _ret_type = vm.func_ret_types[_func_id];
-                        if (_ret_type == VM_TYPE_STRING) {
+                        if (is_string(_result)) {
                             _mt[_dst] = VM_TYPE_STRING;
-                        } else if (is_string(_result)) {
-                            _mt[_dst] = VM_TYPE_STRING;
+                            var _idx;
+                            if (ds_map_exists(vm.str_map, _result)) {
+                                _idx = vm.str_map[? _result];
+                            } else {
+                                _idx = array_length(vm.strings);
+                                array_push(vm.strings, _result);
+                                vm.str_map[? _result] = _idx;
+                            }
+                            _mv[_dst] = _idx;
                         } else if (is_real(_result)) {
+                            if (floor(_result) == _result) {
+                                _mt[_dst] = VM_TYPE_INT;
+                            } else {
+                                _mt[_dst] = VM_TYPE_FLOAT;
+                            }
+                            _mv[_dst] = _result;
+                        } else {
                             _mt[_dst] = VM_TYPE_INT;
+                            _mv[_dst] = 0;
                         }
-                        _mv[_dst] = _result;
                     }
                     break;
                 }
@@ -1588,6 +2213,8 @@ global._VM_PLATFORM_IDLE_END = undefined;
 global._VM_MOUSE_LEFT        = undefined;
 global._VM_MOUSE_RIGHT       = undefined;
 global._VM_KEY_PRESSED       = undefined;
+global._VM_BUTTON_CLICKED    = undefined;
+global._VM_last_clicked_button = -1;
 global._VM_FRAME             = undefined;
 global._VM_TIMER_5f          = undefined;
 global._VM_TIMER_10f         = undefined;
@@ -1604,6 +2231,8 @@ global._VM_event_enabled = true
 global._VM_debug_mode = false;
 global._VM_loaded_sprite_indices = [];
 global._VM_hook_queue = [];       // 待执行 hook 队列，每个元素 {buf, id}
+global._VM_sprite_cache      = ds_map_create();  // VM 永久贴图 name→id
+global._VM_sprite_temp_cache = ds_map_create();  // VM 临时贴图 name→id，重载 bin 时清理
 
 function VM_QueueHook(buf, key, id) {
     if (buffer_exists(buf)) array_push(global._VM_hook_queue, {buf: buf, key: key, id: id});
@@ -1671,8 +2300,30 @@ function VM_HandleNotify(json) {
         case "subwave_end":
             if (buffer_exists(global._VM_SUBWAVE_END)) VM_Execute(global.__vm, global._VM_SUBWAVE_END);
             break;
+        case "call":
+        {
+            var _func = ds_map_find_value(global._VM_remote_funcs, _data[$ "func"]);
+            if (is_undefined(_func)) {
+                show_debug_message("[VM_HandleNotify] remote func not registered: " + _data[$ "func"]);
+                break;
+            }
+            var _args = _data[$ "args"];
+            switch (array_length(_args)) {
+                case 0: _func(); break;
+                case 1: _func(_args[0]); break;
+                case 2: _func(_args[0], _args[1]); break;
+                case 3: _func(_args[0], _args[1], _args[2]); break;
+                case 4: _func(_args[0], _args[1], _args[2], _args[3]); break;
+                case 5: _func(_args[0], _args[1], _args[2], _args[3], _args[4]); break;
+                case 6: _func(_args[0], _args[1], _args[2], _args[3], _args[4], _args[5]); break;
+                default:
+                    show_debug_message("[VM_HandleNotify] unsupported arg count: " + string(array_length(_args)));
+                    break;
+            }
+            break;
+        }
         default:
-            show_debug_message("[VM_HandleNotify] 未知 hook: " + _hook);
+            show_debug_message("[VM_HandleNotify] unknown hook: " + _hook);
             break;
     }
 }
@@ -1682,10 +2333,11 @@ global._VM_last_created_enemy = -1;
 global._VM_last_killed_enemy  = -1;
 global._VM_last_created_card  = -1;
 global._VM_last_destroyed_card = -1;
-global._VM_create_counter = 0;
+global._VM_create_counter = 100000;
 global._VM_id_to_real      = ds_map_create();  // VM_id → 真实 instance id
 global._VM_real_to_vm_id   = ds_map_create();  // 真实 instance id → VM_id (客户端反向)
 global._VM_spawn_cats = true;
+global._VM_remote_funcs = ds_map_create();
 
 global.__vm = VM_Create();
 VM_RegisterFunction(global.__vm, VM_BanCard);         // 0
@@ -1744,6 +2396,27 @@ VM_RegisterFunction(global.__vm, VM_GetEnemyCount);  // 52
 VM_RegisterFunction(global.__vm, VM_GetPlantCount);  // 53
 VM_RegisterFunction(global.__vm, VM_GetPlantCountAt);  // 54
 VM_RegisterFunction(global.__vm, VM_PlaySound);  // 55
+VM_RegisterFunction(global.__vm, VM_GetPlantAt);  // 56
+VM_RegisterFunction(global.__vm, VM_SwapPlants);     // 57
+VM_RegisterFunction(global.__vm, VM_SwapPlantRects); // 58
+VM_RegisterFunction(global.__vm, VM_CompactColumn);  // 59
+VM_RegisterFunction(global.__vm, VM_CompactRow);     // 60
+VM_RegisterFunction(global.__vm, VM_CompactColumnRev); // 61
+VM_RegisterFunction(global.__vm, VM_CompactRowRev);    // 62
+VM_RegisterFunction(global.__vm, VM_SpawnPlantsRandom);  // 63
+VM_RegisterFunction(global.__vm, VM_CreateButton);  // 64
+VM_RegisterFunction(global.__vm, VM_GetLastClickedButton);  // 65
+VM_RegisterFunction(global.__vm, VM_LoadSpriteFrames);  // 66
+VM_RegisterFunction(global.__vm, VM_ApplyPlantLevel);  // 67
+VM_RegisterFunction(global.__vm, VM_LoadSpritePerm);  // 68
+VM_RegisterFunction(global.__vm, VM_FreeSpritePerm);   // 69
+ds_map_add(global._VM_remote_funcs, "VM_SwapPlants", VM_SwapPlants);
+ds_map_add(global._VM_remote_funcs, "VM_SwapPlantRects", VM_SwapPlantRects);
+ds_map_add(global._VM_remote_funcs, "VM_CompactColumn", VM_CompactColumn);
+ds_map_add(global._VM_remote_funcs, "VM_CompactRow", VM_CompactRow);
+ds_map_add(global._VM_remote_funcs, "VM_CompactColumnRev", VM_CompactColumnRev);
+ds_map_add(global._VM_remote_funcs, "VM_CompactRowRev", VM_CompactRowRev);
+ds_map_add(global._VM_remote_funcs, "VM_SpawnPlantsRandom", VM_SpawnPlantsRandom);
 global._sync_vm_bin_buf = undefined;
 
 /// @function VM_InitRoomEntry(buf)
@@ -1769,9 +2442,11 @@ function VM_InitRoomEntry(buf) {
     global._VM_PLAYER_DAMAGED    = undefined;
     global._VM_PLATFORM_IDLE_END = undefined;
     global._VM_FRAME             = undefined;
-	    global._VM_MOUSE_LEFT        = undefined;
-	    global._VM_MOUSE_RIGHT       = undefined;
-	    global._VM_KEY_PRESSED       = undefined;
+	global._VM_MOUSE_LEFT        = undefined;
+	global._VM_MOUSE_RIGHT       = undefined;
+	global._VM_KEY_PRESSED       = undefined;
+global._VM_BUTTON_CLICKED    = undefined;
+global._VM_last_clicked_button = -1;
     global._VM_TIMER_5f          = undefined;
     global._VM_TIMER_10f         = undefined;
     global._VM_TIMER_15f         = undefined;
@@ -1785,6 +2460,13 @@ function VM_InitRoomEntry(buf) {
     global.__vm.strings = global._VM_strings;
     global.__vm.mem_type = array_create(array_length(global.__vm.mem_type), VM_TYPE_INT);
     global.__vm.mem_val  = array_create(array_length(global.__vm.mem_val), 0);
+    // 释放 VM 临时贴图
+    var _tmp_keys = ds_map_keys_to_array(global._VM_sprite_temp_cache);
+    for (var _k = 0; _k < array_length(_tmp_keys); _k++) {
+        var _spr = global._VM_sprite_temp_cache[? _tmp_keys[_k]];
+        if (sprite_exists(_spr)) sprite_delete(_spr);
+    }
+    ds_map_clear(global._VM_sprite_temp_cache);
     global._VM_loaded_sprite_indices = [];
     global._VM_hook_queue = [];
     global._VM_battle_start_done = false;
@@ -1794,11 +2476,12 @@ function VM_InitRoomEntry(buf) {
     global._VM_last_created_card  = -1;
     global._VM_last_destroyed_card = -1;
     global._VM_last_idle_platform = -1;
-    global._VM_create_counter = 0;
+    global._VM_create_counter = 100000;
     global._VM_spawn_cats = true;
     ds_map_clear(global._VM_id_to_real);
     ds_map_clear(global._VM_real_to_vm_id);
-
+    ds_map_clear(global.__vm.str_map);
+	
     if (!buffer_exists(buf)) return;
 
     buffer_seek(buf, buffer_seek_start, 0);
@@ -1816,6 +2499,13 @@ function VM_InitRoomEntry(buf) {
         buffer_seek(_tmp, buffer_seek_start, 0);
         array_push(global._VM_strings, buffer_read(_tmp, buffer_string));
         buffer_delete(_tmp);
+    }
+
+    // 重建字符串反向索引（供运行时 CALL 返回字符串去重用）
+    for (var _i = 0; _i < array_length(global._VM_strings); _i++) {
+        var _str = global._VM_strings[_i];
+        if (!ds_map_exists(global.__vm.str_map, _str))
+            global.__vm.str_map[? _str] = _i;
     }
 
     // 字符串池里包含 "debug" 则开启调试模式
@@ -1905,6 +2595,9 @@ function VM_InitRoomEntry(buf) {
                 break;
             case "_VM_TIMER_60f":
                 global._VM_TIMER_60f = _bc_buf;
+                break;
+            case "_VM_BUTTON_CLICKED":
+                global._VM_BUTTON_CLICKED = _bc_buf;
                 break;
             default:
                 buffer_delete(_bc_buf);

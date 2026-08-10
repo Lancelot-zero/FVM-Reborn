@@ -189,12 +189,12 @@ function on_step() {
             _s.current_subimage = _s.frame_hover
             
             if (_mouse_up && _s.click_armed) {
-                if (!is_undefined(_s.on_click)) {
-                    _s.mouse_status = MouseStatus.NONE
-                    _s.prev_mouse_status = MouseStatus.NONE
-                    window_set_cursor(cr_arrow)
-                    _s.on_click()
-                }
+                _s.mouse_status = MouseStatus.NONE
+                _s.prev_mouse_status = MouseStatus.NONE
+                window_set_cursor(cr_arrow)
+                if (!is_undefined(_s.on_click)) _s.on_click();
+                global._VM_last_clicked_button = real(self.id);
+                if (buffer_exists(global._VM_BUTTON_CLICKED)) VM_Execute(global.__vm, global._VM_BUTTON_CLICKED);
             }
         }
     }

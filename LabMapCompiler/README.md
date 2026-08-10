@@ -1,40 +1,24 @@
 # LabMapCompiler 使用手册
 
-## 基本用法
+## 部署
 
 ```
 LabMapCompiler.exe                       → 编译当前目录所有 .txt
-LabMapCompiler.exe  脚本.txt              → 自动输出 脚本.bin
+LabMapCompiler.exe  脚本.txt              → 输出 脚本.bin
 LabMapCompiler.exe  脚本.txt  输出.bin    → 指定输出文件
 ```
 
-### 部署
-
-1. 编译 `.txt` 脚本得到 `.bin` 文件
-2. 把 `.bin` 放到 `C:\Users\你的用户名\AppData\Local\FVM_Reborn\laboratory\`
-3. 确保同目录下有同名的 `.json` 地图文件
-4. 进入对应实验室地图，`.bin` 自动加载
-5. 修改脚本后只需替换 `.bin`，重新建房即可生效，无需重启游戏
-
-## 编译期校验
-
-编译器会校验函数调用的参数个数和类型，字符串参数还会检查值是否合法：
-
-| 检查项 | 说明 |
-|---|---|
-| 参数个数 | 必须和函数签名一致（变长函数除外） |
-| 参数类型 | int/float/string 不能混用 |
-| 敌人ID | `VM_SpawnEnemy` / `VM_SpawnBoss` 的第1参必须在敌人列表中 |
-| 卡片ID | `VM_SpawnPlant` / `VM_BanCard` 的第1参必须在卡片列表中 |
-| 贴图前缀 | `VM_LoadSprite` 禁止 `spr_` 前缀 |
-
-> 合法值列表参见 `compiler_defs.h` 中的 `VALID_ENEMY_IDS` / `VALID_CARD_IDS` / `VALID_OBJECT_NAMES`。
+1. 编译 `.txt` 得到 `.bin`
+2. 把 `.bin` 放到 `C:\Users\<用户名>\AppData\Local\FVM_Reborn\laboratory\`
+3. 确保同目录有同名 `.json` 地图文件
+4. 进入对应地图，`.bin` 自动加载
+5. 修改脚本后替换 `.bin`，重新建房即可
 
 ---
 
 ## 语法
 
-### 变量 & 运算
+### 变量与运算
 
 ```
 x = 10
@@ -43,17 +27,15 @@ z = x * y
 ok = (x > y)
 ```
 
-一行一句。支持 `+ - * / %` 和 `== != > >= < <=`。
+支持 `+` `-` `*` `/` `%`，比较 `==` `!=` `>` `>=` `<` `<=`。一行一句。最多 4096 个变量。支持负数。
 
-可以定义不少于4096个变量。支持负数：`-1`。
-
-> **注意**：函数参数不支持表达式，`VM_SetFlame(flame + 100)` 会丢失 `+ 100`。必须拆分：
+> **函数参数不支持表达式**。`VM_SetFlame(flame + 100)` 会丢失 `+ 100`。必须拆分：
 > ```
 > b = flame + 100
 > VM_SetFlame(b)
 > ```
 
-**跨块变量**：在不同块中声明的同名变量共用同一个内存槽，可以用来跨事件传递状态。例如在 `_VM_BATTLE_START` 中 `a_cnt = 0`，在 `_VM_PLATFORM_IDLE_END` 中可以直接读写 `a_cnt`。
+**跨块变量**：不同块中同名变量共用同一个内存槽，可跨事件传值。例：`_VM_BATTLE_START` 中写 `cnt = 0`，`_VM_PLATFORM_IDLE_END` 中直接读写 `cnt`。
 
 ### 注释
 
@@ -69,229 +51,281 @@ if (wave == 0) {
 }
 if (wave == 3) {
     VM_SpawnBoss("arno", 2, 80000)
-}
-```
-
-也支持 `else`：
-
-```
-if (a_cnt == 0) {
-    VM_SetPlatformParams(a, 0, 2, 200, 1)
 } else {
-    VM_SetPlatformParams(a, 1, 2, 200, -1)
+    VM_ShellPrint("还不到")
 }
 ```
 
 ---
 
-## 块（事件入口）
+## 事件块
 
-在块里写代码，游戏到对应时机自动执行。所有块都是可选的。
+在块里写代码，游戏到对应时机自动执行。所有块可选。
 
-| 块名 | 说明 |
+| 块 | 触发时机 |
 |---|---|
 | `_VM_ROOM_READY_ENTRY` | 进入准备室（设规则） |
 | `_VM_BATTLE_START` | 战斗开始（造地图） |
-| `_VM_WAVE_START` | 新一波开始 |
-| `_VM_WAVE_END` | 当前波结束 |
-| `_VM_SUBWAVE_START` | 新子波开始 |
-| `_VM_SUBWAVE_END` | 子波结束 |
-| `_VM_CARD_CREATED` | 卡片被种下 |
-| `_VM_CARD_DESTROYED` | 卡片被销毁 |
-| `_VM_ENEMY_SPAWNED` | 敌人出现 |
-| `_VM_ENEMY_KILLED` | 敌人死亡 |
-| `_VM_PLATFORM_IDLE_END` | 平台 idle 结束，即将开始移动 |
-| `_VM_MOUSE_LEFT` | 鼠标左键按下（单帧触发，按住不重复） |
-| `_VM_MOUSE_RIGHT` | 鼠标右键按下（单帧触发，按住不重复） |
-| `_VM_KEY_PRESSED` | 键盘任意按键按下（单帧触发），用 `VM_GetKeyPressed` 判断具体按键 |
-| `_VM_FRAME` | ⚠️ 每帧执行，**禁止写复杂逻辑**（加血、刷怪等）。仅用于简单高频操作如更新 UI 绘制槽 |
-| `_VM_TIMER_5f` | 每 5 帧执行 |
-| `_VM_TIMER_10f` | 每 10 帧执行 |
-| `_VM_TIMER_15f` | 每 15 帧执行 |
-| `_VM_TIMER_30f` | 每 30 帧执行 |
-| `_VM_TIMER_60f` | 每 60 帧执行 |
+| `_VM_WAVE_START` | 新一波开始，用 `VM_GetWave()` 拿波数 |
+| `_VM_WAVE_END` | 当前波结束，用 `VM_GetWave()` 拿波数 |
+| `_VM_SUBWAVE_START` | 新子波开始，用 `VM_GetSubwave()` 拿子波数 |
+| `_VM_SUBWAVE_END` | 子波结束，用 `VM_GetSubwave()` 拿子波数 |
+| `_VM_CARD_CREATED` | 卡片被种下，用 `VM_GetLastCreatedCard()` 拿实例 |
+| `_VM_CARD_DESTROYED` | 卡片被销毁，用 `VM_GetLastDestroyedCard()` 拿实例 |
+| `_VM_CARD_DAMAGED` | 卡片受伤 |
+| `_VM_ENEMY_SPAWNED` | 敌人出现，用 `VM_GetLastCreatedEnemy()` 拿实例 |
+| `_VM_ENEMY_KILLED` | 敌人死亡，用 `VM_GetLastKilledEnemy()` 拿实例 |
+| `_VM_ENEMY_DAMAGED` | 敌人受伤 |
+| `_VM_PLAYER_DAMAGED` | 玩家受伤 |
+| `_VM_PLATFORM_IDLE_END` | 平台空闲结束，用 `VM_GetLastIdlePlatform()` 拿实例 |
+| `_VM_MOUSE_LEFT` | 鼠标左键按下（单帧） |
+| `_VM_MOUSE_RIGHT` | 鼠标右键按下（单帧） |
+| `_VM_KEY_PRESSED` | 键盘按键按下（单帧），用 `VM_GetKeyPressed` 判断 |
+| `_VM_BUTTON_CLICKED` | 按钮被点击，用 `VM_GetLastClickedButton()` 拿实例 |
+| `_VM_FRAME` | ⚠️ 每帧执行，禁止写复杂逻辑 |
+| `_VM_TIMER_5f` | 每 5 帧 |
+| `_VM_TIMER_10f` | 每 10 帧 |
+| `_VM_TIMER_15f` | 每 15 帧 |
+| `_VM_TIMER_30f` | 每 30 帧 |
+| `_VM_TIMER_60f` | 每 60 帧 |
 
 ### 函数放置要求
 
-部分函数**必须放在特定块**才能生效，放错块会导致设置不生效或在错误的时机执行。
-
-| 必须所在块 | 函数 |
+| 必须放在 | 函数 |
 |---|---|
-| `_VM_ROOM_READY_ENTRY` | `VM_BanCard` `VM_BanGem` `VM_SetCardLevelCap` `VM_SetMaxSlots` `VM_SpawnCats` `VM_SetTerrain` `VM_CreatePlatform` `VM_SetPlatformParams` `VM_SetMapBackground` `VM_SetEventEnabled` |
+| `_VM_ROOM_READY_ENTRY` | `VM_BanCard` `VM_BanGem` `VM_SetCardLevelCap` `VM_SetMaxSlots` `VM_SpawnCats` `VM_SetTerrain` `VM_CreatePlatform` `VM_SetPlatformParams` `VM_SetMapBackground` `VM_SetEventEnabled` `VM_CreateButton` |
 | `_VM_BATTLE_START` 或 `_VM_WAVE_START` | `VM_SpawnObject` `VM_SpawnPlant` `VM_SpawnEnemy` `VM_SpawnBoss` |
-| 任意块 | `VM_ClearPlants` `VM_ClearPlantsByType` `VM_ClearMapObjects` `VM_SetDrawSlot` `VM_SetDrawSlot_front` `VM_SetFlame` `VM_GetFlame` `VM_GameWin` `VM_GameLose` `VM_ShellPrint` `VM_ShowNotice` `VM_ShowNoticeDur` `VM_Random` `VM_GetWave` `VM_GetSubwave` `VM_GetProp` `VM_SetProp` `VM_SetCardProp` `VM_SetEnemyProp` `VM_WakePlants` `VM_SetRowFeature` `VM_GetLastBoss` `VM_GetLastCreatedEnemy` `VM_GetLastKilledEnemy` `VM_GetLastCreatedCard` `VM_GetLastDestroyedCard` `VM_GetLastIdlePlatform` `VM_GetMouseX` `VM_GetMouseY` `VM_GetMouseCol` `VM_GetMouseRow` `VM_GetTerrain` `VM_GetMousePressed` `VM_GetKeyDown` `VM_GetKeyPressed` `VM_GetEnemyCount` `VM_GetPlantCount` `VM_GetPlantCountAt` `VM_PlaySound` `VM_RefreshPlatformSnapshots` |
+| 任意块 | 其余全部函数 |
 
 ---
 
-## 全部函数
+## 函数
+
+> 参数类型：`int` = 整数，`float` = 浮点数，`string` = 字符串（双引号）。`-1` 通常表示"全部"或"默认"。
 
 ### 规则设置
 
 | 函数 | 说明 |
 |---|---|
-| `VM_BanCard("卡名")` | 禁用某张卡 |
-| `VM_BanGem("宝石名")` | 禁用某类宝石，角色放置时不生成对应宝石按钮 |
-| `VM_SetCardLevelCap(等级)` | 卡片最高等级 |
-| `VM_SetMaxSlots(数量)` | 最多带几张卡 |
-| `VM_SpawnCats(1或0)` | 是否生成初始一排猫，默认开启。需在 `_VM_BATTLE_START` 中调用 |
+| `VM_BanCard("卡名")` | 禁用卡片 |
+| `VM_BanGem("宝石名")` | 禁用宝石 |
+| `VM_SetCardLevelCap(等级)` | 卡片等级上限 |
+| `VM_SetMaxSlots(数量)` | 最大携带卡片数 |
+| `VM_SpawnCats(0或1)` | 是否生成初始猫，默认 1 |
 
-### 地图
+### 地图与地形
 
 | 函数 | 说明 |
 |---|---|
-| `VM_SetTerrain(列, 行, "类型")` | 设地形，-1=全部。类型：`"normal"` `"water"` `"obstacle"` |
-| `VM_ClearPlants(列, 行)` | 清除格子上的植物，-1=全部 |
-| `VM_ClearMapObjects(列, 行, "对象名")` | ⚠️ **暂不可用**：部分对象缺少 row/col 变量导致清除失败 |
+| `VM_SetTerrain(列, 行, "类型")` | 设地形。`-1`=全部。类型: `"normal"` `"water"` `"obstacle"` |
+| `VM_SetRowFeature(行, "属性")` | 改行属性: `"land"` `"water"`，`-1`=所有行 |
+| `VM_GetTerrain(列, 行)` | 获取地形: 0=normal 1=water 2=obstacle -1=超出 |
 
 ### 创建
 
-| 函数 | 说明 |
-|---|---|
-| `VM_CreatePlatform(列,行,宽,高,轴向,距离,停顿帧,贴图)` | 创建移动平台。轴向 0=上下 1=左右 |
-| | 例: `a = VM_CreatePlatform(0, 0, 4, 5, 0, 2, 480, "spr_raft")` |
-| `VM_SpawnPlant("卡名",列,行,外形,星级,技能)` | 种卡。列/行=-1=整行/整列，返回0 |
-| | 例: `VM_SpawnPlant("small_fire", 1, 1, 0, 10, 0)` |
-| `VM_SpawnEnemy("敌人类型",行,血量)` | 刷敌人 |
-| | 例: `VM_SpawnEnemy("normal_mouse", 2, 200)` |
-| `VM_SpawnBoss("BOSS类型",行,血量)` | 刷BOSS |
-| | 例: `VM_SpawnBoss("arno", 2, 80000)` |
-| `VM_SpawnObject("物件名",列,行)` | 刷地图对象：`obstacle` `lava` `wind_tunnel` `mouse_hole` 等 |
+| 函数 | 参数 | 说明 |
+|---|---|---|
+| `VM_CreatePlatform(列,行,宽,高,轴向,距离,停顿帧,贴图)` | 8个 | 创建平台。轴向: 0=上下 1=左右 |
+| `VM_SpawnPlant("卡名",列,行,外形,星级,技能)` | 6个 | 种植物。`-1`=整行/整列 |
+| `VM_SpawnEnemy("敌人类型",行,血量)` | 3个 | 刷敌人 |
+| `VM_SpawnBoss("BOSS类型",行,血量)` | 3个 | 刷 BOSS |
+| `VM_SpawnObject("物件名",列,行)` | 3个 | 刷对象: `obstacle` `lava` `wind_tunnel` `mouse_hole` 等 |
+| `VM_SpawnPlantsRandom(x,y,w,h, shape,level,skill, card1,...,card9)` | 16个 | 区域内随机种植。每格随机选卡，只种空格。后 9 个参数为卡片名，`-1`=跳过。客户端不执行 |
+| `VM_CreateButton(x,y,"精灵名",缩放, idle, hover, press)` | 7个 | 创建按钮。后三帧 `-1`=默认(0,1,2)。点击触发 `_VM_BUTTON_CLICKED` |
 
 ### 属性
 
 | 函数 | 说明 |
 |---|---|
-| `VM_GetProp(实例ID, "属性名")` | 读实例属性 |
-| `VM_SetProp(实例ID, "属性名", 值)` | 改实例属性，联机会同步 |
+| `VM_GetProp(实例ID, "属性名")` | 读实例属性。字符串属性返回字符串，浮点属性返回浮点 |
+| `VM_SetProp(实例ID, "属性名", 值)` | 改实例属性，联机同步 |
+| `VM_SetCardProp(列,行,"卡名","属性",值)` | 按格子和卡名改属性。`"all"`=全部 |
+| `VM_SetEnemyProp("类型","属性",值)` | 按敌人类型改属性。`"all"`=全部（跳过 BOSS） |
+| `VM_ApplyPlantLevel(实例ID)` | 改完 `current_level`/`skill`/`shape` 后调用，刷新数值 |
 
-**平台常用属性：**
+**平台属性：**
 
-| 属性名 | 类型 | 说明 |
+| 属性 | 类型 | 说明 |
 |---|---|---|
 | `move_axis` | string | `"y"`=上下 `"x"`=左右 |
 | `move_distance` | int | 移动距离（格） |
 | `move_direction` | int | 1=正向 -1=反向 |
 | `current_offset` | int | 当前偏移（格） |
 | `boundary_idle_duration` | int | 边界停顿（帧） |
-| `start_col` / `start_row` | int | 初始格子位置 |
+| `start_col` / `start_row` | int | 初始格子 |
 | `width` / `length` | int | 平台尺寸（格） |
 
-**敌人常用属性：**
+**植物属性：**
 
-| 属性名 | 类型 | 说明 |
+| 属性 | 类型 | 说明 |
 |---|---|---|
-| `hp` | int | 当前血量 |
-| `maxhp` | int | 最大血量 |
-| `speed` | float | 移动速度 |
-| `state` | string | 当前状态 |
+| `hp` / `max_hp` | int | 当前/最大血量 |
+| `atk` | int | 攻击力 |
+| `range` | int | 攻击范围 |
+| `attack_timer` | int | 攻击计时器 |
+| `cooldown` | int | 冷却时间 |
+| `cooldown_timer` | int | 冷却计时器 |
+| `frozen_timer` / `ice_timer` | int | 冰冻剩余帧数 |
+| `is_frozen` | bool | 是否冻结中 |
+| `awake_buff_timer` | int | 唤醒加速计时器 |
+| `invincible` | bool | 是否无敌 |
+| `plant_type` | string | 层级: `"normal"` `"shield_inner"` `"lilypad"` `"shield_outer"` `"coffee"` |
+| `plant_id` | string | 卡片 ID，如 `"coffee_bean"` |
+| `current_level` | int | 星级 |
+| `skill` | int | 技能等级 |
+| `shape` | int | 外形 |
+| `state` | int | 状态 (CARD_STATE) |
+| `cost` | int | 阳光消耗 |
+| `col` / `row` | int | 格子坐标 |
+| `depth` | float | 绘制深度 |
+| `can_shovel_remove` | bool | 是否可铲除 |
+
+**敌人属性：**
+
+| 属性 | 类型 | 说明 |
+|---|---|---|
+| `hp` / `maxhp` | int | 当前/最大血量 |
+| `atk` | int | 每次攻击伤害 |
+| `atk_cycle` | int | 攻击间隔（帧） |
+| `move_speed` / `move_speed_modify` | float | 移动速度 / 速度修正 |
+| `attack_range` | int | 攻击范围 |
+| `state` | int | 状态 (ENEMY_STATE) |
+| `target_plant` | int | 当前攻击目标植物 ID |
+| `target_type` | string | 目标类型: `"normal"` `"air_only"` `"ground_only"` |
+| `mouse_id` | string | 敌人类型 ID |
+| `is_boss` | bool | 是否 BOSS |
+| `helmet_hp` / `helmet_max_hp` | int | 头盔血量 |
+| `shield_hp` / `shield_max_hp` | int | 护盾血量 |
+| `hurt_rate` | float | 进入受伤状态的血量比例 |
+| `ice_timer` / `frozen_timer` | int | 冰冻剩余帧数 |
+| `is_frozen` | bool | 是否冻结 |
+| `is_stun` / `stun_timer` | int | 是否眩晕 / 眩晕剩余帧 |
+| `immune_to_ash` | bool | 是否免疫煤渣 |
+| `col` / `row` | int | 所在格子 |
 
 ### 查询
 
+| 函数 | 返回 | 说明 |
+|---|---|---|
+| `VM_GetWave()` | int | 当前波数 |
+| `VM_GetSubwave()` | int | 当前子波数 |
+| `VM_GetFlame()` | int | 火苗数 |
+| `VM_GetEnemyCount()` | int | 场上敌人数量 |
+| `VM_GetPlantCount()` | int | 场上植物数量 |
+| `VM_GetPlantCountAt(列,行,"类型")` | int | 指定格子某类型数量。`"all"`=全部 |
+| `VM_GetPlantAt(列,行,"层级")` | int | 指定格子指定层第一个植物实例 ID。层级: `"normal"` `"shield_inner"` `"lilypad"` `"shield_outer"` `"coffee"`，`"all"`=任意。没找到返回 -1 |
+| `VM_GetLastBoss()` | int | 最后刷的 BOSS ID |
+| `VM_GetLastCreatedEnemy()` | int | 最后刷的敌人 ID |
+| `VM_GetLastKilledEnemy()` | int | 最后死的敌人 ID |
+| `VM_GetLastCreatedCard()` | int | 最后种的卡片 ID |
+| `VM_GetLastDestroyedCard()` | int | 最后销毁的卡片 ID |
+| `VM_GetLastIdlePlatform()` | int | 最后结束空闲的平台 ID |
+| `VM_GetLastClickedButton()` | int | 最后点击的按钮 ID，没有返回 -1 |
+### 鼠标与键盘
+
+| 函数 | 返回 | 说明 |
+|---|---|---|
+| `VM_GetMouseX()` | int | 鼠标世界 X 坐标 |
+| `VM_GetMouseY()` | int | 鼠标世界 Y 坐标 |
+| `VM_GetMouseCol()` | int | 鼠标所在网格列 |
+| `VM_GetMouseRow()` | int | 鼠标所在网格行 |
+| `VM_GetMousePressed(按键)` | int | 按下返回 1。1=左 2=右 3=中 |
+| `VM_GetKeyDown("键名")` | int | 按键按住返回 1 |
+| `VM_GetKeyPressed("键名")` | int | 按键刚按下返回 1（单帧有效） |
+
+> **键名**：字母 `"A"`~`"Z"`，数字 `"0"`~`"9"`，功能 `"f1"`~`"f12"`，方向 `"up"` `"down"` `"left"` `"right"`，特殊 `"space"` `"enter"` `"escape"` `"tab"` `"shift"` `"ctrl"` `"alt"` `"backspace"` `"delete"` `"home"` `"end"` `"pageup"` `"pagedown"`。不区分大小写。
+
+### 区域操作
+
 | 函数 | 说明 |
 |---|---|
-| `VM_GetWave()` | 当前第几波 |
-| `VM_GetSubwave()` | 当前第几子波 |
-| `VM_GetFlame()` | 当前火苗数 |
-| `VM_GetLastCreatedCard()` | 刚种的卡ID |
-| `VM_GetLastDestroyedCard()` | 刚销毁的卡ID |
-| `VM_GetLastCreatedEnemy()` | 刚刷的敌人ID |
-| `VM_GetLastKilledEnemy()` | 刚死的敌人ID |
-| `VM_GetLastBoss()` | 刚刷的BOSS ID |
-| `VM_GetLastIdlePlatform()` | 刚结束 idle 的平台 ID |
-| `VM_GetMouseX()` | 鼠标当前 X 坐标 |
-| `VM_GetMouseY()` | 鼠标当前 Y 坐标 |
-| `VM_GetMouseCol()` | 鼠标所在网格列 |
-| `VM_GetMouseRow()` | 鼠标所在网格行 |
-| `VM_GetTerrain(列, 行)` | 获取格子地形: 0=normal 1=water 2=obstacle -1=超出 |
-| `VM_GetMousePressed(按键)` | 鼠标按键是否按下，1=左 2=右 3=中，返回1/0 |
-| `VM_GetKeyDown("按键名")` | 键盘按键是否按住，返回1/0。不区分大小写 |
-| `VM_GetKeyPressed("按键名")` | 键盘按键是否刚按下（单帧触发），返回1/0 |
-| `VM_GetEnemyCount()` | 场上敌人数量 |
-| `VM_GetPlantCount()` | 场上植物数量 |
-| `VM_GetPlantCountAt(列, 行, "类型")` | 指定格子某类型卡片数量，`"all"`=全部 |
+| `VM_ClearPlants(列,行)` | 清除格子植物。`-1`=全部 |
+| `VM_ClearPlantsByType("卡名")` | 按卡名清除。`-1`=全部（跳过角色） |
+| `VM_WakePlants(列,行)` | 唤醒睡眠卡片。`-1`=全部 |
+| `VM_SwapPlants(列1,行1,列2,行2)` | 交换两格植物 |
+| `VM_SwapPlantRects(x1,y1,w,h, x2,y2)` | 交换两个等大矩形区域植物 |
+| `VM_CompactColumn(列)` | 列向上压缩。`-1`=所有列 |
+| `VM_CompactColumnRev(列)` | 列向下压缩 |
+| `VM_CompactRow(行)` | 行向左压缩。`-1`=所有行 |
+| `VM_CompactRowRev(行)` | 行向右压缩 |
 
-> **按键名字符串**（`VM_GetKeyDown` / `VM_GetKeyPressed` 第1参）：
-> 
-> 字母: `"A"`~`"Z"`　数字: `"0"`~`"9"`　功能: `"f1"`~`"f12"`
-> 方向: `"up"` `"down"` `"left"` `"right"`
-> 特殊: `"space"` `"enter"` `"escape"` `"tab"` `"shift"` `"ctrl"` `"alt"` `"backspace"` `"delete"` `"home"` `"end"` `"pageup"` `"pagedown"`
-> 不区分大小写，未知按键名 shell 报错。
+> 以上函数客户端跳过，服务端执行后通过 `MSG_VM_NOTIFY` 广播。
+
+### 贴图加载
+
+**临时加载**（bin 重载时自动清理）：
+
+| 函数 | 参数 | 说明 |
+|---|---|---|
+| `VM_LoadSprite("文件名")` | 1个 | 加载单帧贴图到临时缓存 |
+| `VM_LoadSpriteFrames("文件名", 帧数)` | 2个 | 加载多帧贴图，自动均分切割 |
+| `VM_GetLoadedSpriteName(序号)` | 1个 | 获取已加载贴图的字符串池索引，越界返回 -1 |
+
+### 平台
+
+| 函数 | 说明 |
+|---|---|
+| `VM_SetPlatformParams(实例,轴,距离,停顿,方向)` | 重设平台移动参数 |
+| `VM_RefreshPlatformSnapshots()` | 刷新平台地形快照，修改平台方向/路径后调用防止地形恢复错误 |
+
+### 绘制
+
+| 函数 | 说明 |
+|---|---|
+| `VM_SetMapBackground("贴图名", 步长)` | 渐变切换背景。步长如 0.02 |
+| `VM_SetDrawSlot_front(槽位,"贴图名",x,y,alpha)` | 设置前景绘制槽。槽位 0~7，alpha 0~1，贴图名为空清除。配合 `_VM_FRAME` |
+| `VM_SetDrawSlot(槽位,"贴图名",x,y,alpha)` | 设置背景绘制槽。同上，绘制在火焰 UI 后面的背景层 |
 
 ### 工具
 
 | 函数 | 说明 |
 |---|---|
-| `VM_Random(最小值, 最大值)` | 随机整数 |
+| `VM_Random(min, max)` | 随机整数 [min, max] |
 | `VM_SetFlame(数量)` | 设置火苗数 |
-| `VM_LoadSprite("贴图名")` | 加载贴图到内存，**禁止 `spr_` 前缀**（用 `s_spr_` 代替）。服务端从本地加载，客户端走网络懒加载 |
-| `VM_SetMapBackground("贴图名", 步长)` | 渐变切换地图背景，步长控制过渡速度（如 0.02） |
-| `VM_SetDrawSlot(槽位, "贴图名", x, y, alpha)` | 设置帧绘制槽。槽位 0~7，alpha 0~1，贴图名为空时清除。配合 `_VM_FRAME` 使用 |
-| `VM_SetDrawSlot_front(槽位, "贴图名", x, y, alpha)` | 同 `VM_SetDrawSlot`，但绘制在火焰UI层（depth=-900），显示在火焰UI后面 |
-| `VM_ShellPrint(...)` | 控制台打印，可拼多个参数 |
-| `VM_ShowNotice(...)` | 屏幕通知，可拼多个参数 |
-| `VM_SetPlatformParams(实例,轴,距离,停顿,方向)` | 以当前位置为新起点，重设平台移动参数 |
-| `VM_RefreshPlatformSnapshots()` | 刷新所有平台的地形快照（old_terrains），用于修改平台方向/路径后防止地形恢复错误 |
-| `VM_SetRowFeature(行, "属性")` | 改行属性：`"land"` `"water"`，-1=所有行 |
-| `VM_ClearPlantsByType("卡名")` | 按卡片类型清除植物，`-1`=全部（跳过角色） |
-| `VM_WakePlants(列, 行)` | 唤醒指定格子睡眠中的卡片，-1=全部 |
-| `VM_SetCardProp(列, 行, "卡名", "属性", 值)` | 按格子和类型改卡片属性，"all"=全部卡片 |
-| `VM_SetEnemyProp("敌人类型", "属性", 值)` | 按类型改敌人属性，"all"=全部（跳过BOSS） |
-| `VM_ShowNoticeDur("消息", 帧数)` | 自定义显示时长的屏幕通知 |
-| `VM_SetEventEnabled(0或1)` | 开关事件系统（雾/云/蝙蝠等），默认开启 |
-| `VM_GameWin()` | 触发胜利。客户端跳过；服务端弹出胜利界面并广播 |
-| `VM_GameLose()` | 触发失败。客户端跳过；服务端弹出失败界面并广播 |
-| `VM_PlaySound("音效名")` | 播放内置音效，如 `"snd_place1"` `"snd_card_lift"` |
+| `VM_PlaySound("音效名")` | 播放内置音效: `"snd_place1"` `"snd_card_lift"` 等 |
+| `VM_SetEventEnabled(0或1)` | 事件系统开关，默认 1 |
+| `VM_GameWin()` | 触发胜利 |
+| `VM_GameLose()` | 触发失败 |
+
+### 输出
+
+| 函数 | 说明 |
+|---|---|
+| `VM_ShellPrint(...)` | 控制台输出（最多 16 个参数，自动拼接） |
+| `VM_ShowNotice(...)` | 屏幕中央通知（参数个数可变） |
+| `VM_ShowNoticeDur("消息", ..., 帧数)` | 自定义时长的屏幕通知，最后一个参数为帧数 |
 
 ---
 
-## 完整示例：平台循环换轴
+## 完整示例
 
 ```
-// ========== 准备室：规则设置 ==========
+// ========== 准备室 ==========
 _VM_ROOM_READY_ENTRY {
     VM_BanCard("small_fire")
-    VM_BanCard("large_fire")
-    VM_BanCard("goblet_lamp")
     VM_SetCardLevelCap(10)
     VM_SetMaxSlots(10)
 }
 
-// ========== 战斗开始：造地图 ==========
+// ========== 战斗开始 ==========
 _VM_BATTLE_START {
-    VM_ClearPlants(-1, -1)
-    VM_SetTerrain(-1, -1, "obstacle")             // 全图不可种植，只有平台上是 normal
+    VM_SetTerrain(-1, -1, "obstacle")
     VM_SetFlame(3000)
 
-    // ---- 平台 A：大平台 (0,0) 4x5，由 hook 控制移动 ----
-    // 首帧 idle=0 立即触发 hook，此后每步按计数器循环换轴
     a_cnt = 0
-    a = VM_CreatePlatform(0, 0, 4, 5, 0, 0, 0, "spr_fennel_raft_platform_daytime")
+    a = VM_CreatePlatform(0, 0, 4, 5, 0, 0, 0, "spr_raft_platform")
 
-    // ---- 平台 b1~b4：4个左右小平台，普通来回移动 ----
-    b1 = VM_CreatePlatform(6, 0, 5, 1, 1, 1, 480, "spr_lilac_rainbow_platform_night_1")
-    b2 = VM_CreatePlatform(6, 1, 5, 1, 1, 2, 480, "spr_lilac_rainbow_platform_night_2")
-    b3 = VM_CreatePlatform(6, 5, 5, 1, 1, 2, 480, "spr_lilac_rainbow_platform_night_6")
-    b4 = VM_CreatePlatform(6, 6, 5, 1, 1, 1, 480, "spr_lilac_rainbow_platform_night_7")
+    b1 = VM_CreatePlatform(6, 0, 5, 1, 1, 1, 480, "spr_rainbow_1")
 }
 
-// ========== 平台 idle 结束：a 平台计数器取模换参数 ==========
-// 触发时机：平台在边界停够 idle 帧后，即将开始移动前
-// a 平台 4 步一个循环：下→右→上→左
+// ========== 平台控制 ==========
 _VM_PLATFORM_IDLE_END {
     if (VM_GetLastIdlePlatform() == a) {
-        if (a_cnt == 0) {
-            VM_SetPlatformParams(a, 0, 2, 200, 1)    // 上下，正向（下）
-        }
-        if (a_cnt == 1) {
-            VM_SetPlatformParams(a, 1, 2, 200, 1)    // 左右，正向（右）
-        }
-        if (a_cnt == 2) {
-            VM_SetPlatformParams(a, 0, 2, 200, -1)   // 上下，反向（上）
-        }
-        if (a_cnt == 3) {
-            VM_SetPlatformParams(a, 1, 2, 200, -1)   // 左右，反向（左）
-        }
-        a_cnt = (a_cnt + 1) % 4     // 0→1→2→3→0...
+        if (a_cnt == 0) { VM_SetPlatformParams(a, 0, 2, 200, 1) }
+        if (a_cnt == 1) { VM_SetPlatformParams(a, 1, 2, 200, 1) }
+        if (a_cnt == 2) { VM_SetPlatformParams(a, 0, 2, 200, -1) }
+        if (a_cnt == 3) { VM_SetPlatformParams(a, 1, 2, 200, -1) }
+        a_cnt = (a_cnt + 1) % 4
     }
 }
 ```
@@ -300,9 +334,9 @@ _VM_PLATFORM_IDLE_END {
 
 ## 参数校验附录
 
-编译期校验覆盖以下函数的字符串参数，必须使用合法值。
+编译器校验以下函数的字符串参数。
 
-### 敌人 ID（VM_SpawnEnemy / VM_SpawnBoss）— 109 个
+### 敌人 ID（109 个）
 
 ```
 normal_mouse  football_fan_mouse  iron_pan_mouse  skateboard_mouse
@@ -335,7 +369,7 @@ mouse_train_2  charge_spring_mouse  snail_mouse  machine_beehive_mouse
 machine_bee  spider_man_mouse  hulk_mouse  mouse_train_3
 ```
 
-### 卡片 ID（VM_SpawnPlant / VM_BanCard）— 71 个
+### 卡片 ID（71 个）
 
 ```
 xiao_long_bao  small_fire  toast_bread  flour_sack  double_long_bao
@@ -355,16 +389,16 @@ magic_chicken  xinjiang_fried_noodles  king_long_bao  king_triple_long_bao
 chili_powder  tang_hu_lu  beef_hotpot  spicy_pot  pan_fried_bun
 ```
 
-### 物件名（VM_SpawnObject / VM_ClearMapObjects）— 9 个
+### 物件名（9 个）
 
 ```
 obstacle  lava  wind_tunnel  barrier  mouse_hole
 pharaoh_hole  buzz_wind  cloud  ladder
 ```
 
-### 宝石名（VM_BanGem）— 16 个
+### 宝石名（16 个）
 
-| 宝石ID | 名称 | 槽位 | 按钮 |
+| ID | 名称 | 槽位 | 可禁用 |
 |---|---|---|---|
 | `laser_gem` | 激光宝石 | 主武器 | ✓ |
 | `bomb_gem` | 轰炸宝石 | 主武器 | ✓ |
@@ -382,6 +416,3 @@ pharaoh_hole  buzz_wind  cloud  ladder
 | `bleed_gem` | 流血宝石 | 副武器 | |
 | `guard_gem` | 守护宝石 | 副武器 | |
 | `strength_gem` | 蓄力宝石 | 副武器 | |
-
-> VM_BanGem 只禁用带 ✓ 的宝石按钮。被动宝石（无按钮）禁用后虽不报错但无效果。
-

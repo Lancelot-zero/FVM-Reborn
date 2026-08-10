@@ -219,6 +219,20 @@ static std::vector<FuncDef> FUNC_DEFS = {
     {"VM_GetPlantCount",         0},                                                  // 53
     {"VM_GetPlantCountAt",       3,  {PT_INT, PT_INT, PT_STRING}},                    // 54
     {"VM_PlaySound",             1,  {PT_STRING}},                                    // 55
+    {"VM_GetPlantAt",            3,  {PT_INT, PT_INT, PT_STRING}},                   // 56
+    {"VM_SwapPlants",            4,  {PT_INT, PT_INT, PT_INT, PT_INT}},              // 57
+    {"VM_SwapPlantRects",        6,  {PT_INT, PT_INT, PT_INT, PT_INT, PT_INT, PT_INT}}, // 58
+    {"VM_CompactColumn",         1,  {PT_INT}},                                         // 59
+    {"VM_CompactRow",            1,  {PT_INT}},                                         // 60
+    {"VM_CompactColumnRev",      1,  {PT_INT}},                                         // 61
+    {"VM_CompactRowRev",         1,  {PT_INT}},                                         // 62
+    {"VM_SpawnPlantsRandom",    16, {PT_INT,PT_INT,PT_INT,PT_INT, PT_INT,PT_INT,PT_INT, PT_STRING,PT_STRING,PT_STRING,PT_STRING,PT_STRING,PT_STRING,PT_STRING,PT_STRING,PT_STRING}}, // 63
+    {"VM_CreateButton",          7,  {PT_INT, PT_INT, PT_STRING, PT_FLOAT, PT_INT, PT_INT, PT_INT}}, // 64
+    {"VM_GetLastClickedButton",  0},                                                    // 65
+    {"VM_LoadSpriteFrames",      2,  {PT_STRING, PT_INT}},                             // 66
+    {"VM_ApplyPlantLevel",       1,  {PT_INT}},                                         // 67
+    {"VM_LoadSpritePerm",        2,  {PT_STRING, PT_INT}},                             // 68
+    {"VM_FreeSpritePerm",        1,  {PT_STRING}},                                      // 69
 };
 
 // ============================================================
