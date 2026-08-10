@@ -24,6 +24,7 @@ flash_speed = 5
 plant_type = "normal"
 is_slowdown = false
 target_type = "track"
+drown_timer = 0
 
 function find_priority_enemy() {
     var closest_left_enemy = noone;

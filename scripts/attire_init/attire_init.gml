@@ -118,6 +118,16 @@ function attire_init(){
 			"inner_spr":[spr_melon_virgo_inner_1,spr_melon_virgo_inner_2,spr_melon_virgo_inner_3]
 		}
 	)
+	register_attire(
+		"bubble_maltose",
+		{
+			"target_card":"soda_bubble",
+			"name":"麦芽糖",
+			"icon":spr_bubble_maltose_icon,
+			"spr":[spr_bubble_maltose_0_0,spr_bubble_maltose_1_0],
+			"card_slot_icon":[spr_bubble_maltose_icon,spr_bubble_maltose_icon_1],
+		}
+	)
 	
 	//注册全部玩家时装
 	register_attire(

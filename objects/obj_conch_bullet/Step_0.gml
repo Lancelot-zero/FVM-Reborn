@@ -21,7 +21,7 @@ if state == "attack"{
 				instance_destroy(other)
 			}
 			if plant_id != "player" && plant_type != "coffee" && !invincible && plant_id != "cotton_candy"  && plant_id != "soda_bubble"{
-				hp -= 50
+				hp -= 20
 				event_user(2)
 			}
 		}

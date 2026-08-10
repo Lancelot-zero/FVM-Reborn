@@ -318,14 +318,18 @@ function slots_init(){
 	    {"shape":1, "sprite":spr_pan_fried_bun_1, "cost":175, "cooldown":7*60, "description":"水煎包锅：投掷3*3范围灼烧的生煎包","plant_type":"normal","feature_type":"normal","target_card":"none"},
 		{"shape":2, "sprite":spr_pan_fried_bun_2, "cost":225, "cooldown":7*60, "description":"驴肉火烧锅：投掷3*3范围灼烧的生煎包","plant_type":"normal","feature_type":"normal","target_card":"none"}
 	])
-	//register_card("coal_starfish", obj_coal_starfish, [
-	//    {"shape":0, "sprite":spr_coal_starfish, "cost":275, "cooldown":7*60, "description":"炭烧海星：向五个方向发射星星，陆地窒息","plant_type":"normal","feature_type":"amphi","target_card":"none"},
-	//	{"shape":1, "sprite":spr_coal_starfish_1, "cost":275, "cooldown":7*60, "description":"芝士焗海星：向五个方向发射星星","plant_type":"normal","feature_type":"amphi","target_card":"none"},
-	//	{"shape":2, "sprite":spr_coal_starfish_2_icon, "cost":325, "cooldown":7*60, "description":"芥末海星刺身：向五个方向发射两颗星星","plant_type":"normal","feature_type":"amphi","target_card":"none","place_preview":spr_coal_starfish_2}
-	//]);
-	//register_card("curry_lobster_cannon", obj_curry_lobster_cannon, [
-	//    {"shape":0, "sprite":spr_curry_lobster_cannon_icon, "cost":275, "cooldown":20*60, "description":"咖喱龙虾炮：发射两个追踪咖喱炮弹，陆地窒息","plant_type":"normal","feature_type":"amphi","target_card":"none","place_preview":spr_curry_lobster_cannon},
-	//	{"shape":1, "sprite":spr_curry_lobster_cannon_1_icon, "cost":275, "cooldown":20*60, "description":"麻辣龙虾炮：发射两个追踪咖喱炮弹","plant_type":"normal","feature_type":"amphi","target_card":"none","place_preview":spr_curry_lobster_cannon_1},
-	//	{"shape":2, "sprite":spr_curry_lobster_cannon_2_icon, "cost":275, "cooldown":20*60, "description":"加农龙虾炮：发射三个追踪咖喱炮弹","plant_type":"normal","feature_type":"amphi","target_card":"none","place_preview":spr_curry_lobster_cannon_2}
-	//]);
+	register_card("soda_bubble",obj_soda_bubble,[
+	    {"shape":0, "sprite":spr_soda_bubble_icon, "cost":25, "cooldown":10*60, "description":"苏打气泡：保护卡片免受窒息","plant_type":"coffee","feature_type":"normal","target_card":"none","place_preview":spr_soda_bubble_0_0},
+	    {"shape":1, "sprite":spr_soda_bubble_1_icon, "cost":0, "cooldown":10*60, "description":"五彩香皂泡泡：保护卡片免受窒息","plant_type":"coffee","feature_type":"normal","target_card":"none","place_preview":spr_soda_bubble_1_0},
+	])
+	register_card("coal_starfish", obj_coal_starfish, [
+	    {"shape":0, "sprite":spr_coal_starfish, "cost":225, "cooldown":7*60, "description":"炭烧海星：向五个方向发射星星，陆地窒息","plant_type":"normal","feature_type":"amphi","target_card":"none"},
+		{"shape":1, "sprite":spr_coal_starfish_1, "cost":225, "cooldown":7*60, "description":"芝士焗海星：向五个方向发射星星","plant_type":"normal","feature_type":"amphi","target_card":"none"},
+		{"shape":2, "sprite":spr_coal_starfish_2_icon, "cost":275, "cooldown":7*60, "description":"芥末海星刺身：向五个方向发射两颗星星","plant_type":"normal","feature_type":"amphi","target_card":"none","place_preview":spr_coal_starfish_2}
+	]);
+	register_card("curry_lobster_cannon", obj_curry_lobster_cannon, [
+	    {"shape":0, "sprite":spr_curry_lobster_cannon_icon, "cost":275, "cooldown":20*60, "description":"咖喱龙虾炮：发射两个追踪咖喱炮弹，陆地窒息","plant_type":"normal","feature_type":"amphi","target_card":"none","place_preview":spr_curry_lobster_cannon},
+		{"shape":1, "sprite":spr_curry_lobster_cannon_1_icon, "cost":275, "cooldown":20*60, "description":"麻辣龙虾炮：发射两个追踪咖喱炮弹","plant_type":"normal","feature_type":"amphi","target_card":"none","place_preview":spr_curry_lobster_cannon_1},
+		{"shape":2, "sprite":spr_curry_lobster_cannon_2_icon, "cost":275, "cooldown":20*60, "description":"加农龙虾炮：发射三个追踪咖喱炮弹","plant_type":"normal","feature_type":"amphi","target_card":"none","place_preview":spr_curry_lobster_cannon_2}
+	]);
 }

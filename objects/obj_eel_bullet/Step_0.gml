@@ -39,7 +39,7 @@ if x >= target_x - 10 && x <= target_x + 10{
 				
 	        // 检查是否在攻击范围内
 	        if(abs(grid_col-erase_col) <= 0 && abs(grid_row-erase_row) <= 0) {
-	            if !invincible && plant_type != "coffee"{
+	            if !invincible && plant_type != "coffee" && plant_id != "soda_bubble"{
 					if plant_id != "player"{
 						hp -= 400
 						event_user(2)

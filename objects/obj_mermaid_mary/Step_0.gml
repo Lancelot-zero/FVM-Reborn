@@ -140,7 +140,7 @@ switch state{
 		if timer == 16 * 5 + 2{
 			var erase_col = irandom_range(1,7)
 			var erase_row = irandom_range(1,global.grid_rows-2)
-			var missile = instance_create_depth(x-35,y-280,-800,obj_iron_man_bullet)
+			var missile = instance_create_depth(x-35,y-280,-800,obj_mermaid_mary_bullet)
 			missile.target_col = erase_col
 			missile.target_row = erase_row
 		}

@@ -45,7 +45,7 @@ if !unlock && obj_player_info_ui.menu_type == 0{
 		show_notice("暂未开放，敬请期待！",60)
 	}
 	else{
-		if global.save_data.player.level >= player_level_require{
+		if global.save_data.player.level < player_level_require{
 			show_notice("达到"+string(player_level_require)+"级以解锁此关",60)
 		}
 		else{

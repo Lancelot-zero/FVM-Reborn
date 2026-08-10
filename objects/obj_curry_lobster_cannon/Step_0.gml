@@ -7,10 +7,33 @@ if is_slowdown{
 }
 
 event_inherited(); 
+
+if shape < 1{
+	drown_timer ++
+	if drown_timer mod 60 == 0{
+		//0转检测是否有气泡和海水
+		var has_bubble = false
+		var has_seawater = false
+		with obj_card_parent{
+			if plant_id == "soda_bubble" && grid_col == other.grid_col && grid_row == other.grid_row{
+				has_bubble = true
+			}
+		}
+		with obj_seawater{
+			if col == other.grid_col && row == other.grid_row{
+				has_seawater = true
+			}
+		}
+		if !has_bubble && !has_seawater{
+			hp -= 0.05*max_hp
+			event_user(2)
+		}
+	}
+}
+
 if is_frozen || state == CARD_STATE.SLEEP{
 	exit
 }
-
 //检测屏幕上是否有敌人
 var has_enemy = false
 if instance_exists(obj_enemy_parent){
