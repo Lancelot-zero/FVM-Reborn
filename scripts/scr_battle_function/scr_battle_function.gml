@@ -533,7 +533,27 @@ function parse_network_message(buf, _sock) {
             buffer_copy(buf, buffer_tell(buf), _size, _data, 0);
             buffer_seek(buf, buffer_seek_relative, _size);
             show_debug_message("[解析] 收到 MSG_TRANSFER_FILE: " + _filename + " 用途:" + _purpose + " (" + string(_size) + " bytes)");
-            file_cache_handle_receive(_filename, _purpose, _size, _data);
+            if (_purpose == "VM_sprite") {
+                var _safe = string_replace_all(string_replace_all(_filename, "/", "_"), "\\", "_");
+                var _path = "cache/" + _safe;
+                buffer_save(_data, _path);
+                var _real = sprite_add(_path, 1, false, false, 0, 0);
+                if (_real != -1 && ds_map_exists(global._VM_sprite_temp_cache, _filename)) {
+                    var _old = global._VM_sprite_temp_cache[? _filename];
+                    ds_map_delete(global._pid_reverse, _old);
+                    // 别名也指向旧占位符，一起更新
+                    var _keys = ds_map_keys_to_array(global._VM_sprite_temp_cache);
+                    for (var _ki = 0; _ki < array_length(_keys); _ki++) {
+                        if (global._VM_sprite_temp_cache[? _keys[_ki]] == _old)
+                            global._VM_sprite_temp_cache[? _keys[_ki]] = _real;
+                    }
+                    ds_map_add(global._VM_sprite_temp_cache, _filename, _real);
+                    ds_map_add(global._pid_reverse, _real, _filename);
+                }
+                buffer_delete(_data);
+            } else {
+                file_cache_handle_receive(_filename, _purpose, _size, _data);
+            }
             break;
         }
 		

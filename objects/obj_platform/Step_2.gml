@@ -1,15 +1,6 @@
 if (first_frame) {
     first_frame = false;
     
-    if (!variable_instance_exists(id, "old_terrains")) {
-        old_terrains = ds_grid_create(global.grid_cols, global.grid_rows);
-        for (var c = 0; c < global.grid_cols; c++) {
-            for (var r = 0; r < global.grid_rows; r++) {
-                ds_grid_set(old_terrains, c, r, global.grid_terrains[r][c].type);
-            }
-        }
-    }
-    
     current_offset = initial_offset;
     
     // 预检初始方向，防止在边界处继续向外侧移动而突破限制
@@ -40,7 +31,11 @@ if (first_frame) {
     for (var c = cur_start_c; c < cur_start_c + width; c++) {
         for (var r = cur_start_r; r < cur_start_r + length; r++) {
             if (r < global.grid_rows && c < global.grid_cols) {
-                global.grid_terrains[r][c].type = "normal";
+                global.grid_platform_count[r][c]++;
+                if (global.grid_platform_count[r][c] == 1) {
+                    global.grid_terrains_original[r][c] = global.grid_terrains[r][c].type;
+                    global.grid_terrains[r][c].type = "normal";
+                }
             }
         }
     }
@@ -84,10 +79,9 @@ else if (state == "moving") {
             var leave_r = (move_direction > 0) ? cur_start_r : (cur_start_r + length - 1);
             for (var c = cur_start_c; c < cur_start_c + width; c++) {
                 if (leave_r >= 0 && leave_r < global.grid_rows && c >= 0 && c < global.grid_cols) {
-                    if (variable_instance_exists(id, "old_terrains")) {
-                        global.grid_terrains[leave_r][c].type = ds_grid_get(old_terrains, c, leave_r);
-                    } else {
-                        global.grid_terrains[leave_r][c].type = global.row_feature[leave_r];
+                    global.grid_platform_count[leave_r][c]--;
+                    if (global.grid_platform_count[leave_r][c] == 0) {
+                        global.grid_terrains[leave_r][c].type = global.grid_terrains_original[leave_r][c];
                     }
                 }
             }
@@ -95,10 +89,9 @@ else if (state == "moving") {
             var leave_c = (move_direction > 0) ? cur_start_c : (cur_start_c + width - 1);
             for (var r = cur_start_r; r < cur_start_r + length; r++) {
                 if (r >= 0 && r < global.grid_rows && leave_c >= 0 && leave_c < global.grid_cols) {
-                    if (variable_instance_exists(id, "old_terrains")) {
-                        global.grid_terrains[r][leave_c].type = ds_grid_get(old_terrains, leave_c, r);
-                    } else {
-                        global.grid_terrains[r][leave_c].type = global.row_feature[r];
+                    global.grid_platform_count[r][leave_c]--;
+                    if (global.grid_platform_count[r][leave_c] == 0) {
+                        global.grid_terrains[r][leave_c].type = global.grid_terrains_original[r][leave_c];
                     }
                 }
             }
@@ -186,7 +179,11 @@ else if (state == "moving") {
         for (var c = new_cur_start_c; c < new_cur_start_c + width; c++) {
             for (var r = new_cur_start_r; r < new_cur_start_r + length; r++) {
                 if (r >= 0 && r < global.grid_rows && c >= 0 && c < global.grid_cols) {
-                    global.grid_terrains[r][c].type = "normal";
+                    global.grid_platform_count[r][c]++;
+                    if (global.grid_platform_count[r][c] == 1) {
+                        global.grid_terrains_original[r][c] = global.grid_terrains[r][c].type;
+                        global.grid_terrains[r][c].type = "normal";
+                    }
                 }
             }
         }

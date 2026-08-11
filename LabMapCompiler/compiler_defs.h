@@ -89,6 +89,8 @@ static const std::vector<const char*> BLOCK_NAMES = {
     "_VM_TIMER_15f",
     "_VM_TIMER_30f",
     "_VM_TIMER_60f",
+    "_VM_BUTTON_CLICKED",
+    "_VM_CARD_PREVIEW_PICKED",
 };
 
 // ============================================================
@@ -233,6 +235,12 @@ static std::vector<FuncDef> FUNC_DEFS = {
     {"VM_ApplyPlantLevel",       1,  {PT_INT}},                                         // 67
     {"VM_LoadSpritePerm",        2,  {PT_STRING, PT_INT}},                             // 68
     {"VM_FreeSpritePerm",        1,  {PT_STRING}},                                      // 69
+    {"VM_SetCardSlotProp",       3,  {PT_STRING, PT_STRING, PT_ANY}},                  // 70
+    {"VM_CalcCardSlotProp",      4,  {PT_STRING, PT_STRING, PT_INT, PT_ANY}},         // 71
+    {"VM_GetCardSlotCount",      0},                                                    // 72
+    {"VM_GetPreviewCard",        0},                                                    // 73 — 返回 PT_STRING 或 -1
+    {"VM_AliasSprite",           2,  {PT_STRING, PT_STRING}},                           // 74
+    {"VM_LoadSpriteFrames_Ex",   4,  {PT_STRING, PT_INT, PT_INT, PT_INT}},             // 75
 };
 
 // ============================================================

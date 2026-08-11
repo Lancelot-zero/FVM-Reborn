@@ -108,6 +108,12 @@ for (var col = 0; col < global.grid_cols + 64; col++) {
 
 var plant_list = global.level_file.map
 global.grid_terrains = global.level_file.map
+global.grid_platform_count = array_create(global.grid_rows);
+global.grid_terrains_original = array_create(global.grid_rows);
+for(var _pi = 0; _pi < global.grid_rows; _pi++){
+	global.grid_platform_count[_pi] = array_create(global.grid_cols, 0);
+	global.grid_terrains_original[_pi] = array_create(global.grid_cols);
+}
 global.row_feature = []
 for(var i = 0 ; i < global.grid_rows;i++){
 	if global.grid_terrains[i][0].type == "water"{

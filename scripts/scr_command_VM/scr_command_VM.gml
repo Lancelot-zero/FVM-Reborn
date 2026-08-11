@@ -147,9 +147,14 @@ function VM_CreatePlatform(col_addr, row_addr, width_addr, length_addr, axis_add
     _plat.boundary_idle_duration = idle;
     _plat._VM_id = _VM_id;
 	
-    if (!is_undefined(spr) && spr != "") {
-        _plat.sprite_index = get_load_sprite(spr);
+    var _spr_cache;
+    if (is_string(spr) && ds_map_exists(global._VM_sprite_temp_cache, spr)) {
+        _spr_cache = global._VM_sprite_temp_cache[? spr];
+    } else {
+        _spr_cache = get_load_sprite(spr);
     }
+    _plat.sprite_index = _spr_cache;
+    
     // 网络同步
     if (global.network.mode == "server") {
         ds_map_add(global._VM_id_to_real, _VM_id, _plat.id);
@@ -198,21 +203,27 @@ function VM_CreatePlatform(col_addr, row_addr, width_addr, length_addr, axis_add
     return real(_plat.id);
 }
 
+/// @function _VM_RequestSprite(name)
+/// @desc 客户端：创建空占位精灵 → 缓存 → 请求服务端发送文件 → 返回占位 ID
+function _VM_RequestSprite(name) {
+    var _placeholder = sprite_add(working_directory + "_ph_empty.png", 1, false, false, 0, 0);
+    ds_map_add(global._VM_sprite_temp_cache, name, _placeholder);
+    ds_map_add(global._pid_reverse, _placeholder, name);
+    send_message(global.network.server_socket, MSG_REQUEST_FILE, name, "VM_sprite");
+    return _placeholder;
+}
+
+
 /// @function _VM_LoadSpriteFile(name)
 function _VM_LoadSpriteFile(name) {
     if (ds_map_exists(global._VM_sprite_temp_cache, name))
         return global._VM_sprite_temp_cache[? name];
-    if (variable_global_exists("network") && global.network.mode == "client") {
-        return file_cache_load_sprite(name, -1, "", "");
-    }
     var _paths = [];
     if (variable_global_exists("_file_cache_json_path")) {
         var _prefix = global._file_cache_json_path;
         if (!string_ends_with(_prefix, "/") && !string_ends_with(_prefix, "\\")) _prefix += "/";
         array_push(_paths, _prefix + "../" + name);
     }
-    array_push(_paths, "laboratory/" + name);
-    array_push(_paths, name);
     show_debug_message("[VM_LoadSprite] 查找贴图: " + name + "  json_path=" + (variable_global_exists("_file_cache_json_path") ? string(global._file_cache_json_path) : "(未设置)"));
     for (var _i = 0; _i < array_length(_paths); _i++) {
         show_debug_message("[VM_LoadSprite]   尝试: " + _paths[_i] + "  exist=" + string(file_exists(_paths[_i])));
@@ -220,45 +231,74 @@ function _VM_LoadSpriteFile(name) {
             var _spr = sprite_add(_paths[_i], 1, false, false, 0, 0);
             if (_spr != -1) {
                 ds_map_add(global._VM_sprite_temp_cache, name, _spr);
+				ds_map_add(global._pid_reverse, _spr, name); 
                 return _spr;
             }
         }
     }
+    // 本地未找到，客户端请求服务端发送文件
+    if (variable_global_exists("network") && global.network.mode == "client")
+        return _VM_RequestSprite(name);
     return -1;
 }
+
 
 /// @function _VM_LoadSpriteFileEx(name, frames)
 function _VM_LoadSpriteFileEx(name, frames) {
     if (ds_map_exists(global._VM_sprite_temp_cache, name))
         return global._VM_sprite_temp_cache[? name];
-    if (variable_global_exists("network") && global.network.mode == "client")
-        return file_cache_load_sprite(name, -1, "", "");
     var _paths = [];
     if (variable_global_exists("_file_cache_json_path")) {
         var _prefix = global._file_cache_json_path;
         if (!string_ends_with(_prefix, "/") && !string_ends_with(_prefix, "\\")) _prefix += "/";
         array_push(_paths, _prefix + "../" + name);
     }
-    array_push(_paths, "laboratory/" + name);
-    array_push(_paths, name);
     for (var _i = 0; _i < array_length(_paths); _i++) {
         if (file_exists(_paths[_i])) {
             var _spr = sprite_add(_paths[_i], frames, false, false, 0, 0);
             if (_spr != -1) {
                 ds_map_add(global._VM_sprite_temp_cache, name, _spr);
+				ds_map_add(global._pid_reverse, _spr, name); 
                 return _spr;
             }
         }
     }
+    // 本地未找到，客户端请求服务端发送文件
+    if (variable_global_exists("network") && global.network.mode == "client")
+        return _VM_RequestSprite(name);
+    return -1;
+}
+
+/// @function _VM_LoadSpriteFile_Ex(name, frames, xorigin, yorigin)
+function _VM_LoadSpriteFile_Ex(name, frames, xorigin, yorigin) {
+    if (ds_map_exists(global._VM_sprite_temp_cache, name))
+        return global._VM_sprite_temp_cache[? name];
+    var _paths = [];
+    if (variable_global_exists("_file_cache_json_path")) {
+        var _prefix = global._file_cache_json_path;
+        if (!string_ends_with(_prefix, "/") && !string_ends_with(_prefix, "\\")) _prefix += "/";
+        array_push(_paths, _prefix + "../" + name);
+    }
+    for (var _i = 0; _i < array_length(_paths); _i++) {
+        if (file_exists(_paths[_i])) {
+            var _spr = sprite_add(_paths[_i], frames, false, false, xorigin, yorigin);
+            if (_spr != -1) {
+                ds_map_add(global._VM_sprite_temp_cache, name, _spr);
+                ds_map_add(global._pid_reverse, _spr, name);
+                return _spr;
+            }
+        }
+    }
+    if (variable_global_exists("network") && global.network.mode == "client")
+        return _VM_RequestSprite(name);
     return -1;
 }
 
 /// @function VM_LoadSprite(name_addr)
 /// @return sprite index
 function VM_LoadSprite(name_addr) {
-    var _pool_idx = global.__vm.mem_val[name_addr];
-    array_push(global._VM_loaded_sprite_indices, _pool_idx);
     var name = vm_read_mem(global.__vm, name_addr);
+    array_push(global._VM_loaded_sprite_indices, name);
     return _VM_LoadSpriteFile(name);
 }
 
@@ -267,12 +307,29 @@ function VM_LoadSprite(name_addr) {
 /// @param frames 帧数（自动均分切割）
 /// @return sprite index
 function VM_LoadSpriteFrames(name_addr, frames_addr) {
-	var _pool_idx = global.__vm.mem_val[name_addr];
-	array_push(global._VM_loaded_sprite_indices, _pool_idx);
 	var _name = vm_read_mem(global.__vm, name_addr);
+	array_push(global._VM_loaded_sprite_indices, _name);
 	var _frames = vm_read_mem(global.__vm, frames_addr);
 	if (is_undefined(_frames) || _frames <= 0) _frames = 1;
 	return _VM_LoadSpriteFileEx(_name, _frames);
+}
+
+/// @function VM_LoadSpriteFrames_Ex(name, frames, xorigin, yorigin)
+/// @param name     贴图文件名
+/// @param frames   帧数（自动均分切割）
+/// @param xorigin  原点 X，-1=默认0
+/// @param yorigin  原点 Y，-1=默认0
+/// @return sprite index
+function VM_LoadSpriteFrames_Ex(name_addr, frames_addr, xorigin_addr, yorigin_addr) {
+	var _name = vm_read_mem(global.__vm, name_addr);
+	array_push(global._VM_loaded_sprite_indices, _name);
+	var _frames = vm_read_mem(global.__vm, frames_addr);
+	var _x = vm_read_mem(global.__vm, xorigin_addr);
+	var _y = vm_read_mem(global.__vm, yorigin_addr);
+	if (is_undefined(_frames) || _frames <= 0) _frames = 1;
+	if (is_undefined(_x) || _x == -1) _x = 0;
+	if (is_undefined(_y) || _y == -1) _y = 0;
+	return _VM_LoadSpriteFile_Ex(_name, _frames, _x, _y);
 }
 
 /// @function VM_LoadSpritePerm(name, frames)
@@ -305,10 +362,10 @@ function VM_FreeSpritePerm(name_addr) {
 
 /// @function VM_GetLoadedSpriteName(index)
 /// @param index  加载序号（0 开始）
-/// @return 字符串池索引，越界返回 -1
+/// @return 贴图名（字符串），越界返回 ""
 function VM_GetLoadedSpriteName(index_addr) {
     var index = vm_read_mem(global.__vm, index_addr);
-    if (index < 0 || index >= array_length(global._VM_loaded_sprite_indices)) return -1;
+    if (index < 0 || index >= array_length(global._VM_loaded_sprite_indices)) return "";
     return global._VM_loaded_sprite_indices[index];
 }
 
@@ -333,10 +390,12 @@ function VM_SetDrawSlot(slot_addr, sprite_addr, x_addr, y_addr, alpha_addr) {
         return;
     }
     var _spr;
-    if (is_real(sprite)) {
-        _spr = sprite;
+    if (is_string(sprite)) {
+        _spr = ds_map_exists(global._VM_sprite_temp_cache, sprite)
+            ? global._VM_sprite_temp_cache[? sprite]
+            : get_load_sprite(sprite);
     } else {
-        _spr = _VM_LoadSpriteFile(sprite);
+        _spr = sprite;
     }
     global.map_draw_slots[slot].sprite = _spr;
     global.map_draw_slots[slot].x = _x;
@@ -366,10 +425,12 @@ function VM_SetDrawSlot_front(slot_addr, sprite_addr, x_addr, y_addr, alpha_addr
         return;
     }
     var _spr;
-    if (is_real(sprite)) {
-        _spr = sprite;
+    if (is_string(sprite)) {
+        _spr = ds_map_exists(global._VM_sprite_temp_cache, sprite)
+            ? global._VM_sprite_temp_cache[? sprite]
+            : get_load_sprite(sprite);
     } else {
-        _spr = _VM_LoadSpriteFile(sprite);
+        _spr = sprite;
     }
     global.map_draw_slots_front[slot].sprite = _spr;
     global.map_draw_slots_front[slot].x = _x;
@@ -397,7 +458,7 @@ function VM_SetMapBackground(name_addr, step_addr) {
 /// @function VM_GameWin()
 /// @desc 触发胜利。客户端跳过，服务端弹出胜利界面并广播给客户端
 function VM_GameWin() {
-    if (global.network.mode == "client") return;
+    if (global.network.mode == "client" && global._VM_sync_exec) return;
     if (global.network.mode == "server") {
         var _cl = global.network.connected_clients;
         for (var i = 0; i < array_length(_cl); i++)
@@ -413,7 +474,7 @@ function VM_GameWin() {
 /// @function VM_GameLose()
 /// @desc 触发失败。客户端跳过，服务端弹出失败界面并广播给客户端
 function VM_GameLose() {
-    if (global.network.mode == "client") return;
+    if (global.network.mode == "client" && global._VM_sync_exec) return;
     if (global.network.mode == "server") {
         var _cl = global.network.connected_clients;
         for (var i = 0; i < array_length(_cl); i++)
@@ -514,6 +575,7 @@ function VM_SetCardProp(col_addr, row_addr, name_addr, prop_addr, value_addr) {
     var name = vm_read_mem(global.__vm, name_addr);
     var prop = vm_read_mem(global.__vm, prop_addr);
     var value = vm_read_mem(global.__vm, value_addr);
+    if (global.network.mode == "client" && global._VM_sync_exec) return;
     var _all = (name == "all");
     var _c1 = (col == -1) ? 0 : col;
     var _c2 = (col == -1) ? global.grid_cols - 1 : col;
@@ -531,6 +593,12 @@ function VM_SetCardProp(col_addr, row_addr, name_addr, prop_addr, value_addr) {
             }
         }
     }
+    if (global.network.mode == "server") {
+        var _msg = json_stringify({hook: "call", func: "VM_SetCardProp", args: [col, row, name, prop, value]});
+        var _cl = global.network.connected_clients;
+        for (var _i = 0; _i < array_length(_cl); _i++)
+            send_message(_cl[_i], MSG_VM_NOTIFY, _msg);
+    }
 }
 
 /// @function VM_SetEnemyProp(name, prop, value)
@@ -541,20 +609,28 @@ function VM_SetEnemyProp(name_addr, prop_addr, value_addr) {
     var name = vm_read_mem(global.__vm, name_addr);
     var prop = vm_read_mem(global.__vm, prop_addr);
     var value = vm_read_mem(global.__vm, value_addr);
+    if (global.network.mode == "client" && global._VM_sync_exec) return;
     var _all = (name == "all");
     if (_all) {
         with (obj_enemy_parent) {
             if (is_boss) continue;
             variable_instance_set(id, prop, value);
         }
-        return;
+    } else {
+        var _info = global.enemy_map[? name];
+        if (!is_undefined(_info)) {
+            var _obj = _info._obj;
+            with (_obj) {
+                if (is_boss) continue;
+                variable_instance_set(id, prop, value);
+            }
+        }
     }
-    var _info = global.enemy_map[? name];
-    if (is_undefined(_info)) return;
-    var _obj = _info._obj;
-    with (_obj) {
-        if (is_boss) continue;
-        variable_instance_set(id, prop, value);
+    if (global.network.mode == "server") {
+        var _msg = json_stringify({hook: "call", func: "VM_SetEnemyProp", args: [name, prop, value]});
+        var _cl = global.network.connected_clients;
+        for (var _i = 0; _i < array_length(_cl); _i++)
+            send_message(_cl[_i], MSG_VM_NOTIFY, _msg);
     }
 }
 
@@ -678,22 +754,10 @@ function VM_SetPlatformParams(plat_id_addr, axis_addr, distance_addr, idle_addr,
 }
 
 /// @function VM_RefreshPlatformSnapshots()
-/// @return 更新的平台数量
-/// @description 遍历所有平台，重新记录 old_terrains 快照（以当前地形为准）
+/// @return 0
+/// @description 已改用引用计数，不再需要快照
 function VM_RefreshPlatformSnapshots() {
-	var _count = 0;
-	with (obj_platform) {
-		if (!variable_instance_exists(id, "old_terrains") || !ds_exists(old_terrains, ds_type_grid)) {
-			old_terrains = ds_grid_create(global.grid_cols, global.grid_rows);
-		}
-		for (var c = 0; c < global.grid_cols; c++) {
-			for (var r = 0; r < global.grid_rows; r++) {
-				ds_grid_set(old_terrains, c, r, global.grid_terrains[r][c].type);
-			}
-		}
-		_count++;
-	}
-	return _count;
+	return 0;
 }
 
 /// @function VM_GetWave()
@@ -939,7 +1003,7 @@ function VM_SwapPlants(col1_addr, row1_addr, col2_addr, row2_addr) {
 	if (_c1 < 0 || _c1 >= global.grid_cols || _r1 < 0 || _r1 >= global.grid_rows) return;
 	if (_c2 < 0 || _c2 >= global.grid_cols || _r2 < 0 || _r2 >= global.grid_rows) return;
 	if (_c1 == _c2 && _r1 == _r2) return;
-	if (global.network.mode == "client") return;
+	if (global.network.mode == "client" && global._VM_sync_exec) return;
 	var _list1 = ds_grid_get(global.grid_plants, _c1, _r1);
 	var _list2 = ds_grid_get(global.grid_plants, _c2, _r2);
 	var _plants1 = [];
@@ -997,7 +1061,7 @@ function VM_SwapPlantRects(x1_addr, y1_addr, w_addr, h_addr, x2_addr, y2_addr) {
 	var _y2 = vm_read_mem(global.__vm, y2_addr);
 	if (_w <= 0 || _h <= 0) return;
 	if (_x1 == _x2 && _y1 == _y2) return;
-	if (global.network.mode == "client") return;
+	if (global.network.mode == "client" && global._VM_sync_exec) return;
 	
 	// 第一趟：收集快照（两边都在界内才收）
 	var _snap = ds_map_create();
@@ -1123,7 +1187,7 @@ function VM_CompactColumn(col_addr) {
 	var _c1 = (_col == -1) ? 0 : _col;
 	var _c2 = (_col == -1) ? global.grid_cols - 1 : _col;
 	if (_c1 < 0 || _c2 >= global.grid_cols) return;
-	if (global.network.mode == "client") return;
+	if (global.network.mode == "client" && global._VM_sync_exec) return;
 	for (var _c = _c1; _c <= _c2; _c++) {
 		// 收集该列所有非空格子的植物快照
 		var _snap = [];
@@ -1172,7 +1236,7 @@ function VM_CompactRow(row_addr) {
 	var _row = vm_read_mem(global.__vm, row_addr);
 	var _r1 = (_row == -1) ? 0 : _row;
 	var _r2 = (_row == -1) ? global.grid_rows - 1 : _row;
-	if (global.network.mode == "client") return;
+	if (global.network.mode == "client" && global._VM_sync_exec) return;
 	if (_r1 < 0 || _r2 >= global.grid_rows) return;
 	for (var _r = _r1; _r <= _r2; _r++) {
 		// 收集该行所有非空格子的植物快照
@@ -1220,7 +1284,7 @@ function VM_CompactRow(row_addr) {
 /// @param col 列号，-1=所有列
 function VM_CompactColumnRev(col_addr) {
 	var _col = vm_read_mem(global.__vm, col_addr);
-	if (global.network.mode == "client") return;
+	if (global.network.mode == "client" && global._VM_sync_exec) return;
 	var _c1 = (_col == -1) ? 0 : _col;
 	var _c2 = (_col == -1) ? global.grid_cols - 1 : _col;
 	if (_c1 < 0 || _c2 >= global.grid_cols) return;
@@ -1269,7 +1333,7 @@ function VM_CompactColumnRev(col_addr) {
 function VM_CompactRowRev(row_addr) {
 	var _row = vm_read_mem(global.__vm, row_addr);
 	var _r1 = (_row == -1) ? 0 : _row;
-	if (global.network.mode == "client") return;
+	if (global.network.mode == "client" && global._VM_sync_exec) return;
 	var _r2 = (_row == -1) ? global.grid_rows - 1 : _row;
 	if (_r1 < 0 || _r2 >= global.grid_rows) return;
 	for (var _r = _r1; _r <= _r2; _r++) {
@@ -1426,8 +1490,89 @@ function VM_ApplyPlantLevel(inst_id_addr) {
 		_inst = _real;
 	}
 	if (!instance_exists(_inst)) return;
+	if (global.network.mode == "client" && global._VM_sync_exec
+	    && ds_map_exists(global.network.map_instance_id_net_id, _inst)) return;
 	network_apply_plant_level(_inst);
+	if (global.network.mode == "server") {
+		var _nid = ds_map_exists(global.network.map_instance_id_net_id, _inst) ? global.network.map_instance_id_net_id[? _inst] : -1;
+		if (_nid != -1) {
+			var _msg = json_stringify({hook: "call", func: "VM_ApplyPlantLevel", args: [_inst]});
+			var _cl = global.network.connected_clients;
+			for (var _i = 0; _i < array_length(_cl); _i++)
+				send_message(_cl[_i], MSG_VM_NOTIFY, _msg);
+		}
+	}
 }
+/// @function VM_SetCardSlotProp(name, prop, value)
+/// @param name  "all"/-1=全部, 数字=指定 slot_index, 字符串=匹配 card_id
+/// @param prop  属性名，如 "cooldown" "current_cost"
+/// @param value 新的值
+function VM_SetCardSlotProp(name_addr, prop_addr, value_addr) {
+	var name = vm_read_mem(global.__vm, name_addr);
+	var prop = vm_read_mem(global.__vm, prop_addr);
+	var value = vm_read_mem(global.__vm, value_addr);
+	if (name == "all" || name == -1) {
+		with (obj_card_slot) variable_instance_set(id, prop, value);
+	} else if (is_real(name)) {
+		with (obj_card_slot) { if (slot_index == name) variable_instance_set(id, prop, value); }
+	} else {
+		with (obj_card_slot) { if (card_id == name) variable_instance_set(id, prop, value); }
+	}
+}
+
+/// @function VM_CalcCardSlotProp(name, prop, op, val)
+/// @param name  "all"/-1=全部, 数字=指定 slot_index, 字符串=匹配 card_id
+/// @param prop  属性名
+/// @param op    0=加 1=减 2=乘 3=除
+/// @param val   操作数
+function VM_CalcCardSlotProp(name_addr, prop_addr, op_addr, val_addr) {
+	var name = vm_read_mem(global.__vm, name_addr);
+	var prop = vm_read_mem(global.__vm, prop_addr);
+	var op = vm_read_mem(global.__vm, op_addr);
+	var val = vm_read_mem(global.__vm, val_addr);
+	if (name == "all" || name == -1) {
+		with (obj_card_slot) _calc_op(id, prop, op, val);
+	} else if (is_real(name)) {
+		with (obj_card_slot) { if (slot_index == name) _calc_op(id, prop, op, val); }
+	} else {
+		with (obj_card_slot) { if (card_id == name) _calc_op(id, prop, op, val); }
+	}
+}
+
+function _calc_op(_inst, _prop, _op, _val) {
+	var _cur = variable_instance_get(_inst, _prop);
+	if (!is_real(_cur) || !is_real(_val)) return;
+	switch (_op) {
+		case 0: variable_instance_set(_inst, _prop, _cur + _val); break;
+		case 1: variable_instance_set(_inst, _prop, _cur - _val); break;
+		case 2: variable_instance_set(_inst, _prop, _cur * _val); break;
+		case 3: if (_val != 0) variable_instance_set(_inst, _prop, _cur / _val); break;
+	}
+}
+
+/// @function VM_AliasSprite(new_name, exist_name)
+/// @desc 将 new_name 指向 exist_name 在临时贴图缓存中的 sprite，不存在则无操作
+function VM_AliasSprite(new_name_addr, exist_name_addr) {
+	var _new = vm_read_mem(global.__vm, new_name_addr);
+	var _exist = vm_read_mem(global.__vm, exist_name_addr);
+	if (!ds_map_exists(global._VM_sprite_temp_cache, _exist)) return;
+	var _spr = global._VM_sprite_temp_cache[? _exist];
+	ds_map_add(global._VM_sprite_temp_cache, _new, _spr);
+}
+
+/// @function VM_GetPreviewCard()
+/// @return 当前手牌的 card_id，没有返回 -1
+function VM_GetPreviewCard() {
+	var _prev = instance_find(obj_card_preview, 0);
+	return (_prev != noone) ? _prev.card_id : -1;
+}
+
+/// @function VM_GetCardSlotCount()
+/// @return 卡槽数量
+function VM_GetCardSlotCount() {
+	return instance_number(obj_card_slot);
+}
+
 /// @function VM_PlaySound(name)
 /// @param name 内置音效名 (如 "snd_place1")
 function VM_PlaySound(name_addr) {
@@ -1461,6 +1606,9 @@ function VM_SetProp(inst_id_addr, prop_addr, value_addr) {
         inst_id = _real;
     }
     if (!instance_exists(inst_id)) return;
+    // 客户端：有 net_id 则跳过，服务端会通过 MSG_MODIFY_PROP 同步
+    if (global.network.mode == "client" && global._VM_sync_exec
+        && ds_map_exists(global.network.map_instance_id_net_id, inst_id)) return;
     variable_instance_set(inst_id, prop, value);
     if (global.network.mode == "server") {
         var _nid = ds_map_exists(global.network.map_instance_id_net_id, inst_id) ? global.network.map_instance_id_net_id[? inst_id] : -1;
@@ -2214,6 +2362,7 @@ global._VM_MOUSE_LEFT        = undefined;
 global._VM_MOUSE_RIGHT       = undefined;
 global._VM_KEY_PRESSED       = undefined;
 global._VM_BUTTON_CLICKED    = undefined;
+global._VM_CARD_PREVIEW_PICKED = undefined;
 global._VM_last_clicked_button = -1;
 global._VM_FRAME             = undefined;
 global._VM_TIMER_5f          = undefined;
@@ -2227,6 +2376,7 @@ global._VM_last_idle_platform = -1;
 global._VM_prev_wave = -1 
 global._VM_prev_subwave = -1
 global._VM_event_enabled = true
+global._VM_sync_exec = true    // VM_HandleNotify 中置 false，防止客户端守卫拦截同步调用
 
 global._VM_debug_mode = false;
 global._VM_loaded_sprite_indices = [];
@@ -2261,15 +2411,18 @@ function VM_FlushHooks() {
 /// @param {string} json  服务端发来的虚拟机通知 JSON
 /// @description 处理服务端通过 MSG_VM_NOTIFY 下发的虚拟机通知
 function VM_HandleNotify(json) {
+    global._VM_sync_exec = false;
     var _data = json_parse(json);
     if (is_undefined(_data)) {
         show_debug_message("[VM_HandleNotify] JSON 解析失败: " + json);
+        global._VM_sync_exec = true;
         return;
     }
 
     var _hook = _data[$ "hook"];
     if (is_undefined(_hook)) {
         show_debug_message("[VM_HandleNotify] 缺少 hook 字段: " + json);
+        global._VM_sync_exec = true;
         return;
     }
 
@@ -2326,6 +2479,7 @@ function VM_HandleNotify(json) {
             show_debug_message("[VM_HandleNotify] unknown hook: " + _hook);
             break;
     }
+    global._VM_sync_exec = true;
 }
 
 global._VM_last_boss          = -1;
@@ -2410,13 +2564,21 @@ VM_RegisterFunction(global.__vm, VM_LoadSpriteFrames);  // 66
 VM_RegisterFunction(global.__vm, VM_ApplyPlantLevel);  // 67
 VM_RegisterFunction(global.__vm, VM_LoadSpritePerm);  // 68
 VM_RegisterFunction(global.__vm, VM_FreeSpritePerm);   // 69
+VM_RegisterFunction(global.__vm, VM_SetCardSlotProp);  // 70
+VM_RegisterFunction(global.__vm, VM_CalcCardSlotProp); // 71
+VM_RegisterFunction(global.__vm, VM_GetCardSlotCount); // 72
+VM_RegisterFunction(global.__vm, VM_GetPreviewCard);   // 73
+VM_RegisterFunction(global.__vm, VM_AliasSprite);      // 74
+VM_RegisterFunction(global.__vm, VM_LoadSpriteFrames_Ex); // 75
 ds_map_add(global._VM_remote_funcs, "VM_SwapPlants", VM_SwapPlants);
 ds_map_add(global._VM_remote_funcs, "VM_SwapPlantRects", VM_SwapPlantRects);
 ds_map_add(global._VM_remote_funcs, "VM_CompactColumn", VM_CompactColumn);
 ds_map_add(global._VM_remote_funcs, "VM_CompactRow", VM_CompactRow);
 ds_map_add(global._VM_remote_funcs, "VM_CompactColumnRev", VM_CompactColumnRev);
 ds_map_add(global._VM_remote_funcs, "VM_CompactRowRev", VM_CompactRowRev);
-ds_map_add(global._VM_remote_funcs, "VM_SpawnPlantsRandom", VM_SpawnPlantsRandom);
+ds_map_add(global._VM_remote_funcs, "VM_SetCardProp", VM_SetCardProp);
+ds_map_add(global._VM_remote_funcs, "VM_SetEnemyProp", VM_SetEnemyProp);
+ds_map_add(global._VM_remote_funcs, "VM_ApplyPlantLevel", VM_ApplyPlantLevel);
 global._sync_vm_bin_buf = undefined;
 
 /// @function VM_InitRoomEntry(buf)
@@ -2445,8 +2607,9 @@ function VM_InitRoomEntry(buf) {
 	global._VM_MOUSE_LEFT        = undefined;
 	global._VM_MOUSE_RIGHT       = undefined;
 	global._VM_KEY_PRESSED       = undefined;
-global._VM_BUTTON_CLICKED    = undefined;
-global._VM_last_clicked_button = -1;
+	global._VM_BUTTON_CLICKED    = undefined;
+	global._VM_CARD_PREVIEW_PICKED = undefined;
+	global._VM_last_clicked_button = -1;
     global._VM_TIMER_5f          = undefined;
     global._VM_TIMER_10f         = undefined;
     global._VM_TIMER_15f         = undefined;
@@ -2464,7 +2627,7 @@ global._VM_last_clicked_button = -1;
     var _tmp_keys = ds_map_keys_to_array(global._VM_sprite_temp_cache);
     for (var _k = 0; _k < array_length(_tmp_keys); _k++) {
         var _spr = global._VM_sprite_temp_cache[? _tmp_keys[_k]];
-        if (sprite_exists(_spr)) sprite_delete(_spr);
+        if (sprite_exists(_spr)) { sprite_delete(_spr); ds_map_delete(global._pid_reverse, _spr); }
     }
     ds_map_clear(global._VM_sprite_temp_cache);
     global._VM_loaded_sprite_indices = [];
@@ -2598,6 +2761,9 @@ global._VM_last_clicked_button = -1;
                 break;
             case "_VM_BUTTON_CLICKED":
                 global._VM_BUTTON_CLICKED = _bc_buf;
+                break;
+            case "_VM_CARD_PREVIEW_PICKED":
+                global._VM_CARD_PREVIEW_PICKED = _bc_buf;
                 break;
             default:
                 buffer_delete(_bc_buf);

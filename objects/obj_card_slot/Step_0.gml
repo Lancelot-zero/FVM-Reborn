@@ -66,6 +66,8 @@ if (is_ready && mouse_check_button_pressed(mb_left)) {
 			}
             selected_preview.parent_slot = id; // 设置父卡槽
 			selected_preview.card_id = card_id
+			if (buffer_exists(global._VM_CARD_PREVIEW_PICKED))
+				VM_Execute(global.__vm, global._VM_CARD_PREVIEW_PICKED);
         }
     }
 }
@@ -90,6 +92,8 @@ if keyboard_check_pressed(slot_key) && is_ready{
 					}
 		            selected_preview.parent_slot = id; // 设置父卡槽
 					selected_preview.card_id = card_id
+				if (buffer_exists(global._VM_CARD_PREVIEW_PICKED))
+					VM_Execute(global.__vm, global._VM_CARD_PREVIEW_PICKED);
 		        }
 			}
 		}

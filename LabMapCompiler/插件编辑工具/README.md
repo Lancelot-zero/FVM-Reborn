@@ -310,80 +310,31 @@ if (wave == 3) {
 ## 完整示例
 
 ```
-// ==================================
-//  准备室阶段
-//  进入准备室时执行，用于设置游戏规则
-// ==================================
+// ========== 准备室 ==========
 _VM_ROOM_READY_ENTRY {
-    // 禁用"小火苗"卡片，玩家将无法携带此卡
     VM_BanCard("small_fire")
-    // 卡片星级上限设为 10，无法再往上强化
     VM_SetCardLevelCap(10)
-    // 玩家最多携带 10 张卡片出战
     VM_SetMaxSlots(10)
 }
 
-// ==================================
-//  战斗开始
-//  战斗正式开始时执行一次，用于造地图和初始化
-// ==================================
+// ========== 战斗开始 ==========
 _VM_BATTLE_START {
-    // 全图设为障碍地形，-1 表示"全部列/行"
     VM_SetTerrain(-1, -1, "obstacle")
-    // 开局给 3000 火苗
     VM_SetFlame(3000)
 
-    a_cnt = 0       // 平台 a 的状态计数器，控制移动模式轮换
-    // 创建平台 a：列0行0、宽4高5、上下移动(0)、移动距离0(暂不移动)、停顿0帧、贴图"spr_raft_platform"
+    a_cnt = 0
     a = VM_CreatePlatform(0, 0, 4, 5, 0, 0, 0, "spr_raft_platform")
 
-    // 创建平台 b1：列6行0、宽5高1、左右移动(1)、移动1格、边界停顿480帧、贴图"spr_rainbow_1"
     b1 = VM_CreatePlatform(6, 0, 5, 1, 1, 1, 480, "spr_rainbow_1")
 }
 
-// ==================================
-//  卡片被种下
-//  玩家种下一张卡片时触发，在此修改植物属性
-// ==================================
-_VM_CARD_CREATED {
-    // 获取刚种下的植物实例 ID
-    id = VM_GetLastCreatedCard()
-    // 读取植物卡片名
-    name = VM_GetProp(id, "plant_id")
-
-    // 煮鸡蛋攻击力翻倍
-    // 注意：函数参数不支持表达式，必须先把计算结果存到变量
-    if (name == "egg_boiler_pult") {
-        atk = VM_GetProp(id, "atk")          // 先读到变量
-        new_atk = atk * 2                     // 表达式结果存为变量
-        VM_SetProp(id, "atk", new_atk)        // 再传入纯变量
-    }
-
-    // 咖啡壶额外加血
-    if (name == "coffee_pot") {
-        hp = VM_GetProp(id, "hp")
-        new_hp = hp + 500                     // 不能写成 VM_SetProp(id, "hp", hp + 500)
-        VM_SetProp(id, "hp", new_hp)
-    }
-}
-
-// ==================================
-//  平台空闲结束
-//  平台到达边界并完成停顿时触发，在此控制平台移动
-// ==================================
+// ========== 平台控制 ==========
 _VM_PLATFORM_IDLE_END {
-    // 判断触发事件的平台是否为木筏 a
     if (VM_GetLastIdlePlatform() == a) {
-        // 循环切换 4 种移动模式：
-        //   a_cnt=0: 上下移动，移 2 格，停顿 200 帧，正向(1)
-        //   a_cnt=1: 左右移动，移 2 格，停顿 200 帧，正向(1)
-        //   a_cnt=2: 上下移动，移 2 格，停顿 200 帧，反向(-1)
-        //   a_cnt=3: 左右移动，移 2 格，停顿 200 帧，反向(-1)
         if (a_cnt == 0) { VM_SetPlatformParams(a, 0, 2, 200, 1) }
         if (a_cnt == 1) { VM_SetPlatformParams(a, 1, 2, 200, 1) }
         if (a_cnt == 2) { VM_SetPlatformParams(a, 0, 2, 200, -1) }
         if (a_cnt == 3) { VM_SetPlatformParams(a, 1, 2, 200, -1) }
-        // 状态 +1，取模 4 实现 0→1→2→3→0 循环
         a_cnt = (a_cnt + 1) % 4
     }
 }
