@@ -174,20 +174,54 @@ switch state{
 			}
 			x += 15
 		}
-		else if timer <= 140 + 42 * 5 - 1{
-			sprite_index = spr_machine_shark_1_skill_3_return
+		else if timer <= 140 + 36 * 5 - 1{
+			sprite_index = spr_machine_shark_1_disappear
 			if hp > maxhp * hurt_rate{
-				image_index = floor((timer-290) /5) mod 12
+				image_index = floor((timer-290) /5) mod 6
 			}
 			else{
-				image_index = floor((timer-290) /5) mod 12 + 12
+				image_index = floor((timer-290) /5) mod 6 + 6
+			}
+		}
+		else if timer <= 140 + 42 * 5 - 1{
+			image_xscale = 1.8
+			sprite_index = spr_machine_shark_1_appear
+			if hp > maxhp * hurt_rate{
+				image_index = floor((timer-320) /5) mod 6
+			}
+			else{
+				image_index = floor((timer-320) /5) mod 6 + 6
+			}
+		}
+		else if timer <= 210 + 42 * 5 - 1{
+			sprite_index = spr_machine_shark_1_skill_3
+			if hp > maxhp * hurt_rate{
+				image_index = floor((timer-350) /5) mod 8
+			}
+			else{
+				image_index = floor((timer-350) /5) mod 8 + 8
+			}
+			x -= 15
+		}
+		else if timer <= 210 + 54 * 5 - 1{
+			sprite_index = spr_machine_shark_1_skill_3_return
+			if hp > maxhp * hurt_rate{
+				image_index = floor((timer-420) /5) mod 12
+			}
+			else{
+				image_index = floor((timer-420) /5) mod 12 + 12
 			}
 		}
 		
 		if timer == 70 + 24 * 5{
-			y -= global.grid_cell_size_y * 6
+			var new_pos = get_world_position_from_grid(0,skill_3_row[1])
+			y = new_pos.y + 30
 		}
-		if (timer >=18 * 5 && timer <= 70 + 18 * 5) || (timer >=70 + 30 * 5 && timer <= 140 + 30 * 5){
+		if timer == 140 + 36 * 5{
+			var new_pos = get_world_position_from_grid(0,skill_3_row[2])
+			y = new_pos.y + 30
+		}
+		if (timer >=18 * 5 && timer <= 70 + 18 * 5) || (timer >=70 + 30 * 5 && timer <= 140 + 30 * 5) || (timer >=140 + 42 * 5 && timer <= 210 + 42 * 5){
 			with obj_card_parent{
 				if grid_col == other.grid_col && grid_row == other.grid_row && plant_id != "player" && plant_type != "coffee" && plant_id != "soda_bubble" && !invincible{
 					instance_destroy()
@@ -198,11 +232,11 @@ switch state{
 			}
 		}
 		
-		if timer >= 140+42*5-1{
+		if timer >= 210+54*5-1{
 			image_xscale = 1.8
 			jump_times = 0
 			timer = 0
-			state = BOSS_STATE.IDLE
+			state = BOSS_STATE.DISAPPEAR
 		}
 		break
 		
@@ -224,7 +258,14 @@ switch state{
 				enemy_pos = get_world_position_from_grid(1,3)
 			}
 			else if skill_count == 2{
-				enemy_pos = get_world_position_from_grid(9,3)
+				skill_3_row = []
+				while array_length(skill_3_row) < 3{
+					var new_row = irandom_range(0,global.grid_rows-1)
+					if array_get_index(skill_3_row,new_row) == -1{
+						array_push(skill_3_row,new_row)
+					}
+				}
+				enemy_pos = get_world_position_from_grid(9,skill_3_row[0])
 			}
 			else{
 				enemy_pos = get_world_position_from_grid(9,3)

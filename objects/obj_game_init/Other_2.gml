@@ -109,6 +109,7 @@ load_file(global.save_slot)
 	unlock_card("coal_starfish",13,2,8)
 	unlock_card("curry_lobster_cannon",13,2,8)
 	unlock_card("soda_bubble",13,1,8)
+	unlock_card("horseshoe_crab_bread",13,1,8)
 	
 	global.save_data.player.gold = 99000000
 	global.save_data.player.level = 60
