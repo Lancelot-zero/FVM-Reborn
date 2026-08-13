@@ -1,0 +1,109 @@
+=== 字符串池 (16个) ===
+  str_0: "_VM_BATTLE_START"
+  str_1: "resize_frame_01.png"
+  str_2: "resize_frame_02.png"
+  str_3: "resize_frame_03.png"
+  str_4: "resize_frame_04.png"
+  str_5: "resize_frame_05.png"
+  str_6: "resize_frame_06.png"
+  str_7: "resize_frame_07.png"
+  str_8: "resize_frame_08.png"
+  str_9: "water and fire 2nd_1.png"
+  str_10: "water and fire 2nd_2.png"
+  str_11: "_VM_WAVE_START"
+  str_12: "[Wave 1] 铺第0/1列岩浆 + 第3列上2行"
+  str_13: "lava"
+  str_14: "_VM_FRAME"
+  str_15: "_VM_CONST_INIT"
+
+=== Block "_VM_CONST_INIT" (236 bytes) ===
+  [0000] ASSIGN var_5 = 0
+  [000a] ASSIGN var_6 = str_1
+  [0012] ASSIGN var_7 = str_2
+  [001a] ASSIGN var_8 = str_3
+  [0022] ASSIGN var_9 = str_4
+  [002a] ASSIGN var_10 = str_5
+  [0032] ASSIGN var_11 = str_6
+  [003a] ASSIGN var_12 = str_7
+  [0042] ASSIGN var_13 = str_8
+  [004a] ASSIGN var_14 = str_9
+  [0052] ASSIGN var_15 = str_10
+  [005a] ASSIGN var_16 = 1
+  [0064] ASSIGN var_17 = str_12
+  [006c] ASSIGN var_18 = 0.05000000074505806f
+  [0076] ASSIGN var_19 = str_13
+  [007e] ASSIGN var_20 = -1
+  [0088] ASSIGN var_21 = 3
+  [0092] ASSIGN var_22 = 5
+  [009c] ASSIGN var_23 = 6
+  [00a6] ASSIGN var_24 = 2
+  [00b0] ASSIGN var_25 = 4
+  [00ba] ASSIGN var_26 = 80
+  [00c4] ASSIGN var_27 = 10
+  [00ce] ASSIGN var_28 = 30
+  [00d8] ASSIGN var_29 = -30
+  [00e2] ASSIGN var_30 = 1.0f
+
+=== Block "_VM_BATTLE_START" (129 bytes) ===
+  [0000] COPY  var_0 = var_5
+  [0009] CALL  func_9(var_6) -> void
+  [0015] CALL  func_9(var_7) -> void
+  [0021] CALL  func_9(var_8) -> void
+  [002d] CALL  func_9(var_9) -> void
+  [0039] CALL  func_9(var_10) -> void
+  [0045] CALL  func_9(var_11) -> void
+  [0051] CALL  func_9(var_12) -> void
+  [005d] CALL  func_9(var_13) -> void
+  [0069] CALL  func_9(var_14) -> void
+  [0075] CALL  func_9(var_15) -> void
+
+=== Block "_VM_WAVE_START" (633 bytes) ===
+  [0000] CALL  func_12() -> var_31
+  [0008] COPY  var_1 = var_31
+  [0011] EQ var_31 = var_1 == var_16
+  [001e] IF    var_31 ? goto 002b : goto 0097
+  [002b] CALL  func_3(var_17) -> void
+  [0037] CALL  func_27(var_14, var_18) -> void
+  [0047] CALL  func_10(var_19, var_5, var_20) -> void
+  [005b] CALL  func_10(var_19, var_16, var_20) -> void
+  [006f] CALL  func_10(var_19, var_21, var_5) -> void
+  [0083] CALL  func_10(var_19, var_21, var_16) -> void
+  [0097] EQ var_31 = var_1 == var_21
+  [00a4] IF    var_31 ? goto 00b1 : goto 0279
+  [00b1] CALL  func_27(var_15, var_18) -> void
+  [00c1] CALL  func_10(var_19, var_20, var_5) -> void
+  [00d5] CALL  func_10(var_19, var_20, var_16) -> void
+  [00e9] CALL  func_10(var_19, var_20, var_22) -> void
+  [00fd] CALL  func_10(var_19, var_20, var_23) -> void
+  [0111] CALL  func_10(var_19, var_5, var_24) -> void
+  [0125] CALL  func_10(var_19, var_16, var_24) -> void
+  [0139] CALL  func_10(var_19, var_24, var_24) -> void
+  [014d] CALL  func_10(var_19, var_21, var_24) -> void
+  [0161] CALL  func_10(var_19, var_25, var_24) -> void
+  [0175] CALL  func_10(var_19, var_22, var_24) -> void
+  [0189] CALL  func_10(var_19, var_5, var_21) -> void
+  [019d] CALL  func_10(var_19, var_16, var_21) -> void
+  [01b1] CALL  func_10(var_19, var_24, var_21) -> void
+  [01c5] CALL  func_10(var_19, var_21, var_21) -> void
+  [01d9] CALL  func_10(var_19, var_25, var_21) -> void
+  [01ed] CALL  func_10(var_19, var_22, var_21) -> void
+  [0201] CALL  func_10(var_19, var_5, var_25) -> void
+  [0215] CALL  func_10(var_19, var_16, var_25) -> void
+  [0229] CALL  func_10(var_19, var_24, var_25) -> void
+  [023d] CALL  func_10(var_19, var_21, var_25) -> void
+  [0251] CALL  func_10(var_19, var_25, var_25) -> void
+  [0265] CALL  func_10(var_19, var_22, var_25) -> void
+
+=== Block "_VM_FRAME" (154 bytes) ===
+  [0000] ADD  var_31 = var_0 + var_16
+  [000d] MOD  var_32 = var_31 % var_26
+  [001a] COPY  var_0 = var_32
+  [0023] MOD  var_31 = var_0 % var_27
+  [0030] COPY  var_2 = var_31
+  [0039] EQ var_31 = var_2 == var_5
+  [0046] IF    var_31 ? goto 0053 : goto 009a
+  [0053] DIV  var_32 = var_0 / var_27
+  [0060] COPY  var_3 = var_32
+  [0069] CALL  func_29(var_3) -> var_32
+  [0075] COPY  var_4 = var_32
+  [007e] CALL  func_28(var_5, var_4, var_29, var_5, var_30) -> void

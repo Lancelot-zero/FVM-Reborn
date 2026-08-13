@@ -1,0 +1,4 @@
+x = 5
+_VM_BATTLE_START {
+    y = 1
+}

@@ -1,0 +1,3 @@
+﻿_VM_BATTLE_START {
+    VM_ShellPrint("hello")
+}

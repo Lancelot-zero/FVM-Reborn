@@ -1,0 +1,7 @@
+_VM_ROOM_READY_ENTRY {
+    hp = 500 + 500
+}
+_VM_BATTLE_START {
+    hp = 500 + 500
+    VM_SpawnBoss("arno", 2, hp)
+}

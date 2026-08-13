@@ -1,0 +1,185 @@
+=== 字符串池 (15个) ===
+  str_0: "_VM_BATTLE_START"
+  str_1: "resize_frame_01.png"
+  str_2: "resize_frame_02.png"
+  str_3: "resize_frame_03.png"
+  str_4: "resize_frame_04.png"
+  str_5: "resize_frame_05.png"
+  str_6: "resize_frame_06.png"
+  str_7: "resize_frame_07.png"
+  str_8: "resize_frame_08.png"
+  str_9: "water and fire 2nd_1.png"
+  str_10: "water and fire 2nd_2.png"
+  str_11: "_VM_WAVE_START"
+  str_12: "[Wave 1] 铺第0/1列岩浆 + 第3列上2行"
+  str_13: "lava"
+  str_14: "_VM_FRAME"
+
+=== Block "_VM_BATTLE_START" (219 bytes) ===
+  [0000] ASSIGN var_5 = 0
+  [000a] COPY  var_0 = var_5
+  [0013] ASSIGN var_6 = str_1
+  [001b] CALL  func_9(var_6) -> void
+  [0027] ASSIGN var_7 = str_2
+  [002f] CALL  func_9(var_7) -> void
+  [003b] ASSIGN var_8 = str_3
+  [0043] CALL  func_9(var_8) -> void
+  [004f] ASSIGN var_9 = str_4
+  [0057] CALL  func_9(var_9) -> void
+  [0063] ASSIGN var_10 = str_5
+  [006b] CALL  func_9(var_10) -> void
+  [0077] ASSIGN var_11 = str_6
+  [007f] CALL  func_9(var_11) -> void
+  [008b] ASSIGN var_12 = str_7
+  [0093] CALL  func_9(var_12) -> void
+  [009f] ASSIGN var_13 = str_8
+  [00a7] CALL  func_9(var_13) -> void
+  [00b3] ASSIGN var_14 = str_9
+  [00bb] CALL  func_9(var_14) -> void
+  [00c7] ASSIGN var_15 = str_10
+  [00cf] CALL  func_9(var_15) -> void
+
+=== Block "_VM_WAVE_START" (1425 bytes) ===
+  [0000] CALL  func_12() -> var_5
+  [0008] COPY  var_1 = var_5
+  [0011] ASSIGN var_6 = 1
+  [001b] EQ var_7 = var_1 == var_6
+  [0028] IF    var_7 ? goto 0035 : goto 012b
+  [0035] ASSIGN var_8 = str_12
+  [003d] CALL  func_3(var_8) -> void
+  [0049] ASSIGN var_9 = str_9
+  [0051] ASSIGN var_10 = 0.05000000074505806f
+  [005b] CALL  func_27(var_9, var_10) -> void
+  [006b] ASSIGN var_11 = str_13
+  [0073] ASSIGN var_12 = 0
+  [007d] ASSIGN var_13 = -1
+  [0087] CALL  func_10(var_11, var_12, var_13) -> void
+  [009b] ASSIGN var_14 = str_13
+  [00a3] ASSIGN var_15 = 1
+  [00ad] ASSIGN var_16 = -1
+  [00b7] CALL  func_10(var_14, var_15, var_16) -> void
+  [00cb] ASSIGN var_17 = str_13
+  [00d3] ASSIGN var_18 = 3
+  [00dd] ASSIGN var_19 = 0
+  [00e7] CALL  func_10(var_17, var_18, var_19) -> void
+  [00fb] ASSIGN var_20 = str_13
+  [0103] ASSIGN var_21 = 3
+  [010d] ASSIGN var_22 = 1
+  [0117] CALL  func_10(var_20, var_21, var_22) -> void
+  [012b] ASSIGN var_23 = 3
+  [0135] EQ var_24 = var_1 == var_23
+  [0142] IF    var_24 ? goto 014f : goto 0591
+  [014f] ASSIGN var_25 = str_10
+  [0157] ASSIGN var_26 = 0.05000000074505806f
+  [0161] CALL  func_27(var_25, var_26) -> void
+  [0171] ASSIGN var_27 = str_13
+  [0179] ASSIGN var_28 = -1
+  [0183] ASSIGN var_29 = 0
+  [018d] CALL  func_10(var_27, var_28, var_29) -> void
+  [01a1] ASSIGN var_30 = str_13
+  [01a9] ASSIGN var_31 = -1
+  [01b3] ASSIGN var_32 = 1
+  [01bd] CALL  func_10(var_30, var_31, var_32) -> void
+  [01d1] ASSIGN var_33 = str_13
+  [01d9] ASSIGN var_34 = -1
+  [01e3] ASSIGN var_35 = 5
+  [01ed] CALL  func_10(var_33, var_34, var_35) -> void
+  [0201] ASSIGN var_36 = str_13
+  [0209] ASSIGN var_37 = -1
+  [0213] ASSIGN var_38 = 6
+  [021d] CALL  func_10(var_36, var_37, var_38) -> void
+  [0231] ASSIGN var_39 = str_13
+  [0239] ASSIGN var_40 = 0
+  [0243] ASSIGN var_41 = 2
+  [024d] CALL  func_10(var_39, var_40, var_41) -> void
+  [0261] ASSIGN var_42 = str_13
+  [0269] ASSIGN var_43 = 1
+  [0273] ASSIGN var_44 = 2
+  [027d] CALL  func_10(var_42, var_43, var_44) -> void
+  [0291] ASSIGN var_45 = str_13
+  [0299] ASSIGN var_46 = 2
+  [02a3] ASSIGN var_47 = 2
+  [02ad] CALL  func_10(var_45, var_46, var_47) -> void
+  [02c1] ASSIGN var_48 = str_13
+  [02c9] ASSIGN var_49 = 3
+  [02d3] ASSIGN var_50 = 2
+  [02dd] CALL  func_10(var_48, var_49, var_50) -> void
+  [02f1] ASSIGN var_51 = str_13
+  [02f9] ASSIGN var_52 = 4
+  [0303] ASSIGN var_53 = 2
+  [030d] CALL  func_10(var_51, var_52, var_53) -> void
+  [0321] ASSIGN var_54 = str_13
+  [0329] ASSIGN var_55 = 5
+  [0333] ASSIGN var_56 = 2
+  [033d] CALL  func_10(var_54, var_55, var_56) -> void
+  [0351] ASSIGN var_57 = str_13
+  [0359] ASSIGN var_58 = 0
+  [0363] ASSIGN var_59 = 3
+  [036d] CALL  func_10(var_57, var_58, var_59) -> void
+  [0381] ASSIGN var_60 = str_13
+  [0389] ASSIGN var_61 = 1
+  [0393] ASSIGN var_62 = 3
+  [039d] CALL  func_10(var_60, var_61, var_62) -> void
+  [03b1] ASSIGN var_63 = str_13
+  [03b9] ASSIGN var_64 = 2
+  [03c3] ASSIGN var_65 = 3
+  [03cd] CALL  func_10(var_63, var_64, var_65) -> void
+  [03e1] ASSIGN var_66 = str_13
+  [03e9] ASSIGN var_67 = 3
+  [03f3] ASSIGN var_68 = 3
+  [03fd] CALL  func_10(var_66, var_67, var_68) -> void
+  [0411] ASSIGN var_69 = str_13
+  [0419] ASSIGN var_70 = 4
+  [0423] ASSIGN var_71 = 3
+  [042d] CALL  func_10(var_69, var_70, var_71) -> void
+  [0441] ASSIGN var_72 = str_13
+  [0449] ASSIGN var_73 = 5
+  [0453] ASSIGN var_74 = 3
+  [045d] CALL  func_10(var_72, var_73, var_74) -> void
+  [0471] ASSIGN var_75 = str_13
+  [0479] ASSIGN var_76 = 0
+  [0483] ASSIGN var_77 = 4
+  [048d] CALL  func_10(var_75, var_76, var_77) -> void
+  [04a1] ASSIGN var_78 = str_13
+  [04a9] ASSIGN var_79 = 1
+  [04b3] ASSIGN var_80 = 4
+  [04bd] CALL  func_10(var_78, var_79, var_80) -> void
+  [04d1] ASSIGN var_81 = str_13
+  [04d9] ASSIGN var_82 = 2
+  [04e3] ASSIGN var_83 = 4
+  [04ed] CALL  func_10(var_81, var_82, var_83) -> void
+  [0501] ASSIGN var_84 = str_13
+  [0509] ASSIGN var_85 = 3
+  [0513] ASSIGN var_86 = 4
+  [051d] CALL  func_10(var_84, var_85, var_86) -> void
+  [0531] ASSIGN var_87 = str_13
+  [0539] ASSIGN var_88 = 4
+  [0543] ASSIGN var_89 = 4
+  [054d] CALL  func_10(var_87, var_88, var_89) -> void
+  [0561] ASSIGN var_90 = str_13
+  [0569] ASSIGN var_91 = 5
+  [0573] ASSIGN var_92 = 4
+  [057d] CALL  func_10(var_90, var_91, var_92) -> void
+
+=== Block "_VM_FRAME" (244 bytes) ===
+  [0000] ASSIGN var_5 = 1
+  [000a] ADD  var_6 = var_0 + var_5
+  [0017] ASSIGN var_7 = 80
+  [0021] MOD  var_8 = var_6 % var_7
+  [002e] COPY  var_0 = var_8
+  [0037] ASSIGN var_9 = 10
+  [0041] MOD  var_10 = var_0 % var_9
+  [004e] COPY  var_2 = var_10
+  [0057] ASSIGN var_11 = 0
+  [0061] EQ var_12 = var_2 == var_11
+  [006e] IF    var_12 ? goto 007b : goto 00f4
+  [007b] ASSIGN var_13 = 10
+  [0085] DIV  var_14 = var_0 / var_13
+  [0092] COPY  var_3 = var_14
+  [009b] CALL  func_29(var_3) -> var_15
+  [00a7] COPY  var_4 = var_15
+  [00b0] ASSIGN var_16 = 0
+  [00ba] ASSIGN var_17 = -30
+  [00c4] ASSIGN var_18 = 0
+  [00ce] ASSIGN var_19 = 1.0f
+  [00d8] CALL  func_28(var_16, var_4, var_17, var_18, var_19) -> void

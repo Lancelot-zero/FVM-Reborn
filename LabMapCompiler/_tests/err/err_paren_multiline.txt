@@ -1,0 +1,4 @@
+_VM_BATTLE_START {
+    x = (1 +
+        2)
+}

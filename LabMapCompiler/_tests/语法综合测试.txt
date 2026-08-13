@@ -1,0 +1,51 @@
+// ==================================
+// 新语法综合测试
+// ==================================
+_VM_ROOM_READY_ENTRY {
+    boss_hp = 80000
+    msg = "hello"
+    ratio = 1.5
+    VM_SetCardLevelCap(10)
+    VM_SetMaxSlots(boss_hp - 79000)        // 表达式参数
+    VM_SetMapBackground("spr_sky", 0.05)
+}
+
+_VM_BATTLE_START {
+    boss_hp = 80000                        // 与上块一致 → 提升为常量
+    msg = "hello"
+    VM_SetFlame(3000)
+    VM_ShellPrint(msg, boss_hp + 500, -3, ratio)
+    if (VM_GetWave() == 0) {
+        VM_SpawnBoss("arno", 2, boss_hp)
+    } elif (VM_GetWave() == 1) {
+        VM_SpawnEnemy("normal_mouse", 0, 100)
+    } elif (VM_GetWave() == 2) {
+        VM_ShellPrint("wave2")
+    } else {
+        VM_ShellPrint("late")
+    }
+    if (VM_GetSubwave() == 0) {
+        VM_ShellPrint("a")
+    } else if (VM_GetSubwave() == 1) {
+        VM_ShellPrint("b")
+    } else {
+        VM_ShellPrint("c")
+    }
+    x = 1; y = 2; z = (x + y) * 2          // ; 分隔
+    if (z == 6) { VM_ShellPrint("ok") } else { VM_ShellPrint("bad") }   // 单行 if/else
+    t = VM_GetWave() * 2 + 1
+    VM_ShellPrint(1 + 2)                    // 表达式单行（不允许跨行，包括括号内）
+    VM_SetFlame(1,)                         // 尾部逗号容忍
+}
+
+_VM_SUBWAVE_START {
+    step = -2
+}
+
+_VM_SUBWAVE_END {
+    step = -2                               // 一致 → 常量
+}
+
+_VM_TIMER_60f {
+    tick = tick + 1                         // 引用自身 → 不是常量
+}

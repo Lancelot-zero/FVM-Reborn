@@ -1,0 +1,3 @@
+_VM_CONST_INIT {
+    x = 1
+}

@@ -1,0 +1,5 @@
+_VM_BATTLE_START {
+    VM_SetFlame(3000)
+    VM_SpawnEnemy("normal_mouse", 0, 100)
+    id = VM_GetLastCreatedEnemy()
+}

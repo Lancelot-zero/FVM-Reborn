@@ -1,0 +1,3 @@
+_VM_BATTLE_START {
+    _VM_WAVE_START { x = 1 }
+}

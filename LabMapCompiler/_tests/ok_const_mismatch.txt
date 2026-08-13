@@ -1,0 +1,8 @@
+_VM_BATTLE_START {
+    a = 5
+    b = a * 2
+}
+_VM_WAVE_START {
+    a = 7
+    c = 3
+}

@@ -1,0 +1,113 @@
+=== ×Ö·û´®³Ø (17¸ö) ===
+  str_0: "_VM_ROOM_READY_ENTRY"
+  str_1: "hello"
+  str_2: "spr_sky"
+  str_3: "_VM_BATTLE_START"
+  str_4: "arno"
+  str_5: "normal_mouse"
+  str_6: "wave2"
+  str_7: "late"
+  str_8: "a"
+  str_9: "b"
+  str_10: "c"
+  str_11: "ok"
+  str_12: "bad"
+  str_13: "_VM_SUBWAVE_START"
+  str_14: "_VM_SUBWAVE_END"
+  str_15: "_VM_TIMER_60f"
+  str_16: "_VM_CONST_INIT"
+
+=== Block "_VM_CONST_INIT" (265 bytes) ===
+  [0000] ASSIGN var_9 = 80000
+  [000a] ASSIGN var_10 = str_1
+  [0012] ASSIGN var_11 = 1.5f
+  [001c] ASSIGN var_12 = 10
+  [0026] ASSIGN var_13 = 79000
+  [0030] ASSIGN var_14 = str_2
+  [0038] ASSIGN var_15 = 0.05000000074505806f
+  [0042] ASSIGN var_16 = 3000
+  [004c] ASSIGN var_17 = 500
+  [0056] ASSIGN var_18 = 3
+  [0060] ASSIGN var_19 = -3
+  [006a] ASSIGN var_20 = 0
+  [0074] ASSIGN var_21 = str_4
+  [007c] ASSIGN var_22 = 2
+  [0086] ASSIGN var_23 = 1
+  [0090] ASSIGN var_24 = str_5
+  [0098] ASSIGN var_25 = 100
+  [00a2] ASSIGN var_26 = str_6
+  [00aa] ASSIGN var_27 = str_7
+  [00b2] ASSIGN var_28 = str_8
+  [00ba] ASSIGN var_29 = str_9
+  [00c2] ASSIGN var_30 = str_10
+  [00ca] ASSIGN var_31 = 6
+  [00d4] ASSIGN var_32 = str_11
+  [00dc] ASSIGN var_33 = str_12
+  [00e4] ASSIGN var_34 = -2
+  [00ee] COPY  var_0 = var_9
+  [00f7] COPY  var_1 = var_10
+  [0100] COPY  var_7 = var_34
+
+=== Block "_VM_ROOM_READY_ENTRY" (62 bytes) ===
+  [0000] COPY  var_2 = var_11
+  [0009] CALL  func_1(var_12) -> void
+  [0015] SUB  var_35 = var_0 - var_13
+  [0022] CALL  func_2(var_35) -> void
+  [002e] CALL  func_27(var_14, var_15) -> void
+
+=== Block "_VM_BATTLE_START" (532 bytes) ===
+  [0000] CALL  func_21(var_16) -> void
+  [000c] ADD  var_35 = var_0 + var_17
+  [0019] CALL  func_3(var_1, var_35, var_19, var_2) -> void
+  [0031] CALL  func_12() -> var_35
+  [0039] EQ var_36 = var_35 == var_20
+  [0046] IF    var_36 ? goto 0053 : goto 006c
+  [0053] CALL  func_8(var_21, var_22, var_0) -> void
+  [0067] JMP   goto 00e6
+  [006c] CALL  func_12() -> var_37
+  [0074] EQ var_38 = var_37 == var_23
+  [0081] IF    var_38 ? goto 008e : goto 00a7
+  [008e] CALL  func_7(var_24, var_20, var_25) -> void
+  [00a2] JMP   goto 00e6
+  [00a7] CALL  func_12() -> var_39
+  [00af] EQ var_40 = var_39 == var_22
+  [00bc] IF    var_40 ? goto 00c9 : goto 00da
+  [00c9] CALL  func_3(var_26) -> void
+  [00d5] JMP   goto 00e6
+  [00da] CALL  func_3(var_27) -> void
+  [00e6] CALL  func_13() -> var_35
+  [00ee] EQ var_36 = var_35 == var_20
+  [00fb] IF    var_36 ? goto 0108 : goto 0119
+  [0108] CALL  func_3(var_28) -> void
+  [0114] JMP   goto 0158
+  [0119] CALL  func_13() -> var_37
+  [0121] EQ var_38 = var_37 == var_23
+  [012e] IF    var_38 ? goto 013b : goto 014c
+  [013b] CALL  func_3(var_29) -> void
+  [0147] JMP   goto 0158
+  [014c] CALL  func_3(var_30) -> void
+  [0158] COPY  var_3 = var_23
+  [0161] COPY  var_4 = var_22
+  [016a] ADD  var_35 = var_3 + var_4
+  [0177] MUL  var_36 = var_35 * var_22
+  [0184] COPY  var_5 = var_36
+  [018d] EQ var_35 = var_5 == var_31
+  [019a] IF    var_35 ? goto 01a7 : goto 01b8
+  [01a7] CALL  func_3(var_32) -> void
+  [01b3] JMP   goto 01c4
+  [01b8] CALL  func_3(var_33) -> void
+  [01c4] CALL  func_12() -> var_35
+  [01cc] MUL  var_36 = var_35 * var_22
+  [01d9] ADD  var_37 = var_36 + var_23
+  [01e6] COPY  var_6 = var_37
+  [01ef] ADD  var_35 = var_23 + var_22
+  [01fc] CALL  func_3(var_35) -> void
+  [0208] CALL  func_21(var_23) -> void
+
+=== Block "_VM_SUBWAVE_START" (0 bytes) ===
+
+=== Block "_VM_SUBWAVE_END" (0 bytes) ===
+
+=== Block "_VM_TIMER_60f" (22 bytes) ===
+  [0000] ADD  var_35 = var_8 + var_23
+  [000d] COPY  var_8 = var_35

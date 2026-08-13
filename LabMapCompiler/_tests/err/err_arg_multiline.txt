@@ -1,0 +1,4 @@
+_VM_BATTLE_START {
+    VM_ShellPrint(1 +
+        2)
+}

@@ -1,0 +1,11 @@
+_VM_BATTLE_START {
+    hp = 80000
+    wave_cnt = 0
+}
+_VM_WAVE_START {
+    hp = 80000
+    wave_cnt = 0
+}
+_VM_TIMER_60f {
+    wave_cnt = wave_cnt + 1
+}

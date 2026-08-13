@@ -1,0 +1,9 @@
+_VM_BATTLE_START {
+    msg = "中文测试 \"引号\" 反斜杠\ 换行\n制表\t"
+    VM_ShellPrint(msg, "第二处 \"引用\"")
+    s2 = "中文测试 \"引号\" 反斜杠\ 换行\n制表\t"
+}
+_VM_WAVE_START {
+    msg = "中文测试 \"引号\" 反斜杠\ 换行\n制表\t"
+    VM_ShowNoticeDur("标题：第一波", 60)
+}

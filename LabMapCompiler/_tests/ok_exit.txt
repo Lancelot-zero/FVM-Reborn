@@ -1,0 +1,8 @@
+_VM_FRAME {
+    if (VM_GetMousePressed(1)) { exit }
+    tick = tick + 1
+}
+_VM_BATTLE_START {
+    exit
+    VM_SetFlame(0)
+}

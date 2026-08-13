@@ -1,0 +1,7 @@
+_VM_BATTLE_START {
+    VM_SetFlame(VM_GetFlame() + 500)
+    VM_ShellPrint(VM_GetWave(), VM_GetSubwave())
+    x = VM_GetProp(VM_GetLastCreatedCard(), "hp")
+    VM_SpawnEnemy("normal_mouse", 0, VM_GetFlame() / 100)
+    y = VM_GetProp(VM_GetPlantAt(0, 2, "all"), "atk")
+}
