@@ -73,6 +73,7 @@ if (wave == 3) {
 | `_VM_CARD_CREATED` | 卡片被种下，用 `VM_GetLastCreatedCard()` 拿实例 |
 | `_VM_CARD_DESTROYED` | 卡片被销毁，用 `VM_GetLastDestroyedCard()` 拿实例 |
 | `_VM_CARD_DAMAGED` | 卡片受伤 |
+| `_VM_CARD_PREVIEW_PICKED` | 卡片被选取到手槽，用 `VM_GetPreviewCard()` 拿 card_id |
 | `_VM_ENEMY_SPAWNED` | 敌人出现，用 `VM_GetLastCreatedEnemy()` 拿实例 |
 | `_VM_ENEMY_KILLED` | 敌人死亡，用 `VM_GetLastKilledEnemy()` 拿实例 |
 | `_VM_ENEMY_DAMAGED` | 敌人受伤 |
@@ -304,6 +305,27 @@ if (wave == 3) {
 | `VM_CalcCardSlotProp("name", "prop", op, val)` | 卡槽属性四则运算。op: 0=加 1=减 2=乘 3=除（仅数值属性生效） |
 | `VM_GetCardSlotCount()` | 获取卡槽数量 |
 | `VM_GetPreviewCard()` | 获取当前手牌 card_id，没有返回 -1 |
+
+**可修改的卡槽属性：**
+
+| 属性 | 类型 | 说明 |
+|---|---|---|
+| `cooldown` | int | 冷却时间（帧） |
+| `current_cost` | int | 当前阳光消耗 |
+| `cost` | int | 原始阳光消耗 |
+| `cooldown_timer` | int | 冷却计时器（帧） |
+| `is_ready` | int | 0=冷却中 1=可用 |
+| `is_selected` | int | 0=未选中 1=已选中 |
+| `slot_index` | int | 槽位序号（只读） |
+| `card_id` | string | 卡片 ID（只读） |
+| `clevel` | int | 卡片等级 |
+| `cshape` | int | 卡片外形 |
+| `cskill` | int | 卡片技能 |
+| `hover_alpha` | float | 悬停提示透明度 0~1 |
+| `cooling_alpha` | float | 冷却覆盖透明度 0~1 |
+| `preview_alpha` | float | 放置预览透明度 0~1 |
+
+> `VM_CalcCardSlotProp` 仅对数值属性生效（cooldown / current_cost / cost / cooldown_timer / clevel / cskill / cshape 等）。
 
 ---
 
