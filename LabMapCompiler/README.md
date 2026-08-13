@@ -27,15 +27,13 @@ z = x * y
 ok = (x > y)
 ```
 
-支持 `+` `-` `*` `/` `%`，比较 `==` `!=` `>` `>=` `<` `<=`。一行一句。最多 4096 个变量。支持负数。
+支持 `+` `-` `*` `/` `%`，比较 `==` `!=` `>` `>=` `<` `<=`。一行一句；`;` 视作换行（`x = 1; y = 2` 等同两行）。表达式必须在一行内写完，括号内也不允许跨行。支持负数。
 
-> **函数参数不支持表达式**。`VM_SetFlame(flame + 100)` 会丢失 `+ 100`。必须拆分：
-> ```
-> b = flame + 100
-> VM_SetFlame(b)
-> ```
+函数参数支持任意表达式：`VM_SetFlame(flame + 100)`、`VM_SetProp(id, "atk", atk * 2)` 直接可用。
 
 **跨块变量**：不同块中同名变量共用同一个内存槽，可跨事件传值。例：`_VM_BATTLE_START` 中写 `cnt = 0`，`_VM_PLATFORM_IDLE_END` 中直接读写 `cnt`。
+
+**保留字**：`if` `elif` `else` `halt` `exit` 不能用作变量名。`exit` 与 `halt` 同义（结束当前块执行）。
 
 ### 注释
 
@@ -45,16 +43,21 @@ ok = (x > y)
 
 ### 条件
 
+花括号必须写。支持 `elif` 链和 `else`：
+
 ```
 if (wave == 0) {
-    VM_ShowNotice("第一波")
-}
-if (wave == 3) {
+    VM_SpawnEnemy("normal_mouse", 0, 100)
+} elif (wave == 1) {
+    VM_SpawnEnemy("normal_mouse", 0, 200)
+} elif (wave == 2) {
     VM_SpawnBoss("arno", 2, 80000)
 } else {
-    VM_ShellPrint("还不到")
+    VM_ShellPrint("后续波次")
 }
 ```
+
+`else if` 与 `elif` 等价，可以混用。`elif`/`else` 绑定最近一个刚闭合的 `if`；游离的 `elif`/`else` 编译报错。
 
 ---
 
@@ -373,19 +376,14 @@ _VM_CARD_CREATED {
     // 读取植物卡片名
     name = VM_GetProp(id, "plant_id")
 
-    // 煮鸡蛋攻击力翻倍
-    // 注意：函数参数不支持表达式，必须先把计算结果存到变量
+    // 煮鸡蛋攻击力翻倍（参数支持任意表达式）
     if (name == "egg_boiler_pult") {
-        atk = VM_GetProp(id, "atk")          // 先读到变量
-        new_atk = atk * 2                     // 表达式结果存为变量
-        VM_SetProp(id, "atk", new_atk)        // 再传入纯变量
+        VM_SetProp(id, "atk", VM_GetProp(id, "atk") * 2)
     }
 
     // 咖啡壶额外加血
     if (name == "coffee_pot") {
-        hp = VM_GetProp(id, "hp")
-        new_hp = hp + 500                     // 不能写成 VM_SetProp(id, "hp", hp + 500)
-        VM_SetProp(id, "hp", new_hp)
+        VM_SetProp(id, "hp", VM_GetProp(id, "hp") + 500)
     }
 }
 
@@ -415,7 +413,7 @@ _VM_PLATFORM_IDLE_END {
 
 ## 参数校验附录
 
-编译器校验以下函数的字符串参数。
+编译器校验以下函数的字符串参数。参数个数/类型/取值校验不通过时**编译直接失败**并报告行号（旧版本仅打印警告、继续产出字节码）。int 实参传入 float 参数时自动提升，不算错误。
 
 ### 敌人 ID（109 个）
 

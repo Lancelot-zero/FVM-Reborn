@@ -238,7 +238,7 @@ static std::vector<FuncDef> FUNC_DEFS = {
     {"VM_SetCardSlotProp",       3,  {PT_STRING, PT_STRING, PT_ANY}},                  // 70
     {"VM_CalcCardSlotProp",      4,  {PT_STRING, PT_STRING, PT_INT, PT_ANY}},         // 71
     {"VM_GetCardSlotCount",      0},                                                    // 72
-    {"VM_GetPreviewCard",        0},                                                    // 73 — 返回 PT_STRING 或 -1
+    {"VM_GetPreviewCard",        0,  {},  PT_STRING},                                   // 73 — 返回 PT_STRING 或 -1
     {"VM_AliasSprite",           2,  {PT_STRING, PT_STRING}},                           // 74
     {"VM_LoadSpriteFrames_Ex",   4,  {PT_STRING, PT_INT, PT_INT, PT_INT}},             // 75
 };

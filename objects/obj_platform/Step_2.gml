@@ -350,5 +350,11 @@ with (obj_melon_shield_inner) {
         depth = parent_plant.depth + 2
     }
 }
+with (obj_stars) { 
+    if (instance_exists(parent_plant)) {
+        depth = parent_plant.depth -1
+    }
+}
+
 }
 	frame_count++;

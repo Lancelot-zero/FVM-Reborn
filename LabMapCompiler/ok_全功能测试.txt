@@ -1,0 +1,268 @@
+// ============================================================
+// FVM 编译器全功能测试地图
+// 覆盖：常量检测与传播、字面量池、if/elif/else/else if 链、
+//      表达式参数、; 分句、exit/halt、负数、浮点、括号跨行、
+//      跨块变量、各函数类别
+// 编译时观察控制台输出的常量与字面量池统计
+// ============================================================
+
+// ---------- 准备室：规则设置 ----------
+_VM_ROOM_READY_ENTRY {
+    boss_hp = 80000                       // ① 与 BATTLE_START 重复 → 常量传播
+    base_flame = 3000                     // ①
+    wave_note = "全功能测试 v1.0"           // ①
+    VM_BanCard("small_fire")
+    VM_BanCard("large_fire")
+    VM_BanGem("bomb_gem")
+    VM_SetCardLevelCap(10)
+    VM_SetMaxSlots(8)
+    VM_SetEventEnabled(1)
+    VM_SetMapBackground("spr_sky", 0.02)
+    VM_LoadSprite("bg_custom.png")        // 如无此图片文件可删除这几行
+    VM_LoadSpriteFrames("anim.png", 4)
+    VM_LoadSpriteFrames_Ex("anim2.png", 4, 8, 8)
+    VM_LoadSpritePerm("bg_perm.png", 0)
+    VM_AliasSprite("bg2", "bg_custom.png")
+    VM_CreateButton(320, 480, "btn_test.png", 1.0, -1, -1, -1)
+    VM_SetCardSlotProp("all", "cooldown", 600)
+    VM_CalcCardSlotProp("all", "cooldown", 1, 60)
+}
+
+// ---------- 战斗开始：造地图 ----------
+_VM_BATTLE_START {
+    boss_hp = 80000                       // ② 与①一致 → 溶解为字面量池槽
+    base_flame = 3000
+    wave_note = "全功能测试 v1.0"
+    VM_SetTerrain(-1, -1, "normal")
+    VM_SetRowFeature(-1, "land")
+    VM_SetFlame(base_flame)
+    VM_SpawnCats(1)
+    VM_ShellPrint(wave_note)
+
+    // 上下移动平台
+    plat = VM_CreatePlatform(4, 3, 2, 4, 0, 2, 300, "spr_raft_platform")
+    VM_SetPlatformParams(plat, 0, 2, 300, 1)
+    dir = 1
+
+    // 障碍与熔岩
+    VM_SpawnObject("obstacle", 8, 0)
+    VM_SpawnObject("lava", 9, 0)
+
+    // 初始植物 + 随机种植区
+    VM_SpawnPlant("gatlin_long_bao", 0, 2, -1, 5, -1)
+    VM_SpawnPlantsRandom(2, 0, 3, 2, -1, 3, -1, "xiao_long_bao", "toast_bread", "coffee_pot", "-1", "-1", "-1", "-1", "-1", "-1")
+    VM_SetCardProp(-1, -1, "all", "current_level", 5)
+
+    // 状态变量
+    wave_count = 0
+    kills = 0
+    phase = 0
+    tick = 0
+
+    // ; 分句 + 括号 + 表达式参数（表达式一律单行）
+    x = 1; y = 2; z = (x + y) * 3
+    total = (x + y) * z
+    VM_ShellPrint("运算: ", total, " 地形: ", VM_GetTerrain(0, 0))
+    VM_ShellPrint("植物: ", VM_GetPlantCount(), " 全图: ", VM_GetPlantCountAt(-1, -1, "all"))
+    sp = VM_GetLoadedSpriteName(0)
+    VM_ShellPrint("贴图0: ", sp)
+}
+
+// ---------- 波次 ----------
+_VM_WAVE_START {
+    wave_count = wave_count + 1
+    w = VM_GetWave()
+    VM_ShellPrint("第", w + 1, "波 (累计", wave_count, "次)")
+
+    // elif 链
+    if (w == 0) {
+        VM_ShowNotice("热身波：普通老鼠")
+        VM_SpawnEnemy("normal_mouse", 0, 100)
+        VM_SpawnEnemy("normal_mouse", 2, 100)
+    } elif (w == 1) {
+        VM_ShowNotice("第二波：混合敌人")
+        VM_SpawnEnemy("football_fan_mouse", 1, 200)
+        VM_SpawnEnemy("skateboard_mouse", 3, 150)
+    } elif (w == 2) {
+        VM_ShowNotice("第三波：忍者")
+        VM_SpawnEnemy("ninja_mouse", 1, 300)
+        VM_SpawnEnemy("ninja_mouse", 4, 300)
+    } elif (w == 3) {
+        VM_ShowNotice("BOSS 波！")
+        VM_SpawnBoss("arno", 2, boss_hp)   // 常量传播后直接引用池槽
+    } else {
+        VM_ShowNotice("无尽模式")
+        hp = 100 + w * 50
+        VM_SpawnEnemy("normal_mouse", -1, hp)
+    }
+
+    // else if 等价形式（可与 elif 混用）
+    if (w % 2 == 0) {
+        VM_SetFlame(VM_GetFlame() + 500)   // 表达式参数
+        VM_ShellPrint("偶数波奖励火苗")
+    } else if (w % 3 == 0) {
+        VM_ShowNotice("三的倍数波")
+    } else {
+        VM_ShellPrint("奇数波: ", w)
+    }
+
+    // 随机事件
+    r = VM_Random(1, 100)
+    if (r > 80) {
+        VM_ShowNotice("幸运波！")
+    }
+}
+
+// ---------- 子波 / 波次结束 ----------
+_VM_SUBWAVE_START {
+    if (VM_GetSubwave() == 1) {
+        VM_ShellPrint("子波 1 开始")
+    } elif (VM_GetSubwave() == 2) {
+        exit                              // exit 提前结束块
+    }
+}
+
+_VM_SUBWAVE_END {
+    VM_ShellPrint("子波结束: ", VM_GetSubwave())
+}
+
+_VM_WAVE_END {
+    VM_ShellPrint("波次结束: ", VM_GetWave())
+}
+
+// ---------- 卡片事件 ----------
+_VM_CARD_CREATED {
+    id = VM_GetLastCreatedCard()
+    name = VM_GetProp(id, "plant_id")
+
+    if (name == "gatlin_long_bao") {
+        VM_SetProp(id, "atk", VM_GetProp(id, "atk") * 2)          // 表达式参数
+        VM_SetProp(id, "max_hp", VM_GetProp(id, "max_hp") + 500)
+    } elif (name == "coffee_pot") {
+        VM_SetProp(id, "atk", VM_GetProp(id, "atk") + 100)
+        VM_ApplyPlantLevel(id)
+    } else {
+        VM_ShellPrint("种下: ", name)
+    }
+}
+
+_VM_CARD_DESTROYED {
+    VM_ShellPrint("卡片销毁: ", VM_GetLastDestroyedCard())
+}
+
+_VM_CARD_DAMAGED {
+    if (VM_GetPlantCount() > 0) {
+        VM_ShellPrint("植物受伤")
+    }
+}
+
+_VM_CARD_PREVIEW_PICKED {
+    VM_ShellPrint("手牌: ", VM_GetPreviewCard())
+}
+
+// ---------- 敌人事件 ----------
+_VM_ENEMY_SPAWNED {
+    e = VM_GetLastCreatedEnemy()
+    VM_SetEnemyProp("all", "move_speed", 1.0)
+    VM_ShellPrint("敌人出现: ", e)
+}
+
+_VM_ENEMY_KILLED {
+    kills = kills + 1
+    VM_ShellPrint("击杀: ", kills)
+    if (kills >= 10) {
+        VM_ShowNotice("已击杀 10 只！奖励火苗")
+        kills = 0
+        VM_SetFlame(VM_GetFlame() + 200)
+    }
+}
+
+_VM_ENEMY_DAMAGED {
+    halt                               // 与 exit 同义
+    VM_ShellPrint("这行不会执行")
+}
+
+// ---------- 平台 / 玩家 ----------
+_VM_PLATFORM_IDLE_END {
+    p = VM_GetLastIdlePlatform()
+    if (p == plat) {
+        dir = -dir                      // 变量取负：方向反转
+        VM_SetPlatformParams(p, 0, 2, 300, dir)
+        VM_RefreshPlatformSnapshots()
+    }
+}
+
+_VM_PLAYER_DAMAGED {
+    VM_ShowNotice("玩家受伤")
+}
+
+// ---------- 输入 ----------
+_VM_MOUSE_LEFT {
+    VM_ShellPrint("左键: (", VM_GetMouseCol(), ", ", VM_GetMouseRow(), ")")
+}
+
+_VM_MOUSE_RIGHT {
+    VM_ShellPrint("右键")
+}
+
+_VM_KEY_PRESSED {
+    if (VM_GetKeyPressed("w") == 1) {
+        VM_GameWin()
+    } elif (VM_GetKeyPressed("l") == 1) {
+        VM_GameLose()
+    } elif (VM_GetKeyPressed("space") == 1) {
+        VM_ShowNotice("空格键")
+    } elif (VM_GetKeyPressed("c") == 1) {
+        VM_CompactColumn(-1)
+        VM_ShowNotice("列压缩")
+    } elif (VM_GetKeyPressed("s") == 1) {
+        VM_SwapPlants(0, 0, 1, 0)
+        VM_ShowNotice("交换植物")
+    } elif (VM_GetKeyPressed("t") == 1) {
+        VM_SwapPlantRects(0, 0, 2, 2, 3, 0)
+    } elif (VM_GetKeyPressed("r") == 1) {
+        VM_WakePlants(-1, -1)
+        VM_ShowNotice("唤醒全部")
+    } elif (VM_GetKeyPressed("x") == 1) {
+        VM_ClearMapObjects(-1, -1, "all")
+        VM_ShowNotice("清除物件")
+    } elif (VM_GetKeyPressed("n") == 1) {
+        VM_ShowNoticeDur("自定义时长通知", 120)
+    }
+}
+
+_VM_BUTTON_CLICKED {
+    b = VM_GetLastClickedButton()
+    if (b >= 0) {
+        phase = phase + 1
+        if (phase > 2) { phase = 0 }     // 单行 if
+        VM_ShellPrint("按钮: ", b, " phase: ", phase)
+    }
+}
+
+// ---------- 高频块 ----------
+_VM_FRAME {
+    // 按住左键时更新绘制槽，否则提前退出（每帧只做最少的事）
+    if (VM_GetMousePressed(1) == 0) { exit }
+    VM_SetDrawSlot_front(0, "", 16, 16, 0.5)
+}
+
+_VM_TIMER_5f {
+    VM_SetDrawSlot(0, "", 0, 0, 0.5)
+}
+
+_VM_TIMER_60f {
+    tick = tick + 1
+    if (tick % 60 == 0) {
+        VM_ShellPrint("计时: ", tick / 60, " 槽位数: ", VM_GetCardSlotCount())
+    }
+}
+
+_VM_TIMER_30f {
+    // 打过 3 波且场上无敌人 → 胜利（语言无 &&，用嵌套 if）
+    if (wave_count > 3) {
+        if (VM_GetEnemyCount() == 0) {
+            VM_GameWin()
+        }
+    }
+}

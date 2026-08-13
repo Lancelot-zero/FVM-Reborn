@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <map>
+#include <set>
 #include <string>
 #include <cstring>
 #include <cstdint>
@@ -12,13 +13,12 @@
 
 using namespace std;
 
-using namespace std;
-
 // ============================================================
 // Token 定义
 // ============================================================
 enum TokenType {
     TK_EOF,
+    TK_ERROR,
     TK_IDENT,
     TK_INT,
     TK_FLOAT,
@@ -33,6 +33,7 @@ enum TokenType {
 static const char* tk_name(TokenType t) {
     switch (t) {
         case TK_EOF: return "EOF";
+        case TK_ERROR: return "invalid character";
         case TK_IDENT: return "identifier";
         case TK_INT: return "integer";
         case TK_FLOAT: return "float";
@@ -118,6 +119,14 @@ struct ByteBuf {
     }
 };
 
+// 语句级临时槽位作用域：语句结束时回收临时槽位（临时值不跨语句存活）
+struct TempScope {
+    int& base;
+    int saved;
+    TempScope(int& b) : base(b), saved(b) {}
+    ~TempScope() { base = saved; }
+};
+
 // ============================================================
 // 编译器
 // ============================================================
@@ -126,20 +135,26 @@ public:
     Compiler(const string& src) : src_(src) {}
 
     bool compile(string& err_msg) {
-        // ---- 第一遍：收集 ----
+        // ---- 第一遍：收集字符串/变量，校验结构，检测常量 ----
         src_copy_ = src_;
+        // 跳过 UTF-8 BOM（部分 Windows 编辑器保存时自动添加）
+        if (src_copy_.size() >= 3 && (uint8_t)src_copy_[0] == 0xEF &&
+            (uint8_t)src_copy_[1] == 0xBB && (uint8_t)src_copy_[2] == 0xBF)
+            src_copy_.erase(0, 3);
         pos_ = 0; line_ = 1; next();
-        if (!collect(err_msg)) return false;
+        if (!collect()) { err_msg = first_err_; return false; }
 
-        // ---- 第二遍：生成 ----
+        // ---- 第二遍：生成字节码 ----
         pos_ = 0; line_ = 1; next();
-        if (!generate()) return false;
+        if (!generate()) { err_msg = first_err_; return false; }
 
         return true;
     }
 
     const StringPool& strings() const { return strings_; }
     const vector<pair<int, vector<uint8_t>>>& blocks() const { return blocks_; }
+    const vector<string>& const_names() const { return const_names_; }
+    int literal_count() const { return (int)literal_pool_.size(); }
 
 private:
     string src_;
@@ -148,6 +163,14 @@ private:
     int line_ = 1;
     Token cur_;
 
+    // ---- 错误机制：记录第一个错误，编译最终失败 ----
+    bool failed_ = false;
+    string first_err_;
+    void error(int line, const string& msg) {
+        if (!failed_) { failed_ = true; first_err_ = "Line " + to_string(line) + ": " + msg; }
+        cerr << "Line " << line << ": " << msg << endl;
+    }
+
     StringPool strings_;
     VarTable vars_;
     vector<pair<int, vector<uint8_t>>> blocks_;
@@ -155,6 +178,53 @@ private:
     int temp_base_ = 0;        // 临时槽位起点（= 用户变量数）
     map<int, int> slot_type_;     // 槽位 → 类型 (MEM_INT/MEM_FLOAT/MEM_STRING)
     map<int, string> slot_str_;   // 槽位 → 字面量字符串值（仅字面量槽位有）
+    int paren_ = 0;               // 第一遍收集时的括号层级（参数/条件边界判定）；表达式一律单行，不允许跨行
+
+    // ---- 常量检测：同一变量 ≥2 处被赋完全相同且纯字面量的值 → 常量 ----
+    //   · 单个字面量（可带负号）→ 常量传播：名字直接替换成池槽，不占变量槽
+    //   · 复合字面量表达式（如 5+5）→ 保留变量槽，在 _VM_CONST_INIT 中 COPY 一次
+    struct DefSite {
+        string canon;         // 表达式 token 序列指纹
+        bool literal_only;    // 是否纯字面量（无变量/函数调用）
+        int type;             // MEM_INT/MEM_FLOAT/MEM_STRING
+        bool single_lit;      // 表达式是否为单个（可负）字面量
+        string lit_key;       // single_lit 时对应的字面量池键
+    };
+    map<string, vector<DefSite>> defs_;
+    set<string> consts_;                 // 复合字面量常量 → 变量槽 + COPY
+    map<string, string> const_alias_;    // 单字面量常量 → 池键（引用处直接替换）
+    map<string, int> const_type_;
+    map<string, bool> const_emitted_;
+    vector<string> const_names_;
+    ByteBuf const_buf_;       // _VM_CONST_INIT 块字节码（复合常量 COPY 部分，最后插到 blocks_[0]）
+    ByteBuf scratch_buf_;     // 常量重复定义点丢弃字节码用
+
+    // ---- 字面量池：每个不同的裸字面量分配一个常驻槽，在 _VM_CONST_INIT 中统一初始化，
+    //      之后任何引用直接传池槽（VM 参数槽只读前提） ----
+    // 键按内容（与字符串池索引无关，避免两遍扫描入池顺序不同导致索引错位）
+    struct PoolEntry {
+        string key;           // "i:<值>" / "f:<浮点位>" / "s:<字符串内容>"
+        int type;             // MEM_INT/MEM_FLOAT/MEM_STRING
+        int32_t bits;         // int 值 / float 位
+        string str_val;       // MEM_STRING: 内容（供字面量校验与发射）
+    };
+    vector<PoolEntry> literal_pool_;   // 按首次出现顺序
+    set<string> literal_keys_;
+    map<string, int> literal_slot_;    // key → 常驻槽号（第二遍生成前分配）
+
+    void pool_add(const string& key, int type, int32_t bits, const string& str_val) {
+        if (literal_keys_.count(key)) return;
+        literal_keys_.insert(key);
+        literal_pool_.push_back({key, type, bits, str_val});
+    }
+    int lit_slot(const string& key) {
+        auto it = literal_slot_.find(key);
+        if (it == literal_slot_.end()) {
+            error(cur_.line, "internal: literal pool miss '" + key + "'");
+            return alloc_temp();
+        }
+        return it->second;
+    }
 
     void set_type(int slot, int t) { slot_type_[slot] = t; }
     int  get_type(int slot) { auto it = slot_type_.find(slot); return (it != slot_type_.end()) ? it->second : MEM_INT; }
@@ -163,18 +233,22 @@ private:
     bool is_num(int t) { return t == MEM_INT || t == MEM_FLOAT; }
     int  infer_bin_type(int ta, int tb) {
         if (!is_num(ta) || !is_num(tb)) {
-            cerr << "Error: strings cannot participate in arithmetic" << endl;
+            error(cur_.line, "strings cannot participate in arithmetic");
             return MEM_INT;
         }
         return (ta == MEM_FLOAT || tb == MEM_FLOAT) ? MEM_FLOAT : MEM_INT;
     }
+    bool is_keyword(const string& s) {
+        return s == "if" || s == "elif" || s == "else" || s == "halt" || s == "exit";
+    }
 
     // ========== Tokenizer ==========
+    // 空白、注释；';' 视作回车（行号+1）
     void skip_ws_comment() {
         while (pos_ < (int)src_copy_.size()) {
             char c = src_copy_[pos_];
             if (c == ' ' || c == '\t' || c == '\r') { pos_++; continue; }
-            if (c == '\n') { pos_++; line_++; continue; }
+            if (c == '\n' || c == ';') { pos_++; line_++; continue; }
             if (c == '#' || (c == '/' && pos_ + 1 < (int)src_copy_.size() && src_copy_[pos_ + 1] == '/')) {
                 while (pos_ < (int)src_copy_.size() && src_copy_[pos_] != '\n') pos_++;
                 continue;
@@ -191,17 +265,30 @@ private:
 
         char c = src_copy_[pos_];
 
+        // 数字（手写解析，避免 atoi 溢出 UB / atof 的 locale 依赖）
         if (c >= '0' && c <= '9') {
-            int start = pos_;
-            while (pos_ < (int)src_copy_.size() && src_copy_[pos_] >= '0' && src_copy_[pos_] <= '9') pos_++;
+            long long iv = 0;
+            bool overflow = false;
+            while (pos_ < (int)src_copy_.size() && src_copy_[pos_] >= '0' && src_copy_[pos_] <= '9') {
+                iv = iv * 10 + (src_copy_[pos_] - '0');
+                if (iv > 0x7FFFFFFFLL) overflow = true;
+                pos_++;
+            }
             if (pos_ < (int)src_copy_.size() && src_copy_[pos_] == '.') {
                 pos_++;
-                while (pos_ < (int)src_copy_.size() && src_copy_[pos_] >= '0' && src_copy_[pos_] <= '9') pos_++;
+                double frac = 0, scale = 1;
+                while (pos_ < (int)src_copy_.size() && src_copy_[pos_] >= '0' && src_copy_[pos_] <= '9') {
+                    frac = frac * 10 + (src_copy_[pos_] - '0');
+                    scale *= 10;
+                    pos_++;
+                }
+                if (overflow) error(t.line, "float literal out of range");
                 t.type = TK_FLOAT;
-                t.float_val = (float)atof(src_copy_.substr(start, pos_ - start).c_str());
+                t.float_val = (float)((double)iv + frac / scale);
             } else {
+                if (overflow) error(t.line, "integer literal out of range (max 2147483647)");
                 t.type = TK_INT;
-                t.int_val = atoi(src_copy_.substr(start, pos_ - start).c_str());
+                t.int_val = (int)iv;
             }
             return t;
         }
@@ -209,8 +296,11 @@ private:
         if (c == '"') {
             pos_++;
             string s;
-            while (pos_ < (int)src_copy_.size() && src_copy_[pos_] != '"') {
-                if (src_copy_[pos_] == '\\' && pos_ + 1 < (int)src_copy_.size()) {
+            bool closed = false;
+            while (pos_ < (int)src_copy_.size()) {
+                char ch = src_copy_[pos_];
+                if (ch == '"') { pos_++; closed = true; break; }
+                if (ch == '\\' && pos_ + 1 < (int)src_copy_.size()) {
                     pos_++;
                     char esc = src_copy_[pos_];
                     if (esc == 'n') s += '\n';
@@ -218,12 +308,13 @@ private:
                     else if (esc == '"') s += '"';
                     else if (esc == '\\') s += '\\';
                     else { s += '\\'; s += esc; }
-                } else {
-                    s += src_copy_[pos_];
+                    pos_++;
+                    continue;
                 }
+                s += ch;
                 pos_++;
             }
-            if (pos_ < (int)src_copy_.size()) pos_++;
+            if (!closed) error(t.line, "unterminated string literal");
             t.type = TK_STRING;
             t.str_val = s;
             return t;
@@ -256,13 +347,7 @@ private:
             case '+': t.type = TK_PLUS;   return t;
             case '-': t.type = TK_MINUS;  return t;
             case '*': t.type = TK_STAR;   return t;
-            case '/':
-                if (pos_ < (int)src_copy_.size() && src_copy_[pos_] == '/') {
-                    while (pos_ < (int)src_copy_.size() && src_copy_[pos_] != '\n') pos_++;
-                    return read_token();
-                }
-                t.type = TK_SLASH;
-                return t;
+            case '/': t.type = TK_SLASH;  return t;
             case '%': t.type = TK_MOD;    return t;
             case '>':
                 if (pos_ < (int)src_copy_.size() && src_copy_[pos_] == '=') { pos_++; t.type = TK_GTE; }
@@ -274,10 +359,14 @@ private:
                 return t;
             case '!':
                 if (pos_ < (int)src_copy_.size() && src_copy_[pos_] == '=') { pos_++; t.type = TK_NEQ; }
-                else t.type = TK_EOF;
+                else {
+                    t.type = TK_ERROR;
+                    error(t.line, "unexpected '!' (this language has no logical-not; use == 0 / != 0)");
+                }
                 return t;
             default:
-                t.type = TK_EOF;
+                t.type = TK_ERROR;
+                error(t.line, string("unexpected character '") + c + "'");
                 return t;
         }
     }
@@ -285,17 +374,30 @@ private:
     Token next() { Token t = cur_; cur_ = read_token(); return t; }
     bool check(TokenType t) { return cur_.type == t; }
     bool match(TokenType t) { if (check(t)) { next(); return true; } return false; }
-    Token expect(TokenType t, string& err) {
-        if (cur_.type != t) {
-            err = "Line " + to_string(cur_.line) + ": expected " + tk_name(t) + ", got " + tk_name(cur_.type);
-            return cur_;
-        }
-        return next();
+    bool expect(TokenType t, const char* what) {
+        if (check(t)) { next(); return true; }
+        error(cur_.line, string("expected ") + what + ", got " + tk_name(cur_.type));
+        return false;
+    }
+
+    // 表达式必须单行：只有同一行才允许继续
+    bool expr_can_continue(int start_line) {
+        return cur_.line == start_line;
+    }
+
+    // 语句结束：同行不得有多余 token
+    void check_eol(int start_line) {
+        if (check(TK_EOF) || check(TK_RBRACE)) return;
+        if (cur_.line == start_line)
+            error(cur_.line, "unexpected token after statement — one statement per line (or separate with ;)");
     }
 
     // ========== 临时槽位管理 ==========
     int alloc_temp() {
-        return temp_base_++;
+        int t = temp_base_++;
+        slot_type_.erase(t);  // 槽位复用后清掉旧类型记录
+        slot_str_.erase(t);
+        return t;
     }
 
     // ========== 指令发射 ==========
@@ -316,23 +418,20 @@ private:
         }
     }
 
-    // ========== 参数校验 ==========
-    void check_call_args(int func_id, const vector<int>& args) {
+    // ========== 参数校验（错误即编译失败） ==========
+    void check_call_args(int func_id, const vector<int>& args, int line) {
         auto& def = FUNC_DEFS[func_id];
         int expected = def.param_count;
 
         // 变长函数不校验
         if (expected < 0) return;
 
-        // 校验参数个数
         if ((int)args.size() != expected) {
-            cerr << "Line " << cur_.line << ": " << def.name
-                 << " expects " << expected << " args, got "
-                 << args.size() << endl;
+            error(line, string(def.name) + " expects " + to_string(expected) +
+                        " args, got " + to_string(args.size()));
             return;
         }
 
-        // 校验每个参数类型
         if (expected == 0) return;
         auto& ptypes = def.param_types;
         for (int i = 0; i < expected; i++) {
@@ -340,11 +439,12 @@ private:
             if (expect_t == PT_ANY) continue;
             int actual_t = get_type(args[i]);
             if (actual_t != expect_t) {
-                cerr << "Line " << cur_.line << ": " << def.name
-                     << " arg " << (i + 1) << " expects "
-                     << param_type_name(expect_t) << ", got "
-                     << param_type_name(actual_t) << endl;
-                continue;
+                // int 实参可自动提升为 float
+                if (!(expect_t == PT_FLOAT && actual_t == MEM_INT)) {
+                    error(line, string(def.name) + " arg " + to_string(i + 1) + " expects " +
+                                param_type_name(expect_t) + ", got " + param_type_name(actual_t));
+                    continue;
+                }
             }
             // 字符串参数：校验字面量值是否在合法集合中
             if (expect_t == PT_STRING) {
@@ -359,118 +459,251 @@ private:
                     case 10: pset = &VALID_OBJECT_NAMES; break; // VM_SpawnObject
                 }
                 if (pset && !str_in_set(sval, *pset)) {
-                    cerr << "Line " << cur_.line << ": " << def.name
-                         << " arg " << (i + 1) << " \"" << sval
-                         << "\" is not a valid value" << endl;
-                }
-                // VM_LoadSprite 外部加载禁止 spr_ 前缀
-                if (func_id == 9 && sval.size() >= 4 && sval.substr(0, 4) == "spr_") {
-                    cerr << "Line " << cur_.line << ": VM_LoadSprite forbids spr_ prefix, use external image files" << endl;
+                    error(line, string(def.name) + " arg " + to_string(i + 1) + " \"" + sval +
+                                "\" is not a valid value");
                 }
             }
         }
     }
 
     // ====================================================================
-    // 第一遍：收集字符串 & 变量，校验块名/函数名
+    // 第一遍：收集字符串 & 变量，校验结构，记录赋值点
     // ====================================================================
-    bool collect(string& err) {
+    bool collect() {
         while (!check(TK_EOF)) {
-            if (check(TK_RBRACE)) { next(); continue; }
-            if (check(TK_IDENT)) {
-                if (!collect_ident(err)) return false;
+            if (check(TK_ERROR)) { next(); continue; }
+            if (check(TK_RBRACE)) {
+                error(cur_.line, "unexpected } at top level");
+                next();
                 continue;
             }
-            next();
-        }
-        return true;
-    }
-
-    bool collect_ident(string& err) {
-        string name = cur_.str_val;
-
-        int bi = find_block(name);
-        if (bi >= 0) {
-            strings_.add(name);
-            next();
-            if (!match(TK_LBRACE)) { err = "Line " + to_string(cur_.line) + ": expected { after block name"; return false; }
-            return true;
-        }
-
-        if (name == "halt") { next(); return true; }
-
-        if (name == "else") { next(); match(TK_LBRACE); return true; }
-
-        if (name == "if") {
-            next();
-            match(TK_LPAREN);
-            collect_expr();
-            match(TK_RPAREN);
-            match(TK_LBRACE);
-            while (!check(TK_RBRACE) && !check(TK_EOF)) {
-                if (check(TK_IDENT)) collect_ident(err);
-                else next();
-            }
-            match(TK_RBRACE);
-            if (check(TK_IDENT) && cur_.str_val == "else") {
+            if (check(TK_IDENT)) {
+                string name = cur_.str_val;
+                if (find_block(name) >= 0) { collect_block(); continue; }
+                if (name == "_VM_CONST_INIT")
+                    error(cur_.line, "_VM_CONST_INIT is generated automatically — constants are detected from repeated identical definitions");
+                else
+                    error(cur_.line, "unexpected '" + name + "' at top level — only block definitions are allowed here");
                 next();
-                match(TK_LBRACE);
-                while (!check(TK_RBRACE) && !check(TK_EOF)) {
-                    if (check(TK_IDENT)) collect_ident(err);
-                    else next();
-                }
-                match(TK_RBRACE);
+                continue;
             }
-            return true;
-        }
-
-        // 赋值 / 函数调用
-        next();
-        if (check(TK_LPAREN)) {
-            int fi = find_func(name);
-            if (fi < 0) { err = "Line " + to_string(cur_.line) + ": unknown function " + name; return false; }
+            error(cur_.line, string("unexpected token at top level: ") + tk_name(cur_.type));
             next();
-            collect_args();
-            if (!match(TK_RPAREN)) { err = "Line " + to_string(cur_.line) + ": missing )"; return false; }
-        } else if (check(TK_ASSIGN)) {
-            if (find_block(name) >= 0) { err = "Line " + to_string(cur_.line) + ": cannot assign to block name"; return false; }
-            if (find_func(name) >= 0) { err = "Line " + to_string(cur_.line) + ": cannot assign to function name"; return false; }
-            if (name == "if" || name == "else" || name == "halt") { err = "Line " + to_string(cur_.line) + ": keyword"; return false; }
-            vars_.alloc(name);
-            next();
-            collect_expr();
         }
-        return true;
+        detect_consts();
+        return !failed_;
     }
 
-    void collect_expr() {
+    void detect_consts() {
+        for (auto& kv : defs_) {
+            const string& name = kv.first;
+            const vector<DefSite>& ds = kv.second;
+            if (ds.size() < 2) continue;
+            bool ok = true;
+            for (auto& d : ds) {
+                if (!d.literal_only || d.canon != ds[0].canon) { ok = false; break; }
+            }
+            if (!ok) continue;
+            const_names_.push_back(name);
+            if (ds[0].single_lit) {
+                // 单个字面量 → 常量传播：引用处直接替换成池槽
+                const_alias_[name] = ds[0].lit_key;
+            } else {
+                // 复合字面量 → 保留变量槽，_VM_CONST_INIT 中 COPY 一次
+                consts_.insert(name);
+                const_type_[name] = ds[0].type;
+            }
+        }
+    }
+
+    void collect_block() {
+        strings_.add(cur_.str_val);
+        next();
+        if (!expect(TK_LBRACE, "{ after block name")) return;
+        while (!check(TK_RBRACE) && !check(TK_EOF)) collect_statement();
+        int brace_line = cur_.line;
+        if (!match(TK_RBRACE)) { error(cur_.line, "missing } at end of block"); return; }
+        if (!check(TK_EOF) && !check(TK_RBRACE) && cur_.line == brace_line)
+            error(cur_.line, "unexpected token after block — start a new line or use ;");
+    }
+
+    void collect_statement() {
+        if (check(TK_EOF) || check(TK_RBRACE)) return;
+        if (check(TK_ERROR)) { next(); return; }
         int start_line = cur_.line;
-        int depth = 0;
+        if (check(TK_IDENT)) {
+            string name = cur_.str_val;
+            if (name == "halt" || name == "exit") { next(); check_eol(start_line); return; }  // exit 与 halt 同义
+            if (name == "if") { collect_if(); return; }
+            if (name == "elif") { error(cur_.line, "'elif' without matching if"); next(); return; }
+            if (name == "else") { error(cur_.line, "'else' without matching if"); next(); return; }
+            if (find_block(name) >= 0) { error(cur_.line, "block '" + name + "' must be at top level"); next(); return; }
+            next();
+            if (check(TK_ASSIGN)) {
+                if (find_func(name) >= 0)
+                    error(start_line, "cannot assign to function name '" + name + "'");
+                if (is_keyword(name))
+                    error(start_line, "'" + name + "' is a keyword and cannot be assigned");
+                next();  // =
+                vars_.alloc(name);
+                string canon;
+                bool lit = true;
+                int et = MEM_INT;
+                bool sl = false;
+                string lk;
+                collect_expr(&canon, &lit, &et, &sl, &lk);
+                defs_[name].push_back({canon, lit, et, sl, lk});
+                check_eol(start_line);
+                return;
+            }
+            if (check(TK_LPAREN)) {
+                int fi = find_func(name);
+                if (fi < 0) error(start_line, "unknown function '" + name + "'");
+                next();  // (
+                paren_++;
+                collect_args();
+                paren_--;
+                if (!expect(TK_RPAREN, ")")) return;
+                check_eol(start_line);
+                return;
+            }
+            error(cur_.line, "unexpected identifier '" + name + "'");
+            return;
+        }
+        error(cur_.line, string("unexpected token: ") + tk_name(cur_.type));
+        next();
+    }
+
+    void collect_if() {  // cur_ = if 或 elif
+        next();
+        if (!expect(TK_LPAREN, "(")) return;
+        paren_++;
+        collect_expr(nullptr, nullptr, nullptr);
+        paren_--;
+        if (!expect(TK_RPAREN, ")")) return;
+        if (!expect(TK_LBRACE, "{ (if body must use braces)")) return;
+        while (!check(TK_RBRACE) && !check(TK_EOF)) collect_statement();
+        int brace_line = cur_.line;
+        if (!match(TK_RBRACE)) { error(cur_.line, "missing } in if body"); return; }
+
+        if (check(TK_IDENT) && cur_.str_val == "elif") {
+            collect_if();  // 递归处理 elif 及其后续链
+            return;
+        }
+        if (check(TK_IDENT) && cur_.str_val == "else") {
+            next();
+            if (check(TK_IDENT) && cur_.str_val == "if") {
+                collect_if();  // else if 等价于 elif
+                return;
+            }
+            if (!expect(TK_LBRACE, "{ (else body must use braces)")) return;
+            while (!check(TK_RBRACE) && !check(TK_EOF)) collect_statement();
+            brace_line = cur_.line;
+            if (!match(TK_RBRACE)) { error(cur_.line, "missing } in else body"); return;
+            }
+        }
+        if (!check(TK_EOF) && !check(TK_RBRACE) && cur_.line == brace_line)
+            error(cur_.line, "unexpected token after if/else block — start a new line or use ;");
+    }
+
+    // 收集表达式 token：字符串入池、标识符入变量表、输出指纹/类型/单字面量信息
+    void collect_expr(string* canon, bool* literal_only, int* expr_type,
+                      bool* single_lit = nullptr, string* lit_key = nullptr) {
+        int start_line = cur_.line;
+        int entry = paren_;
+        int etype = MEM_INT;
+        bool expect_operand = true;  // 识别一元负号，把负数字面量也登记进池
+        bool neg_pending = false;
+        int tok_count = 0;           // 单字面量跟踪：首个 token 前的一元负号视为前缀
+        bool single = true;
+        bool neg_prefix = false;
+        bool seen_val = false;
+        string skey;
         while (!check(TK_EOF)) {
             TokenType t = cur_.type;
-            if (t == TK_LBRACE || t == TK_RBRACE) break;
-            if (cur_.line != start_line) break;
-            if (t == TK_RPAREN && depth == 0) break;
-            if (t == TK_COMMA && depth == 0) break;
-            if (t == TK_LPAREN) depth++;
-            if (t == TK_RPAREN) { depth--; if (depth < 0) break; }
+            if (t == TK_LBRACE || t == TK_RBRACE) { paren_ = entry; break; }
+            if ((t == TK_RPAREN || t == TK_COMMA) && paren_ == entry) break;
+            if (cur_.line != start_line) { paren_ = entry; break; }  // 表达式一律单行
 
             if (t == TK_STRING) {
                 strings_.add(cur_.str_val);
+                pool_add("s:" + cur_.str_val, MEM_STRING, 0, cur_.str_val);
+                etype = MEM_STRING;
+                if (!seen_val) {
+                    seen_val = true;
+                    skey = "s:" + cur_.str_val;
+                } else single = false;
+                if (canon) { *canon += 's'; *canon += cur_.str_val; *canon += ';'; }
+            } else if (t == TK_INT) {
+                pool_add("i:" + to_string(cur_.int_val), MEM_INT, cur_.int_val, "");
+                if (neg_pending) pool_add("i:" + to_string(-cur_.int_val), MEM_INT, -cur_.int_val, "");
+                if (!seen_val) {
+                    seen_val = true;
+                    skey = "i:" + to_string(neg_prefix ? -cur_.int_val : cur_.int_val);
+                } else single = false;
+                if (canon) { *canon += 'i'; *canon += to_string(cur_.int_val); *canon += ';'; }
+            } else if (t == TK_FLOAT) {
+                uint32_t bits;
+                memcpy(&bits, &cur_.float_val, 4);
+                pool_add("f:" + to_string(bits), MEM_FLOAT, (int32_t)bits, "");
+                if (neg_pending) {
+                    float nv = -cur_.float_val;
+                    uint32_t nbits;
+                    memcpy(&nbits, &nv, 4);
+                    pool_add("f:" + to_string(nbits), MEM_FLOAT, (int32_t)nbits, "");
+                }
+                if (!seen_val) {
+                    seen_val = true;
+                    if (neg_prefix) {
+                        float nv = -cur_.float_val;
+                        uint32_t nbits;
+                        memcpy(&nbits, &nv, 4);
+                        skey = "f:" + to_string(nbits);
+                    } else {
+                        skey = "f:" + to_string(bits);
+                    }
+                } else single = false;
+                etype = MEM_FLOAT;
+                if (canon) {
+                    *canon += 'f';
+                    *canon += to_string(bits);
+                    *canon += ';';
+                }
             } else if (t == TK_IDENT) {
                 string name = cur_.str_val;
-                if (find_func(name) < 0 && find_block(name) < 0 &&
-                    name != "if" && name != "else" && name != "halt") {
+                if (literal_only) *literal_only = false;
+                if (find_func(name) < 0 && find_block(name) < 0 && !is_keyword(name))
                     vars_.alloc(name);
+                single = false;
+                if (canon) { *canon += 'v'; *canon += name; *canon += ';'; }
+            } else {
+                if (t == TK_MINUS && tok_count == 0 && !neg_prefix) {
+                    neg_prefix = true;  // 首个 token 的一元负号：单字面量前缀
+                } else {
+                    single = false;
                 }
+                if (canon) *canon += tk_name(t);
             }
+            if (t == TK_LPAREN) paren_++;
+            else if (t == TK_RPAREN) { if (paren_ > entry) paren_--; }
+            // 一元负号跟踪（- 后面跟字面量时，负值也入池）
+            if (t == TK_MINUS && expect_operand) neg_pending = true;
+            else neg_pending = false;
+            if (t == TK_INT || t == TK_FLOAT || t == TK_STRING || t == TK_IDENT || t == TK_RPAREN)
+                expect_operand = false;
+            else
+                expect_operand = true;
+            tok_count++;
             next();
         }
+        if (expr_type) *expr_type = etype;
+        if (single_lit) *single_lit = single && seen_val;
+        if (lit_key && single && seen_val) *lit_key = skey;
     }
 
     void collect_args() {
         while (!check(TK_RPAREN) && !check(TK_EOF)) {
-            collect_expr();
+            collect_expr(nullptr, nullptr, nullptr);
             if (!match(TK_COMMA)) break;
         }
     }
@@ -479,28 +712,69 @@ private:
     // 第二遍：生成字节码
     // ====================================================================
     bool generate() {
+        // 字面量池常驻槽：用户变量之后、临时槽之前
+        int pool_base = vars_.count();
+        for (int i = 0; i < (int)literal_pool_.size(); i++) {
+            auto& e = literal_pool_[i];
+            int slot = pool_base + i;
+            literal_slot_[e.key] = slot;
+            set_type(slot, e.type);
+            if (e.type == MEM_STRING) set_str(slot, e.str_val);
+        }
+        temp_base_ = pool_base + (int)literal_pool_.size();
+        if (temp_base_ > 4096) {
+            error(1, "variables (" + to_string(pool_base) + ") + literal pool (" +
+                      to_string(literal_pool_.size()) + ") exceed 4096 slots");
+            return false;
+        }
+
+        const_buf_.buf.clear();
+        scratch_buf_.buf.clear();
+
+        // 预置常量槽位类型（块的生成顺序可能先于常量定义点）
+        for (auto& n : consts_) {
+            int slot = vars_.get(n);
+            if (slot >= 0) set_type(slot, const_type_[n]);
+        }
+
         while (!check(TK_EOF)) {
             while (match(TK_RBRACE)) {}
-
             if (check(TK_EOF)) break;
-
             if (check(TK_IDENT)) {
                 string name = cur_.str_val;
                 int bi = find_block(name);
-                if (bi >= 0) {
-                    gen_block(bi);
-                    continue;
-                }
+                if (bi >= 0) { gen_block(bi); continue; }
             }
             next();
         }
-        return true;
+
+        // _VM_CONST_INIT 永远作为第一个块输出（VM 读入即执行）：
+        // 先初始化字面量池，再 COPY 命名常量（命名常量引用池槽）
+        if (!const_buf_.buf.empty() || !literal_pool_.empty()) {
+            ByteBuf init;
+            for (int i = 0; i < (int)literal_pool_.size(); i++) {
+                auto& e = literal_pool_[i];
+                init.u8(OP_ASSIGN);
+                init.s32(pool_base + i);
+                init.u8((uint8_t)e.type);
+                if (e.type == MEM_STRING) {
+                    int si = strings_.add(e.str_val);  // 发射时才定索引，与引用方一致
+                    init.u16((uint16_t)si);
+                } else {
+                    init.s32(e.bits);
+                }
+            }
+            init.buf.insert(init.buf.end(), const_buf_.buf.begin(), const_buf_.buf.end());
+            int si = strings_.add("_VM_CONST_INIT");
+            blocks_.insert(blocks_.begin(), make_pair(si, init.buf));
+        }
+        return !failed_;
     }
 
     void gen_block(int block_name_idx) {
         ByteBuf bb;
         cur_buf_ = &bb;
-        temp_base_ = vars_.count();  // 临时槽位从用户变量之后开始
+        temp_base_ = vars_.count() + (int)literal_pool_.size();  // 临时槽位在用户变量+字面量池之后
 
         next();                     // 块名
         match(TK_LBRACE);
@@ -508,7 +782,10 @@ private:
         while (!check(TK_RBRACE) && !check(TK_EOF)) {
             gen_statement();
         }
+        int brace_line = cur_.line;
         match(TK_RBRACE);
+        if (!check(TK_EOF) && !check(TK_RBRACE) && cur_.line == brace_line)
+            error(cur_.line, "unexpected token after block");
 
         int name_str_idx = strings_.add(BLOCK_NAMES[block_name_idx]);
         blocks_.push_back({name_str_idx, bb.buf});
@@ -518,20 +795,36 @@ private:
     // ========== 语句 ==========
     void gen_statement() {
         if (check(TK_EOF) || check(TK_RBRACE)) return;
+        if (check(TK_ERROR)) { next(); return; }
+        TempScope ts(temp_base_);  // 语句级临时槽位回收
+        int start_line = cur_.line;
 
         if (check(TK_IDENT)) {
             string name = cur_.str_val;
 
-            if (name == "halt") {
+            if (name == "halt" || name == "exit") {  // exit 与 halt 同义
                 next();
                 cur_buf_->u8(OP_HALT);
+                check_eol(start_line);
                 return;
             }
             if (name == "if") {
                 gen_if();
                 return;
             }
+            if (name == "elif") {
+                error(cur_.line, "'elif' without matching if");
+                next();
+                return;
+            }
             if (name == "else") {
+                error(cur_.line, "'else' without matching if");
+                next();
+                return;
+            }
+            if (find_block(name) >= 0) {
+                error(cur_.line, "block '" + name + "' must be at top level");
+                next();
                 return;
             }
 
@@ -539,7 +832,48 @@ private:
             if (check(TK_ASSIGN)) {
                 // 变量 = 表达式
                 int var_slot = vars_.get(name);
+                if (var_slot < 0) {
+                    error(start_line, "internal: unknown variable '" + name + "'");
+                    next();
+                    return;
+                }
                 next();  // 吃掉 =
+
+                if (const_alias_.count(name)) {
+                    // 单字面量常量：定义点不发射任何代码，只消费表达式
+                    ByteBuf* saved = cur_buf_;
+                    scratch_buf_.buf.clear();
+                    cur_buf_ = &scratch_buf_;
+                    gen_expr();
+                    cur_buf_ = saved;
+                    check_eol(start_line);
+                    return;
+                }
+
+                if (consts_.count(name)) {
+                    // 常量定义点：首个站点发射进 _VM_CONST_INIT，其余站点丢弃
+                    ByteBuf* saved = cur_buf_;
+                    if (const_emitted_[name]) {
+                        scratch_buf_.buf.clear();
+                        cur_buf_ = &scratch_buf_;
+                    } else {
+                        cur_buf_ = &const_buf_;
+                    }
+                    int src_slot = gen_expr();
+                    cur_buf_ = saved;
+                    if (!const_emitted_[name]) {
+                        const_emitted_[name] = true;
+                        if (src_slot != var_slot) {
+                            const_buf_.u8(OP_COPY);
+                            const_buf_.s32(var_slot);
+                            const_buf_.s32(src_slot);
+                        }
+                    }
+                    set_type(var_slot, get_type(src_slot));
+                    check_eol(start_line);
+                    return;
+                }
+
                 int src_slot = gen_expr();
                 if (src_slot != var_slot) {
                     cur_buf_->u8(OP_COPY);
@@ -547,67 +881,85 @@ private:
                     cur_buf_->s32(src_slot);
                 }
                 set_type(var_slot, get_type(src_slot));
+                check_eol(start_line);
                 return;
             }
             if (check(TK_LPAREN)) {
                 // 函数调用（语句级，丢弃返回值）
                 int fid = find_func(name);
-                if (fid < 0) { next(); return; }
+                if (fid < 0) { error(start_line, "unknown function '" + name + "'"); next(); return; }
                 next();  // 吃掉 (
                 vector<int> args;
                 gen_args(args);
-                match(TK_RPAREN);
-                check_call_args(fid, args);
+                if (!expect(TK_RPAREN, ")")) return;
+                check_call_args(fid, args, start_line);
                 emit_call(fid, args, VOID_DST);
+                check_eol(start_line);
                 return;
             }
+            error(cur_.line, "unexpected identifier '" + name + "'");
             return;
         }
+        error(cur_.line, string("unexpected token: ") + tk_name(cur_.type));
         next();
     }
 
-    // ========== if ==========
-    void gen_if() {
-        next();                    // if
-        match(TK_LPAREN);
+    // ========== if / elif 链 ==========
+    void gen_if() {  // cur_ = if 或 elif
+        next();
+        if (!expect(TK_LPAREN, "(")) return;
         int cond_slot = gen_expr(); // 条件
-        match(TK_RPAREN);
+        if (!expect(TK_RPAREN, ")")) return;
+        if (!expect(TK_LBRACE, "{ (if body must use braces)")) return;
 
         cur_buf_->u8(OP_IF);
         cur_buf_->s32(cond_slot);
         int true_patch  = cur_buf_->tell(); cur_buf_->s32(0);
         int false_patch = cur_buf_->tell(); cur_buf_->s32(0);
+        int ip_true = cur_buf_->tell();  // true 分支紧跟其后
 
-        match(TK_LBRACE);
-        int ip_true = cur_buf_->tell();
         while (!check(TK_RBRACE) && !check(TK_EOF)) gen_statement();
-        match(TK_RBRACE);
+        int brace_line = cur_.line;
+        if (!match(TK_RBRACE)) { error(cur_.line, "missing } in if body"); return; }
 
-        bool has_else = (check(TK_IDENT) && cur_.str_val == "else");
+        // 后续有 elif / else 时，true 分支末尾跳过其余分支
+        bool has_chain = (check(TK_IDENT) &&
+                          (cur_.str_val == "elif" || cur_.str_val == "else"));
         int jmp_patch = -1;
-        if (has_else) {
+        if (has_chain) {
             cur_buf_->u8(OP_JMP);
             jmp_patch = cur_buf_->tell();
             cur_buf_->s32(0);
         }
 
         int ip_false;
-        if (has_else) {
-            next();  // else
-            match(TK_LBRACE);
+        if (check(TK_IDENT) && cur_.str_val == "elif") {
+            // elif 递归处理（其内部自行处理后续链与行尾校验）
             ip_false = cur_buf_->tell();
-            while (!check(TK_RBRACE) && !check(TK_EOF)) gen_statement();
-            match(TK_RBRACE);
+            gen_if();
+        } else if (check(TK_IDENT) && cur_.str_val == "else") {
+            ip_false = cur_buf_->tell();
+            next();  // else
+            if (check(TK_IDENT) && cur_.str_val == "if") {
+                gen_if();  // else if 等价于 elif
+            } else {
+                if (!expect(TK_LBRACE, "{ (else body must use braces)")) return;
+                while (!check(TK_RBRACE) && !check(TK_EOF)) gen_statement();
+                brace_line = cur_.line;
+                if (!match(TK_RBRACE)) { error(cur_.line, "missing } in else body"); return; }
+                if (!check(TK_EOF) && !check(TK_RBRACE) && cur_.line == brace_line)
+                    error(cur_.line, "unexpected token after if/else block");
+            }
         } else {
             ip_false = cur_buf_->tell();
+            if (!check(TK_EOF) && !check(TK_RBRACE) && cur_.line == brace_line)
+                error(cur_.line, "unexpected token after if/else block");
         }
-
-        int ip_after = cur_buf_->tell();
 
         cur_buf_->patch_s32(true_patch, ip_true);
         cur_buf_->patch_s32(false_patch, ip_false);
         if (jmp_patch >= 0) {
-            cur_buf_->patch_s32(jmp_patch, ip_after);
+            cur_buf_->patch_s32(jmp_patch, cur_buf_->tell());
         }
     }
 
@@ -616,6 +968,7 @@ private:
 
     // 比较
     int gen_cmp() {
+        int start_line = cur_.line;
         int left = gen_add();
         while (true) {
             int op = -1;
@@ -626,10 +979,13 @@ private:
             else if (check(TK_LT))  op = OP_LT;
             else if (check(TK_LTE)) op = OP_LTE;
             else break;
-
+            if (!expr_can_continue(start_line)) break;  // 换行且不在括号内 → 表达式结束
             next();
+            if (!expr_can_continue(start_line)) {
+                error(cur_.line, "expression cannot span lines");
+                return left;
+            }
             int right = gen_add();
-            get_type(left); get_type(right);  // 类型校验（比较允许跨类型）
             int temp = alloc_temp();
             set_type(temp, MEM_INT);  // 比较结果总是 int
             emit_bin_op(op, temp, left, right);
@@ -640,10 +996,16 @@ private:
 
     // 加减
     int gen_add() {
+        int start_line = cur_.line;
         int left = gen_mul();
         while (check(TK_PLUS) || check(TK_MINUS)) {
             int op = check(TK_PLUS) ? OP_ADD : OP_SUB;
+            if (!expr_can_continue(start_line)) break;
             next();
+            if (!expr_can_continue(start_line)) {
+                error(cur_.line, "expression cannot span lines");
+                return left;
+            }
             int right = gen_mul();
             int t = infer_bin_type(get_type(left), get_type(right));
             int temp = alloc_temp();
@@ -656,13 +1018,19 @@ private:
 
     // 乘除模
     int gen_mul() {
+        int start_line = cur_.line;
         int left = gen_primary();
         while (check(TK_STAR) || check(TK_SLASH) || check(TK_MOD)) {
             int op = 0;
             if (check(TK_STAR)) op = OP_MUL;
             else if (check(TK_SLASH)) op = OP_DIV;
             else op = OP_MOD;
+            if (!expr_can_continue(start_line)) break;
             next();
+            if (!expr_can_continue(start_line)) {
+                error(cur_.line, "expression cannot span lines");
+                return left;
+            }
             int right = gen_primary();
             int t = (op == OP_MOD) ? MEM_INT : infer_bin_type(get_type(left), get_type(right));
             int temp = alloc_temp();
@@ -675,9 +1043,30 @@ private:
 
     // 基础项：返回结果所在的内存槽位
     int gen_primary() {
-        // 一元负号: -5 → 0-5
+        int start_line = cur_.line;
+        if (check(TK_EOF)) {
+            error(cur_.line, "unexpected end of file in expression");
+            return alloc_temp();
+        }
+        if (check(TK_ERROR)) { next(); return alloc_temp(); }
+        // 一元负号: -5 → 直接引用池槽(-5)；-变量/-表达式 → 0-变量
         if (check(TK_MINUS)) {
             next();
+            if (!expr_can_continue(start_line)) {
+                error(cur_.line, "expression cannot span lines");
+                return alloc_temp();
+            }
+            if (check(TK_INT)) {
+                int val = -cur_.int_val;
+                next();
+                return lit_slot("i:" + to_string(val));
+            }
+            if (check(TK_FLOAT)) {
+                float val = -cur_.float_val;
+                next();
+                int bits; memcpy(&bits, &val, 4);
+                return lit_slot("f:" + to_string(bits));
+            }
             int zero = alloc_temp(); set_type(zero, MEM_INT);
             cur_buf_->u8(OP_ASSIGN); cur_buf_->s32(zero); cur_buf_->u8(MEM_INT); cur_buf_->s32(0);
             int right = gen_primary();
@@ -688,38 +1077,19 @@ private:
         if (check(TK_INT)) {
             int val = cur_.int_val;
             next();
-            int t = alloc_temp();
-            set_type(t, MEM_INT);
-            cur_buf_->u8(OP_ASSIGN);
-            cur_buf_->s32(t);
-            cur_buf_->u8(MEM_INT);
-            cur_buf_->s32(val);
-            return t;
+            return lit_slot("i:" + to_string(val));
         }
         if (check(TK_FLOAT)) {
             float val = cur_.float_val;
             next();
-            int t = alloc_temp();
-            set_type(t, MEM_FLOAT);
             int bits; memcpy(&bits, &val, 4);
-            cur_buf_->u8(OP_ASSIGN);
-            cur_buf_->s32(t);
-            cur_buf_->u8(MEM_FLOAT);
-            cur_buf_->s32(bits);
-            return t;
+            return lit_slot("f:" + to_string(bits));
         }
         if (check(TK_STRING)) {
             string str_val = cur_.str_val;
-            int si = strings_.add(str_val);
+            strings_.add(str_val);
             next();
-            int t = alloc_temp();
-            set_type(t, MEM_STRING);
-            set_str(t, str_val);
-            cur_buf_->u8(OP_ASSIGN);
-            cur_buf_->s32(t);
-            cur_buf_->u8(MEM_STRING);
-            cur_buf_->u16((uint16_t)si);
-            return t;
+            return lit_slot("s:" + str_val);
         }
         if (check(TK_IDENT)) {
             string name = cur_.str_val;
@@ -727,100 +1097,51 @@ private:
             if (fi >= 0) {
                 // 函数调用 → 返回值放临时槽
                 next();
-                match(TK_LPAREN);
+                if (!expect(TK_LPAREN, "(")) return alloc_temp();
                 vector<int> args;
                 gen_args(args);
-                match(TK_RPAREN);
-                check_call_args(fi, args);
+                if (!expect(TK_RPAREN, ")")) return alloc_temp();
+                check_call_args(fi, args, start_line);
                 int t = alloc_temp();
                 emit_call(fi, args, t);
                 set_type(t, FUNC_DEFS[fi].return_type);
                 return t;
             }
+            if (is_keyword(name)) {
+                error(cur_.line, "'" + name + "' is a keyword and cannot appear in an expression");
+                next();
+                return alloc_temp();
+            }
+            // 常量传播：单字面量常量直接替换成字面量池槽
+            auto ai = const_alias_.find(name);
+            if (ai != const_alias_.end()) {
+                next();
+                return literal_slot_[ai->second];
+            }
             // 变量 → 直接返回其槽位
             int slot = vars_.get(name);
-            if (slot < 0) { next(); return alloc_temp(); }  // 容错
+            if (slot < 0) {
+                error(cur_.line, "internal: unknown variable '" + name + "'");
+                next();
+                return alloc_temp();
+            }
             next();
             return slot;
         }
         if (match(TK_LPAREN)) {
             int result = gen_expr();
-            string err; expect(TK_RPAREN, err);
+            expect(TK_RPAREN, ")");
             return result;
         }
+        error(cur_.line, string("unexpected token in expression: ") + tk_name(cur_.type));
         next();
         return alloc_temp();
     }
 
-    // ========== 参数列表 — 收集内存地址 ==========
+    // ========== 参数列表 — 支持任意表达式 ==========
     void gen_args(vector<int>& args) {
         while (!check(TK_RPAREN) && !check(TK_EOF)) {
-            // 处理负数: -5 → 0-5 的临时结果
-            if (check(TK_MINUS)) {
-                next(); // 吃掉 -
-                if (check(TK_INT)) {
-                    int val = -cur_.int_val;
-                    next();
-                    int t = alloc_temp();
-                    set_type(t, MEM_INT);
-                    cur_buf_->u8(OP_ASSIGN); cur_buf_->s32(t); cur_buf_->u8(MEM_INT); cur_buf_->s32(val);
-                    args.push_back(t);
-                } else if (check(TK_FLOAT)) {
-                    float v = -cur_.float_val; next();
-                    int t = alloc_temp(); set_type(t, MEM_FLOAT);
-                    int bits; memcpy(&bits, &v, 4);
-                    cur_buf_->u8(OP_ASSIGN); cur_buf_->s32(t); cur_buf_->u8(MEM_FLOAT); cur_buf_->s32(bits);
-                    args.push_back(t);
-                }
-                if (!match(TK_COMMA)) break;
-                continue;
-            }
-            if (check(TK_INT)) {
-                int val = cur_.int_val;
-                next();
-                int t = alloc_temp();
-                set_type(t, MEM_INT);
-                cur_buf_->u8(OP_ASSIGN);
-                cur_buf_->s32(t);
-                cur_buf_->u8(MEM_INT);
-                cur_buf_->s32(val);
-                args.push_back(t);
-            } else if (check(TK_FLOAT)) {
-                float val = cur_.float_val;
-                next();
-                int t = alloc_temp();
-                set_type(t, MEM_FLOAT);
-                int bits; memcpy(&bits, &val, 4);
-                cur_buf_->u8(OP_ASSIGN);
-                cur_buf_->s32(t);
-                cur_buf_->u8(MEM_FLOAT);
-                cur_buf_->s32(bits);
-                args.push_back(t);
-            } else if (check(TK_STRING)) {
-                string str_val = cur_.str_val;
-                int si = strings_.add(str_val);
-                next();
-                int t = alloc_temp();
-                set_type(t, MEM_STRING);
-                set_str(t, str_val);
-                cur_buf_->u8(OP_ASSIGN);
-                cur_buf_->s32(t);
-                cur_buf_->u8(MEM_STRING);
-                cur_buf_->u16((uint16_t)si);
-                args.push_back(t);
-            } else if (check(TK_IDENT)) {
-                int slot = vars_.get(cur_.str_val);
-                if (slot >= 0) {
-                    args.push_back(slot);
-                    next();
-                } else {
-                    // 可能是函数调用表达式，先求值
-                    cerr << "Line " << cur_.line << ": expressions not supported in args, assign to variable first" << endl;
-                    next();
-                }
-            } else {
-                next();
-            }
+            args.push_back(gen_expr());
             if (!match(TK_COMMA)) break;
         }
     }
@@ -889,6 +1210,14 @@ static int compile_one(const string& src_path, const string& out_path) {
         cerr << "Compile error (" << src_path << "): " << err << endl;
         return 1;
     }
+    const vector<string>& cn = compiler.const_names();
+    if (!cn.empty()) {
+        cout << "Constants -> _VM_CONST_INIT:";
+        for (auto& n : cn) cout << " " << n;
+        cout << endl;
+    }
+    if (compiler.literal_count() > 0)
+        cout << "Literal pool: " << compiler.literal_count() << " values" << endl;
     write_binary(out_path, compiler.strings(), compiler.blocks());
     return 0;
 }
