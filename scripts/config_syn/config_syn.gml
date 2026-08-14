@@ -1,7 +1,7 @@
 // ==========================================
 // 网络同步配置 — 白名单 & 规则
 // ==========================================
-global.network_game_version = "2.2.0.0812";
+global.network_game_version = "2.2.0.0815";
 
 // ---- 普通属性白名单 ----
 // 帧末通过 MSG_EVENT_ACTIONS / modify 自动采集同步
@@ -108,8 +108,6 @@ global.boss_spawn_sync_list = [
 	obj_machine_iron_pan_mouse,
 	// xiaoming
 	obj_xiaoming_text,
-	// coke
-	obj_coke_bomb_explode,
 	// vajra
 	obj_vajra_lava_effect,
 	obj_vajra_lava,

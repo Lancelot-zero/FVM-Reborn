@@ -74,6 +74,8 @@ _VM_WAVE_START {
     w = VM_GetWave()
     VM_ShellPrint("第", w + 1, "波 (累计", wave_count, "次)")
 
+
+	
     // elif 链
     if (w == 0) {
         VM_ShowNotice("热身波：普通老鼠")

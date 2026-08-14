@@ -46,25 +46,25 @@ LabMapCompiler.exe  脚本.txt  输出.bin    → 指定输出文件
 y = x + 5
 z = x * y
 ok = (x &gt; y)
-</code></pre><p>支持 <code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>%</code>，比较 <code>==</code> <code>!=</code> <code>&gt;</code> <code>&gt;=</code> <code>&lt;</code> <code>&lt;=</code>。一行一句。最多 4096 个变量。支持负数。</p>
-<blockquote>
-<p><strong>函数参数不支持表达式</strong>。<code>VM_SetFlame(flame + 100)</code> 会丢失 <code>+ 100</code>。必须拆分：</p>
-<pre data-role="codeBlock" data-info="" class="language-text"><code>b = flame + 100
-VM_SetFlame(b)
-</code></pre></blockquote>
+</code></pre><p>支持 <code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>%</code>，比较 <code>==</code> <code>!=</code> <code>&gt;</code> <code>&gt;=</code> <code>&lt;</code> <code>&lt;=</code>。一行一句；<code>;</code> 视作换行（<code>x = 1; y = 2</code> 等同两行）。表达式必须在一行内写完，括号内也不允许跨行。支持负数。</p>
+<p>函数参数支持任意表达式：<code>VM_SetFlame(flame + 100)</code>、<code>VM_SetProp(id, "atk", atk * 2)</code> 直接可用。</p>
 <p><strong>跨块变量</strong>：不同块中同名变量共用同一个内存槽，可跨事件传值。例：<code>_VM_BATTLE_START</code> 中写 <code>cnt = 0</code>，<code>_VM_PLATFORM_IDLE_END</code> 中直接读写 <code>cnt</code>。</p>
+<p><strong>保留字</strong>：<code>if</code> <code>elif</code> <code>else</code> <code>halt</code> <code>exit</code> 不能用作变量名。<code>exit</code> 与 <code>halt</code> 同义（结束当前块执行）。</p>
 <h3 id="注释">注释 </h3>
 <pre data-role="codeBlock" data-info="" class="language-text"><code>// 这是注释
 </code></pre><h3 id="条件">条件 </h3>
+<p>花括号必须写。支持 <code>elif</code> 链和 <code>else</code>：</p>
 <pre data-role="codeBlock" data-info="" class="language-text"><code>if (wave == 0) {
-    VM_ShowNotice("第一波")
-}
-if (wave == 3) {
+    VM_SpawnEnemy("normal_mouse", 0, 100)
+} elif (wave == 1) {
+    VM_SpawnEnemy("normal_mouse", 0, 200)
+} elif (wave == 2) {
     VM_SpawnBoss("arno", 2, 80000)
 } else {
-    VM_ShellPrint("还不到")
+    VM_ShellPrint("后续波次")
 }
-</code></pre><hr>
+</code></pre><p><code>else if</code> 与 <code>elif</code> 等价，可以混用。<code>elif</code>/<code>else</code> 绑定最近一个刚闭合的 <code>if</code>；游离的 <code>elif</code>/<code>else</code> 编译报错。</p>
+<hr>
 <h2 id="事件块">事件块 </h2>
 <p>在块里写代码，游戏到对应时机自动执行。所有块可选。</p>
 <table>
@@ -1069,19 +1069,14 @@ _VM_CARD_CREATED {
     // 读取植物卡片名
     name = VM_GetProp(id, "plant_id")
 
-    // 煮鸡蛋攻击力翻倍
-    // 注意：函数参数不支持表达式，必须先把计算结果存到变量
+    // 煮鸡蛋攻击力翻倍（参数支持任意表达式）
     if (name == "egg_boiler_pult") {
-        atk = VM_GetProp(id, "atk")          // 先读到变量
-        new_atk = atk * 2                     // 表达式结果存为变量
-        VM_SetProp(id, "atk", new_atk)        // 再传入纯变量
+        VM_SetProp(id, "atk", VM_GetProp(id, "atk") * 2)
     }
 
     // 咖啡壶额外加血
     if (name == "coffee_pot") {
-        hp = VM_GetProp(id, "hp")
-        new_hp = hp + 500                     // 不能写成 VM_SetProp(id, "hp", hp + 500)
-        VM_SetProp(id, "hp", new_hp)
+        VM_SetProp(id, "hp", VM_GetProp(id, "hp") + 500)
     }
 }
 
@@ -1107,7 +1102,7 @@ _VM_PLATFORM_IDLE_END {
 }
 </code></pre><hr>
 <h2 id="参数校验附录">参数校验附录 </h2>
-<p>编译器校验以下函数的字符串参数。</p>
+<p>编译器校验以下函数的字符串参数。参数个数/类型/取值校验不通过时<strong>编译直接失败</strong>并报告行号（旧版本仅打印警告、继续产出字节码）。int 实参传入 float 参数时自动提升，不算错误。</p>
 <h3 id="敌人-id109-个">敌人 ID（109 个） </h3>
 <pre data-role="codeBlock" data-info="" class="language-text"><code>normal_mouse  football_fan_mouse  iron_pan_mouse  skateboard_mouse
 landlady_mouse  zombie_with_flower_pot  machine_mouse  ninja_mouse

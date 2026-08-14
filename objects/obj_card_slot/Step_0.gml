@@ -231,7 +231,13 @@ if (is_selected) {
 			new_plant.depth = depth_value
 			new_plant_sprite_index  = new_plant.sprite_index
 			if(global.network.mode=="client"){
-				instance_destroy(new_plant);
+				// 炸弹类预测实例跳过Destroy事件，避免客户端提前引爆
+				if array_contains([obj_wine_bottle_bomb,obj_aquarius_elve,obj_whisky_bomb,obj_kettle_bomb,obj_coke_bomb,obj_bull_firework],new_plant.object_index){
+					instance_destroy(new_plant, false);
+				}
+				else{
+					instance_destroy(new_plant);
+				}
 			}
 			// 平台移动期间放置时锁定逻辑网格位置，防止视觉位置覆盖grid_col/grid_row
 			if global.network.mode != "client"{

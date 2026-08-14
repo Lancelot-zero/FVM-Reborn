@@ -402,18 +402,20 @@ function parse_network_message(buf, _sock) {
         {
             var _net_id = buffer_read(buf, buffer_s32);
             var _inst = global.network.map_net_id_instance_id[? _net_id];
-			// 延迟销毁，避免销毁后野指针访问
+			// 炸弹类/幻幻鸡：立即销毁，动画与服务端同步（不进延迟队列）
 			if (instance_exists(_inst)) {
-				_inst.pending_destroy = true;
-				_inst.visible = false;  
-				ds_list_add(global._destroy_queue, {inst: _inst, timer: 60});
+				if array_contains([obj_wine_bottle_bomb,obj_aquarius_elve,obj_whisky_bomb,obj_kettle_bomb,obj_coke_bomb,obj_bull_firework,obj_magic_chicken],_inst.object_index){
+					global.network.client_able = true;
+					instance_destroy(_inst);
+					global.network.client_able = false;
+				}
+				else{
+					// 延迟销毁，避免销毁后野指针访问
+					_inst.pending_destroy = true;
+					_inst.visible = false;
+					ds_list_add(global._destroy_queue, {inst: _inst, timer: 60});
+				}
 			}
-			/*
-            if (instance_exists(_inst)) {
-				global.network.client_able = true;
-                instance_destroy(_inst);
-				global.network.client_able = false;
-            }*/
             break;
 		}
         case MSG_CAT_ATTACK:

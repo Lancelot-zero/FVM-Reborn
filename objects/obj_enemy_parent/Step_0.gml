@@ -12,7 +12,7 @@ if (hp <= 0 && state != ENEMY_STATE.DEAD) {
 }
 
 // 保持网格位置更新
-var zombie_grid = get_grid_position_from_world(x, y);
+var zombie_grid = get_grid_position_from_world(x, y, true);
 grid_col = zombie_grid.col;
 grid_row = zombie_grid.row;
 

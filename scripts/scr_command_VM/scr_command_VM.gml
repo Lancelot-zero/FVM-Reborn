@@ -817,14 +817,14 @@ function VM_GetMouseY() {
 /// @function VM_GetMouseCol()
 /// @return 鼠标所在网格列
 function VM_GetMouseCol() {
-	var _gp = get_grid_position_from_world(mouse_x, mouse_y);
+	var _gp = get_grid_position_from_world(mouse_x, mouse_y, true);
 	return _gp.col;
 }
 
 /// @function VM_GetMouseRow()
 /// @return 鼠标所在网格行
 function VM_GetMouseRow() {
-	var _gp = get_grid_position_from_world(mouse_x, mouse_y);
+	var _gp = get_grid_position_from_world(mouse_x, mouse_y, true);
 	return _gp.row;
 }
 

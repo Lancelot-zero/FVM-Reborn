@@ -1,0 +1,52 @@
+// ================================================================
+// 百鬼夜行 — 平台循环换轴 Demo
+// ================================================================
+
+// ========== 准备室：规则设置 ==========
+_VM_ROOM_READY_ENTRY {
+    VM_BanCard("small_fire")      // 禁用小火炉
+    VM_BanCard("large_fire")      // 禁用大火炉
+    VM_BanCard("goblet_lamp")     // 禁用酒精灯
+    VM_SetCardLevelCap(10)        // 最高10星
+    VM_SetMaxSlots(10)            // 最多10张卡
+}
+
+// ========== 战斗开始：造地图 ==========
+_VM_BATTLE_START {
+    VM_ClearPlants(-1, -1)                        // 清场
+    VM_SetTerrain(-1, -1, "obstacle")             // 全图不可种植，只有平台上是 normal
+    VM_SetFlame(3000)                              // 开局3000火苗
+
+    // ---- 平台 A：大平台 (0,0) 4x5，由 hook 控制移动 ----
+    // 首帧 idle=0 立即触发 hook，此后每步按计数器循环换轴
+    a_cnt = 0
+    a = VM_CreatePlatform(0, 0, 4, 5, 0, 0, 0, "spr_fennel_raft_platform_daytime")
+
+    // ---- 平台 b1~b4：4个左右小平台 (6,0)(6,1)(6,5)(6,6) 5x1，idle 480 帧 ----
+    // 普通来回移动，不受 hook 影响
+    b1 = VM_CreatePlatform(6, 0, 5, 1, 1, 1, 480, "spr_lilac_rainbow_platform_night_1")
+    b2 = VM_CreatePlatform(6, 1, 5, 1, 1, 2, 480, "spr_lilac_rainbow_platform_night_2")
+    b3 = VM_CreatePlatform(6, 5, 5, 1, 1, 2, 480, "spr_lilac_rainbow_platform_night_6")
+    b4 = VM_CreatePlatform(6, 6, 5, 1, 1, 1, 480, "spr_lilac_rainbow_platform_night_7")
+}
+
+// ========== 平台 idle 结束：a 平台计数器取模换参数 ==========
+// 触发时机：平台在边界停够 idle 帧后，即将开始移动前
+// a 平台 4 步一个循环，每步换轴 + 设定方向
+_VM_PLATFORM_IDLE_END {
+    if (VM_GetLastIdlePlatform() == a) {
+        if (a_cnt == 0) {
+            VM_SetPlatformParams(a, 0, 2, 200, 1)    // 上下，正向（下）
+        }
+        if (a_cnt == 1) {
+            VM_SetPlatformParams(a, 1, 2, 200, 1)    // 左右，正向（右）
+        }
+        if (a_cnt == 2) {
+            VM_SetPlatformParams(a, 0, 2, 200, -1)   // 上下，反向（上）
+        }
+        if (a_cnt == 3) {
+            VM_SetPlatformParams(a, 1, 2, 200, -1)   // 左右，反向（左）
+        }
+        a_cnt = (a_cnt + 1) % 4     // 0→1→2→3→0...
+    }
+}

@@ -12,9 +12,10 @@ if state == "idle"{
 	image_index = 8
 }
 
-if timer mod 1800 == 0{
+if timer mod 1800 == 0 && global.network.mode != "client"{
 	var i = irandom_range(0,2)
-	instance_create_depth(x,y+38,depth,enemy_list[i])
+	var _m = instance_create_depth(x,y+38,depth,enemy_list[i])
+	network_spawn_enemy(_m.x, _m.y, _m)
 }
 
 var grid_pos = get_grid_position_from_world(x,y)
