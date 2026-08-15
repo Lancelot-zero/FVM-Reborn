@@ -32,12 +32,13 @@ with obj_enemy_parent{
 			other.timer = 0
 		}
 		if other.state != "idle" && other.row == grid_row && hp > 0  && (array_get_index(other.ignore_list,mouse_id) == -1){
-			
-			var inst = instance_create_depth(x,y,depth,obj_knock_back_effect)
-			inst.sprite_index = sprite_index
-			inst.image_index = image_index
-			instance_destroy()
-			
+			if (!(variable_instance_exists(id, "cat_knocked") && cat_knocked)) {
+				var inst = instance_create_depth(x,y,depth,obj_knock_back_effect)
+				inst.sprite_index = sprite_index
+				inst.image_index = image_index
+				cat_knocked = true;
+				instance_destroy()
+			}
 		}
 	}
 }

@@ -52,6 +52,9 @@ switch (_type) {
 					level_data: _ld_send,
 					level_file: global.level_file
 				};
+				if (!is_undefined(global._sync_vm_seed)) {
+					_sync[$ "vm_seed"] = global._sync_vm_seed;
+				}
 				if (!is_undefined(global._sync_map_sprite_name) && global._sync_map_sprite_name != "") {
 					_sync[$ "map_sprite_name"] = global._sync_map_sprite_name;
 				}

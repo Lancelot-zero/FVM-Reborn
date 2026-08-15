@@ -701,9 +701,24 @@ function VM_SetFlame(amount_addr) {
 }
 
 /// @function VM_Random(min, max)
-/// @return [min, max] 之间随机整数
+/// @return [min, max] 之间随机整数（基于VM内部种子，联机两端同种子同序列）
 function VM_Random(min_addr, max_addr) {
-    return irandom_range(vm_read_mem(global.__vm, min_addr), vm_read_mem(global.__vm, max_addr));
+    var _min = vm_read_mem(global.__vm, min_addr);
+    var _max = vm_read_mem(global.__vm, max_addr);
+    var _range = _max - _min + 1;
+    if (_range <= 0) return _min;
+    // xorshift32：状态只属于本VM，与游戏全局随机互不影响
+    var _vm = global.__vm;
+    var _s = _vm.rng_state;
+    if (_s == 0) _s = 0x9E3779B9;
+    _s ^= (_s << 13) & 0xFFFFFFFF;
+    _s &= 0xFFFFFFFF;
+    _s ^= _s >> 17;
+    _s &= 0xFFFFFFFF;
+    _s ^= (_s << 5) & 0xFFFFFFFF;
+    _s &= 0xFFFFFFFF;
+    _vm.rng_state = _s;
+    return _min + (_s mod _range);
 }
 
 /// @function VM_ClientWrapId(real_id)
@@ -2494,6 +2509,7 @@ global._VM_spawn_cats = true;
 global._VM_remote_funcs = ds_map_create();
 
 global.__vm = VM_Create();
+global.__vm.rng_state = 0x9E3779B9;   // VM随机种子：服务器生成并随bin同步，客户端收到后覆盖
 VM_RegisterFunction(global.__vm, VM_BanCard);         // 0
 VM_RegisterFunction(global.__vm, VM_SetCardLevelCap);  // 1
 VM_RegisterFunction(global.__vm, VM_SetMaxSlots);       // 2
@@ -2619,6 +2635,7 @@ function VM_InitRoomEntry(buf) {
     global._VM_prev_subwave      = -1;
     global._VM_event_enabled     = true;
     global._sync_vm_bin_buf = undefined;
+    global._sync_vm_seed = undefined;
     global._VM_strings = [];
     global.__vm.strings = global._VM_strings;
     global.__vm.mem_type = array_create(array_length(global.__vm.mem_type), VM_TYPE_INT);

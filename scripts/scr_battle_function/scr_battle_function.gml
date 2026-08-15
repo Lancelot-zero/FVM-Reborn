@@ -359,10 +359,15 @@ function parse_network_message(buf, _sock) {
                         _inst.image_alpha = 1;
                     }
                 }
-                // 普通敌人：客户端已判定死亡但未收到确认时不覆盖（防止复活）
-                else if (!(_inst.hp <= 0 && _inst.state != ENEMY_STATE.DEAD)) {
+                // 普通敌人：服务端权威，血量>0 即存活，客户端已判定死亡也复活
+                else {
                     _inst.hp = hp_val;
                     _inst.maxhp = max_hp;
+                    if (hp_val > 0 && _inst.state == ENEMY_STATE.DEAD) {
+                        _inst.state = ENEMY_STATE.NORMAL;
+                        _inst.timer = 0;
+                        _inst.image_alpha = 1;
+                    }
                 }
             }
             //show_debug_message("[解析] 收到 MSG_ENEMY_HP: ID=" + string(net_id) + " HP=" + string(hp_val) + "/" + string(max_hp));
@@ -404,7 +409,7 @@ function parse_network_message(buf, _sock) {
             var _inst = global.network.map_net_id_instance_id[? _net_id];
 			// 炸弹类/幻幻鸡：立即销毁，动画与服务端同步（不进延迟队列）
 			if (instance_exists(_inst)) {
-				if array_contains([obj_wine_bottle_bomb,obj_aquarius_elve,obj_whisky_bomb,obj_kettle_bomb,obj_coke_bomb,obj_bull_firework,obj_magic_chicken],_inst.object_index){
+				if array_contains([obj_wine_bottle_bomb,obj_aquarius_elve,obj_whisky_bomb,obj_kettle_bomb,obj_coke_bomb,obj_bull_firework,obj_magic_chicken,obj_coffee_grounds,obj_firework_dragon,obj_chili_powder],_inst.object_index){
 					global.network.client_able = true;
 					instance_destroy(_inst);
 					global.network.client_able = false;
@@ -891,6 +896,15 @@ function parse_network_message(buf, _sock) {
 			    } else {
 			        global._lab_json_subdir = "";
 			    }
+			}
+
+			// VM 随机种子：服务端随房间同步下发，必须在 VM_InitRoomEntry 之前设置
+			//（_VM_CONST_INIT / _VM_ROOM_READY_ENTRY 会在加载时立即执行）
+			var _vm_seed = variable_struct_get(json_data, "vm_seed");
+			if (!is_undefined(_vm_seed)) {
+				global.__vm.rng_state = _vm_seed;
+			} else {
+				global.__vm.rng_state = 0x9E3779B9;   // 无种子时重置为默认，避免残留上一局的旧状态
 			}
 
 			// 读 .bin 数据：JSON 后剩余的全部内容

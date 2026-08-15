@@ -30,7 +30,7 @@ if (first_frame) {
     
     for (var c = cur_start_c; c < cur_start_c + width; c++) {
         for (var r = cur_start_r; r < cur_start_r + length; r++) {
-            if (r < global.grid_rows && c < global.grid_cols) {
+            if (r >= 0 && r < global.grid_rows && c >= 0 && c < global.grid_cols) {
                 global.grid_platform_count[r][c]++;
                 if (global.grid_platform_count[r][c] == 1) {
                     global.grid_terrains_original[r][c] = global.grid_terrains[r][c].type;
@@ -170,19 +170,31 @@ else if (state == "moving") {
         // 3. 更新current_offset
         current_offset += move_direction;
         
-        // 4. 设置新进入边缘的地形
+        // 4. 设置新进入边缘的地形（只处理新进入的一行/一列，重叠区无需再计数）
         var new_c_offset = is_axis_x ? current_offset : 0;
         var new_r_offset = (!is_axis_x) ? current_offset : 0;
         var new_cur_start_c = start_col + new_c_offset;
         var new_cur_start_r = start_row + new_r_offset;
-        
-        for (var c = new_cur_start_c; c < new_cur_start_c + width; c++) {
+
+        if (!is_axis_x) {
+            var enter_r = (move_direction > 0) ? (new_cur_start_r + length - 1) : new_cur_start_r;
+            for (var c = new_cur_start_c; c < new_cur_start_c + width; c++) {
+                if (enter_r >= 0 && enter_r < global.grid_rows && c >= 0 && c < global.grid_cols) {
+                    global.grid_platform_count[enter_r][c]++;
+                    if (global.grid_platform_count[enter_r][c] == 1) {
+                        global.grid_terrains_original[enter_r][c] = global.grid_terrains[enter_r][c].type;
+                        global.grid_terrains[enter_r][c].type = "normal";
+                    }
+                }
+            }
+        } else {
+            var enter_c = (move_direction > 0) ? (new_cur_start_c + width - 1) : new_cur_start_c;
             for (var r = new_cur_start_r; r < new_cur_start_r + length; r++) {
-                if (r >= 0 && r < global.grid_rows && c >= 0 && c < global.grid_cols) {
-                    global.grid_platform_count[r][c]++;
-                    if (global.grid_platform_count[r][c] == 1) {
-                        global.grid_terrains_original[r][c] = global.grid_terrains[r][c].type;
-                        global.grid_terrains[r][c].type = "normal";
+                if (r >= 0 && r < global.grid_rows && enter_c >= 0 && enter_c < global.grid_cols) {
+                    global.grid_platform_count[r][enter_c]++;
+                    if (global.grid_platform_count[r][enter_c] == 1) {
+                        global.grid_terrains_original[r][enter_c] = global.grid_terrains[r][enter_c].type;
+                        global.grid_terrains[r][enter_c].type = "normal";
                     }
                 }
             }

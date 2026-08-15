@@ -74,6 +74,9 @@ function on_create_room() {
     // VM 初始化：读取同名 .bin 文件（如果存在）
     var _bin_buf = undefined;
     var _bin_path = string_replace(_json_dir, ".json", ".bin");
+    // VM 随机种子：创建房间时生成，随 bin 一起同步给客户端，保证两端 VM_Random 结果一致
+    global._sync_vm_seed = irandom(2147483646) + 1;
+    global.__vm.rng_state = global._sync_vm_seed;
     if (file_exists(_bin_path)) {
         _bin_buf = buffer_load(_bin_path);
         VM_InitRoomEntry(_bin_buf);
@@ -162,6 +165,7 @@ function on_create_room() {
             }
         }
 
+        _json_struct[$ "vm_seed"] = global._sync_vm_seed;
         var _json = json_stringify(_json_struct)
 		
 		
