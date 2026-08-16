@@ -147,8 +147,11 @@ function audio_play_sound_define(_index, _priority, _loop) {
 
 function __sprite_resolve(_spr){
 	var _spr_name = is_string(_spr) ? _spr : (ds_map_exists(global._pid_reverse, _spr) ? global._pid_reverse[? _spr] : sprite_get_name(_spr));
-      if (!is_undefined(_spr_name) && ds_map_exists(global._VM_sprite_temp_cache, _spr_name))
-          return global._VM_sprite_temp_cache[? _spr_name];
+      if (!is_undefined(_spr_name) && ds_map_exists(global._VM_sprite_temp_cache, _spr_name)) {
+          var _v = global._VM_sprite_temp_cache[? _spr_name];
+          if (is_string(_v)) _v = global._VM_sprite_temp_cache[? _v];
+          return _v;
+      }
 		  
 	if is_string(_spr){
 		_spr = get_load_sprite(_spr);
@@ -172,7 +175,9 @@ function draw_self_define(){
 	var _bak_spr = sprite_index;
 	var _bak_name = ds_map_exists(global._pid_reverse, _bak_spr) ? global._pid_reverse[? _bak_spr] : sprite_get_name(_bak_spr);
 	if(ds_map_exists(global._VM_sprite_temp_cache,_bak_name)){
-		sprite_index= global._VM_sprite_temp_cache[?_bak_name];
+		var _v = global._VM_sprite_temp_cache[?_bak_name];
+		if (is_string(_v)) _v = global._VM_sprite_temp_cache[? _v];
+		sprite_index= _v;
 		draw_self_origfunc();
 		sprite_index = _bak_spr;
 		return;

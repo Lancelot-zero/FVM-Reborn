@@ -3,8 +3,18 @@ if global.is_paused{
 	exit
 }
 
+if (buffer_exists(global._VM_BATTLE_START) && !global._VM_battle_start_done) {
+	VM_Execute(global.__vm, global._VM_BATTLE_START, "_VM_BATTLE_START");
+	global._VM_battle_start_done = true;
+	global._VM_prev_wave         = -1;
+    global._VM_prev_subwave      = -1;
+}
+
 // 客户端跳过，服务端开启日志
-if (global.network.mode == "client") exit;
+if (global.network.mode == "client") {
+    VM_FlushHooks();
+    exit;
+}
 if (global.network.mode == "server"){ 
 	instance_log_enable();
 	_evt_pre_terrains = json_stringify(global.grid_terrains);
@@ -1160,14 +1170,6 @@ if is_real(global.level_file.version){
 
 
 
-if (buffer_exists(global._VM_BATTLE_START) && !global._VM_battle_start_done) {
-	VM_Execute(global.__vm, global._VM_BATTLE_START);
-	global._VM_battle_start_done = true;
-	global._VM_prev_wave         = -1;
-    global._VM_prev_subwave      = -1;
-}
-	
-	
 // ====== 服务端：发送操作日志 ======
 if (global.network.mode == "server") {
 	var _actions = [];

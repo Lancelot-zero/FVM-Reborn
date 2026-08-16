@@ -547,15 +547,10 @@ function parse_network_message(buf, _sock) {
                 var _real = sprite_add(_path, 1, false, false, 0, 0);
                 if (_real != -1 && ds_map_exists(global._VM_sprite_temp_cache, _filename)) {
                     var _old = global._VM_sprite_temp_cache[? _filename];
-                    ds_map_delete(global._pid_reverse, _old);
-                    // 别名也指向旧占位符，一起更新
-                    var _keys = ds_map_keys_to_array(global._VM_sprite_temp_cache);
-                    for (var _ki = 0; _ki < array_length(_keys); _ki++) {
-                        if (global._VM_sprite_temp_cache[? _keys[_ki]] == _old)
-                            global._VM_sprite_temp_cache[? _keys[_ki]] = _real;
-                    }
-                    ds_map_add(global._VM_sprite_temp_cache, _filename, _real);
-                    ds_map_add(global._pid_reverse, _real, _filename);
+                    if (sprite_exists(_old)) sprite_delete(_old);
+				    global._VM_sprite_temp_cache[? _filename] = _real;
+				    global._pid_reverse[? _real] = _filename;
+				    global._pid_reverse[? _old] = _filename;
                 }
                 buffer_delete(_data);
             } else {
@@ -881,6 +876,12 @@ function parse_network_message(buf, _sock) {
 			global.level_id    = json_data[$ "target_level_id"] ?? "";
 			global.level_data  = json_data[$ "level_data"];
 			global.level_file  = json_data[$ "level_file"];
+
+			// json 路径：服务端下发，客户端本地查找贴图/音乐用（必须在 VM_InitRoomEntry 之前设置）
+			var _json_path = variable_struct_get(json_data, "json_path");
+			if (!is_undefined(_json_path) && _json_path != "") {
+				global._file_cache_json_path = _json_path;
+			}
 
 			// 从 target_level_id 提取 JSON 相对子目录，供 file_cache 本地查找
 			{

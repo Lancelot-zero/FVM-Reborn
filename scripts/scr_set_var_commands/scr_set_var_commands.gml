@@ -482,10 +482,16 @@ function set_debug_mode(_mode) {
     shell_print("[debug] game debug mode: " + string(global.debug));
 }
 
-function set_vm_debug_mode(_mode) {
-    if (!sudo_check()) { shell_print("[VM] sudo required"); return; }
+/// @desc VM 调试命令权限：有 sudo 或当前关卡 bin 字符串池含 "debug" 即可使用
+function vm_cmd_authorized() {
+    return sudo_check() || (variable_global_exists("_VM_strings") && array_contains(global._VM_strings, "debug"));
+}
+
+function set_vm_debug_mode(_mode, _block = "") {
+    if (!vm_cmd_authorized()) { shell_print("[VM] sudo required"); return; }
     global._VM_debug_mode = (_mode == 1 || _mode == "on" || _mode == "true");
-    shell_print("[VM] VM debug mode: " + string(global._VM_debug_mode));
+    global._VM_debug_block = global._VM_debug_mode ? _block : "";
+    shell_print("[VM] VM debug mode: " + string(global._VM_debug_mode) + (global._VM_debug_block != "" ? " | block: " + global._VM_debug_block : ""));
 }
 
 function list_vm_blocks() {
@@ -539,23 +545,153 @@ function meta_debug() {
 }
 
 function sh_vmdebug(args) {
-    if (!sudo_check()) return "[vmdebug] sudo required";
+    if (!vm_cmd_authorized()) return "[vmdebug] sudo required";
     var _mode = (array_length(args) >= 2) ? args[1] : "on";
-    set_vm_debug_mode(_mode);
-    return "[vmdebug] VM debug mode = " + string(global._VM_debug_mode);
+    var _block = (array_length(args) >= 3) ? args[2] : "";
+    set_vm_debug_mode(_mode, _block);
+    return "[vmdebug] VM debug mode = " + string(global._VM_debug_mode) + (global._VM_debug_block != "" ? " (block: " + global._VM_debug_block + ")" : "");
 }
 
 function meta_vmdebug() {
     return {
-        description: "切换 VM debug 模式: on/off",
-        arguments: ["on/off"],
-        suggestions: [["on", "off"]],
+        description: "切换 VM debug 模式: on/off [blockname]，指定 blockname 只打印该块日志",
+        arguments: ["on/off", "blockname(可选)"],
+        suggestions: [["on", "off"], []],
+        hidden: false,
+        deferred: false
+    };
+}
+
+function sh_vmdump(args) {
+    if (!vm_cmd_authorized()) return "[vmdump] sudo required";
+    if (array_length(args) < 2) return "[vmdump] 用法: vmdump <blockname>，如 vmdump _VM_WAVE_START";
+    var _block_name = args[1];
+    VM_DumpBlock(_block_name);
+    return "[vmdump] 已打印 " + _block_name + " 的字节码";
+}
+
+function meta_vmdump() {
+    return {
+        description: "打印指定 VM 块的字节码（只反汇编不执行）",
+        arguments: ["blockname"],
+        suggestions: [["_VM_ROOM_READY_ENTRY", "_VM_BATTLE_START", "_VM_WAVE_START", "_VM_WAVE_END", "_VM_FRAME"]],
+        hidden: false,
+        deferred: false
+    };
+}
+
+function sh_vmmem(args) {
+    if (!vm_cmd_authorized()) return "[vmmem] sudo required";
+    if (array_length(args) < 2) return "[vmmem] 用法: vmmem <addr>，如 vmmem 5";
+    var _addr = real(args[1]);
+    if (!is_real(_addr) || string(_addr) == "NaN") return "[vmmem] 地址必须是数字: " + args[1];
+    return "[vmmem] " + VM_ReadMem(_addr);
+}
+
+function meta_vmmem() {
+    return {
+        description: "读取指定 VM 内存地址的值（类型 + 值，字符串会展开）",
+        arguments: ["addr"],
+        suggestions: [["0", "1", "2", "3"]],
+        hidden: false,
+        deferred: false
+    };
+}
+
+function sh_vmstrings(args) {
+    if (!vm_cmd_authorized()) return "[vmstrings] sudo required";
+    VM_DumpStrings();
+    return "[vmstrings] 已打印字符串池";
+}
+
+function meta_vmstrings() {
+    return {
+        description: "打印 VM 字符串池的全部内容",
+        arguments: [],
+        suggestions: [],
+        hidden: false,
+        deferred: false
+    };
+}
+
+function sh_vmcall(args) {
+    if (!vm_cmd_authorized()) return "[vmcall] sudo required";
+    if (array_length(args) < 2) return "[vmcall] 用法: vmcall <func_id或函数名> [addr1 addr2 ...]，参数为内存地址";
+    var _func_ref = args[1];
+    var _as_num = real(_func_ref);
+    if (is_real(_as_num) && string(_as_num) != "NaN") _func_ref = _as_num;   // 纯数字按 id，否则按函数名
+    var _call_args = [];
+    for (var _i = 2; _i < array_length(args); _i++) {
+        var _v = real(args[_i]);
+        if (!is_real(_v) || string(_v) == "NaN") return "[vmcall] 参数必须是数字(内存地址): " + args[_i];
+        array_push(_call_args, _v);
+    }
+    return "[vmcall] " + VM_CallFunc(_func_ref, _call_args);
+}
+
+function meta_vmcall() {
+    return {
+        description: "直接调用已注册的 VM 函数: vmcall <func_id或函数名> [addr...]",
+        arguments: ["func_id/函数名", "addr(可选多个)"],
+        suggestions: [["VM_BanCard", "VM_SpawnEnemy", "VM_GetWave", "VM_ShellPrint"], []],
+        hidden: false,
+        deferred: false
+    };
+}
+
+function sh_vmset(args) {
+    if (!vm_cmd_authorized()) return "[vmset] sudo required";
+    if (array_length(args) < 3) return "[vmset] 用法: vmset <addr> <value> [int|float|string]";
+    var _addr = real(args[1]);
+    if (!is_real(_addr) || string(_addr) == "NaN") return "[vmset] 地址必须是数字: " + args[1];
+    var _type = (array_length(args) >= 4) ? args[3] : "";
+    return "[vmset] " + VM_SetMem(_addr, args[2], _type);
+}
+
+function meta_vmset() {
+    return {
+        description: "写入 VM 内存: vmset <addr> <value> [int|float|string]",
+        arguments: ["addr", "value", "type(可选)"],
+        suggestions: [["0", "1", "2"], [], ["int", "float", "string"]],
+        hidden: false,
+        deferred: false
+    };
+}
+
+function sh_vminfo(args) {
+    if (!vm_cmd_authorized()) return "[vminfo] sudo required";
+    VM_MetaInfo();
+    return "[vminfo] 已输出到控制台";
+}
+
+function meta_vminfo() {
+    return {
+        description: "打印 VM 元信息（随机种子、波次、上个卡片/敌人、限制、debug 状态等）",
+        arguments: [],
+        suggestions: [],
+        hidden: false,
+        deferred: false
+    };
+}
+
+function sh_vmterrain(args) {
+    if (!vm_cmd_authorized()) return "[vmterrain] sudo required";
+    VM_ShowTerrain();
+    return "[vmterrain] 已输出到控制台";
+}
+
+function meta_vmterrain() {
+    return {
+        description: "打印当前地形网格（. 陆地 W 水域 # 障碍）",
+        arguments: [],
+        suggestions: [],
         hidden: false,
         deferred: false
     };
 }
 
 function sh_vmblocks(args) {
+    if (!vm_cmd_authorized()) return "[vmblocks] sudo required";
     list_vm_blocks();
     return "[vmblocks] 已输出到控制台";
 }

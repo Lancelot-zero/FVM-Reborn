@@ -26,6 +26,10 @@ function get_load_sprite(_name) {
         ds_map_add(global._pid_reverse, _native_spr, _name);
         return _native_spr;
     }
+	// 先查 VM 临时贴图缓存（bin 专属贴图，文件传输/本地加载的都在这里）
+	if (ds_map_exists(global._VM_sprite_temp_cache, _name)) {
+		return global._VM_sprite_temp_cache[? _name];
+	}
 	if (ds_map_exists(global._sprite_cache,_name)){
 		return global._sprite_cache[? _name];
 	}

@@ -90,7 +90,8 @@ function on_create_room() {
             level_index: 0,
             map_id: global.map_id,
             level_data: global.level_data,
-            level_file: global.level_file
+            level_file: global.level_file,
+            json_path: global._file_cache_json_path
         }
         // 自定义资源：发送文件名和指纹，客户端指纹一致则跳过传输
         // 只发原始相对路径，不泄露房主本地完整路径

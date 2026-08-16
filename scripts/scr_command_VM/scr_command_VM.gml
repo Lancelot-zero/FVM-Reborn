@@ -131,6 +131,8 @@ function VM_CreatePlatform(col_addr, row_addr, width_addr, length_addr, axis_add
     var _VM_id = ++global._VM_create_counter;
     if (global.network.mode == "client") return -_VM_id;
     var _pos = get_world_position_from_grid(col, row);
+    var _bak_log = global._evt_log_enabled;   // 记录日志开关
+    global._evt_log_enabled = false;          // 创建不进帧尾日志（本函数手动广播）
     var _plat = instance_create_depth(
         _pos.x - global.grid_cell_size_x / 2,
         _pos.y - global.grid_cell_size_y / 2 - 35,
@@ -154,7 +156,8 @@ function VM_CreatePlatform(col_addr, row_addr, width_addr, length_addr, axis_add
         _spr_cache = get_load_sprite(spr);
     }
     _plat.sprite_index = _spr_cache;
-    
+    global._evt_log_enabled = _bak_log;       // 还原
+
     // 网络同步
     if (global.network.mode == "server") {
         ds_map_add(global._VM_id_to_real, _VM_id, _plat.id);
@@ -570,11 +573,11 @@ function VM_ClearPlantsByType(name_addr) {
 /// @param prop  属性名
 /// @param value 值
 function VM_SetCardProp(col_addr, row_addr, name_addr, prop_addr, value_addr) {
-    var col = vm_read_mem(global.__vm, col_addr);
-    var row = vm_read_mem(global.__vm, row_addr);
-    var name = vm_read_mem(global.__vm, name_addr);
-    var prop = vm_read_mem(global.__vm, prop_addr);
-    var value = vm_read_mem(global.__vm, value_addr);
+    var col = vm_arg(col_addr);
+    var row = vm_arg(row_addr);
+    var name = vm_arg(name_addr);
+    var prop = vm_arg(prop_addr);
+    var value = vm_arg(value_addr);
     if (global.network.mode == "client" && global._VM_sync_exec) return;
     var _all = (name == "all");
     var _c1 = (col == -1) ? 0 : col;
@@ -606,9 +609,9 @@ function VM_SetCardProp(col_addr, row_addr, name_addr, prop_addr, value_addr) {
 /// @param prop  属性名
 /// @param value 值
 function VM_SetEnemyProp(name_addr, prop_addr, value_addr) {
-    var name = vm_read_mem(global.__vm, name_addr);
-    var prop = vm_read_mem(global.__vm, prop_addr);
-    var value = vm_read_mem(global.__vm, value_addr);
+    var name = vm_arg(name_addr);
+    var prop = vm_arg(prop_addr);
+    var value = vm_arg(value_addr);
     if (global.network.mode == "client" && global._VM_sync_exec) return;
     var _all = (name == "all");
     if (_all) {
@@ -1011,10 +1014,10 @@ function VM_GetPlantAt(col_addr, row_addr, layer_addr) {
 /// @param col2 第二个格子的列
 /// @param row2 第二个格子的行
 function VM_SwapPlants(col1_addr, row1_addr, col2_addr, row2_addr) {
-	var _c1 = vm_read_mem(global.__vm, col1_addr);
-	var _r1 = vm_read_mem(global.__vm, row1_addr);
-	var _c2 = vm_read_mem(global.__vm, col2_addr);
-	var _r2 = vm_read_mem(global.__vm, row2_addr);
+	var _c1 = vm_arg(col1_addr);
+	var _r1 = vm_arg(row1_addr);
+	var _c2 = vm_arg(col2_addr);
+	var _r2 = vm_arg(row2_addr);
 	if (_c1 < 0 || _c1 >= global.grid_cols || _r1 < 0 || _r1 >= global.grid_rows) return;
 	if (_c2 < 0 || _c2 >= global.grid_cols || _r2 < 0 || _r2 >= global.grid_rows) return;
 	if (_c1 == _c2 && _r1 == _r2) return;
@@ -1068,12 +1071,12 @@ function VM_SwapPlants(col1_addr, row1_addr, col2_addr, row2_addr) {
 /// @param w, h  矩形宽高 (格子数)
 /// @param x2, y2 第二个矩形的左上角 (列, 行)
 function VM_SwapPlantRects(x1_addr, y1_addr, w_addr, h_addr, x2_addr, y2_addr) {
-	var _x1 = vm_read_mem(global.__vm, x1_addr);
-	var _y1 = vm_read_mem(global.__vm, y1_addr);
-	var _w  = vm_read_mem(global.__vm, w_addr);
-	var _h  = vm_read_mem(global.__vm, h_addr);
-	var _x2 = vm_read_mem(global.__vm, x2_addr);
-	var _y2 = vm_read_mem(global.__vm, y2_addr);
+	var _x1 = vm_arg(x1_addr);
+	var _y1 = vm_arg(y1_addr);
+	var _w  = vm_arg(w_addr);
+	var _h  = vm_arg(h_addr);
+	var _x2 = vm_arg(x2_addr);
+	var _y2 = vm_arg(y2_addr);
 	if (_w <= 0 || _h <= 0) return;
 	if (_x1 == _x2 && _y1 == _y2) return;
 	if (global.network.mode == "client" && global._VM_sync_exec) return;
@@ -1198,7 +1201,7 @@ function VM_SwapPlantRects(x1_addr, y1_addr, w_addr, h_addr, x2_addr, y2_addr) {
 /// @description 压缩整列植物：从上到下遍历，有空缺就把下面的往上搬运
 /// @param col 列号，-1=所有列
 function VM_CompactColumn(col_addr) {
-	var _col = vm_read_mem(global.__vm, col_addr);
+	var _col = vm_arg(col_addr);
 	var _c1 = (_col == -1) ? 0 : _col;
 	var _c2 = (_col == -1) ? global.grid_cols - 1 : _col;
 	if (_c1 < 0 || _c2 >= global.grid_cols) return;
@@ -1248,7 +1251,7 @@ function VM_CompactColumn(col_addr) {
 /// @description 压缩整行植物：从左到右遍历，有空缺就把右边的往左搬运
 /// @param row 行号，-1=所有行
 function VM_CompactRow(row_addr) {
-	var _row = vm_read_mem(global.__vm, row_addr);
+	var _row = vm_arg(row_addr);
 	var _r1 = (_row == -1) ? 0 : _row;
 	var _r2 = (_row == -1) ? global.grid_rows - 1 : _row;
 	if (global.network.mode == "client" && global._VM_sync_exec) return;
@@ -1298,7 +1301,7 @@ function VM_CompactRow(row_addr) {
 /// @description 压缩整列植物（反向）：从上到下遍历，有空缺就把上面的往下搬运
 /// @param col 列号，-1=所有列
 function VM_CompactColumnRev(col_addr) {
-	var _col = vm_read_mem(global.__vm, col_addr);
+	var _col = vm_arg(col_addr);
 	if (global.network.mode == "client" && global._VM_sync_exec) return;
 	var _c1 = (_col == -1) ? 0 : _col;
 	var _c2 = (_col == -1) ? global.grid_cols - 1 : _col;
@@ -1346,7 +1349,7 @@ function VM_CompactColumnRev(col_addr) {
 /// @description 压缩整行植物（反向）：从左到右遍历，有空缺就把左边的往右搬运
 /// @param row 行号，-1=所有行
 function VM_CompactRowRev(row_addr) {
-	var _row = vm_read_mem(global.__vm, row_addr);
+	var _row = vm_arg(row_addr);
 	var _r1 = (_row == -1) ? 0 : _row;
 	if (global.network.mode == "client" && global._VM_sync_exec) return;
 	var _r2 = (_row == -1) ? global.grid_rows - 1 : _row;
@@ -1498,7 +1501,7 @@ function VM_GetLastClickedButton() {
 /// @description 应用植物的星级/技能/形态属性，刷新血量攻速等实际数值
 /// @param inst_id 植物实例 ID
 function VM_ApplyPlantLevel(inst_id_addr) {
-	var _inst = vm_read_mem(global.__vm, inst_id_addr);
+	var _inst = vm_arg(inst_id_addr);
 	if (_inst < 0) {
 		var _real = ds_map_find_value(global._VM_id_to_real, -_inst);
 		if (is_undefined(_real)) return;
@@ -1566,13 +1569,12 @@ function _calc_op(_inst, _prop, _op, _val) {
 }
 
 /// @function VM_AliasSprite(new_name, exist_name)
-/// @desc 将 new_name 指向 exist_name 在临时贴图缓存中的 sprite，不存在则无操作
+/// @desc 将 new_name 指向 exist_name（name → name），不存在则无操作；字符串值会在绘制链里按名字解析到最新贴图
 function VM_AliasSprite(new_name_addr, exist_name_addr) {
 	var _new = vm_read_mem(global.__vm, new_name_addr);
 	var _exist = vm_read_mem(global.__vm, exist_name_addr);
 	if (!ds_map_exists(global._VM_sprite_temp_cache, _exist)) return;
-	var _spr = global._VM_sprite_temp_cache[? _exist];
-	ds_map_add(global._VM_sprite_temp_cache, _new, _spr);
+	ds_map_add(global._VM_sprite_temp_cache, _new, _exist);
 }
 
 /// @function VM_GetPreviewCard()
@@ -1720,6 +1722,8 @@ function VM_SpawnPlant(card_id_addr, col_addr, row_addr, shape_addr, level_addr,
     var _row_end   = (row == -1) ? global.grid_rows-1 : row;
 
     var _last = -1;
+    var _bak_log = global._evt_log_enabled;   // 记录日志开关
+    global._evt_log_enabled = false;          // 创建不进帧尾日志（spawn_plant/card_created 手动广播）
     for (var _r = _row_start; _r <= _row_end; _r++) {
         for (var _c = _col_start; _c <= _col_end; _c++) {
             var _VM_id = ++global._VM_create_counter;
@@ -1748,6 +1752,7 @@ function VM_SpawnPlant(card_id_addr, col_addr, row_addr, shape_addr, level_addr,
         }
     }
 
+    global._evt_log_enabled = _bak_log;       // 还原
     global._VM_last_created_card = _last;
     if (_batch) return 0;
     return real(_last);
@@ -1764,12 +1769,15 @@ function VM_SpawnEnemy(type_addr, row_addr, hp_override_addr) {
     var _info = global.enemy_map[? type];
     if (is_undefined(_info)) return -1;
     var _pos = get_world_position_from_grid(global.grid_cols, row);
+    var _bak_log = global._evt_log_enabled;   // 记录日志开关
+    global._evt_log_enabled = false;          // 创建不进帧尾日志（本函数手动广播）
     var _enemy = instance_create_depth(_pos.x + 30, _pos.y + 38, 0, _info._obj);
     if (!is_undefined(hp_override) && hp_override > 0) {
         _enemy.hp = hp_override;
         _enemy.maxhp = hp_override;
     }
     _enemy._VM_id = _VM_id;
+    global._evt_log_enabled = _bak_log;       // 还原
     if (global.network.mode == "server") {
         ds_map_add(global._VM_id_to_real, _VM_id, _enemy.id);
         add_net_id(_enemy.id);
@@ -1839,11 +1847,18 @@ function vm_read_mem(vm, addr) {
     return vm.mem_val[addr];
 }
 
-/// @function VM_Execute(vm, buf)
-function VM_Execute(vm, buf) {
+/// @function vm_arg(_addr)
+/// @desc 通知路径参数已是值，字节码路径参数是内存地址
+function vm_arg(_addr) {
+    if (global._VM_notify_call) return _addr;
+    return vm_read_mem(global.__vm, _addr);
+}
+
+/// @function VM_Execute(vm, buf, name)
+function VM_Execute(vm, buf, name) {
     if (!buffer_exists(buf)) return 0;
     try {
-        if (global._VM_debug_mode) return VM_Execute_debug(vm, buf);
+        if (global._VM_debug_mode && (global._VM_debug_block == "" || name == global._VM_debug_block)) return VM_Execute_debug(vm, buf, name);
         buffer_seek(buf, buffer_seek_start, 0);
         var _size = buffer_get_size(buf);
         var _mt = vm.mem_type;
@@ -2081,9 +2096,10 @@ function VM_Execute(vm, buf) {
     }
 }
 
-/// @function VM_Execute_debug(vm, buf) [DEBUG VERSION]
-function VM_Execute_debug(vm, buf) {
+/// @function VM_Execute_debug(vm, buf, name) [DEBUG VERSION]
+function VM_Execute_debug(vm, buf, name) {
     if (!buffer_exists(buf)) return 0;
+    shell_print("[VM] ==== " + name + " ====");
     try {
         buffer_seek(buf, buffer_seek_start, 0);
         var _size = buffer_get_size(buf);
@@ -2270,7 +2286,7 @@ function VM_Execute_debug(vm, buf) {
                     var _result = script_execute_ext(_fn, _args);
                     var _dst_str = (_dst == VM_DST_VOID) ? "void" : "var" + string(_dst);
 
-                    shell_print("[" + string(_pos) + "] CALL  func" + string(_func_id) + _arg_str + " -> " + _dst_str + " = " + string(_result));
+                    shell_print("[" + string(_pos) + "] CALL  func" + string(_func_id) + " (" + script_get_name(_fn) + ")" + _arg_str + " -> " + _dst_str + " = " + string(_result));
 
                     if (_dst != VM_DST_VOID) {
                         if (is_string(_result)) {
@@ -2348,6 +2364,292 @@ function VM_Execute_debug(vm, buf) {
     }
 }
 
+/// @function VM_DumpBlock(_block_name)
+/// @desc 打印指定块的字节码（纯反汇编：只读取，不执行、不修改 VM 状态）
+/// @param {String} _block_name  块名，如 "_VM_WAVE_START"
+function VM_DumpBlock(_block_name) {
+    var _buf = global[$ _block_name];
+    if (!buffer_exists(_buf)) {
+        shell_print("[VM] dump: block not loaded: " + _block_name);
+        return;
+    }
+    shell_print("[VM] ==== bytecode of " + _block_name + " (" + string(buffer_get_size(_buf)) + " bytes) ====");
+    buffer_seek(_buf, buffer_seek_start, 0);
+    var _size = buffer_get_size(_buf);
+    var _strings = global._VM_strings;
+
+    while (buffer_tell(_buf) < _size) {
+        var _pos = buffer_tell(_buf);
+        var _op = buffer_read(_buf, buffer_u8);
+
+        switch (_op) {
+            case VM_OP_ASSIGN: {
+                var _dst = buffer_read(_buf, buffer_s32);
+                var _type = buffer_read(_buf, buffer_u8);
+                if (_type == VM_TYPE_STRING) {
+                    var _val = buffer_read(_buf, buffer_u16);
+                    var _str = (_val >= 0 && _val < array_length(_strings)) ? _strings[_val] : "?";
+                    shell_print("[" + string(_pos) + "] ASSIGN var" + string(_dst) + " = str" + string(_val) + " \"" + _str + "\"");
+                } else if (_type == VM_TYPE_FLOAT) {
+                    var _val = buffer_read(_buf, buffer_f32);
+                    shell_print("[" + string(_pos) + "] ASSIGN var" + string(_dst) + " = " + string(_val) + "f");
+                } else {
+                    var _val = buffer_read(_buf, buffer_s32);
+                    shell_print("[" + string(_pos) + "] ASSIGN var" + string(_dst) + " = " + string(_val) + " (type " + string(_type) + ")");
+                }
+                break;
+            }
+
+            case VM_OP_COPY: {
+                var _dst = buffer_read(_buf, buffer_s32);
+                var _src = buffer_read(_buf, buffer_s32);
+                shell_print("[" + string(_pos) + "] COPY  var" + string(_dst) + " = var" + string(_src));
+                break;
+            }
+
+            case VM_OP_ADD:
+            case VM_OP_SUB:
+            case VM_OP_MUL:
+            case VM_OP_DIV:
+            case VM_OP_MOD:
+            case VM_OP_EQ:
+            case VM_OP_NEQ:
+            case VM_OP_GT:
+            case VM_OP_GTE:
+            case VM_OP_LT:
+            case VM_OP_LTE: {
+                var _op_names = ["ADD", "SUB", "MUL", "DIV", "MOD", "EQ", "NEQ", "GT", "GTE", "LT", "LTE"];
+                var _d = buffer_read(_buf, buffer_s32);
+                var _a = buffer_read(_buf, buffer_s32);
+                var _b = buffer_read(_buf, buffer_s32);
+                shell_print("[" + string(_pos) + "] " + _op_names[_op - VM_OP_ADD] + "   var" + string(_d) + " = var" + string(_a) + " op var" + string(_b));
+                break;
+            }
+
+            case VM_OP_CALL: {
+                var _func_id = buffer_read(_buf, buffer_u16);
+                var _arg_count = buffer_read(_buf, buffer_u8);
+                var _dst = buffer_read(_buf, buffer_s32);
+                var _arg_str = "";
+                for (var _i = 0; _i < _arg_count; _i++) {
+                    var _addr = buffer_read(_buf, buffer_s32);
+                    _arg_str += " var" + string(_addr);
+                }
+                var _dst_str = (_dst == VM_DST_VOID) ? "void" : "var" + string(_dst);
+                var _fname = "";
+                if (_func_id >= 0 && _func_id < array_length(global.__vm.functions)) {
+                    _fname = script_get_name(global.__vm.functions[_func_id]);
+                }
+                shell_print("[" + string(_pos) + "] CALL  func" + string(_func_id) + (_fname != "" ? " (" + _fname + ")" : "") + _arg_str + " -> " + _dst_str);
+                break;
+            }
+
+            case VM_OP_IF: {
+                var _cond_addr = buffer_read(_buf, buffer_s32);
+                var _true_ip = buffer_read(_buf, buffer_s32);
+                var _false_ip = buffer_read(_buf, buffer_s32);
+                shell_print("[" + string(_pos) + "] IF    var" + string(_cond_addr) + " ? goto " + string(_true_ip) + " : goto " + string(_false_ip));
+                break;
+            }
+
+            case VM_OP_JMP: {
+                var _ip = buffer_read(_buf, buffer_s32);
+                shell_print("[" + string(_pos) + "] JMP   goto " + string(_ip));
+                break;
+            }
+
+            case VM_OP_HALT: {
+                shell_print("[" + string(_pos) + "] HALT");
+                break;
+            }
+
+            default: {
+                shell_print("[" + string(_pos) + "] ? unknown op " + string(_op));
+                return;
+            }
+        }
+    }
+}
+
+/// @function VM_ReadMem(_addr)
+/// @desc 读取指定内存地址的值并打印（类型 + 值，字符串会展开内容）
+/// @param {Real} _addr  内存地址，如 0、5
+/// @returns {String} 格式化结果，供 shell 命令直接返回
+function VM_ReadMem(_addr) {
+    var _vm = global.__vm;
+    if (_addr < 0 || _addr >= array_length(_vm.mem_val)) {
+        shell_print("[VM] readmem: bad addr " + string(_addr) + " (mem size " + string(array_length(_vm.mem_val)) + ")");
+        return "bad addr " + string(_addr) + " (mem size " + string(array_length(_vm.mem_val)) + ")";
+    }
+    var _t = _vm.mem_type[_addr];
+    var _v = _vm.mem_val[_addr];
+    var _line = "";
+    if (_t == VM_TYPE_STRING) {
+        var _s = (_v >= 0 && _v < array_length(_vm.strings)) ? _vm.strings[_v] : "?";
+        _line = "mem[" + string(_addr) + "] = STRING str" + string(_v) + " \"" + string(_s) + "\"";
+    } else if (_t == VM_TYPE_FLOAT) {
+        _line = "mem[" + string(_addr) + "] = FLOAT " + string(_v);
+    } else if (_t == VM_TYPE_INT) {
+        _line = "mem[" + string(_addr) + "] = INT " + string(_v);
+    } else {
+        _line = "mem[" + string(_addr) + "] = type " + string(_t) + " val " + string(_v);
+    }
+    shell_print("[VM] " + _line);
+    return _line;
+}
+
+/// @function VM_DumpStrings()
+/// @desc 打印 VM 字符串池的全部内容
+function VM_DumpStrings() {
+    var _strings = global.__vm.strings;
+    shell_print("[VM] ==== string pool (" + string(array_length(_strings)) + " entries) ====");
+    for (var _i = 0; _i < array_length(_strings); _i++) {
+        shell_print("[VM] str" + string(_i) + " = \"" + string(_strings[_i]) + "\"");
+    }
+}
+
+/// @function VM_CallFunc(_func_id, _args)
+/// @desc 从 shell 直接调用已注册的 VM 函数，参数为内存地址（与字节码 CALL 一致）
+/// @param {Real|String} _func_id  函数 ID（见 VM_RegisterFunction 注册顺序）或函数名（如 "VM_SpawnEnemy"）
+/// @param {Array} _args  参数数组，每个元素是内存地址
+/// @returns {String} 调用结果描述
+function VM_CallFunc(_func_id, _args) {
+    var _vm = global.__vm;
+    // 支持按函数名调用
+    if (is_string(_func_id)) {
+        var _target = _func_id;
+        _func_id = -1;
+        for (var _i = 0; _i < array_length(_vm.functions); _i++) {
+            if (script_get_name(_vm.functions[_i]) == _target) { _func_id = _i; break; }
+        }
+        if (_func_id == -1) {
+            shell_print("[VM] call: unknown func name: " + _target);
+            return "unknown func name: " + _target;
+        }
+    }
+    if (_func_id < 0 || _func_id >= array_length(_vm.functions)) {
+        return "bad func_id " + string(_func_id) + " (registered " + string(array_length(_vm.functions)) + " funcs)";
+    }
+    var _fn = _vm.functions[_func_id];
+    var _result = script_execute_ext(_fn, _args);
+    var _name = script_get_name(_fn);
+    shell_print("[VM] call func" + string(_func_id) + " (" + _name + ") args[" + string(array_length(_args)) + "] = " + string(_result));
+    return "func" + string(_func_id) + " (" + _name + ") = " + string(_result);
+}
+
+/// @function VM_SetMem(_addr, _value, _type = "")
+/// @desc 写入 VM 内存，供 vmcall 自由传参
+/// @param {Real} _addr  内存地址
+/// @param {Any} _value  值
+/// @param {String} _type  "" 自动判断(含小数点→float，否则int) / "int" / "float" / "string"(纯数字=str池索引，否则按内容查池，查不到追加)
+/// @returns {String} 写入后的内存描述
+function VM_SetMem(_addr, _value, _type = "") {
+    var _vm = global.__vm;
+    if (_addr < 0 || _addr >= array_length(_vm.mem_val)) {
+        shell_print("[VM] setmem: bad addr " + string(_addr) + " (mem size " + string(array_length(_vm.mem_val)) + ")");
+        return "bad addr " + string(_addr) + " (mem size " + string(array_length(_vm.mem_val)) + ")";
+    }
+    if (_type == "string" || _type == "str") {
+        var _idx = real(_value);
+        if (is_real(_idx) && string(_idx) != "NaN" && floor(_idx) == _idx) {
+            if (_idx < 0 || _idx >= array_length(_vm.strings)) return "bad str index " + string(_idx) + " (pool size " + string(array_length(_vm.strings)) + ")";
+            _vm.mem_type[_addr] = VM_TYPE_STRING;
+            _vm.mem_val[_addr] = _idx;
+        } else {
+            var _s = string(_value);
+            var _found = -1;
+            for (var _i = 0; _i < array_length(_vm.strings); _i++) {
+                if (_vm.strings[_i] == _s) { _found = _i; break; }
+            }
+            if (_found == -1) {
+                _found = array_length(_vm.strings);
+                array_push(_vm.strings, _s);
+                _vm.str_map[? _s] = _found;
+            }
+            _vm.mem_type[_addr] = VM_TYPE_STRING;
+            _vm.mem_val[_addr] = _found;
+        }
+        return VM_ReadMem(_addr);
+    }
+    var _v = real(_value);
+    if (!is_real(_v) || string(_v) == "NaN") return "bad value (不是数字): " + string(_value);
+    if (_type == "float" || _type == "f" || (_type == "" && string_pos(".", string(_value)) > 0)) {
+        _vm.mem_type[_addr] = VM_TYPE_FLOAT;
+    } else {
+        _vm.mem_type[_addr] = VM_TYPE_INT;
+    }
+    _vm.mem_val[_addr] = _v;
+    return VM_ReadMem(_addr);
+}
+
+/// @function VM_MetaInfo()
+/// @desc 打印 VM 元信息：随机种子、波次、上个卡片/敌人/平台/按钮/按键、限制、debug 状态等
+/// @returns {String} 提示文案
+function VM_MetaInfo() {
+    var _g = function(_name) {
+        return variable_global_exists(_name) ? string(global[$ _name]) : "unset";
+    };
+    var _vm = global.__vm;
+    shell_print("[VM] ==== meta info ====");
+    shell_print("[VM] rng_state = " + string(variable_struct_get(_vm, "rng_state")));
+    if (instance_exists(obj_battle)) {
+        shell_print("[VM] wave = " + string(obj_battle.current_wave) + " (prev " + _g("_VM_prev_wave") + ")");
+        shell_print("[VM] subwave = " + string(obj_battle.current_subwave) + " (prev " + _g("_VM_prev_subwave") + ")");
+    }
+    shell_print("[VM] last_created_card = " + _g("_VM_last_created_card"));
+    shell_print("[VM] last_destroyed_card = " + _g("_VM_last_destroyed_card"));
+    shell_print("[VM] last_created_enemy = " + _g("_VM_last_created_enemy"));
+    shell_print("[VM] last_killed_enemy = " + _g("_VM_last_killed_enemy"));
+    shell_print("[VM] last_idle_platform = " + _g("_VM_last_idle_platform"));
+    shell_print("[VM] last_clicked_button = " + _g("_VM_last_clicked_button"));
+    shell_print("[VM] last_key = " + _g("_VM_last_key"));
+    shell_print("[VM] card_level_cap = " + _g("_VM_card_level_cap") + ", max_slots = " + _g("_VM_max_slots"));
+    if (variable_global_exists("banned_gems_online")) {
+        shell_print("[VM] banned_gems = [" + string(global.banned_gems_online) + "]");
+    }
+    if (variable_global_exists("banned_cards_online")) {
+        var _bc = ds_map_keys_to_array(global.banned_cards_online);
+        shell_print("[VM] banned_cards(" + string(array_length(_bc)) + ") = [" + string(_bc) + "]");
+    }
+    shell_print("[VM] battle_start_done = " + _g("_VM_battle_start_done") + ", room_ready_done = " + _g("_VM_room_ready_done"));
+    shell_print("[VM] event_enabled = " + _g("_VM_event_enabled") + ", sync_exec = " + _g("_VM_sync_exec"));
+    shell_print("[VM] mem = " + string(array_length(_vm.mem_val)) + ", strings = " + string(array_length(_vm.strings)) + ", functions = " + string(array_length(_vm.functions)));
+    shell_print("[VM] debug_mode = " + string(global._VM_debug_mode) + (global._VM_debug_block != "" ? " (block: " + global._VM_debug_block + ")" : ""));
+    return "已输出到控制台";
+}
+
+/// @function VM_ShowTerrain()
+/// @desc 打印当前地形网格（. = normal 陆地，W = water 水域，# = obstacle 障碍）
+/// @returns {String} 提示文案
+function VM_ShowTerrain() {
+    var _rows = min(global.grid_rows, array_length(global.grid_terrains));
+    var _cols = min(global.grid_cols, array_length(global.grid_terrains[0]));
+    shell_print("[VM] ==== terrain (" + string(_rows) + "x" + string(_cols) + ") ====");
+    shell_print("[VM] legend: . = normal(陆地)  W = water(水域)  # = obstacle(障碍)");
+    // 列号行（列超过 10 显示个位数）
+    var _header = "";
+    for (var _hc = 0; _hc < _cols; _hc++) {
+        _header += string(_hc mod 10);
+    }
+    shell_print("[VM]    " + _header);
+    for (var _r = 0; _r < _rows; _r++) {
+        var _line = "";
+        var _rc = min(global.grid_cols, array_length(global.grid_terrains[_r]));
+        for (var _c = 0; _c < _rc; _c++) {
+            var _t = global.grid_terrains[_r][_c].type;
+            if (_t == "water") {
+                _line += "W";
+            } else if (_t == "obstacle") {
+                _line += "#";
+            } else {
+                _line += ".";
+            }
+        }
+        shell_print("[VM] r" + string(_r) + "  " + _line);
+    }
+    return "已输出到控制台";
+}
+
 // ============================================================
 // 全局初始化和块管理
 // ============================================================
@@ -2394,6 +2696,8 @@ global._VM_event_enabled = true
 global._VM_sync_exec = true    // VM_HandleNotify 中置 false，防止客户端守卫拦截同步调用
 
 global._VM_debug_mode = false;
+global._VM_debug_block = "";    // 非空时只打印指定块的调试日志
+global._VM_notify_call = false;  // VM_HandleNotify "call" 分发期间为 true，参数按值传入
 global._VM_loaded_sprite_indices = [];
 global._VM_hook_queue = [];       // 待执行 hook 队列，每个元素 {buf, id}
 global._VM_sprite_cache      = ds_map_create();  // VM 永久贴图 name→id
@@ -2417,7 +2721,15 @@ function VM_FlushHooks() {
             if (_e.key == "enemy")       global._VM_last_created_enemy  = _e.id;
             if (_e.key == "enemy_kill")  global._VM_last_killed_enemy   = _e.id;
             if (_e.key == "platform_idle") global._VM_last_idle_platform = _e.id;
-            VM_Execute(global.__vm, _e.buf);
+            var _hook_name = "";
+            switch (_e.key) {
+                case "card":            _hook_name = "_VM_CARD_CREATED";      break;
+                case "card_del":        _hook_name = "_VM_CARD_DESTROYED";    break;
+                case "enemy":           _hook_name = "_VM_ENEMY_SPAWNED";     break;
+                case "enemy_kill":      _hook_name = "_VM_ENEMY_KILLED";      break;
+                case "platform_idle":   _hook_name = "_VM_PLATFORM_IDLE_END"; break;
+            }
+            VM_Execute(global.__vm, _e.buf, _hook_name);
         }
     }
 }
@@ -2457,16 +2769,16 @@ function VM_HandleNotify(json) {
 
     switch (_hook) {
         case "wave_start":
-            if (buffer_exists(global._VM_WAVE_START)) VM_Execute(global.__vm, global._VM_WAVE_START);
+            if (buffer_exists(global._VM_WAVE_START)) VM_Execute(global.__vm, global._VM_WAVE_START, "_VM_WAVE_START");
             break;
         case "wave_end":
-            if (buffer_exists(global._VM_WAVE_END)) VM_Execute(global.__vm, global._VM_WAVE_END);
+            if (buffer_exists(global._VM_WAVE_END)) VM_Execute(global.__vm, global._VM_WAVE_END, "_VM_WAVE_END");
             break;
         case "subwave_start":
-            if (buffer_exists(global._VM_SUBWAVE_START)) VM_Execute(global.__vm, global._VM_SUBWAVE_START);
+            if (buffer_exists(global._VM_SUBWAVE_START)) VM_Execute(global.__vm, global._VM_SUBWAVE_START, "_VM_SUBWAVE_START");
             break;
         case "subwave_end":
-            if (buffer_exists(global._VM_SUBWAVE_END)) VM_Execute(global.__vm, global._VM_SUBWAVE_END);
+            if (buffer_exists(global._VM_SUBWAVE_END)) VM_Execute(global.__vm, global._VM_SUBWAVE_END, "_VM_SUBWAVE_END");
             break;
         case "call":
         {
@@ -2476,6 +2788,8 @@ function VM_HandleNotify(json) {
                 break;
             }
             var _args = _data[$ "args"];
+            var _old_flag = global._VM_notify_call;
+            global._VM_notify_call = true;
             switch (array_length(_args)) {
                 case 0: _func(); break;
                 case 1: _func(_args[0]); break;
@@ -2488,6 +2802,7 @@ function VM_HandleNotify(json) {
                     show_debug_message("[VM_HandleNotify] unsupported arg count: " + string(array_length(_args)));
                     break;
             }
+            global._VM_notify_call = _old_flag;
             break;
         }
         default:
@@ -2635,7 +2950,6 @@ function VM_InitRoomEntry(buf) {
     global._VM_prev_subwave      = -1;
     global._VM_event_enabled     = true;
     global._sync_vm_bin_buf = undefined;
-    global._sync_vm_seed = undefined;
     global._VM_strings = [];
     global.__vm.strings = global._VM_strings;
     global.__vm.mem_type = array_create(array_length(global.__vm.mem_type), VM_TYPE_INT);
@@ -2644,6 +2958,7 @@ function VM_InitRoomEntry(buf) {
     var _tmp_keys = ds_map_keys_to_array(global._VM_sprite_temp_cache);
     for (var _k = 0; _k < array_length(_tmp_keys); _k++) {
         var _spr = global._VM_sprite_temp_cache[? _tmp_keys[_k]];
+        if (is_string(_spr)) continue;   // 别名条目（name→name），不是精灵
         if (sprite_exists(_spr)) { sprite_delete(_spr); ds_map_delete(global._pid_reverse, _spr); }
     }
     ds_map_clear(global._VM_sprite_temp_cache);
@@ -2690,6 +3005,7 @@ function VM_InitRoomEntry(buf) {
 
     // 字符串池里包含 "debug" 则开启调试模式
     global._VM_debug_mode = false;
+    global._VM_debug_block = "";
     for (var _i = 0; _i < array_length(global._VM_strings); _i++) {
         if (global._VM_strings[_i] == "debug") { global._VM_debug_mode = true; break; }
     }
@@ -2712,12 +3028,12 @@ function VM_InitRoomEntry(buf) {
 
         switch (_block_name) {
             case "_VM_CONST_INIT":
-                VM_Execute(global.__vm, _bc_buf);
+                VM_Execute(global.__vm, _bc_buf, "_VM_CONST_INIT");
                 buffer_delete(_bc_buf);
                 break;
             case "_VM_ROOM_READY_ENTRY":
                 global._VM_ROOM_READY_ENTRY = _bc_buf;
-                VM_Execute(global.__vm, _bc_buf);
+                VM_Execute(global.__vm, _bc_buf, "_VM_ROOM_READY_ENTRY");
                 break;
             case "_VM_BATTLE_START":
                 global._VM_BATTLE_START = _bc_buf;

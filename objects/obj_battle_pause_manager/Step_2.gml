@@ -1,5 +1,5 @@
 // obj_battle_pause_manager - Step Event
-if (keyboard_check_pressed(vk_space)) {	
+if (keyboard_check_pressed(vk_space) && !(instance_exists(obj_shell) && obj_shell.isOpen)) {
     //if global.selected_slot == noone {
         if (!global.is_paused) {
             // 空格暂停：只暂停不显示菜单

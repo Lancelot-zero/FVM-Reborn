@@ -61,7 +61,7 @@ if (state == "idle") {
         step_migrated = false;
         // Hook: 平台 idle 结束
         global._VM_last_idle_platform = id;
-		VM_Execute(global.__vm,global._VM_PLATFORM_IDLE_END);
+		VM_Execute(global.__vm,global._VM_PLATFORM_IDLE_END, "_VM_PLATFORM_IDLE_END");
     }
 } 
 else if (state == "moving") {

@@ -64,6 +64,9 @@ switch (_type) {
 				if (!is_undefined(global._sync_resource_fingerprints)) {
 					_sync[$ "resource_fingerprints"] = global._sync_resource_fingerprints;
 				}
+				if (!is_undefined(global._file_cache_json_path)) {
+					_sync[$ "json_path"] = global._file_cache_json_path;
+				}
 				send_message(_sock, MSG_ENTER_ROOM_READY, json_stringify(_sync), global._sync_vm_bin_buf);
 			}
         }
