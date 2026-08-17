@@ -24,11 +24,11 @@ function spawn_plant(col, row, plant_obj, props) {
 			}
 		}
 	}
-// wrap col/row after platform offset
-if (col < 0) col += global.grid_cols + 64;
-if (col >= global.grid_cols + 64) col -= global.grid_cols + 64;
-if (row < 0) row += global.grid_rows + 64;
-if (row >= global.grid_rows + 64) row -= global.grid_rows + 64;
+	// wrap col/row after platform offset
+	if (col < 0) col += global.grid_cols + 64;
+	if (col >= global.grid_cols + 64) col -= global.grid_cols + 64;
+	if (row < 0) row += global.grid_rows + 64;
+	if (row >= global.grid_rows + 64) row -= global.grid_rows + 64;
 	
 	
 	
@@ -79,18 +79,17 @@ if (row >= global.grid_rows + 64) row -= global.grid_rows + 64;
 				_replace_type = _plant.target_card_info[$ "plant_type"];
 			}
 			// king_bun/bun/tbun 互不替换（吸收机制由 Step 事件处理）
-				var _new_ft = "normal";
-				if (variable_instance_exists(_plant, "feature_type")) { _new_ft = _plant.feature_type; }
-				var _old_ft = "normal";
-				if (variable_instance_exists(_old, "feature_type")) { _old_ft = _old.feature_type; }
-				var _ft_skip = ((_new_ft == "bun" || _new_ft == "king_bun") && (_old_ft == "bun" || _old_ft == "king_bun"))
-				            || ((_new_ft == "tbun" || _new_ft == "king_tbun") && (_old_ft == "tbun" || _old_ft == "king_tbun"));
+			var _new_ft = "normal";
+			if (variable_instance_exists(_plant, "feature_type")) { _new_ft = _plant.feature_type; }
+			var _old_ft = "normal";
+			if (variable_instance_exists(_old, "feature_type")) { _old_ft = _old.feature_type; }
+			var _ft_skip = ((_new_ft == "bun" || _new_ft == "king_bun") && (_old_ft == "bun" || _old_ft == "king_bun")) || ((_new_ft == "tbun" || _new_ft == "king_tbun") && (_old_ft == "tbun" || _old_ft == "king_tbun"));
 
-				if (_old.plant_type == _replace_type && !_ft_skip) {
-					card_destroyed(_old);
-					instance_destroy(_old);
-				}
+			if (_old.plant_type == _replace_type && !_ft_skip) {
+				card_destroyed(_old);
+				instance_destroy(_old);
 			}
+		}
 		// 格子上有 player 时，normal 类型不允许种植
 		if (_has_player && _replace_type == "normal") {
 			instance_destroy(_plant);

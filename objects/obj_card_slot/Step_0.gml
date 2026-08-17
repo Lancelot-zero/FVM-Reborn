@@ -205,8 +205,11 @@ if (is_selected) {
 					for (var i = 0; i < ds_list_size(plant_list); i++) {
 						var plant = ds_list_find_value(plant_list, i);
 						if (instance_exists(plant) && variable_instance_exists(plant, "plant_id") && plant.plant_id == target_card_id) {
-							card_destroyed(plant);
-							instance_destroy(plant);
+							// 客户端本地跳过（destroy 会被钩子拦截），等服务端广播后统一销毁
+							if (!(global.network.mode == "client" && !global.network.client_able)) {
+								card_destroyed(plant);
+								instance_destroy(plant);
+							}
 							break;
 						}
 					}
@@ -219,8 +222,11 @@ if (is_selected) {
 					if (instance_exists(plant) && plant.plant_type == card_data[? "plant_type"] && plant.plant_id != "player" && plant.plant_type != "coffee"
 					&& !((card_data[? "feature_type"]=="bun" && plant.feature_type == "king_bun")||(card_data[? "feature_type"]=="king_bun" && plant.feature_type == "king_bun"))
 					&& !((card_data[? "feature_type"]=="tbun" && plant.feature_type == "king_tbun")||(card_data[? "feature_type"]=="king_tbun" && plant.feature_type == "king_tbun"))) {
-						card_destroyed(plant);
-						instance_destroy(plant);
+						// 客户端本地跳过，等 MSG_SPAWN_UNIT 的替换逻辑统一销毁
+						if (!(global.network.mode == "client" && !global.network.client_able)) {
+							card_destroyed(plant);
+							instance_destroy(plant);
+						}
 					}
 				}
 			}
