@@ -80,16 +80,16 @@ var grid_pos = get_grid_position_from_world(x, y);
     var plant_list = ds_grid_get(global.grid_plants, col, row);
     
     // 根据植物类型检查是否可以种植
-	if target_card != "none"{
+	if target_card != "none" && !is_undefined(plant_list){
 		for (var i = 0; i < ds_list_size(plant_list); i++) {
 	        var plant = ds_list_find_value(plant_list, i);
-	        if (plant.plant_id == target_card) {
-				
-				if feature_type == "upgrade"{
-					instance_destroy(plant)
-					break
+			if instance_exists(plant){
+		        if (plant.plant_id == target_card) {
+					if feature_type == "upgrade"{
+						instance_destroy(plant)
+						break
+					}
 				}
-				
-	       }
+			}
 	    }
 	}

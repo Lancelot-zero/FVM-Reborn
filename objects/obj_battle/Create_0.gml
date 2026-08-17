@@ -145,7 +145,7 @@ for(var i = 0 ; i < global.grid_rows ; i++){
 	var grid_pos = get_grid_position_from_world(new_x,new_y)
 	var cat_inst = instance_create_depth(grid_pos.x - 10, grid_pos.y+10, 0,obj_cat);
 	cat_inst.row = i
-	if global.row_feature[i] == "water"{
+	if global.row_feature[i] == "water" || global.map_id == "undersea_vortex"{
 		cat_inst.sprite_index = spr_crab
 		cat_inst.idle_anim = 8
 		cat_inst.awake_anim = 6

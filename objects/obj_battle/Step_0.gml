@@ -38,7 +38,7 @@ if global.debug{
 	}
 	if keyboard_check_pressed(ord("K")){
 		var grid_pos = get_grid_position_from_world(mouse_x,mouse_y)
-		var inst = instance_create_depth(grid_pos.x,grid_pos.y+38,0,obj_swordfish_mouse)
+		var inst = instance_create_depth(grid_pos.x,grid_pos.y+38,0,obj_sardine_mouse)
 		inst.grid_row = grid_pos.row
 		inst.grid_col = grid_pos.col
 		inst.frozen_timer = 0000

@@ -28,6 +28,9 @@ else{
 if card_equipped_attire_id(plant_id) != "bubble_maltose"{
 	depth = calculate_plant_depth(grid_col,grid_row,"coffee")
 }
+else{
+	depth = calculate_plant_depth(grid_col,grid_row,"lilypad")
+}
 
 if on_lava && global.grid_terrains[grid_row][grid_col].type != "obstacle"{
 	plant_type = "lilypad"

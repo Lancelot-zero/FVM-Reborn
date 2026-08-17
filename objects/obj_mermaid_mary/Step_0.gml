@@ -171,7 +171,7 @@ switch state{
 			}
 			else if skill_count == 1{
 				enemy_row = irandom_range(1,global.grid_rows-2)
-				enemy_pos = get_world_position_from_grid(-1,enemy_row)
+				enemy_pos = get_world_position_from_grid(0,enemy_row)
 			}
 			x_move_speed = (enemy_pos.x - 90 - x)/180
 			y_move_speed = (enemy_pos.y + 30 - y)/180

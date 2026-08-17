@@ -222,7 +222,8 @@ function maps_init(){
 					"boss_music":mus_volcanic_tower_boss,
 					"pre_level":"tower_cake_7_1",
 					"rewards":[
-						{"card_id":"triple_wine_rack","target_shape":1}
+						{"card_id":"triple_wine_rack","target_shape":1},
+						{"card_id":"soda_bubble","target_shape":1}
 					]
 				},
 				{
@@ -454,7 +455,8 @@ function maps_init(){
 					"pre_level":"tower_cake_15_1",
 					"rewards":[
 						{"card_id":"kettle_bomb","target_shape":1},
-						{"card_id":"king_triple_long_bao","target_shape":1}
+						{"card_id":"king_triple_long_bao","target_shape":1},
+						{"card_id":"coal_starfish","target_shape":1}
 					]
 				},
 				{
@@ -571,7 +573,8 @@ function maps_init(){
 					"boss_music":mus_volcanic_tower_boss,
 					"pre_level":"tower_cake_19_1",
 					"rewards":[
-						{"card_id":"melon_shield","target_shape":2}
+						{"card_id":"melon_shield","target_shape":2},
+						{"card_id":"curry_lobster_cannon","target_shape":1}
 					]
 				},
 				{
@@ -585,7 +588,8 @@ function maps_init(){
 					"boss_music":mus_volcanic_tower_boss,
 					"pre_level":"tower_cake_19_2",
 					"rewards":[
-						{"card_id":"ice_egg_boiler_pult","target_shape":2}
+						{"card_id":"large_fire","target_shape":2},
+						{"card_id":"horseshoe_crab_bread","target_shape":1}
 					]
 				},
 				{
@@ -599,7 +603,7 @@ function maps_init(){
 					"boss_music":mus_volcanic_tower_boss,
 					"pre_level":"tower_cake_20_1",
 					"rewards":[
-						{"card_id":"large_fire","target_shape":2},
+						{"card_id":"ice_egg_boiler_pult","target_shape":2},
 						{"card_id":"tang_hu_lu","target_shape":1}
 					]
 				},
@@ -674,7 +678,7 @@ function maps_init(){
 					"boss_music":mus_floating_island_daytime_boss,
 					"pre_level":"tower_cake_22_2",
 					"rewards":[
-						{"card_id":"hotdog_cannon","target_shape":2}
+						{"card_id":"hotdog_cannon","target_shape":2},
 					]
 				},
 				{
@@ -762,6 +766,7 @@ function maps_init(){
 					"pre_level":"tower_cake_25_2",
 					"rewards":[
 						{"card_id":"double_water_pipe","target_shape":2},
+						{"card_id":"coal_starfish","target_shape":2}
 					]
 				},
 				{
@@ -1020,7 +1025,8 @@ function maps_init(){
 					"boss_music":mus_floating_island_daytime_boss,
 					"pre_level":"tower_cake_34_2",
 					"rewards":[
-						{"card_id":"chocolate_cannon","target_shape":2}
+						{"card_id":"chocolate_cannon","target_shape":2},
+						{"card_id":"curry_lobster_cannon","target_shape":2}
 					]
 				},
 				{

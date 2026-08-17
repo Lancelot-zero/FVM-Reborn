@@ -19,3 +19,41 @@ if global.map_id == "delicious_island"{
 		draw_text(tooptip_x+5,tooptip_y+5,text)
 	}
 }
+
+if global.map_id == "undersea_vortex"{
+	if !is_level_completed("arctic_bay_turbulence_warrior") && global.save_data.player.level >= 50 && is_level_completed("coral_current_night"){
+		draw_set_alpha(0.5)
+		draw_set_colour(c_black)
+		draw_set_valign(fa_top)
+		draw_set_halign(fa_left)
+		draw_set_font(font_yuan)
+		var tooptip_x = 740
+		var tooptip_y = 920
+		var text = "建议魔塔层数：30-1"
+		var tooptip_width = string_width(text)+10
+		var tooptip_height = string_height(text)+10
+		draw_rectangle(tooptip_x-tooptip_width/2,tooptip_y,tooptip_x+tooptip_width/2,tooptip_y+tooptip_height,0)
+		draw_set_colour(c_white)
+		draw_set_alpha(1)
+		draw_text(tooptip_x+5-tooptip_width/2,tooptip_y+5,text)
+	}
+}
+
+if global.map_id == "undersea_vortex"{
+	if !is_level_completed("tempura_vortex_warrior") && global.save_data.player.level >= 60 && is_level_completed("sea_anemone_current_night"){
+		draw_set_alpha(0.5)
+		draw_set_colour(c_black)
+		draw_set_valign(fa_top)
+		draw_set_halign(fa_left)
+		draw_set_font(font_yuan)
+		var tooptip_x = 1420
+		var tooptip_y = 710
+		var text = "建议魔塔层数：35-1"
+		var tooptip_width = string_width(text)+10
+		var tooptip_height = string_height(text)+10
+		draw_rectangle(tooptip_x-tooptip_width/2,tooptip_y,tooptip_x+tooptip_width/2,tooptip_y+tooptip_height,0)
+		draw_set_colour(c_white)
+		draw_set_alpha(1)
+		draw_text(tooptip_x+5-tooptip_width/2,tooptip_y+5,text)
+	}
+}

@@ -57,6 +57,8 @@ if hp > 0 && state != ENEMY_STATE.DEAD{
 					instance_destroy()
 				}
 				else{
+					hp -= 300
+					event_user(2)
 					other.timer = 0
 					other.state = ENEMY_STATE.DIG
 					sprite_index = spr_swordfish_mouse_stun

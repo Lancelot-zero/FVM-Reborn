@@ -211,8 +211,8 @@ switch state{
 		
 		if timer == 19 * 5 + 2 || timer == 25 * 5 + 2 || timer == 32 * 5 + 2{
 			var ball_inst = instance_create_depth(x,y,-800,obj_electric_jellyfish_bullet)
-			ball_inst.maxhp = 0.1*hp
-			ball_inst.hp = 0.1*hp
+			ball_inst.maxhp = 1800 + 0.03*maxhp
+			ball_inst.hp = 1800 + 0.03*maxhp
 			ball_inst.hp_modified = true
 			var ball_row = target_coord[jump_times][1]
 			var ball_col = target_coord[jump_times][0]

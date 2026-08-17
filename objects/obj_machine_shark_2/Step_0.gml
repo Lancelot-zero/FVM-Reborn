@@ -57,17 +57,17 @@ switch state{
 		}
 		if timer == 6 * 5 - 1{
 			timer = 0
-			if skill_count == 0{
+			if skill_count == 0 || skill_count == 2{
 				state = BOSS_STATE.SKILL1
 			}
 			else if skill_count == 1{
 				state = BOSS_STATE.SKILL2
 			}
-			else if skill_count == 2{
+			else if skill_count == 3{
 				state = BOSS_STATE.SKILL3
 			}
 			skill_count ++
-			if skill_count >= 3{
+			if skill_count >= 4{
 				skill_count = 0
 			}
 			break
@@ -106,12 +106,12 @@ switch state{
 		}
 		
 		if timer == 15 * 5 + 2{
-			var wind_inst1 = instance_create_depth(x,y-global.grid_cell_size_y,-800,obj_machine_shark_2_wind)
-			var wind_pos1 = get_world_position_from_grid(2,0)
+			var wind_inst1 = instance_create_depth(x,y,-800,obj_machine_shark_2_wind)
+			var wind_pos1 = get_world_position_from_grid(4,0)
 			wind_inst1.x_move_speed = (wind_pos1.x-wind_inst1.x)/ 60
 			wind_inst1.y_move_speed = (wind_pos1.y+10-wind_inst1.y)/ 60
-			var wind_inst2 = instance_create_depth(x,y+global.grid_cell_size_y,-800,obj_machine_shark_2_wind)
-			var wind_pos2 = get_world_position_from_grid(2,global.grid_rows-1)
+			var wind_inst2 = instance_create_depth(x,y,-800,obj_machine_shark_2_wind)
+			var wind_pos2 = get_world_position_from_grid(4,global.grid_rows-1)
 			wind_inst2.x_move_speed = (wind_pos2.x-wind_inst2.x)/ 60
 			wind_inst2.y_move_speed = (wind_pos2.y+10-wind_inst2.y)/ 60
 		}
@@ -257,17 +257,14 @@ switch state{
 			if skill_count == 1{
 				enemy_pos = get_world_position_from_grid(1,3)
 			}
-			else if skill_count == 2{
+			else if skill_count == 3{
 				skill_3_row = []
-				while array_length(skill_3_row) < 3{
-					var new_row = irandom_range(0,global.grid_rows-1)
-					if array_get_index(skill_3_row,new_row) == -1{
-						array_push(skill_3_row,new_row)
-					}
-				}
+				skill_3_row[0] = global.grid_rows-1
+				skill_3_row[1] = 3
+				skill_3_row[2] = 0
 				enemy_pos = get_world_position_from_grid(9,skill_3_row[0])
 			}
-			else{
+			else if skill_count == 0 || skill_count == 2{
 				enemy_pos = get_world_position_from_grid(9,3)
 			}
 			x = enemy_pos.x - 90

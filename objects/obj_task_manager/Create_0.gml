@@ -122,8 +122,10 @@ function refresh_task_progress(){
 			if complete_count >= complete_require{
 				edit_task_state(task_id,"completed")
 				//解锁下一个任务
-				if !is_task_unlocked(task_data.task_unlock){
-					unlock_task(task_data.task_unlock)
+				if task_data.task_unlock != "none"{
+					if !is_task_unlocked(task_data.task_unlock){
+						unlock_task(task_data.task_unlock)
+					}
 				}
 			}
 			//如果是单局完成的任务，未完成则重置进度
