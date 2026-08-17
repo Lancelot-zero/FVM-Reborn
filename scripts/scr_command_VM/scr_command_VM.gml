@@ -1007,6 +1007,50 @@ function VM_GetPlantAt(col_addr, row_addr, layer_addr) {
 	return -1;
 }
 
+/// @function update_plant_bindings(_p)
+/// @description 植物移动后更新其绑定的标记对象（星星/睡眠/水花）和玩家武器位置
+function update_plant_bindings(_p) {
+	if (!instance_exists(_p)) return;
+	if (instance_exists(_p.banding_star_obj)) {
+		_p.banding_star_obj.x = _p.x;
+		_p.banding_star_obj.y = _p.y - 5;
+		_p.banding_star_obj.depth = _p.depth - 1;
+	}
+	if (instance_exists(_p.banding_sleep_obj)) {
+		_p.banding_sleep_obj.x = _p.x - 15;
+		_p.banding_sleep_obj.y = _p.y - 20;
+		_p.banding_sleep_obj.depth = _p.depth - 1;
+	}
+	if (instance_exists(_p.banding_water_obj)) {
+		_p.banding_water_obj.x = _p.x;
+		_p.banding_water_obj.y = _p.y;
+		_p.banding_water_obj.depth = _p.depth + 5;
+	}
+	// 玩家绑定的武器/护盾跟着走
+	if (ds_map_exists(global._move_instance_map, _p.id)) {
+		var _list = global._move_instance_map[? _p.id];
+		for (var _i = ds_list_size(_list) - 1; _i >= 0; _i--) {
+			var _ins = _list[| _i];
+			if (!instance_exists(_ins)) {
+				ds_list_delete(_list, _i);
+				continue;
+			}
+			if (!variable_instance_exists(_ins, "parent_player") || _ins.parent_player != _p) continue;
+			_ins.x = _p.x;
+			_ins.y = _p.y;
+			if (_ins.object_index == obj_player_shield) {
+				_ins.depth = _p.depth;
+			} else {
+				_ins.x -= 10;
+				_ins.y -= 100;
+				_ins.depth = _p.depth - 1;
+			}
+			_ins.grid_col = _p.grid_col;
+			_ins.grid_row = _p.grid_row;
+		}
+	}
+}
+
 /// @function VM_SwapPlants(col1, row1, col2, row2)
 /// @description 交换两个格子上所有植物的位置
 /// @param col1 第一个格子的列
@@ -1045,6 +1089,7 @@ function VM_SwapPlants(col1_addr, row1_addr, col2_addr, row2_addr) {
 		_p.col = _c2;
 		_p.row = _r2;
 		_p.depth = calculate_plant_depth(_c2, _r2, _p.plant_type);
+		update_plant_bindings(_p);
 		ds_list_add(_list2, _p);
 	}
 	for (var i = 0; i < array_length(_plants2); i++) {
@@ -1054,6 +1099,7 @@ function VM_SwapPlants(col1_addr, row1_addr, col2_addr, row2_addr) {
 		_p.col = _c1;
 		_p.row = _r1;
 		_p.depth = calculate_plant_depth(_c1, _r1, _p.plant_type);
+		update_plant_bindings(_p);
 		ds_list_add(_list1, _p);
 	}
 	if (global.network.mode == "server") {
@@ -1165,6 +1211,7 @@ function VM_SwapPlantRects(x1_addr, y1_addr, w_addr, h_addr, x2_addr, y2_addr) {
 					_p.col = _c2;
 					_p.row = _r2;
 					_p.depth = calculate_plant_depth(_c2, _r2, _p.plant_type);
+					update_plant_bindings(_p);
 					ds_list_add(_list, _p);
 				}
 				ds_map_add(_snap, _k1, undefined);
@@ -1182,6 +1229,7 @@ function VM_SwapPlantRects(x1_addr, y1_addr, w_addr, h_addr, x2_addr, y2_addr) {
 					_p.col = _c1;
 					_p.row = _r1;
 					_p.depth = calculate_plant_depth(_c1, _r1, _p.plant_type);
+					update_plant_bindings(_p);
 					ds_list_add(_list, _p);
 				}
 				ds_map_add(_snap, _k2, undefined);
@@ -1234,6 +1282,7 @@ function VM_CompactColumn(col_addr) {
 				_p.y = _pos.y;
 				_p.row = _row;
 				_p.depth = calculate_plant_depth(_c, _row, _p.plant_type);
+				update_plant_bindings(_p);
 				ds_list_add(_list, _p);
 	if (global.network.mode == "server") {
 			var _msg = json_stringify({hook: "call", func: "VM_CompactColumn", args: [_col]});
@@ -1284,6 +1333,7 @@ function VM_CompactRow(row_addr) {
 				_p.y = _pos.y;
 				_p.col = _col;
 				_p.depth = calculate_plant_depth(_col, _r, _p.plant_type);
+				update_plant_bindings(_p);
 				ds_list_add(_list, _p);
 			}
 			_col++;
@@ -1332,6 +1382,7 @@ function VM_CompactColumnRev(col_addr) {
 				_p.y = _pos.y;
 				_p.row = _row;
 				_p.depth = calculate_plant_depth(_c, _row, _p.plant_type);
+				update_plant_bindings(_p);
 				ds_list_add(_list, _p);
 	if (global.network.mode == "server") {
 			var _msg = json_stringify({hook: "call", func: "VM_CompactColumnRev", args: [_col]});
@@ -1386,6 +1437,7 @@ function VM_CompactRowRev(row_addr) {
 				_p.y = _pos.y;
 				_p.col = _col;
 				_p.depth = calculate_plant_depth(_col, _r, _p.plant_type);
+				update_plant_bindings(_p);
 				ds_list_add(_list, _p);
 			}
 			_col++;
@@ -1443,6 +1495,7 @@ function VM_SpawnPlantsRandom(x_addr, y_addr, w_addr, h_addr,
 			if (_level != -1) _props[$ "current_level"] = _level;
 			if (_skill != -1) _props[$ "skill"] = _skill;
 			if (_shape != -1) _props[$ "shape"] = _shape;
+			_props[$ "sprite_index"] = _card_data[? "sprite"];
 			var _plant = spawn_plant(_c, _r, _card_data[? "obj"], _props);
 			if (_plant >= 0) {
 				network_apply_plant_level(_plant);
@@ -1713,6 +1766,7 @@ function VM_SpawnPlant(card_id_addr, col_addr, row_addr, shape_addr, level_addr,
 	if(level!=-1)_props[$ "current_level"] =level;
 	if(skill!=-1)_props[$ "skill"] =skill;
 	if(shape!=-1)_props[$ "shape"] =shape;
+	_props[$ "sprite_index"] = _card_data[? "sprite"];
 
     // 批量生成：col=-1 整列所有行，row=-1 整行所有列
     var _batch = (col == -1 || row == -1);
@@ -3073,6 +3127,15 @@ function VM_InitRoomEntry(buf) {
                 break;
             case "_VM_PLATFORM_IDLE_END":
                 global._VM_PLATFORM_IDLE_END = _bc_buf;
+                break;
+            case "_VM_MOUSE_LEFT":
+                global._VM_MOUSE_LEFT = _bc_buf;
+                break;
+            case "_VM_MOUSE_RIGHT":
+                global._VM_MOUSE_RIGHT = _bc_buf;
+                break;
+            case "_VM_KEY_PRESSED":
+                global._VM_KEY_PRESSED = _bc_buf;
                 break;
             case "_VM_FRAME":
                 global._VM_FRAME = _bc_buf;
