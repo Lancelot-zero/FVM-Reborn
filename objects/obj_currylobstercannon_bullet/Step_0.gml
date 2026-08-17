@@ -17,7 +17,7 @@ if state == "drop"{
 	var target_pos = get_world_position_from_grid(target_col,target_row)
 	y += 15
 	if y >= (target_pos.y-15){
-		var inst = instance_create_depth(x+15,y-15,-200,obj_coke_bomb_explode)
+		var inst = instance_create_depth(x+15,y-15,-800,obj_coke_bomb_explode)
 		inst.sprite_index = spr_curry_lobster_cannon_bullet_effect
 		if sprite_index == spr_curry_lobster_cannon_bullet_1{
 			inst.sprite_index = spr_curry_lobster_cannon_bullet_effect_1
