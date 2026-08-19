@@ -64,12 +64,15 @@ if hp > 0 && state != ENEMY_STATE.DEAD{
 		}
 		if anim_timer == 34*flash_speed-1{
 			var summon_grid_pos = get_grid_position_from_world(x,y)
-			instance_create_depth(summon_grid_pos.x+55,summon_grid_pos.y+38,depth,obj_windmill_fish_mouse)
+			var inst1 = instance_create_depth(summon_grid_pos.x+55,summon_grid_pos.y+38,depth,obj_windmill_fish_mouse)
+			inst1.target_col = irandom_range(4,5)
 			if grid_row > 0{
-				instance_create_depth(summon_grid_pos.x+55,summon_grid_pos.y+38-global.grid_cell_size_y,depth,obj_windmill_fish_mouse)
+				var inst2 = instance_create_depth(summon_grid_pos.x+55,summon_grid_pos.y+38-global.grid_cell_size_y,depth,obj_windmill_fish_mouse)
+				inst2.target_col = irandom_range(4,5)
 			}
 			if grid_row < global.grid_rows-1{
-				instance_create_depth(summon_grid_pos.x+55,summon_grid_pos.y+38+global.grid_cell_size_y,depth,obj_windmill_fish_mouse)
+				var inst3 = instance_create_depth(summon_grid_pos.x+55,summon_grid_pos.y+38+global.grid_cell_size_y,depth,obj_windmill_fish_mouse)
+				inst3.target_col = irandom_range(4,5)
 			}
 		}
 		if anim_timer == 36*flash_speed - 1{

@@ -140,7 +140,7 @@ switch state{
 		if timer == 16 * 5 + 2{
 			var erase_col = irandom_range(1,7)
 			var erase_row = irandom_range(1,global.grid_rows-2)
-			var missile = instance_create_depth(x-35,y-280,-800,obj_iron_man_bullet)
+			var missile = instance_create_depth(x-35,y-280,-800,obj_mermaid_mary_bullet)
 			missile.target_col = erase_col
 			missile.target_row = erase_row
 		}
@@ -171,7 +171,7 @@ switch state{
 			}
 			else if skill_count == 1{
 				enemy_row = irandom_range(1,global.grid_rows-2)
-				enemy_pos = get_world_position_from_grid(-1,enemy_row)
+				enemy_pos = get_world_position_from_grid(0,enemy_row)
 			}
 			x_move_speed = (enemy_pos.x - 90 - x)/180
 			y_move_speed = (enemy_pos.y + 30 - y)/180

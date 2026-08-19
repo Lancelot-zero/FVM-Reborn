@@ -1912,6 +1912,35 @@ function task_init(){
 				]
 			}
 		)
+		register_task("undersea_level_0",
+			{
+				"type":"side_task",
+				"title":"海底历险记",
+				"desc":"获取苏打气泡，开始你的海底旋涡之旅。",
+				"single_game":false,//非单局完成
+				"oneshot":false,//非一命完成
+				"task_unlock":"none",
+				"requirements":[
+					{
+						"type":"level_complete",
+						"target_level":"tuna_current",
+						"desc":"通关金枪鱼洋流，获取苏打气泡",
+						"require":1,
+					}
+				],
+				"rewards":[
+					{
+						"type":"item",
+						"item_id":"secret_spices",
+						"amount":50
+					},
+					{
+						"type":"gold",
+						"amount":5000
+					}
+				]
+			}
+		)
 	}
 	{//注册所有挑战任务
 		register_task("flame_save_1",

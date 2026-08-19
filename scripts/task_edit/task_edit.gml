@@ -68,6 +68,13 @@ function is_task_unlocked(task_id){
 	return false
 }
 
+function is_task_complete(task_id){
+	if array_get_index(global.save_data.completed_tasks,task_id) != -1{
+		return true
+	}
+	return false
+}
+
 function get_task_index(task_id){
 	for(var i = 0 ; i < array_length(global.save_data.tasks);i++){
 		if global.save_data.tasks[i].id == task_id{

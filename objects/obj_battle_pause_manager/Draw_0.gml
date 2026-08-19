@@ -115,7 +115,7 @@ if (global.is_paused)
 						}
 						if global.level_data.id == "tower_cake_35_3"{
 							draw_set_colour(c_yellow)
-							draw_text(1200,435,"你解锁了一项独特的奖励")
+							draw_text(1200,435,"你已在背包内的“冒险战绩”中获得勋章")
 						}
 						
 					}

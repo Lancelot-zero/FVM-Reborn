@@ -34,4 +34,4 @@ btn5.sprite_index = spr_world_map_undersea_vortex
 btn5.map_name = "海底旋涡"
 btn5.map_id = "undersea_vortex"
 btn5.room_target = room_map
-btn5.level_require = 99
+btn5.level_require = 20

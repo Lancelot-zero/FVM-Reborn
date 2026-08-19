@@ -21,6 +21,7 @@ idle_anim = 10
 flash_speed = 5
 plant_type = "normal"
 is_slowdown = false
+drown_timer = 0
 
 if shape >= 2{
 	attack_anim = 16

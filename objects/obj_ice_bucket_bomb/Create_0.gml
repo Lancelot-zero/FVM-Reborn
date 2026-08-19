@@ -15,7 +15,7 @@ else if shape == 2{
 // ========== 特定属性默认值 ==========
 
 attack_anim = 7;
-if global.level_file.level_time_feature == "daytime"{
+if global.level_file.level_time_feature == "daytime" && shape < 2{
 	state = CARD_STATE.SLEEP
 	if shape == 0{
 		sprite_index = spr_ice_bucket_bomb_sleep

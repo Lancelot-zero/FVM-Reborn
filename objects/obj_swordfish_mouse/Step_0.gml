@@ -50,13 +50,15 @@ if hp > 0 && state != ENEMY_STATE.DEAD{
 		with obj_card_parent{
 			if grid_col == other.grid_col && grid_row == other.grid_row &&
 			plant_id != "player" && plant_type != "coffee" && !invincible && plant_id != "cotton_candy" && plant_id != "soda_bubble"{
-				if array_get_index(other.block_list,id)  == -1{
+				if array_get_index(other.block_list,plant_id)  == -1{
 					if hp >= max_hp{
 						obj_task_manager.card_loss++
 					}
 					instance_destroy()
 				}
 				else{
+					hp -= 300
+					event_user(2)
 					other.timer = 0
 					other.state = ENEMY_STATE.DIG
 					sprite_index = spr_swordfish_mouse_stun
@@ -65,7 +67,7 @@ if hp > 0 && state != ENEMY_STATE.DEAD{
 		}
 	}
 	if state == ENEMY_STATE.DIG{
-		
+		sprite_index = spr_swordfish_mouse_stun
 		if hp > maxhp * hurt_rate{
 			image_index = floor(timer/flash_speed) mod 30
 		}

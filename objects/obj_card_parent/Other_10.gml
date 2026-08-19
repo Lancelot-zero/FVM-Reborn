@@ -87,7 +87,7 @@ if global.network.mode=="client"{
     }
     
     // 获取该网格的植物列表
-    var plant_list = ds_grid_get(global.grid_plants, col, row);
+    // var plant_list = ds_grid_get(global.grid_plants, col, row);
     
     // 根据植物类型检查是否可以种植
 	if target_card != "none"{
@@ -106,3 +106,4 @@ if global.network.mode=="client"{
 	}
 
 */
+
