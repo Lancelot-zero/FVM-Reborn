@@ -15,4 +15,5 @@ function map_object_init(){
 	register_map_object("obstacle",{"name":"障碍物","_obj":obj_obstacle,"x_offset":0,"y_offset":-35})
 	register_map_object("wind_tunnel",{"name":"风洞","_obj":obj_wind_tunnel,"x_offset":5,"y_offset":-35})
 	register_map_object("lava",{"name":"岩浆","_obj":obj_lava,"x_offset":0,"y_offset":-35})
+	register_map_object("seawater",{"name":"海水","_obj":obj_seawater,"x_offset":0,"y_offset":-35})
 }

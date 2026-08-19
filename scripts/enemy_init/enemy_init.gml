@@ -126,4 +126,9 @@ function enemy_init(){
 	register_enemy("undersea_submarine_2",{"name":"海底潜艇2","_obj":obj_undersea_submarine_2,"hp":3600,"shield":0,"description":"海底潜艇2：入场后释放三个翻车鱼鼠","speed":0.6,"atk":10,"cycle":36,"range":90,"ash_proof":true,"spr":spr_undersea_submarine,"feature":"land"})
 	register_enemy("swordfish_mouse",{"name":"剑鱼鼠","_obj":obj_swordfish_mouse,"hp":1000,"shield":0,"description":"剑鱼鼠：蓄力后冲刺，被老虎蟹面包阻挡","speed":0.6,"atk":10,"cycle":36,"range":90,"ash_proof":false,"spr":spr_swordfish_mouse,"feature":"land"})
 	register_enemy("seahorse_mouse",{"name":"海马鼠","_obj":obj_seahorse_mouse,"hp":3600,"shield":0,"description":"海马鼠：连续跳过卡片","speed":0.6,"atk":10,"cycle":36,"range":90,"ash_proof":false,"spr":spr_seahorse_mouse,"feature":"land"})
+	register_enemy("mermaid_mary",{"name":"人鱼玛丽","_obj":obj_mermaid_mary,"hp":50000,"shield":0,"description":"人鱼玛丽：海底旋涡BOSS","speed":0.3,"atk":10,"cycle":36,"range":90,"ash_proof":true,"spr":spr_mermaid_mary_idle,"feature":"land"})
+	register_enemy("machine_shark_1",{"name":"机械鲨鱼一态","_obj":obj_machine_shark_1,"hp":80000,"shield":0,"description":"机械鲨鱼一态：北极贝湍流BOSS","speed":0.3,"atk":10,"cycle":36,"range":90,"ash_proof":true,"spr":spr_machine_shark_1_idle,"feature":"land"})
+	register_enemy("lobster_knight",{"name":"龙虾骑士","_obj":obj_lobster_knight,"hp":90000,"shield":0,"description":"龙虾骑士：海底旋涡BOSS","speed":0.3,"atk":10,"cycle":36,"range":90,"ash_proof":true,"spr":spr_lobster_knight_idle,"feature":"land"})
+	register_enemy("electric_jellyfish",{"name":"电光水母","_obj":obj_electric_jellyfish,"hp":90000,"shield":0,"description":"电光水母：海底旋涡BOSS","speed":0.3,"atk":10,"cycle":36,"range":90,"ash_proof":true,"spr":spr_electric_jellyfish_idle,"feature":"land"})
+	register_enemy("machine_shark_2",{"name":"机械鲨鱼二态","_obj":obj_machine_shark_2,"hp":120000,"shield":0,"description":"机械鲨鱼二态：天妇罗旋涡BOSS","speed":0.3,"atk":10,"cycle":36,"range":90,"ash_proof":true,"spr":spr_machine_shark_1_idle,"feature":"land"})
 }

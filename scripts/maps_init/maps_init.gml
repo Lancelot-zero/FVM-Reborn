@@ -222,7 +222,8 @@ function maps_init(){
 					"boss_music":mus_volcanic_tower_boss,
 					"pre_level":"tower_cake_7_1",
 					"rewards":[
-						{"card_id":"triple_wine_rack","target_shape":1}
+						{"card_id":"triple_wine_rack","target_shape":1},
+						{"card_id":"soda_bubble","target_shape":1}
 					]
 				},
 				{
@@ -454,7 +455,8 @@ function maps_init(){
 					"pre_level":"tower_cake_15_1",
 					"rewards":[
 						{"card_id":"kettle_bomb","target_shape":1},
-						{"card_id":"king_triple_long_bao","target_shape":1}
+						{"card_id":"king_triple_long_bao","target_shape":1},
+						{"card_id":"coal_starfish","target_shape":1}
 					]
 				},
 				{
@@ -571,7 +573,8 @@ function maps_init(){
 					"boss_music":mus_volcanic_tower_boss,
 					"pre_level":"tower_cake_19_1",
 					"rewards":[
-						{"card_id":"melon_shield","target_shape":2}
+						{"card_id":"melon_shield","target_shape":2},
+						{"card_id":"curry_lobster_cannon","target_shape":1}
 					]
 				},
 				{
@@ -585,7 +588,8 @@ function maps_init(){
 					"boss_music":mus_volcanic_tower_boss,
 					"pre_level":"tower_cake_19_2",
 					"rewards":[
-						{"card_id":"ice_egg_boiler_pult","target_shape":2}
+						{"card_id":"large_fire","target_shape":2},
+						{"card_id":"horseshoe_crab_bread","target_shape":1}
 					]
 				},
 				{
@@ -599,7 +603,7 @@ function maps_init(){
 					"boss_music":mus_volcanic_tower_boss,
 					"pre_level":"tower_cake_20_1",
 					"rewards":[
-						{"card_id":"large_fire","target_shape":2},
+						{"card_id":"ice_egg_boiler_pult","target_shape":2},
 						{"card_id":"tang_hu_lu","target_shape":1}
 					]
 				},
@@ -674,7 +678,7 @@ function maps_init(){
 					"boss_music":mus_floating_island_daytime_boss,
 					"pre_level":"tower_cake_22_2",
 					"rewards":[
-						{"card_id":"hotdog_cannon","target_shape":2}
+						{"card_id":"hotdog_cannon","target_shape":2},
 					]
 				},
 				{
@@ -762,6 +766,7 @@ function maps_init(){
 					"pre_level":"tower_cake_25_2",
 					"rewards":[
 						{"card_id":"double_water_pipe","target_shape":2},
+						{"card_id":"coal_starfish","target_shape":2}
 					]
 				},
 				{
@@ -1020,7 +1025,8 @@ function maps_init(){
 					"boss_music":mus_floating_island_daytime_boss,
 					"pre_level":"tower_cake_34_2",
 					"rewards":[
-						{"card_id":"chocolate_cannon","target_shape":2}
+						{"card_id":"chocolate_cannon","target_shape":2},
+						{"card_id":"curry_lobster_cannon","target_shape":2}
 					]
 				},
 				{
@@ -1605,6 +1611,150 @@ function maps_init(){
 					"elite_music":mus_undersea_vortex_daytime,
 					"boss_music":mus_undersea_vortex_boss,
 					"player_level_require":20,
+					"pre_level_require":[]
+				},
+				{
+					"id":"coral_current_daytime",
+					"name":"珊瑚洋流（日）",
+					"button_spr":spr_levelselect_button_undersea,
+					"button_index":1,
+					"button_x":310,
+					"button_y":600,
+					"level_file":"undersea/coral_current_daytime.json",
+					"hard_level_file":"undersea/coral_current_daytime_hard.json",
+					"level_sprite":spr_coral_current_daytime,
+					"pre_music":mus_undersea_vortex_daytime,
+					"elite_music":mus_undersea_vortex_daytime,
+					"boss_music":mus_undersea_vortex_boss,
+					"player_level_require":30,
+					"pre_level_require":["tuna_current"]
+				},
+				{
+					"id":"coral_current_night",
+					"name":"珊瑚洋流（夜）",
+					"button_spr":spr_levelselect_button_undersea,
+					"button_index":2,
+					"button_x":540,
+					"button_y":540,
+					"level_file":"undersea/coral_current_night.json",
+					"hard_level_file":"undersea/coral_current_night_hard.json",
+					"level_sprite":spr_coral_current_night,
+					"pre_music":mus_undersea_vortex_night,
+					"elite_music":mus_undersea_vortex_night,
+					"boss_music":mus_undersea_vortex_boss,
+					"player_level_require":30,
+					"pre_level_require":["coral_current_daytime"]
+				},
+				{
+					"id":"arctic_bay_turbulence",
+					"name":"北极贝湍流",
+					"button_spr":spr_levelselect_button_undersea,
+					"button_index":3,
+					"button_x":860,
+					"button_y":720,
+					"level_file":"undersea/arctic_bay_turbulence.json",
+					"hard_level_file":"undersea/arctic_bay_turbulence_hard.json",
+					"level_sprite":spr_arctic_bay_turbulence,
+					"pre_music":mus_undersea_vortex_daytime,
+					"elite_music":mus_undersea_vortex_daytime,
+					"boss_music":mus_undersea_vortex_boss,
+					"player_level_require":40,
+					"pre_level_require":["coral_current_night"]
+				},
+				{
+					"id":"arctic_bay_turbulence_warrior",
+					"name":"深海涟漪",
+					"button_spr":spr_levelselect_button_undersea,
+					"button_index":7,
+					"button_x":740,
+					"button_y":870,
+					"level_file":"undersea/arctic_bay_turbulence_warrior.json",
+					"hard_level_file":"undersea/arctic_bay_turbulence_warrior_hard.json",
+					"level_sprite":spr_arctic_bay_turbulence,
+					"pre_music":mus_undersea_vortex_daytime,
+					"elite_music":mus_undersea_vortex_daytime,
+					"boss_music":mus_undersea_vortex_boss,
+					"player_level_require":50,
+					"pre_level_require":["coral_current_night"]
+				},
+				{
+					"id":"sea_anemone_current_daytime",
+					"name":"海葵洋流（日）",
+					"button_spr":spr_levelselect_button_undersea,
+					"button_index":4,
+					"button_x":1090,
+					"button_y":650,
+					"level_file":"undersea/sea_anemone_current_daytime.json",
+					"hard_level_file":"undersea/sea_anemone_current_daytime_hard.json",
+					"level_sprite":spr_sea_anemone_current_daytime,
+					"pre_music":mus_undersea_vortex_daytime,
+					"elite_music":mus_undersea_vortex_daytime,
+					"boss_music":mus_undersea_vortex_boss,
+					"player_level_require":45,
+					"pre_level_require":["arctic_bay_turbulence"]
+				},
+				{
+					"id":"sea_anemone_current_night",
+					"name":"海葵洋流（夜）",
+					"button_spr":spr_levelselect_button_undersea,
+					"button_index":5,
+					"button_x":1200,
+					"button_y":830,
+					"level_file":"undersea/sea_anemone_current_night.json",
+					"hard_level_file":"undersea/sea_anemone_current_night_hard.json",
+					"level_sprite":spr_sea_anemone_current_night,
+					"pre_music":mus_undersea_vortex_night,
+					"elite_music":mus_undersea_vortex_night,
+					"boss_music":mus_undersea_vortex_boss,
+					"player_level_require":45,
+					"pre_level_require":["sea_anemone_current_daytime"]
+				},
+				{
+					"id":"tempura_vortex",
+					"name":"天妇罗旋涡",
+					"button_spr":spr_levelselect_button_undersea,
+					"button_index":6,
+					"button_x":1500,
+					"button_y":510,
+					"level_file":"undersea/tempura_vortex.json",
+					"hard_level_file":"undersea/tempura_vortex_hard.json",
+					"level_sprite":spr_tempura_vortex,
+					"pre_music":mus_undersea_vortex_night,
+					"elite_music":mus_undersea_vortex_night,
+					"boss_music":mus_undersea_vortex_boss,
+					"player_level_require":50,
+					"pre_level_require":["sea_anemone_current_night"]
+				},
+				{
+					"id":"tempura_vortex_warrior",
+					"name":"怒海澜涛",
+					"button_spr":spr_levelselect_button_undersea,
+					"button_index":8,
+					"button_x":1420,
+					"button_y":660,
+					"level_file":"undersea/tempura_vortex_warrior.json",
+					"hard_level_file":"undersea/tempura_vortex_warrior_hard.json",
+					"level_sprite":spr_tempura_vortex,
+					"pre_music":mus_undersea_vortex_night,
+					"elite_music":mus_undersea_vortex_night,
+					"boss_music":mus_undersea_vortex_boss,
+					"player_level_require":60,
+					"pre_level_require":["sea_anemone_current_night"]
+				},
+				{
+					"id":"tower_cake",
+					"name":"魔塔蛋糕",
+					"button_spr":spr_levelselect_button,
+					"button_index":14,
+					"button_x":1130,
+					"button_y":320,
+					"level_file":"volcanic/cheese_castle.json",
+					"hard_level_file":"volcanic/cheese_castle_hard.json",
+					"level_sprite":spr_cheese_castle,
+					"pre_music":mus_volcanic_island_crown_pre,
+					"elite_music":mus_volcanic_island_crown_elite,
+					"boss_music":mus_volcanic_island_night_boss,
+					"player_level_require":8,
 					"pre_level_require":[]
 				},
 			]

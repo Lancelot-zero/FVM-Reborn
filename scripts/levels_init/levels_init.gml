@@ -44,4 +44,11 @@ function level_info_island_init(){
 	register_level_info_island("lilac_rainbow_daytime",{"name":"丁香彩虹（日）","icon":spr_levelselect_button_floating,"spr":spr_lilac_rainbow_daytime,"description":"机械蜂箱鼠会释放难缠的机械蜜蜂，需要尽快消灭。\n蜗牛鼠留下的黏液会让老鼠加速，可以使用鱼刺处理掉。","spr_index":12})
 	register_level_info_island("lilac_rainbow_night",{"name":"丁香彩虹（夜）","icon":spr_levelselect_button_floating,"spr":spr_lilac_rainbow_night,"description":"绿巨鼠的破坏力很强，需要尽快集火削弱技能。","spr_index":13})
 	register_level_info_island("spices_central_isle",{"name":"十三香中心岛","icon":spr_levelselect_button_floating,"spr":spr_spices_central_isle,"description":"鼠国列车三态的每个技能都有应对策略，多练习即可完美解决。","spr_index":14})
+	register_level_info_island("tuna_current",{"name":"金枪鱼洋流","icon":spr_levelselect_button_undersea,"spr":spr_tuna_current,"description":"陆地卡片需要放在苏打气泡里，否则每秒会受到5%最大生命值的伤害。\n本关初始放置了大量苏打气泡，但是没有获取苏打气泡卡片，注意保护好场\n上现存的苏打气泡。","spr_index":0})
+	register_level_info_island("coral_current_daytime",{"name":"珊瑚洋流（日）","icon":spr_levelselect_button_undersea,"spr":spr_coral_current_daytime,"description":"电鳗鼠会伤害最后一张卡片，注意防护。","spr_index":1})
+	register_level_info_island("coral_current_night",{"name":"珊瑚洋流（夜）","icon":spr_levelselect_button_undersea,"spr":spr_coral_current_night,"description":"使用咖啡粉对付人鱼玛丽的催眠技能，输出摧毁海浪。","spr_index":2})
+	register_level_info_island("arctic_bay_turbulence",{"name":"北极贝湍流","icon":spr_levelselect_button_undersea,"spr":spr_arctic_bay_turbulence,"description":"机械鲨鱼的技能破坏性强，注意及时补阵。","spr_index":3})
+	register_level_info_island("sea_anemone_current_daytime",{"name":"海葵洋流（日）","icon":spr_levelselect_button_undersea,"spr":spr_sea_anemone_current_daytime,"description":"使用老虎蟹面包抵挡剑鱼鼠的冲刺。\n龙虾骑士的破坏性很强，需要尽快集火击杀。","spr_index":4})
+	register_level_info_island("sea_anemone_current_night",{"name":"海葵洋流（夜）","icon":spr_levelselect_button_undersea,"spr":spr_sea_anemone_current_night,"description":"使用糖葫芦炮弹对付海底潜艇。\n电光水母的能量球需要尽快摧毁，否则很容易火苗不足。","spr_index":5})
+	register_level_info_island("tempura_vortex",{"name":"天妇罗旋涡","icon":spr_levelselect_button_undersea,"spr":spr_tempura_vortex,"description":"机械鲨鱼二态的破坏性要强得多，尽力在第4行摆放输出卡片吧。","spr_index":6})
 }
