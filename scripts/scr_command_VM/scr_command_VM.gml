@@ -1679,7 +1679,24 @@ function VM_SetProp(inst_id_addr, prop_addr, value_addr) {
     // 客户端：有 net_id 则跳过，服务端会通过 MSG_MODIFY_PROP 同步
     if (global.network.mode == "client" && global._VM_sync_exec
         && ds_map_exists(global.network.map_instance_id_net_id, inst_id)) return;
+		
+		
+	if(prop=="grid_col"||prop=="grid_row"){
+		if( object_is_ancestor(obj_card_parent, instance_id) ){
+			var _list = ds_grid_get(global.grid_plants, instance_id.grid_col, instance_id.grid_row);
+			ds_list_delete(_list,ds_list_find_index(_list,inst_id))
+		}
+	}
     variable_instance_set(inst_id, prop, value);
+	if(prop=="x"||prop=="y"){
+		update_plant_bindings(inst_id);
+	}
+	if(prop=="grid_col"||prop=="grid_row"){
+		if( object_is_ancestor(obj_card_parent, instance_id) ){
+			var _list = ds_grid_get(global.grid_plants, instance_id.grid_col, instance_id.grid_row);
+			ds_list_add(_list,instance_id)
+		}
+	}
     if (global.network.mode == "server") {
         var _nid = ds_map_exists(global.network.map_instance_id_net_id, inst_id) ? global.network.map_instance_id_net_id[? inst_id] : -1;
         if (_nid != -1) {
