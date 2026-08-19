@@ -37,5 +37,6 @@ if attack_timer == 1{
 	}
 }
 if attack_timer > current_flash_speed * idle_anim-1{
+	x+=1000;
 	instance_destroy()
 }

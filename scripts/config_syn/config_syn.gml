@@ -166,6 +166,7 @@ global.boss_spawn_sync_list = [
 	obj_mouse_ash_death,
 	// panda
 	obj_little_panda_mouse,
+	obj_little_undersea_panda_mouse,
 	// 敌人产物补全（航母/蜂巢/潜艇/蝙蝠/蜗牛/士兵）
 	obj_machine_bomb_mouse,
 	obj_machine_bee,

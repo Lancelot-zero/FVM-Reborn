@@ -1011,17 +1011,17 @@ function VM_GetPlantAt(col_addr, row_addr, layer_addr) {
 /// @description 植物移动后更新其绑定的标记对象（星星/睡眠/水花）和玩家武器位置
 function update_plant_bindings(_p) {
 	if (!instance_exists(_p)) return;
-	if (instance_exists(_p.banding_star_obj)) {
+	if (variable_struct_exists(_p, "banding_star_obj")&&instance_exists(_p.banding_star_obj)) {
 		_p.banding_star_obj.x = _p.x;
 		_p.banding_star_obj.y = _p.y - 5;
 		_p.banding_star_obj.depth = _p.depth - 1;
 	}
-	if (instance_exists(_p.banding_sleep_obj)) {
+	if (variable_struct_exists(_p, "banding_sleep_obj")&&instance_exists(_p.banding_sleep_obj)) {
 		_p.banding_sleep_obj.x = _p.x - 15;
 		_p.banding_sleep_obj.y = _p.y - 20;
 		_p.banding_sleep_obj.depth = _p.depth - 1;
 	}
-	if (instance_exists(_p.banding_water_obj)) {
+	if (variable_struct_exists(_p, "banding_water_obj")&&instance_exists(_p.banding_water_obj)) {
 		_p.banding_water_obj.x = _p.x;
 		_p.banding_water_obj.y = _p.y;
 		_p.banding_water_obj.depth = _p.depth + 5;

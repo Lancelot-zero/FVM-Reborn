@@ -118,6 +118,16 @@ function parse_network_message(buf, _sock) {
 				}
 			}
 			
+			// sprite_list 字符串名还原为本地ID
+			if (variable_struct_exists(_props, "sprite_list")) {
+			    var _sl = _props[$ "sprite_list"];
+			    for (var _si = 0; _si < array_length(_sl); _si++) {
+			        if (is_string(_sl[_si])) {
+			           _sl[_si] = get_load_sprite(_sl[_si]);		            
+			        }
+			    }
+				_props[$ "sprite_list"] = _sl;
+			}
 			if (_sprite_name != "") {
 				_props[$ "sprite_index"] =get_load_sprite( _sprite_name);
 			}
@@ -275,6 +285,7 @@ function parse_network_message(buf, _sock) {
 			           _sl[_si] = get_load_sprite(_sl[_si]);		            
 			        }
 			    }
+				_props[$ "sprite_list"] = _sl;
 			}
 			if (_sprite_name != "") {
 				_props[$ "sprite_index"] = get_load_sprite(_sprite_name);
@@ -409,7 +420,7 @@ function parse_network_message(buf, _sock) {
             var _inst = global.network.map_net_id_instance_id[? _net_id];
 			// 炸弹类/幻幻鸡：立即销毁，动画与服务端同步（不进延迟队列）
 			if (instance_exists(_inst)) {
-				if array_contains([obj_wine_bottle_bomb,obj_aquarius_elve,obj_whisky_bomb,obj_kettle_bomb,obj_coke_bomb,obj_bull_firework,obj_magic_chicken,obj_coffee_grounds,obj_firework_dragon,obj_chili_powder],_inst.object_index){
+				if array_contains([obj_wine_bottle_bomb,obj_aquarius_elve,obj_whisky_bomb,obj_kettle_bomb,obj_coke_bomb,obj_bull_firework,obj_magic_chicken,obj_coffee_grounds,obj_firework_dragon,obj_chili_powder,obj_ice_cream],_inst.object_index){
 					global.network.client_able = true;
 					instance_destroy(_inst);
 					global.network.client_able = false;

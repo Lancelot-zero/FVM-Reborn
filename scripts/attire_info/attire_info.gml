@@ -19,8 +19,11 @@ function is_attire_unlocked(attire_id){
 
 function card_equipped_attire_id(card_id){
 	// 联机模式不使用本地时装（避免文件不同步导致显示不一致）
-	exempt_list = ["player","soda_bubble"]
-	if (global.network.mode != "offline"&& ds_list_find_index(exempt_list,card_id)==-1){
+	//var exempt_list = ["player","soda_bubble"]
+	if (global.network.mode != "offline" && card_id!="player"){
+		if(card_id=="soda_bubble"){
+			return "bubble_maltose"
+		}
 		return -1
 	}
 	var attire_list = global.save_data.attires

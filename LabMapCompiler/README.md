@@ -471,7 +471,7 @@ chili_powder  tang_hu_lu  beef_hotpot  spicy_pot  pan_fried_bun
 ### 物件名（9 个）
 
 ```
-obstacle  lava  wind_tunnel  barrier  mouse_hole
+obstacle  lava  seawater  wind_tunnel  barrier  mouse_hole
 pharaoh_hole  buzz_wind  cloud  ladder
 ```
 

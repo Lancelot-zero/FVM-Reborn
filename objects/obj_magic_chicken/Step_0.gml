@@ -75,12 +75,12 @@ if attack_timer == 15 * current_flash_speed - 1&& global.network.mode != "client
 			new_card[$ "current_level"] = target_card_info[$ "level"]
 		}
 		card_created(new_card, logical_col, logical_row)
-		
 		network_apply_plant_level(new_card);
 		
 	}
 }
 
 if attack_timer > current_flash_speed * 29 - 1{
+	  x+=1000;
       instance_destroy()
 }

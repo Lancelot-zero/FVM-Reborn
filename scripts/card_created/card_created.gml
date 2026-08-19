@@ -26,8 +26,27 @@ function card_created(plant_inst, col, row) {
 					plant_type: deck_get_card_data(_target, get_card_info(_target)[$ "shape"])[? "plant_type"],
 					//sprite_index: ds_map_exists(global._pid_reverse, global.prev_place_id_shape) ? global._pid_reverse[? global.prev_place_id_shape] : sprite_get_name(global.prev_place_id_shape),
 				}
+				
 				_meta = {target_card:_target,target_card_info:target_card_info};
 			}
+		}else{
+		
+			// 同步 sprite_list（转为字符串名）
+			if (variable_instance_exists(plant_inst, "sprite_list")) {
+			    var _sl = plant_inst.sprite_list;
+			    var _sl_names = [];
+			    for (var _si = 0; _si < array_length(_sl); _si++) {
+			        _sid = _sl[_si];
+					if(!is_string(_sid)){
+						if(ds_map_exists(global._pid_reverse, _sid))
+							_sl_names[_si] =  global._pid_reverse[? _sid];
+						else
+							_sl_names[_si] = sprite_get_name(_sid);
+					}
+			    }
+			    _meta[$ "sprite_list"] = _sl_names;
+			}
+
 		}
 
 		var _plat = get_platform_at_grid(col, row)
@@ -118,8 +137,13 @@ function card_created(plant_inst, col, row) {
 		    var _sl = plant_inst.sprite_list;
 		    var _sl_names = [];
 		    for (var _si = 0; _si < array_length(_sl); _si++) {
-		        var _sid = _sl[_si];
-		        _sl_names[_si] = ds_map_exists(global._pid_reverse, _sid) ? global._pid_reverse[? _sid] : sprite_get_name(_sid);
+			    _sid = _sl[_si];
+				if(!is_string(_sid)){
+					if(ds_map_exists(global._pid_reverse, _sid))
+						_sl_names[_si] =  global._pid_reverse[? _sid];
+					else
+						_sl_names[_si] = sprite_get_name(_sid);
+				}
 		    }
 		    _meta[$ "sprite_list"] = _sl_names;
 		}

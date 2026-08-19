@@ -151,7 +151,7 @@ static const std::vector<const char*> VALID_CARD_IDS = {
 
 // 物件名（VM_SpawnObject / VM_ClearMapObjects）
 static const std::vector<const char*> VALID_OBJECT_NAMES = {
-    "obstacle","lava","wind_tunnel","mouse_hole",
+    "obstacle","lava","seawater","wind_tunnel","mouse_hole",
     "pharaoh_hole","buzz_wind","cloud","ladder","barrier",
 };
 
