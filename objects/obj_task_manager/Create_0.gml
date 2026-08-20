@@ -104,7 +104,8 @@ function refresh_task_progress(){
 					//遍历卡组，如果没找到相关卡片，则没有携带
 					not_use_designated_card = true
 					for(var k = 0 ; k < ds_list_size(global.selected_deck) ; k++){
-						if array_get_index(limit_card_list,global.selected_deck[| k][? "card_id"]) != -1{
+						if deck_slot_is_empty(k) continue;
+				if array_get_index(limit_card_list,global.selected_deck[| k][? "card_id"]) != -1{
 							not_use_designated_card = false
 						}
 					}
