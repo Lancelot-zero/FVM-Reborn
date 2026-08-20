@@ -61,8 +61,8 @@ function deck_empty_slot_ensure() {
 /// @desc 把 selected_deck 补齐到 max_slot 长度（不足追加以 [deck_empty_slot] 占位）
 function deck_ensure_size() {
     deck_empty_slot_ensure();
-    var max = deck_slot_max();
-    while (ds_list_size(global.selected_deck) < max) {
+    var _max = deck_slot_max();
+    while (ds_list_size(global.selected_deck) < _max) {
         ds_list_add(global.selected_deck, global.deck_empty_slot);
     }
 }
@@ -82,8 +82,8 @@ function deck_slot_is_empty(i) {
 function deck_slot_count() {
     deck_ensure_size();
     var n = 0;
-    var max = ds_list_size(global.selected_deck);
-    for (var i = 0; i < max; i++) {
+    var _max = ds_list_size(global.selected_deck);
+    for (var i = 0; i < _max; i++) {
         if (!deck_slot_is_empty(i)) n++;
     }
     return n;
@@ -93,8 +93,8 @@ function deck_slot_count() {
 /// @desc 返回最靠前空槽下标，无空槽返回 -1
 function deck_slot_first_empty() {
     deck_ensure_size();
-    var max = ds_list_size(global.selected_deck);
-    for (var i = 0; i < max; i++) {
+    var _max = ds_list_size(global.selected_deck);
+    for (var i = 0; i < _max; i++) {
         if (deck_slot_is_empty(i)) return i;
     }
     return -1;
@@ -116,10 +116,10 @@ function remove_from_deck(i) {
 /// @function clear_deck()
 /// @desc 清空整个卡组（所有槽位置空，长度保留 max_slot）
 function clear_deck() {
-    var max = deck_slot_max();
+    var _max = deck_slot_max();
     ds_list_clear(global.selected_deck);
     deck_empty_slot_ensure();
-    for (var i = 0; i < max; i++) {
+    for (var i = 0; i < _max; i++) {
         ds_list_add(global.selected_deck, global.deck_empty_slot);
     }
 }

@@ -28,9 +28,9 @@ function load_custom_deck(deck_index) {
 }
 
 function save_to_custom_deck(deck_index,deck_name){
-	var max = deck_slot_max()
-	var card_arr = array_create(max, "")
-	for(var i = 0; i < max;i++){
+	var _max = deck_slot_max()
+	var card_arr = array_create(_max, "")
+	for(var i = 0; i < _max;i++){
 		if (!deck_slot_is_empty(i)){
 			card_arr[i] = global.selected_deck[| i][? "card_id"]
 		}
