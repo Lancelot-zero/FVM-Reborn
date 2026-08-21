@@ -265,8 +265,8 @@ if (isOpen) {
 
 // ========== 右上角信息框（房间成员 + 最新消息预览，联机时显示） ==========
 if (global.network.mode != "offline") {
-	var _pad = 8;
-	var _box_w = 260;
+	var _pad = 5;
+	var _box_w = 390;
 	var _gui_w = display_get_gui_width();
 
 	draw_set_font(consoleFont);
@@ -291,14 +291,14 @@ if (global.network.mode != "offline") {
 		array_push(_lines, "等待...");
 	}
 
-	var _box_h = array_length(_lines) * _lh + _pad * 2;
-	var _x1 = _gui_w - _box_w - _pad;
-	var _y1 = _pad;
+	var _x1 = 20;
+	var _y1 =  display_get_gui_height()- _pad - 9 * _lh-20;                                  // 顶部留出9行
+	var _box_h = 9 * _lh;         // 向下占满屏幕底部
 
-	draw_set_alpha(0.6);
+	draw_set_alpha(0.4);
 	draw_set_color(c_black);
 	draw_roundrect_ext(_x1, _y1, _x1 + _box_w, _y1 + _box_h, 6, 6, false);
-	draw_set_alpha(0.5);
+	draw_set_alpha(0.8);
 	draw_set_color(c_white);
 	draw_roundrect_ext(_x1, _y1, _x1 + _box_w, _y1 + _box_h, 6, 6, true);
 

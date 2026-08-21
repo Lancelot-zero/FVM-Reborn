@@ -78,7 +78,7 @@ for(var i = 0;i < global.level_file.total_waves && i < _wave_count;i ++){
       for (var i = 0; i < ds_list_size(global.selected_deck); i++) {
           var _entry = global.selected_deck[| i];
           var _card = _entry[? "data"];
-          if (is_undefined(_card)) continue;
+          if (is_undefined(_card) || _card == noone) continue;
           var _obj = _card[? "obj"];
           if (is_undefined(_obj) || is_undefined(global._object_deps)) continue;
           var _obj_name = object_get_name(_obj);
