@@ -1,5 +1,5 @@
 if on_click and !obj_readyroom_manager.is_submenu_open{
-	if ds_list_size(global.selected_deck) > 0{
+	if deck_slot_count() > 0{
 		button_pushed = true
 		audio_play_sound(snd_button,0,0)
 	}
