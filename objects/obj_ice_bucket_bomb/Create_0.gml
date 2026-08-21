@@ -27,6 +27,9 @@ if global.level_file.level_time_feature == "daytime" && shape < 2{
 		sprite_index = spr_ice_bucket_bomb_sleep_2
 	}
 }
+else{
+	invincible = true
+}
 idle_anim = 9
 flash_speed = 6
 plant_type = "normal"
