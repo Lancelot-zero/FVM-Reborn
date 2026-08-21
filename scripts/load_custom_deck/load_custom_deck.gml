@@ -2,8 +2,9 @@
 /// @desc 加载自定义卡组（未来从存档/菜单读取）
 /// @param {real} deck_index 卡组ID
 function load_custom_deck(deck_index) {
-    // 清空当前卡组
+    // 清空当前卡组并按槽位重建
     ds_list_clear(global.selected_deck);
+
 
     // VM 卡槽上限
     var _max_slot = 21;
@@ -11,16 +12,21 @@ function load_custom_deck(deck_index) {
         _max_slot = global._VM_max_slots;
     }
 
-    // 添加新卡牌
-    var _cards = global.save_data.saved_decks[deck_index].card_id;
-    for(var i = 0; i < array_length(_cards); i++) {
-        if (ds_list_size(global.selected_deck) >= _max_slot) break;
-        var info = get_card_info(_cards[i]);
+    deck_ensure_size();
+
+    // 添加新卡牌（保留存档槽位；旧紧凑档顺次填前 N 槽自动兼容）
+    var card_ids = global.save_data.saved_decks[deck_index].card_id;
+    var len = array_length(card_ids);
+    for(var i = 0; i < len; i++) {
+		if(deck_slot_count()>_max_slot)break;
+        var cid = card_ids[i];
+        if (cid == "" || is_undefined(cid) || cid == noone) continue; // 跳过空槽
+        var info = get_card_info(cid);
         if (info != false) {
-            add_to_deck(_cards[i], info.shape);
+            add_to_deck(cid, info.shape, i);
         }
     }
-    
+
     // 重新创建卡槽（需在战斗房间调用）
     if (instance_exists(obj_battle)) {
         // 先删除旧卡槽
@@ -31,10 +37,13 @@ function load_custom_deck(deck_index) {
 }
 
 function save_to_custom_deck(deck_index,deck_name){
-	array_delete(global.save_data.saved_decks[deck_index].card_id,0,21)
-	var length = ds_list_size(global.selected_deck)
-	for(var i = 0; i < length;i++){
-		global.save_data.saved_decks[deck_index].card_id[i] = global.selected_deck[| i][? "card_id"]
+	var _max = deck_slot_max()
+	var card_arr = array_create(_max, "")
+	for(var i = 0; i < _max;i++){
+		if (!deck_slot_is_empty(i)){
+			card_arr[i] = global.selected_deck[| i][? "card_id"]
+		}
 	}
+	global.save_data.saved_decks[deck_index].card_id = card_arr
 	save_file(global.save_slot)
 }

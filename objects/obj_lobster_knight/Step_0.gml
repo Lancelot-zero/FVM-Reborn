@@ -83,12 +83,24 @@ switch state{
 		}
 		
 		if timer == 34 * 5 + 2{
-			var t_row = irandom_range(0,global.grid_rows-1)
-			var bullet_pos = get_world_position_from_grid(4,t_row)
-			var missle = instance_create_depth(bullet_pos.x,bullet_pos.y-180,-800,obj_lobster_knight_bullet)
-			missle.target_col = 4
-			missle.target_row = t_row
-			missle.y_move_speed = 15
+			var t_row1 = irandom_range(0,global.grid_rows-1)
+			var bullet_pos1 = get_world_position_from_grid(4,t_row1)
+			var missle1 = instance_create_depth(bullet_pos1.x,bullet_pos1.y-180,-800,obj_lobster_knight_bullet)
+			missle1.target_col = 4
+			missle1.target_row = t_row1
+			missle1.y_move_speed = 15
+			//var t_row2 = irandom_range(0,global.grid_rows-1)
+			//for(var i = 0 ; i < 100 ; i++){
+			//	if t_row2 != t_row1{
+			//		break
+			//	}
+			//	t_row2 = irandom_range(0,global.grid_rows-1)
+			//}
+			//var bullet_pos2 = get_world_position_from_grid(4,t_row2)
+			//var missle2 = instance_create_depth(bullet_pos2.x,bullet_pos2.y-180,-800,obj_lobster_knight_bullet)
+			//missle2.target_col = 4
+			//missle2.target_row = t_row2
+			//missle2.y_move_speed = 15
 		}
 		
 		if timer >= 44 * 5 - 1{

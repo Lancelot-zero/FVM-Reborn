@@ -1,15 +1,15 @@
 // obj_text_input 绘制事件
 // 绘制背景
-draw_set_color(bg_color);
-draw_rectangle(x, y, x + width, y + height, false);
+//draw_set_color(bg_color);
+//draw_rectangle(x, y, x + width, y + height, false);
 
 // 绘制边框
-if (active) {
-    draw_set_color(border_active_color);
-} else {
-    draw_set_color(border_color);
-}
-draw_rectangle(x, y, x + width, y + height, true);
+//if (active) {
+//    draw_set_color(border_active_color);
+//} else {
+//    draw_set_color(border_color);
+//}
+//draw_rectangle(x, y, x + width, y + height, true);
 
 // 绘制文本或占位符
 if (text != "") {

@@ -33,8 +33,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_menu_ui",
-    "path":"sprites/spr_menu_ui/spr_menu_ui.yy",
+    "name":"spr_option_menu_bg_1",
+    "path":"sprites/spr_option_menu_bg_1/spr_option_menu_bg_1.yy",
   },
   "spriteMaskId":null,
   "visible":true,

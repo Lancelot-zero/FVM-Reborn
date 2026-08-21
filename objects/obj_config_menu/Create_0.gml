@@ -1,19 +1,23 @@
-image_xscale = 2.8;
-image_yscale = 2.8;
+image_xscale = 1;
+image_yscale = 1;
 button_select = 0;
 current_settings = noone; // 当前设置页面的控制器
 setting_buttons = []; // 存储创建的设置按钮
 
 // 创建界面按钮
-closemenu_btn = instance_create_depth(x+440, y-310, depth-1, obj_closemenu_btn);
-menu_btn1 = instance_create_depth(x-340, y-245, depth-1, obj_menu_select_btn);
+closemenu_btn = instance_create_depth(x+470, y-330, depth-1, obj_closemenu_btn);
+menu_btn1 = instance_create_depth(x-360, y-245, depth-1, obj_menu_select_btn);
 menu_btn2 = instance_create_depth(x-120, y-245, depth-1, obj_menu_select_btn);
-menu_btn3 = instance_create_depth(x+100, y-245, depth-1, obj_menu_select_btn);
-menu_btn4 = instance_create_depth(x+320, y-245, depth-1, obj_menu_select_btn);
+menu_btn3 = instance_create_depth(x+120, y-245, depth-1, obj_menu_select_btn);
+menu_btn4 = instance_create_depth(x+360, y-245, depth-1, obj_menu_select_btn);
 
 menu_btn2.button_index = 1;
 menu_btn3.button_index = 2;
 menu_btn4.button_index = 3;
+
+menu_btn2.sprite_index = spr_option_select_btn_2
+menu_btn3.sprite_index = spr_option_select_btn_3
+menu_btn4.sprite_index = spr_option_select_btn_4
 
 // 添加操作设置相关变量
 keybind_page = 0; // 当前快捷键设置页

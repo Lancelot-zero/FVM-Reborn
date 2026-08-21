@@ -1,5 +1,5 @@
-image_xscale = 1.8
-image_yscale = 1.8
+image_xscale = 1
+image_yscale = 1
 
 // 默认状态为关闭
 state = 0;

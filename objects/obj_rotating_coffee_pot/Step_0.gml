@@ -21,6 +21,15 @@ if card_equipped_attire_id(plant_id) == -1{
 	if shape >= 1 sleep_anim = 11
 
 	if state == CARD_STATE.SLEEP{
+		if shape == 0{
+			sprite_index = spr_rotating_coffee_pot_sleep
+		}
+		else if shape == 1{
+			sprite_index = spr_rotating_coffee_pot_sleep_1
+		}
+		else if shape == 2{
+			sprite_index = spr_rotating_coffee_pot_sleep_2
+		}
 		anim_timer++
 		image_index = floor(anim_timer/current_flash_speed) mod sleep_anim
 		//if anim_timer > 60{
@@ -32,8 +41,11 @@ if card_equipped_attire_id(plant_id) == -1{
 		image_index = floor(wake_timer/current_flash_speed) mod 6 + sleep_anim
 		if wake_timer >= 5*current_flash_speed{
 			sprite_index = spr_rotating_coffee_pot;
-			if shape >= 1{
+			if shape == 1{
 				sprite_index = spr_rotating_coffee_pot_1
+			}
+			else if shape == 2{
+				sprite_index = spr_rotating_coffee_pot_2
 			}
 			image_index = 0
 			timer = 0

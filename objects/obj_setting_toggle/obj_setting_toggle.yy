@@ -33,8 +33,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_setting_toggle",
-    "path":"sprites/spr_setting_toggle/spr_setting_toggle.yy",
+    "name":"spr_option_setting_toggle",
+    "path":"sprites/spr_option_setting_toggle/spr_option_setting_toggle.yy",
   },
   "spriteMaskId":null,
   "visible":true,

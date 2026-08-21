@@ -1,7 +1,7 @@
 // 按钮属性
 image_speed = 0
-image_xscale = 1.8
-image_yscale = 1.8
+image_xscale = 0.7
+image_yscale = 0.7
 key_name = ""; // 快捷键名称（由创建者设置）
 default_key = -1; // 默认键值
 current_key = -1; // 当前键值

@@ -31,21 +31,24 @@ if global.level_file.level_time_feature == "daytime" && shape < 2{
 		if card_equipped_attire_id(plant_id) == -1{
 			if shape == 0{
 				sprite_index = spr_rotating_coffee_pot_sleep
-			}
-			else{
+			}else if shape == 1{
 				sprite_index = spr_rotating_coffee_pot_sleep_1
+			}
+			else if shape == 2{
+				sprite_index = spr_rotating_coffee_pot_sleep_2
 			}
 		}
 	}else{
 		if variable_instance_get(id, "_net_card_equipped_attire_id") == -1{
 			if shape == 0{
 				sprite_index = spr_rotating_coffee_pot_sleep
-			}
-			else{
+			}else if shape == 1{
 				sprite_index = spr_rotating_coffee_pot_sleep_1
 			}
+			else if shape == 2{
+				sprite_index = spr_rotating_coffee_pot_sleep_2
+			}
 		}
-	
 	}
 }
 

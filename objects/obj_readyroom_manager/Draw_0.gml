@@ -172,7 +172,7 @@ for(var i = 0;i<11;i++){
 }
 hover_slot_index = -1
 for(var i = deck_first_slot_index; i < deck_first_slot_index+11;i++){
-	if i < ds_list_size(global.selected_deck){
+	if i < deck_slot_max() && !deck_slot_is_empty(i){
 	var card_id = global.selected_deck[| i][? "card_id"]
 	var card_shape = global.selected_deck[| i][? "shape"]
 	var card_data = global.selected_deck[| i][? "data"]

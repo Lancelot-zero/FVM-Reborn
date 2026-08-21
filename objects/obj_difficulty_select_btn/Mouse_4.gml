@@ -1,11 +1,21 @@
 // 切换状态
 if room != room_battle{
 	if config_key == "difficulty"{
-		if state < 3{
-			state ++
+		if b_type == "next"{
+			if state < 3{
+				state ++
+			}
+			else{
+				state = 0
+			}
 		}
 		else{
-			state = 0
+			if state > 0{
+				state --
+			}
+			else{
+				state = 3
+			}
 		}
 	}
 	audio_play_sound(snd_button,0,0)
