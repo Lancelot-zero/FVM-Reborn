@@ -13,8 +13,14 @@ if target != noone{
 	if shape == 2{
 		inst.sprite_index = spr_curry_lobster_cannon_bullet_2
 	}
-	if card_equipped_attire_id(plant_id) == "lobster_athena"{
-		inst.sprite_index = spr_lobster_athena_bullet
-		inst.image_alpha = 0
+	
+	if(variable_instance_get(id, "_net_card_equipped_attire_id")==noone){
+		if card_equipped_attire_id(plant_id) == "lobster_athena"{
+			inst.sprite_index = spr_lobster_athena_bullet
+			inst.image_alpha = 0
+		}
+	}else if(variable_instance_get(id, "_net_card_equipped_attire_id")== "lobster_athena"){
+			inst.sprite_index = spr_lobster_athena_bullet
+			inst.image_alpha = 0
 	}
 }

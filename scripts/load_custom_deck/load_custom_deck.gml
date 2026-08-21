@@ -18,7 +18,7 @@ function load_custom_deck(deck_index) {
     var card_ids = global.save_data.saved_decks[deck_index].card_id;
     var len = array_length(card_ids);
     for(var i = 0; i < len; i++) {
-		if(deck_slot_count()>_max_slot)break;
+		if(deck_slot_count()>=_max_slot)break;
         var cid = card_ids[i];
         if (cid == "" || is_undefined(cid) || cid == noone) continue; // 跳过空槽
         var info = get_card_info(cid);

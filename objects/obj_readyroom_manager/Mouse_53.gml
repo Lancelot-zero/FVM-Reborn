@@ -3,7 +3,7 @@ if hover_card_index != -1 && !is_submenu_open{
 	if (global._VM_max_slots >= 0 && global._VM_max_slots < _max_slot) {
 	    _max_slot = global._VM_max_slots;
 	}
-	if ds_list_size(global.selected_deck) < _max_slot{
+	if deck_slot_count() < _max_slot{
 		audio_play_sound(snd_button,0,0)
 		var card_id = global.player_deck[| hover_card_index*2];
 		if !is_undefined(global.banned_cards_online[? card_id]){
