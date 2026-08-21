@@ -1,5 +1,5 @@
 //绘制悬停提示
-	if (hover_slot_index != -1 && !is_submenu_open) {
+	if (hover_slot_index != -1 && !is_submenu_open && !deck_slot_is_empty(hover_slot_index)) {
 		var card_id = global.selected_deck[| hover_slot_index][? "card_id"]
 		var card_shape = global.selected_deck[| hover_slot_index][? "shape"]
 		var card_data = global.selected_deck[| hover_slot_index][? "data"]

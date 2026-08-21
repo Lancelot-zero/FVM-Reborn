@@ -1,6 +1,6 @@
 
 draw_sprite_ext(spr_flame_indicator,0,350,0,1.8,1.8,0,c_white,1)
-var slot_length = ds_list_size(global.selected_deck)
+var slot_length = deck_slot_count()
 //show_debug_message("slot_length:"+string(slot_length))
 if slot_length <= 14{
 	draw_sprite_ext(spr_slot_top,0,350+83*1.8,0,40+45*(slot_length-1),1.8,0,c_white,1)

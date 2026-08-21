@@ -1,5 +1,5 @@
 draw_self()
-if (not on_click) or instance_exists(obj_quit_confirm) or ds_list_size(global.selected_deck) <= 0{
+if (not on_click) or instance_exists(obj_quit_confirm) or deck_slot_count() <= 0{
 	draw_sprite_ext(spr_battlestart_text,0,x,y,1.8,1.8,0,c_white,1)
 	image_blend = c_white
 }

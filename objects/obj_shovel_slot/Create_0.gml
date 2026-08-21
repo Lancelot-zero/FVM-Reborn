@@ -30,7 +30,7 @@ else{
 }
 
 hotkey = "`";               // 快捷键
-var slot_length = ds_list_size(global.selected_deck)
+var slot_length = deck_slot_count()
 if slot_length <= 14{
 	image_index = 0
 }
