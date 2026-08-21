@@ -15,22 +15,37 @@ else if shape == 1{
 else if shape == 2{
 	sprite_index = spr_rotating_coffee_pot_2
 }
+
+if(variable_instance_get(id, "_net_card_equipped_attire_id")==noone){
 if card_equipped_attire_id(plant_id) != -1{
 	var spr_list = get_attire_info(card_equipped_attire_id(plant_id)).spr
 	sprite_index = spr_list[shape]
+}
 }
 
 // ========== 特定属性默认值 ==========
 
 if global.level_file.level_time_feature == "daytime" && shape < 2{
 	state = CARD_STATE.SLEEP
-	if card_equipped_attire_id(plant_id) == -1{
-		if shape == 0{
-			sprite_index = spr_rotating_coffee_pot_sleep
+	if(variable_instance_get(id, "_net_card_equipped_attire_id")==noone){
+		if card_equipped_attire_id(plant_id) == -1{
+			if shape == 0{
+				sprite_index = spr_rotating_coffee_pot_sleep
+			}
+			else{
+				sprite_index = spr_rotating_coffee_pot_sleep_1
+			}
 		}
-		else{
-			sprite_index = spr_rotating_coffee_pot_sleep_1
+	}else{
+		if variable_instance_get(id, "_net_card_equipped_attire_id") == -1{
+			if shape == 0{
+				sprite_index = spr_rotating_coffee_pot_sleep
+			}
+			else{
+				sprite_index = spr_rotating_coffee_pot_sleep_1
+			}
 		}
+	
 	}
 }
 
@@ -47,9 +62,17 @@ target_type = "rotate"
 anim_timer = 0
 awake_anim = 6
 wake_timer = 0
+if(variable_instance_get(id, "_net_card_equipped_attire_id")==noone){
+	if card_equipped_attire_id(plant_id) == "rotate_leo"{
+		idle_anim = 10
+		attack_anim = 14
+		awake_anim = 0
+	}
+}else{
 
-if card_equipped_attire_id(plant_id) == "rotate_leo"{
-	idle_anim = 10
-	attack_anim = 14
-	awake_anim = 0
+	if variable_instance_get(id, "_net_card_equipped_attire_id") == "rotate_leo"{
+		idle_anim = 10
+		attack_anim = 14
+		awake_anim = 0
+	}
 }

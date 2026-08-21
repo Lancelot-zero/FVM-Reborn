@@ -39,6 +39,13 @@ global.__stop_msg_loop = false;
 #macro MSG_PLATFORM_TICK        29  // S→C: 平台帧同步拍子，客户端收到后驱动所有平台step一次
 #macro MSG_VM_NOTIFY            30  // S→C: 虚拟机通知(JSON)
 
+
+
+global._net_before_plant_shape = noone;
+global._net_before_plant_skill = noone;
+global._net_before_plant_current_level = noone;
+global._net_card_equipped_attire_id = noone;
+
 /// @function add_net_id(ins_id, net_id)
 /// @description 为实例产生一个 net_id
 function add_net_id(ins_id){

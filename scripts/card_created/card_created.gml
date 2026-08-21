@@ -23,10 +23,31 @@ function card_created(plant_inst, col, row) {
 					skill:get_card_info(_target)[$ "skill"],
 					shape:get_card_info(_target)[$ "shape"],
 					level:get_card_info(_target)[$ "level"],
-					plant_type: deck_get_card_data(_target, get_card_info(_target)[$ "shape"])[? "plant_type"],
-					//sprite_index: ds_map_exists(global._pid_reverse, global.prev_place_id_shape) ? global._pid_reverse[? global.prev_place_id_shape] : sprite_get_name(global.prev_place_id_shape),
+					plant_type: deck_get_card_data(_target, get_card_info(_target)[$ "shape"])[? "plant_type"]
 				}
-				
+				bak = global.network.client_able;
+				global.network.client_able = true
+				var card_save_data = get_card_info_simple(_target)
+				var card_slot_data = deck_get_card_data(_target,card_save_data.shape)
+				var new_card = instance_create_depth(0, 0, 0, card_slot_data[? "obj"])
+				target_card_info[$ "sprite_index"] = ds_map_exists(global._pid_reverse, new_card.sprite_index) ? global._pid_reverse[? new_card.sprite_index] : sprite_get_name(new_card.sprite_index);
+				target_card_info[$ "_net_card_equipped_attire_id"] = card_equipped_attire_id(new_card.plant_id)
+				if (variable_instance_exists(new_card, "sprite_list")) {
+				    var _sl = new_card.sprite_list;
+				    var _sl_names = [];
+				    for (var _si = 0; _si < array_length(_sl); _si++) {
+				        _sid = _sl[_si];
+						if(!is_string(_sid)){
+							if(ds_map_exists(global._pid_reverse, _sid))
+								_sl_names[_si] =  global._pid_reverse[? _sid];
+							else
+								_sl_names[_si] = sprite_get_name(_sid);
+						}
+				    }
+					target_card_info[$ "sprite_list"] = _sl_names;
+				}
+				instance_destroy(new_card);
+				global.network.client_able =bak;
 				_meta = {target_card:_target,target_card_info:target_card_info};
 			}
 		}else{
@@ -58,7 +79,7 @@ function card_created(plant_inst, col, row) {
 				  _meta[$ "platform_offset"]  = _plat.current_offset;
 			  }
 		}
-
+		_meta[$ "_net_card_equipped_attire_id"]  = card_equipped_attire_id(plant_inst.plant_id);
 		_meta = json_stringify(_meta);
 		send_message(global.network.server_socket, MSG_UNIT_REQUEST, level, col, row, skill, shape, object_get_name(plant_inst.object_index), _meta, _sprite_name);
 		return;
@@ -95,6 +116,10 @@ function card_created(plant_inst, col, row) {
 		var level = variable_instance_get(plant_inst, "current_level") ?? 0;
 		var skill = variable_instance_get(plant_inst, "skill") ?? 0;
 		var shape = variable_instance_get(plant_inst, "shape") ?? 0;
+		var _equipped_attire = variable_instance_get(plant_inst, "_net_card_equipped_attire_id")
+		if _equipped_attire==noone{
+			_equipped_attire = card_equipped_attire_id(plant_inst.plant_id);
+		}
 		var _sid = plant_inst.sprite_index;
 		var _sprite_name = ds_map_exists(global._pid_reverse, _sid) ? global._pid_reverse[? _sid] : sprite_get_name(_sid);
 		
@@ -102,24 +127,14 @@ function card_created(plant_inst, col, row) {
 		var object_name = object_get_name(plant_inst.object_index);
 
 		var _meta = {};
-
 		if (variable_instance_exists(plant_inst, "player") && is_struct(plant_inst.player)) {
 			_meta = { player: plant_inst.player };
 		} else if (plant_inst.object_index == obj_magic_chicken ) {
-			if (variable_instance_exists(plant_inst, "target_card_info")){
-				var _tci = plant_inst.target_card_info;
-				var _tci_copy = {
-					skill: _tci[$ "skill"],
-					shape: _tci[$ "shape"],
-					level: _tci[$ "level"],
-					plant_type: _tci[$ "plant_type"]
-				};
-				_meta = { target_card: plant_inst.target_card, target_card_info: _tci_copy };			
-			}else
-				_meta = {target_card:""}
+			_meta = {target_card:""}
 		} else {
 			_meta = package_character(plant_inst);
 		}
+		_meta[$ "_net_card_equipped_attire_id"]  = _equipped_attire;
 		
 		
 		var _plat = get_platform_at_grid(col, row)
@@ -147,7 +162,7 @@ function card_created(plant_inst, col, row) {
 		    }
 		    _meta[$ "sprite_list"] = _sl_names;
 		}
-
+		
 		_meta = json_stringify(_meta);
 		var _list = global.network.connected_clients;
 		var _size = array_length(_list);
@@ -157,7 +172,7 @@ function card_created(plant_inst, col, row) {
 		}
 		add_net_id(plant_inst.id);
 	}
-
+	
 	// VM Hook: 卡片创建
 	global._VM_last_created_card = plant_inst.id;
 	if (buffer_exists(global._VM_CARD_CREATED)) VM_QueueHook(global._VM_CARD_CREATED, "card", plant_inst.id);

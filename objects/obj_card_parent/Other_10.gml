@@ -20,6 +20,12 @@ if (plant_data != undefined) {
 		shape = card_save_data.shape
 	}
     
+	_net_card_equipped_attire_id=noone;
+	if(global._net_before_plant_skill!=noone){skill=global._net_before_plant_skill;global._net_before_plant_skill=noone};
+	if(global._net_before_plant_shape!=noone){shape=global._net_before_plant_shape;global._net_before_plant_shape=noone};
+	if(global._net_before_plant_current_level!=noone){current_level=global._net_before_plant_current_level;global._net_before_plant_current_level=noone};
+	if(global._net_card_equipped_attire_id!=noone){_net_card_equipped_attire_id=global._net_card_equipped_attire_id;global._net_card_equipped_attire_id=noone};
+	
     // 应用基础属性
     var upgrade_data = get_plant_data_with_skill(plant_id, shape,current_level,skill);
     if (upgrade_data != undefined) {
@@ -73,8 +79,8 @@ feature_type = card_data[? "feature_type"]
 target_card = card_data[? "target_card"]
 
 var grid_pos = get_grid_position_from_world(x, y);
-    var col = grid_pos.col;
-    var row = grid_pos.row;
+var col = grid_pos.col;
+var row = grid_pos.row;
 
 
 if global.network.mode=="client"{

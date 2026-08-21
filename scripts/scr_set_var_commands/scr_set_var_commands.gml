@@ -39,7 +39,16 @@ function spawn_plant(col, row, plant_obj, props) {
 	
 	
     // 创建实例
+	
+	if(variable_struct_exists(props,"shape"))global._net_before_plant_shape = props[$ "shape"];
+	if(variable_struct_exists(props,"current_level"))global._net_before_plant_current_level = props[$ "current_level"];
+	if(variable_struct_exists(props,"skill"))global._net_before_plant_skill = props[$ "skill"];
+	if(variable_struct_exists(props,"_net_card_equipped_attire_id"))global._net_card_equipped_attire_id = props[$ "_net_card_equipped_attire_id"]
     var _plant = instance_create_depth(_grid_pos.x+add_x, _grid_pos.y+add_y, 0, plant_obj);
+	global._net_before_plant_shape = noone;
+	global._net_before_plant_skill = noone;
+	global._net_before_plant_current_level = noone;
+	global._net_card_equipped_attire_id = noone;
     if (_plant < 0) {
         show_debug_message("[spawn_plant] 实例创建失败");
         return -1;
@@ -98,27 +107,27 @@ function spawn_plant(col, row, plant_obj, props) {
 	
 	card_created(_plant, col, row);
 
-	    // 服务端同步自定义属性
-	    if (global.network.mode == "server" && is_struct(props)) {
-	        var _pkeys = variable_struct_get_names(props);
-	        if (array_length(_pkeys) > 0) {
-	            var _net_id = ds_map_exists(global.network.map_instance_id_net_id, _plant) ? global.network.map_instance_id_net_id[? _plant] : -1;
-	            if (_net_id != -1) {
-	                if (variable_struct_exists(props, "sprite_index")) {
-	                    var _sid = props[$ "sprite_index"];
-	                    if (ds_map_exists(global._pid_reverse, _sid))
-	                        props[$ "sprite_index"] = global._pid_reverse[? _sid];
-	                    else
-	                        props[$ "sprite_index"] = sprite_get_name(_sid);
-	                }
-	                var _json = json_stringify(props);
-	                var _cl = global.network.connected_clients;
-	                for (var _n = 0; _n < array_length(_cl); _n++) {
-	                    send_message(_cl[_n], MSG_MODIFY_PROP, _net_id, _json);
-	                }
+	// 服务端同步自定义属性
+	if (global.network.mode == "server" && is_struct(props)) {
+	    var _pkeys = variable_struct_get_names(props);
+	    if (array_length(_pkeys) > 0) {
+	        var _net_id = ds_map_exists(global.network.map_instance_id_net_id, _plant) ? global.network.map_instance_id_net_id[? _plant] : -1;
+	        if (_net_id != -1) {
+	            if (variable_struct_exists(props, "sprite_index")) {
+	                var _sid = props[$ "sprite_index"];
+	                if (ds_map_exists(global._pid_reverse, _sid))
+	                    props[$ "sprite_index"] = global._pid_reverse[? _sid];
+	                else
+	                    props[$ "sprite_index"] = sprite_get_name(_sid);
+	            }
+	            var _json = json_stringify(props);
+	            var _cl = global.network.connected_clients;
+	            for (var _n = 0; _n < array_length(_cl); _n++) {
+	                send_message(_cl[_n], MSG_MODIFY_PROP, _net_id, _json);
 	            }
 	        }
 	    }
+	}
     
     // 放置特效（注意：如果不需要特效可跳过）
     if (instance_exists(obj_place_effect)) {

@@ -1036,6 +1036,9 @@ function update_plant_bindings(_p) {
 				continue;
 			}
 			if (!variable_instance_exists(_ins, "parent_player") || _ins.parent_player != _p) continue;
+			var grid_pos = get_grid_position_from_world(_p.x,_p.y)
+			_p.grid_col = grid_pos.col
+			_p.grid_row = grid_pos.row
 			_ins.x = _p.x;
 			_ins.y = _p.y;
 			if (_ins.object_index == obj_player_shield) {

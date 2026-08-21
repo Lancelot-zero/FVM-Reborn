@@ -25,15 +25,31 @@ else if shape == 1{
 	sprite_index = spr_soda_bubble_1_0
 	spr_list = [spr_soda_bubble_1_0,spr_soda_bubble_1_1,spr_soda_bubble_1_2]
 }
-if card_equipped_attire_id(plant_id) == "bubble_maltose"{
-	idle_anim = 12
-	if shape == 0{
-		sprite_index = spr_bubble_maltose_0_0
-		spr_list = [spr_bubble_maltose_0_0,spr_bubble_maltose_0_1,spr_bubble_maltose_0_1]
+
+if(variable_instance_get(id, "_net_card_equipped_attire_id")==noone){
+
+	if card_equipped_attire_id(plant_id) == "bubble_maltose"{
+		idle_anim = 12
+		if shape == 0{
+			sprite_index = spr_bubble_maltose_0_0
+			spr_list = [spr_bubble_maltose_0_0,spr_bubble_maltose_0_1,spr_bubble_maltose_0_1]
+		}
+		else if shape == 1{
+			sprite_index = spr_bubble_maltose_1_0
+			spr_list = [spr_bubble_maltose_1_0,spr_bubble_maltose_1_1,spr_bubble_maltose_1_1]
+		}
 	}
-	else if shape == 1{
-		sprite_index = spr_bubble_maltose_1_0
-		spr_list = [spr_bubble_maltose_1_0,spr_bubble_maltose_1_1,spr_bubble_maltose_1_1]
+}else{
+	if variable_instance_get(id, "_net_card_equipped_attire_id") == "bubble_maltose"{
+		idle_anim = 12
+		if shape == 0{
+			sprite_index = spr_bubble_maltose_0_0
+			spr_list = [spr_bubble_maltose_0_0,spr_bubble_maltose_0_1,spr_bubble_maltose_0_1]
+		}
+		else if shape == 1{
+			sprite_index = spr_bubble_maltose_1_0
+			spr_list = [spr_bubble_maltose_1_0,spr_bubble_maltose_1_1,spr_bubble_maltose_1_1]
+		}
 	}
 }
 remove_timer = 0

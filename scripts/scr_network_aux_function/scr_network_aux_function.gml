@@ -166,7 +166,8 @@ function network_broadcast_enemy_steal(col, row, net_id) {
 /// @param {real} level        星级
 /// @param {real} skill        技能分支
 /// @param {real} shape        形态
-/// @description 用网络同步的星级/技能/形态重新初始化植物属性，覆盖本地存档
+/// @description 用网络同步的星级/技能/形态重新初始化植物属性，覆盖本地存档 
+/// !!!!!!!!!!!!!该方案可废弃!!!!!!!!!!!!!
 function network_apply_plant_level(_plant) {
 	if(_plant.object_index == obj_player_character){
 		exit;
@@ -221,100 +222,6 @@ function network_apply_plant_level(_plant) {
         inst.parent_card = _plant.id;
         _plant.banding_star_obj = inst.id;
     }
-
-	// 5. 种植特判
-	plant_obj = _plant.object_index;
-	if(plant_obj==obj_kettle_bomb||plant_obj==obj_ice_bucket_bomb||plant_obj==obj_rotating_coffee_pot){
-		if global.level_file.level_time_feature == "daytime" && _plant.shape < 2{
-			_plant.state = CARD_STATE.SLEEP
-		}else{
-			_plant.state = CARD_STATE.AWAKE
-		}
-	}else if(plant_obj==obj_coffee_pot ||plant_obj==obj_coffee_cup ){
-		if global.level_file.level_time_feature == "daytime" && _plant.shape < 1{
-			_plant.state = CARD_STATE.SLEEP
-		}else{
-			_plant.state = CARD_STATE.AWAKE
-		}
-	}else if(plant_obj==obj_water_tea_cup){
-		if global.level_file.level_time_feature == "daytime"{
-			state = CARD_STATE.SLEEP
-		}
-	}else if(plant_obj==obj_pineapple_explosive_bread){
-		with(_plant){
-			sprite_list = [spr_pineapple_explosive_bread_0_0,spr_pineapple_explosive_bread_0_1,spr_pineapple_explosive_bread_0_2]
-			if shape == 1{
-				sprite_list = [spr_pineapple_explosive_bread_1_0,spr_pineapple_explosive_bread_1_1,spr_pineapple_explosive_bread_1_2]
-			}
-			if shape == 2{
-				sprite_list = [spr_pineapple_explosive_bread_2_0,spr_pineapple_explosive_bread_2_1,spr_pineapple_explosive_bread_2_2]
-			}
-			sprite_index = sprite_list[0]
-		}
-	}else  if(plant_obj==obj_melon_shield){
-		with(_plant){
-			sprite_list = [spr_melon_shield_outer_1,spr_melon_shield_outer_2,spr_melon_shield_outer_3]
-			if shape == 1{
-				sprite_list = [spr_melon_shield_1_outer_1,spr_melon_shield_1_outer_2,spr_melon_shield_1_outer_3]
-				inner_inst.sprite_index = spr_melon_shield_inner_2
-			}
-			if shape == 2{
-				sprite_list = [spr_melon_shield_2_outer_1,spr_melon_shield_2_outer_2,spr_melon_shield_2_outer_3]
-				inner_inst.sprite_index = spr_melon_shield_inner_3
-				inner_inst.y -= 5
-			}
-			sprite_index = sprite_list[0]
-		}
-	}else  if(plant_obj==obj_horseshoe_crab_bread){
-		with(_plant){
-			sprite_list = [spr_horseshoe_crab_bread_0_0,spr_horseshoe_crab_bread_0_1,spr_horseshoe_crab_bread_0_2]
-			if shape == 1{
-				sprite_list = [spr_horseshoe_crab_bread_1_0,spr_horseshoe_crab_bread_1_1,spr_horseshoe_crab_bread_1_2]
-			}
-			sprite_index = sprite_list[0]
-		}
-	}else if(plant_obj==obj_king_long_bao){
-		with(_plant){
-			bun_count = 0
-			max_bun = 2
-			normal_spr_list = [spr_king_long_bao_0_0,spr_king_long_bao_0_1,spr_king_long_bao_0_2]
-			upgrade_spr_list = [spr_king_long_bao_0_upgrade_1,spr_king_long_bao_0_upgrade_2]
-			if shape == 1{
-				sprite_index = spr_king_long_bao_1_0
-				max_bun = 3
-				normal_spr_list = [spr_king_long_bao_1_0,spr_king_long_bao_1_1,spr_king_long_bao_1_2,spr_king_long_bao_1_3]
-				upgrade_spr_list = [spr_king_long_bao_1_upgrade_1,spr_king_long_bao_1_upgrade_2,spr_king_long_bao_1_upgrade_3]
-			}
-			if shape == 2{
-				sprite_index = spr_king_long_bao_2_0
-				max_bun = 5
-				normal_spr_list = [spr_king_long_bao_2_0,spr_king_long_bao_2_1,spr_king_long_bao_2_2,spr_king_long_bao_2_3,spr_king_long_bao_2_4,spr_king_long_bao_2_5]
-				upgrade_spr_list = [spr_king_long_bao_2_upgrade_1,spr_king_long_bao_2_upgrade_2,spr_king_long_bao_2_upgrade_3,spr_king_long_bao_2_upgrade_4,spr_king_long_bao_2_upgrade_5]
-			}
-			upgrade_timer = 0
-		}
-	}else if(plant_obj==obj_king_triple_long_bao){
-		with(_plant){
-			bun_count = 0
-			max_bun = 2
-			normal_spr_list = [spr_king_triple_long_bao_0_0,spr_king_triple_long_bao_0_1,spr_king_triple_long_bao_0_2]
-			upgrade_spr_list = [spr_king_triple_long_bao_0_upgrade_1,spr_king_triple_long_bao_0_upgrade_2]
-			if shape == 1{
-				sprite_index = spr_king_triple_long_bao_1_0
-				max_bun = 3
-				normal_spr_list = [spr_king_triple_long_bao_1_0,spr_king_triple_long_bao_1_1,spr_king_triple_long_bao_1_2,spr_king_triple_long_bao_1_3]
-				upgrade_spr_list = [spr_king_triple_long_bao_1_upgrade_1,spr_king_triple_long_bao_1_upgrade_2,spr_king_triple_long_bao_1_upgrade_3]
-			}
-			if shape == 2{
-				sprite_index = spr_king_triple_long_bao_2_0
-				max_bun = 5
-				normal_spr_list = [spr_king_triple_long_bao_2_0,spr_king_triple_long_bao_2_1,spr_king_triple_long_bao_2_2,spr_king_triple_long_bao_2_3,spr_king_triple_long_bao_2_4,spr_king_triple_long_bao_2_5]
-				upgrade_spr_list = [spr_king_triple_long_bao_2_upgrade_1,spr_king_triple_long_bao_2_upgrade_2,spr_king_triple_long_bao_2_upgrade_3,spr_king_triple_long_bao_2_upgrade_4,spr_king_triple_long_bao_2_upgrade_5]
-			}
-			upgrade_timer = 0
-		}
-	}
-
 
 }
 

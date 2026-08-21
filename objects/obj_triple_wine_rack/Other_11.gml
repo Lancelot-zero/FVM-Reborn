@@ -35,13 +35,15 @@ else{
 }
 inst_down.start_y = middle_y; // 记录起始y坐标
 
+_net_un = (variable_instance_get(id, "_net_card_equipped_attire_id")  == noone)
+
 if shape == 1{
 	var inst_middle2 = instance_create_depth(x + 80, middle_y, depth - 500, obj_triplewinerack_bullet);
 	inst_middle2.damage = atk;
 	inst_middle2.move_speed = 8;
 	inst_middle2.row = grid_row;
 	inst_middle2.target_row = grid_row; // 目标行（中间行不变）
-	if card_equipped_attire_id(plant_id) == "wine_rack_sagittarius"{
+	if _net_un&&card_equipped_attire_id(plant_id) == "wine_rack_sagittarius"||variable_instance_get(id, "_net_card_equipped_attire_id")== "wine_rack_sagittarius"{
 		inst_middle2.sprite_index = spr_wine_rack_sagittarius_bullet
 		if shape >= 2{
 			inst_middle2.sprite_index = spr_wine_rack_sagittarius_bullet_1
@@ -49,7 +51,7 @@ if shape == 1{
 	}
 }
 
-if card_equipped_attire_id(plant_id) == "wine_rack_sagittarius"{
+if _net_un&&card_equipped_attire_id(plant_id) == "wine_rack_sagittarius"||variable_instance_get(id, "_net_card_equipped_attire_id")== "wine_rack_sagittarius"{
 	inst_up.sprite_index = spr_wine_rack_sagittarius_bullet
 	inst_middle.sprite_index = spr_wine_rack_sagittarius_bullet
 	inst_down.sprite_index = spr_wine_rack_sagittarius_bullet

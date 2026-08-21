@@ -65,17 +65,39 @@ if attack_timer == 15 * current_flash_speed - 1&& global.network.mode != "client
 		}
 		
 		var logical_world = get_world_position_from_grid(logical_col, logical_row);
-		var new_card = instance_create_depth(logical_world.x + platform_shift_x, logical_world.y + platform_shift_y, 0, card_slot_data[? "obj"])	
 		
-		// 当前网络同步需要的数据，不影响offline模式 
+		
+		
+		// 当前网络同步需要的数据，不影响offline模式 ,创建的时候就修改数据
 		if (variable_instance_exists(self, "target_card_info")){
-			new_card[$ "level"] = target_card_info[$ "level"]
-			new_card[$ "shape"] = target_card_info[$ "shape"]
-			new_card[$ "skill"] = target_card_info[$ "skill"]
-			new_card[$ "current_level"] = target_card_info[$ "level"]
+			global._net_before_plant_shape = target_card_info[$ "shape"];
+			global._net_before_plant_current_level = target_card_info[$ "level"];
+			global._net_before_plant_skill = target_card_info[$ "skill"];
+			global._net_card_equipped_attire_id = target_card_info[$ "_net_card_equipped_attire_id"]
 		}
-		card_created(new_card, logical_col, logical_row)
+		var new_card = instance_create_depth(logical_world.x + platform_shift_x, logical_world.y + platform_shift_y, 0, card_slot_data[? "obj"])
+		
+		global._net_before_plant_shape = noone;
+		global._net_before_plant_skill = noone;
+		global._net_before_plant_current_level = noone;
+		global._net_card_equipped_attire_id = noone;
+		
+		if (variable_instance_exists(self, "target_card_info")){
+			if (variable_struct_exists(target_card_info, "sprite_list")) {
+				var _sl = target_card_info[$ "sprite_list"];
+				for (var _si = 0; _si < array_length(_sl); _si++) {
+				    if (is_string(_sl[_si])) {
+				        _sl[_si] = get_load_sprite(_sl[_si]);		            
+				    }
+				}
+				new_card.sprite_list = _sl;
+			}
+			if (variable_struct_exists(target_card_info, "sprite_index") && target_card_info[$ "sprite_index"] != "") {
+				new_card.sprite_index = get_load_sprite(target_card_info[$ "sprite_index"]);
+			}
+		}
 		network_apply_plant_level(new_card);
+		card_created(new_card, logical_col, logical_row)
 		
 	}
 }
