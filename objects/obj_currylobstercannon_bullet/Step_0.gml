@@ -25,6 +25,9 @@ if state == "drop"{
 		if sprite_index == spr_curry_lobster_cannon_bullet_2{
 			inst.sprite_index = spr_curry_lobster_cannon_bullet_effect_2
 		}
+		if sprite_index == spr_lobster_athena_bullet{
+			inst.sprite_index = spr_lobster_athena_bullet
+		}
 		instance_destroy()
 	}
 	

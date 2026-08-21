@@ -33,8 +33,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_common_button",
-    "path":"sprites/spr_common_button/spr_common_button.yy",
+    "name":"spr_save_slot_btn",
+    "path":"sprites/spr_save_slot_btn/spr_save_slot_btn.yy",
   },
   "spriteMaskId":null,
   "visible":true,

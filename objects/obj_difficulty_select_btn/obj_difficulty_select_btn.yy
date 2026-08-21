@@ -33,8 +33,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_common_button",
-    "path":"sprites/spr_common_button/spr_common_button.yy",
+    "name":"spr_tower_cake_page_btn",
+    "path":"sprites/spr_tower_cake_page_btn/spr_tower_cake_page_btn.yy",
   },
   "spriteMaskId":null,
   "visible":true,

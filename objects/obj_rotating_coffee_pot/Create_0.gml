@@ -28,8 +28,11 @@ if global.level_file.level_time_feature == "daytime" && shape < 2{
 		if shape == 0{
 			sprite_index = spr_rotating_coffee_pot_sleep
 		}
-		else{
+		else if shape == 1{
 			sprite_index = spr_rotating_coffee_pot_sleep_1
+		}
+		else if shape == 2{
+			sprite_index = spr_rotating_coffee_pot_sleep_2
 		}
 	}
 }

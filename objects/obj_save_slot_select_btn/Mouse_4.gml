@@ -1,12 +1,13 @@
 // 切换状态
-	if config_key == "save_slot"{
-		if state < 4{
-			state ++
-		}
-		else{
-			state = 0
-		}
-	}
+	//if config_key == "save_slot"{
+	//	if state < 4{
+	//		state ++
+	//	}
+	//	else{
+	//		state = 0
+	//	}
+	//}
+if global.save_slot != state{
 	audio_play_sound(snd_button,0,0)
 	// 保存到配置文件
 	if (config_key != "") {
@@ -21,3 +22,4 @@
 		load_file(global.save_slot)
 		global.gui_stack.to(room_menu)
 	}
+}

@@ -128,6 +128,16 @@ function attire_init(){
 			"card_slot_icon":[spr_bubble_maltose_icon,spr_bubble_maltose_icon_1],
 		}
 	)
+	register_attire(
+		"lobster_athena",
+		{
+			"target_card":"curry_lobster_cannon",
+			"name":"雅典娜守护",
+			"icon":spr_lobster_athena,
+			"spr":[spr_lobster_athena,spr_lobster_athena_1,spr_lobster_athena_2],
+			"card_slot_icon":[spr_lobster_athena,spr_lobster_athena_1,spr_lobster_athena_2]
+		}
+	)
 	
 	//注册全部玩家时装
 	register_attire(

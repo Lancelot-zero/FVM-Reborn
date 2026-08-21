@@ -32,8 +32,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_volume_slider",
-    "path":"sprites/spr_volume_slider/spr_volume_slider.yy",
+    "name":"spr_option_volume_slider",
+    "path":"sprites/spr_option_volume_slider/spr_option_volume_slider.yy",
   },
   "spriteMaskId":null,
   "visible":true,

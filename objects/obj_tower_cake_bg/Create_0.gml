@@ -89,3 +89,34 @@ function refresh_reward_button(){
 		}
 	}
 }
+
+var level_list = global.maps_map[? "tower_cake"].levels_data
+has_card = false
+for(var __index__ = 0 ; __index__ < array_length(level_list) ; __index__++){
+	var c_level_data = level_list[__index__]
+	for(var i = 0 ; i < array_length(c_level_data.rewards);i++){
+		var inst = {}
+		inst.target_card_id = c_level_data.rewards[i].card_id
+		inst.target_shape = c_level_data.rewards[i].target_shape
+		inst.unlocked = false
+		
+		if (array_get_index(global.save_data.completed_levels,c_level_data.id) != -1){
+			inst.unlocked = true
+		}
+		if is_card_unlocked(inst.target_card_id){
+			if get_card_info_simple(inst.target_card_id).max_shape >= inst.target_shape{
+				inst.unlocked = false
+			}
+		}
+		if !is_card_unlocked(inst.target_card_id){
+			inst.unlocked = false
+		}
+		if inst.unlocked{
+			upgrade_card_shape(inst.target_card_id,inst.target_shape)
+			has_card = true
+		}
+	}
+}
+if has_card{
+	show_notice("未领取的转职奖励已自动领取",60)
+}

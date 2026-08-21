@@ -11,7 +11,7 @@ cursor_blink_rate = 30; // 光标闪烁频率（帧数）
 
 // 初始化外观设置
 bg_color = c_white;
-text_color = c_black;
+text_color = #6E6639;
 placeholder_color = c_gray;
 border_color = c_black;
 border_active_color = c_blue;
