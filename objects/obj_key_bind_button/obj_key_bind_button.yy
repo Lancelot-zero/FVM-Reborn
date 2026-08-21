@@ -33,8 +33,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_common_button",
-    "path":"sprites/spr_common_button/spr_common_button.yy",
+    "name":"spr_option_common_button",
+    "path":"sprites/spr_option_common_button/spr_option_common_button.yy",
   },
   "spriteMaskId":null,
   "visible":true,

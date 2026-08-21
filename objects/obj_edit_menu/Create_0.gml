@@ -1,5 +1,5 @@
-image_xscale = 2.8;
-image_yscale = 2.8;
+image_xscale = 1;
+image_yscale = 1;
 
 // 初始化变量
 character_name = global.player_name; // 从全局变量获取当前角色名
@@ -41,21 +41,23 @@ cancel_btn.btn_type = "cancel";
 cancel_btn.parent = id;
 
 // 创建输入框
-input_field = instance_create_depth(x-210, y - 190, depth-1, obj_text_input);
+input_field = instance_create_depth(x-210, y - 195, depth-1, obj_text_input);
 input_field.text = character_name;
 input_field.max_length = 16;
 input_field.placeholder = "输入角色名";
 input_field.width = 300;
 input_field.active = true;
 
-var btn3 = instance_create_depth(x - 120, y -95 , depth-1, obj_save_slot_select_btn);
-btn3.config_key = "save_slot";
-btn3.state = global.save_slot;
+for(var i = 0 ; i < 5 ; i++){
+	var btn3 = instance_create_depth(x - 200+140*i, y -88 , depth-1, obj_save_slot_select_btn);
+	btn3.config_key = "save_slot";
+	btn3.state = i;
+}
 
-var btn4 = instance_create_depth(x-180,y+25,depth-1,obj_player_attire_select_btn)
+var btn4 = instance_create_depth(x-220,y+90,depth-1,obj_player_attire_select_btn)
 btn4.type = "prev"
 
-var btn5 = instance_create_depth(x+30,y+25,depth-1,obj_player_attire_select_btn)
+var btn5 = instance_create_depth(x+420,y+90,depth-1,obj_player_attire_select_btn)
 btn5.type = "next"
 
-var btn6 = instance_create_depth(x - 120, y +175 , depth-1, obj_update_checker_btn);
+var btn6 = instance_create_depth(x - 280, y +175 , depth-1, obj_update_checker_btn);

@@ -15,11 +15,18 @@ else if shape == 1{
 else if shape == 2{
 	sprite_index = spr_curry_lobster_cannon_2
 }
-
+if card_equipped_attire_id(plant_id) != -1{
+	var spr_list = get_attire_info(card_equipped_attire_id(plant_id)).spr
+	sprite_index = spr_list[shape]
+}
 // ========== 特定属性默认值 ==========
 
 attack_anim = 21;
 idle_anim = 11
+if card_equipped_attire_id(plant_id) == "lobster_athena"{
+	idle_anim = 11
+	attack_anim = 31
+}
 flash_speed = 5
 plant_type = "normal"
 is_slowdown = false

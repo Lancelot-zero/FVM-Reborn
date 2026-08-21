@@ -1,9 +1,9 @@
 // 滑块属性
-image_xscale = 1.8
-image_yscale = 1.8
+image_xscale = 1
+image_yscale = 1
 volume_type = ""; // "music" 或 "sound"（由创建者设置）
 min_x = 0;
-max_x = 400; // 滑块移动范围
+max_x = 560; // 滑块移动范围
 current_x = min_x + (max_x - min_x) * 0.7; // 默认70%位置
 dragging = false;
 bar_width = max_x - min_x;

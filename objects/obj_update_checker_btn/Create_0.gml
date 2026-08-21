@@ -7,6 +7,6 @@ github_api_url = "https://api.github.com/repos/Spring-SG/FVM-Reborn/releases/lat
 // 用于存储HTTP请求的ID
 update_request_id = -1;
 
-image_xscale = 1.8
-image_yscale = 1.8
+image_xscale = 0.7
+image_yscale = 0.7
 image_speed = 0

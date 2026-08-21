@@ -33,8 +33,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_menu_select_btn",
-    "path":"sprites/spr_menu_select_btn/spr_menu_select_btn.yy",
+    "name":"spr_option_select_btn_1",
+    "path":"sprites/spr_option_select_btn_1/spr_option_select_btn_1.yy",
   },
   "spriteMaskId":null,
   "visible":true,
