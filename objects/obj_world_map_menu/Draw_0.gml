@@ -5,3 +5,7 @@ if global.menu_screen{
 }
 draw_self()
 draw_sprite_ext(spr_world_map_name,0,x+45,y+30,1.8,1.8,0,c_white,1)
+
+if global._is_in_battle{
+	instance_destroy(self)
+}

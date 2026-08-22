@@ -388,10 +388,10 @@ if x < global.grid_offset_x-150 && hp > 0 && not place_meeting(x,y,obj_cat) && a
 		}
 	}
 	if global.network.mode != "client"{
-	global.is_paused = true
-	global.game_over = true
-	instance_create_depth(room_width/2,room_height/2,-3001,obj_game_over)
-	audio_play_sound(snd_lose,0,0)
+		global.is_paused = true
+		global.game_over = true
+		instance_create_depth(room_width/2,room_height/2,-3001,obj_game_over)
+		audio_play_sound(snd_lose,0,0)
 	}
 }
 

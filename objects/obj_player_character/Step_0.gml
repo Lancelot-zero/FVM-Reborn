@@ -29,11 +29,21 @@ if is_placed{
 //var depth_value = -((y + depth_offset) * 10 + x);
 //depth = depth_value - depth_group * 100;
 
+		
 if hp <= 0{
-	global.is_paused = true
-	global.game_over = true
-	instance_create_depth(room_width/2,room_height/2,-3001,obj_game_over)
-	audio_play_sound(snd_lose,0,0)
+	if (global.network.mode == "server") {
+		var _clients = global.network.connected_clients;
+		for (var i = 0; i < array_length(_clients); i++) {
+			send_message(_clients[i], MSG_GAME_OVER, 0);
+		}
+	}
+	
+	if (global.network.mode != "client") {
+		global.is_paused = true
+		global.game_over = true
+		instance_create_depth(room_width/2,room_height/2,-3001,obj_game_over)
+		audio_play_sound(snd_lose,0,0)
+	}
 }
 
 if flash_value >0{

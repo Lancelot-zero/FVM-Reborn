@@ -281,8 +281,19 @@ grid_col = zombie_grid.col;
 grid_row = zombie_grid.row;
 
 if x < global.grid_offset_x-150 && hp > 0 && not place_meeting(x,y,obj_cat){
-	global.is_paused = true
-	global.game_over = true
-	instance_create_depth(room_width/2,room_height/2,-3001,obj_game_over)
-	audio_play_sound(snd_lose,0,0)
+	if (global.network.mode == "server") {
+		var _clients = global.network.connected_clients;
+		for (var i = 0; i < array_length(_clients); i++) {
+			send_message(_clients[i], MSG_GAME_OVER, 0);
+		}
+	}
+	if (global.network.mode != "client") {
+		global.is_paused = true
+		global.game_over = true
+		instance_create_depth(room_width/2,room_height/2,-3001,obj_game_over)
+		audio_play_sound(snd_lose,0,0)
+	}
 }
+
+
+

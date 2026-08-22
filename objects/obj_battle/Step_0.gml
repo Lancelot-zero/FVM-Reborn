@@ -61,11 +61,19 @@ if global.debug{
 		inst.frozen_timer = 0000
 	}
 	if keyboard_check_pressed(ord("J")){
-		global.is_paused = true
-		global.game_over = true
-		var inst = instance_create_depth(room_width/2,room_height/2,-3001,obj_game_over)
-		inst.sprite_index = spr_win
-		audio_play_sound(snd_win,0,0)
+		if (global.network.mode == "server") {
+				var _clients = global.network.connected_clients;
+				for (var i = 0; i < array_length(_clients); i++) {
+					send_message(_clients[i], MSG_GAME_OVER, 1);
+				}
+		}
+		if (global.network.mode != "client"){
+			global.is_paused = true
+			global.game_over = true
+			var inst = instance_create_depth(room_width/2,room_height/2,-3001,obj_game_over)
+			inst.sprite_index = spr_win
+			audio_play_sound(snd_win,0,0)
+		}
 	}
 
 	if keyboard_check_pressed(ord("R")){
@@ -352,14 +360,22 @@ if global.debug{
 		if current_subwave < current_total_subwaves{
 			current_subwave+=1
 		}
-		else if current_wave == total_wave-1{
-			global.is_paused = true
-			global.game_over = true
-			var inst = instance_create_depth(room_width/2,room_height/2,-3001,obj_game_over)
-			inst.sprite_index = spr_win
-			audio_play_sound(snd_win,0,0)
+		else if  current_wave == total_wave-1 {
+			if (global.network.mode == "server") {
+				var _clients = global.network.connected_clients;
+				for (var i = 0; i < array_length(_clients); i++) {
+					send_message(_clients[i], MSG_GAME_OVER, 1);
+				}
+			}
+			if (global.network.mode != "client") {
+				global.is_paused = true
+				global.game_over = true
+				var inst = instance_create_depth(room_width/2,room_height/2,-3001,obj_game_over)
+				inst.sprite_index = spr_win
+				audio_play_sound(snd_win,0,0)
+			}
 		}
-		else if current_wave < total_wave{
+		else{
 			current_wave += 1
 			current_subwave = 0
 		}
