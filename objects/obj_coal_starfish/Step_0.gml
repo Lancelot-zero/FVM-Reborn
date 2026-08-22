@@ -9,11 +9,24 @@ if shape < 1{
 		//0转检测是否有气泡和海水
 		var has_bubble = false
 		var has_seawater = false
+		
+		var card_list = ds_grid_get(global.grid_plants, col, row);
+		if(ds_exists(card_list,ds_type_list)){
+		    for(var i=0;i<ds_list_size(card_list);i++){
+		        var it = card_list[|i];
+				if(instance_exists(it))
+		        {
+		            if(variable_instance_exists(it, "plant_id") && it.plant_id == "soda_bubble")
+		                has_bubble = true;
+		        }
+		    }
+		}
+		/*
 		with obj_card_parent{
 			if plant_id == "soda_bubble" && grid_col == other.grid_col && grid_row == other.grid_row{
 				has_bubble = true
 			}
-		}
+		}*/
 		with obj_seawater{
 			if col == other.grid_col && row == other.grid_row{
 				has_seawater = true

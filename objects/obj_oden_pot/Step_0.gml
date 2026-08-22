@@ -21,7 +21,7 @@ if state == CARD_STATE.AWAKE{
 	wake_timer++
 	image_index = floor(wake_timer/current_flash_speed) mod 4 + 10
 	if wake_timer >= 5*current_flash_speed{
-		sprite_index = spr_oden_pot;
+		sprite_index = get_load_sprite("spr_oden_pot");
 		image_index = 0
 		timer = 0
 		state = CARD_STATE.IDLE

@@ -300,8 +300,8 @@ for res in yyp_data['resources']:
     rid = res.get('id', {})
     name = rid.get('name', '')
     path = rid.get('path', '')
-    if path.startswith('sounds/') and name.startswith('mus_') and name not in SKIP_AUDIO:
-        target_audio.add(name)
+    #if path.startswith('sounds/') and name.startswith('mus_') and name not in SKIP_AUDIO:
+    #    target_audio.add(name)
 
 # 转换为 OGG → backgroundmusic/
 _bgm_dir = PROJECT_ROOT / 'backgroundmusic'

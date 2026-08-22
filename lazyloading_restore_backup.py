@@ -22,6 +22,7 @@ import sys
 
 keep_join = '--keep-join' in sys.argv
 
+keep_join = True
 print('=' * 60)
 print('还原备份文件')
 print('=' * 60)
