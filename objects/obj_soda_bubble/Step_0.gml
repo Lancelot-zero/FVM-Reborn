@@ -25,11 +25,20 @@ else{
 	sprite_index = spr_list[0]
 }
 
-if card_equipped_attire_id(plant_id) != "bubble_maltose"{
-	depth = calculate_plant_depth(grid_col,grid_row,"coffee")
-}
-else{
-	depth = calculate_plant_depth(grid_col,grid_row,"lilypad")
+if(variable_instance_get(id, "_net_card_equipped_attire_id")==noone){
+	if card_equipped_attire_id(plant_id) != "bubble_maltose"{
+		depth = calculate_plant_depth(grid_col,grid_row,"coffee")
+	}
+	else{
+		depth = calculate_plant_depth(grid_col,grid_row,"lilypad")
+	}
+}else{
+	if variable_instance_get(id, "_net_card_equipped_attire_id") != "bubble_maltose"{
+		depth = calculate_plant_depth(grid_col,grid_row,"coffee")
+	}
+	else{
+		depth = calculate_plant_depth(grid_col,grid_row,"lilypad")
+	}
 }
 
 if on_lava && global.grid_terrains[grid_row][grid_col].type != "obstacle"{
