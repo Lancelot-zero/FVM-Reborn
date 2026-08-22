@@ -373,7 +373,7 @@ function VM_GetLoadedSpriteName(index_addr) {
 }
 
 /// @function VM_SetDrawSlot(slot, sprite, x, y, alpha)
-/// @param slot   槽位索引 0~7
+/// @param slot   槽位索引 0~63
 /// @param sprite  贴图名(string)或精灵ID(int)，空/""/-1/noone 时清除
 /// @param x      X 坐标
 /// @param y      Y 坐标
@@ -384,7 +384,7 @@ function VM_SetDrawSlot(slot_addr, sprite_addr, x_addr, y_addr, alpha_addr) {
     var _x = vm_read_mem(global.__vm, x_addr);
     var _y = vm_read_mem(global.__vm, y_addr);
     var alpha = vm_read_mem(global.__vm, alpha_addr);
-    if (slot < 0 || slot >= 8) return;
+    if (slot < 0 || slot >= 64) return;
     if (sprite == "" || sprite == -1 || sprite == noone) {
         global.map_draw_slots[slot].sprite = noone;
         global.map_draw_slots[slot].x = 0;
@@ -407,7 +407,7 @@ function VM_SetDrawSlot(slot_addr, sprite_addr, x_addr, y_addr, alpha_addr) {
 }
 
 /// @function VM_SetDrawSlot_front(slot, sprite, x, y, alpha)
-/// @param slot   槽位索引 0~7
+/// @param slot   槽位索引 0~63
 /// @param sprite  贴图名(string)或精灵ID(int)，空/""/-1/noone 时清除
 /// @param x      X 坐标
 /// @param y      Y 坐标
@@ -419,7 +419,7 @@ function VM_SetDrawSlot_front(slot_addr, sprite_addr, x_addr, y_addr, alpha_addr
     var _x = vm_read_mem(global.__vm, x_addr);
     var _y = vm_read_mem(global.__vm, y_addr);
     var alpha = vm_read_mem(global.__vm, alpha_addr);
-    if (slot < 0 || slot >= 8) return;
+    if (slot < 0 || slot >= 64) return;
     if (sprite == "" || sprite == -1 || sprite == noone) {
         global.map_draw_slots_front[slot].sprite = noone;
         global.map_draw_slots_front[slot].x = 0;
@@ -1766,7 +1766,6 @@ function VM_SpawnObject(obj_name_addr, col_addr, row_addr) {
     }
     return real(_last);
 }
-
 /// @function VM_SpawnPlant(card_id, col, row, shape, level, skill)
 /// @return 植物实例 ID
 function VM_SpawnPlant(card_id_addr, col_addr, row_addr, shape_addr, level_addr, skill_addr) {

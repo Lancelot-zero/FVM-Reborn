@@ -29,9 +29,9 @@ global._VM_create_counter = 100000;
 ds_map_clear(global._VM_id_to_real);
 ds_map_clear(global._VM_real_to_vm_id);
 global.map_draw_slots = [];
-repeat (8) { array_push(global.map_draw_slots, { sprite: noone, x: 0, y: 0, alpha: 1 }); }
+repeat (64) { array_push(global.map_draw_slots, { sprite: noone, x: 0, y: 0, alpha: 1 }); }
 global.map_draw_slots_front = [];
-repeat (8) { array_push(global.map_draw_slots_front, { sprite: noone, x: 0, y: 0, alpha: 1 }); }
+repeat (64) { array_push(global.map_draw_slots_front, { sprite: noone, x: 0, y: 0, alpha: 1 }); }
 global.map_sprite_current = global.level_data.level_sprite;
 global.map_sprite_target = global.level_data.level_sprite;
 global.map_fade_alpha = 0;

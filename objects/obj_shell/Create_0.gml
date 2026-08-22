@@ -214,10 +214,11 @@ function _find_common_prefix() {
 	var first = string(filteredSuggestions[0]);
 	var last = string(filteredSuggestions[array_length(filteredSuggestions) - 1]);
 		
+		
 	var result = "";
 	var spaceCount = string_count(" ", consoleString);
 	if (spaceCount > 0) {
-		for (var i = 0; i < spaceCount; i++) {
+		for (var i = 0; i < array_length(inputArray) - 1; i++) {
 			result += inputArray[i] + " ";
 		}
 	}
@@ -346,9 +347,12 @@ function _calculate_scroll_from_suggestion_index() {
 }
 
 function _confirm_current_suggestion() {
-	var spaceCount = string_count(" ", consoleString);
+	// 兜底：无建议或无输入时直接返回
+	if (array_length(filteredSuggestions) == 0 || array_length(inputArray) == 0) { return; }
 	consoleString = "";
-	for (var i = 0; i < spaceCount; i++) {
+	// 按 inputArray 实际长度重建（保留除最后一个词外的所有词），
+	// 避免带引号参数/连续空格时空格数与元素数不一致导致的越界
+	for (var i = 0; i < array_length(inputArray) - 1; i++) {
 		consoleString += inputArray[i] + " ";
 	}
 	consoleString += filteredSuggestions[suggestionIndex] + " ";

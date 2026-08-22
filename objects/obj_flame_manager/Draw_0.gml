@@ -1,6 +1,6 @@
 
 // 前层贴图槽（VM_SetDrawSlot_front），绘制在火焰UI前面
-for (var _i = 0; _i < 8; _i++) {
+for (var _i = 0; _i < 64; _i++) {
     var _slot = global.map_draw_slots_front[_i];
     if (_slot.sprite == noone || _slot.sprite == "" || _slot.sprite == -1) continue;
     draw_sprite_ext(_slot.sprite, 0, _slot.x, _slot.y, 1, 1, 0, c_white, _slot.alpha);
