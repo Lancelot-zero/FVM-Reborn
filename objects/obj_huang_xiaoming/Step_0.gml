@@ -9,7 +9,7 @@ if flash_value > 0 {
 
 if !appear{
 	skill_group = skill_group_list[boss_random(self, 0, array_length(skill_group_list) - 1)]
-	skill_group = array_shuffle(skill_group)
+	skill_group = boss_array_shuffle(self, skill_group)
 	var enemy_row = boss_random(self, 0, global.grid_rows - 1)
 	var enemy_pos = {}
 	skill_choose = skill_group[skill_count]
@@ -332,28 +332,18 @@ switch state{
 			image_alpha = 0
 		}
 		if timer == 180{
-			var enemy_row = boss_random(self, 0,global.grid_rows-1)
-			var enemy_pos = {}
-			skill_change_style = boss_random(self, 0,1)
-			for(var i = 0 ; i < 100 ; i++){
-				var current_choose = boss_random(self, 0,2)
-				if current_choose != skill_choose{
-					skill_choose = current_choose
-					break
-				}
-			}
-			/*  先用旧的
+
 			if skill_count >= array_length(skill_group){
 				skill_group = skill_group_list[irandom_range(0,array_length(skill_group_list)-1)]
-				skill_group = array_shuffle(skill_group)
+				skill_group = boss_array_shuffle(self,skill_group)
 				skill_count = 0
 			}
-			var enemy_row = irandom_range(0,global.grid_rows-1)
+			var enemy_row = boss_random(self,0,global.grid_rows-1)
 			var enemy_pos = {}
 			skill_choose = skill_group[skill_count]
 			skill_count ++
-			skill_change_style = irandom_range(0,1)
-			*/
+			skill_change_style = boss_random(self,0,1)
+			
 			if skill_choose == 2{
 				if skill_change_style == 0{
 					enemy_row = 5

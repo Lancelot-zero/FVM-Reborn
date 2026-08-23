@@ -68,3 +68,6 @@ block_mouse_id_list = ["mouse_train_1"]
 
 random_count = 0
 _state_prev = state
+
+
+random_seed = irandom_range(0,4096)

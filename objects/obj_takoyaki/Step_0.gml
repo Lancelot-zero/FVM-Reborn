@@ -33,6 +33,12 @@ if (has_enemy) {
 	if (attack_timer == cycle - 6*flash_speed){
 		event_user(1);
 	}
+	if(shape==2){
+		if (attack_timer == cycle - 3*flash_speed||attack_timer == cycle - 9*flash_speed){
+			event_user(1);
+		}
+	
+	}
 } else {
     // 没有符合条件的敌人，重置状态
     attack_timer = 0;

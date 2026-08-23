@@ -246,14 +246,17 @@ if wave_data.boss_wave && level_stage != "boss" && global.save_data.unlocked_ite
 	var enemy_row = irandom_range(0,global.grid_rows-1)
 	var enemy_pos = get_world_position_from_grid(10,enemy_row)
 	var boss_inst = instance_create_depth(enemy_pos.x-80,enemy_pos.y+30,-200,global.enemy_map[? wave_data.boss]._obj)
+	var boss_2_inst = undefined;
+	var enemy_row_2 = undefined;
+	var enemy_pos_2 = undefined;
 	boss_count ++
 	if is_real(global.level_file.version){
 		boss_inst.hp *= wave_data.boss_1_hp_modify
 		boss_inst.maxhp *= wave_data.boss_1_hp_modify
 		if wave_data.boss2 != ""{
-			var enemy_row_2 = irandom_range(0,global.grid_rows-1)
-			var enemy_pos_2 = get_world_position_from_grid(10,enemy_row_2)
-			var boss_2_inst = instance_create_depth(enemy_pos_2.x-80,enemy_pos_2.y+30,-200,global.enemy_map[? wave_data.boss2]._obj)
+			enemy_row_2 = irandom_range(0,global.grid_rows-1)
+			enemy_pos_2 = get_world_position_from_grid(10,enemy_row_2)
+			boss_2_inst = instance_create_depth(enemy_pos_2.x-80,enemy_pos_2.y+30,-200,global.enemy_map[? wave_data.boss2]._obj)
 			boss_2_inst.hp *= wave_data.boss_2_hp_modify
 			boss_2_inst.maxhp *= wave_data.boss_2_hp_modify
 			boss_count ++
@@ -276,20 +279,21 @@ if wave_data.boss_wave && level_stage != "boss" && global.save_data.unlocked_ite
 	if (global.network.mode == "server") {
 		add_net_id(boss_inst.id);
 		var _boss1_net = global.network.map_instance_id_net_id[? boss_inst.id];
+		var _boss2_net = undefined;
 		if (is_real(global.level_file.version) && wave_data.boss2 != "") {
 			add_net_id(boss_2_inst.id);
-			var _boss2_net = global.network.map_instance_id_net_id[? boss_2_inst.id];
+			_boss2_net = global.network.map_instance_id_net_id[? boss_2_inst.id];
 		}
 		var _list = global.network.connected_clients;
 		var _size = array_length(_list);
 		for (var _i = 0; _i < _size; _i++) {
 			var _socket = _list[_i];
-			send_message(_socket, MSG_SPAWN_BOSS, _boss1_net, enemy_pos.x-80, enemy_pos.y+30, object_get_name(global.enemy_map[? wave_data.boss]._obj), boss_inst.hp, boss_inst.maxhp, enemy_row);
+			send_message(_socket, MSG_SPAWN_BOSS, _boss1_net, enemy_pos.x-80, enemy_pos.y+30, object_get_name(global.enemy_map[? wave_data.boss]._obj), boss_inst.hp, boss_inst.maxhp, enemy_row, boss_inst.random_seed);
 		}
 		if (is_real(global.level_file.version) && wave_data.boss2 != "") {
 			for (var _i = 0; _i < _size; _i++) {
 				var _socket = _list[_i];
-				send_message(_socket, MSG_SPAWN_BOSS, _boss2_net, enemy_pos_2.x-80, enemy_pos_2.y+30, object_get_name(global.enemy_map[? wave_data.boss2]._obj), boss_2_inst.hp, boss_2_inst.maxhp, enemy_row_2);
+				send_message(_socket, MSG_SPAWN_BOSS, _boss2_net, enemy_pos_2.x-80, enemy_pos_2.y+30, object_get_name(global.enemy_map[? wave_data.boss2]._obj), boss_2_inst.hp, boss_2_inst.maxhp, enemy_row_2, boss_2_inst.random_seed);
 			}
 		}
 	}

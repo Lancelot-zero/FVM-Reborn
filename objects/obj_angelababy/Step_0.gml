@@ -22,7 +22,7 @@ if (hp <= 0 && state != BOSS_STATE.DEATH) {
 
 if !appear{
 	skill_group = skill_group_list[boss_random(self, 0, array_length(skill_group_list) - 1)]
-	skill_group = array_shuffle(skill_group)
+	skill_group = boss_array_shuffle(self,skill_group)
 	var enemy_row = boss_random(self, 0, global.grid_rows - 1)
 	var enemy_pos = {}
 	skill_choose = skill_group[skill_count]

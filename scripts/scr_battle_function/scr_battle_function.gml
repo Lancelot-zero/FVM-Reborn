@@ -332,7 +332,7 @@ function parse_network_message(buf, _sock) {
 
         case MSG_SPAWN_BOSS:
         {
-            // 字段：net_id(s32), x(f32), y(f32), object_name(string), hp(s32), maxhp(s32), row(u8)
+            // 字段：net_id(s32), x(f32), y(f32), object_name(string), hp(s32), maxhp(s32), row(u8), random_seed(u32)
             var net_id = buffer_read(buf, buffer_s32);
             var px = buffer_read(buf, buffer_f32);
             var py = buffer_read(buf, buffer_f32);
@@ -340,6 +340,7 @@ function parse_network_message(buf, _sock) {
             var hp_val = buffer_read(buf, buffer_s32);
             var maxhp_val = buffer_read(buf, buffer_s32);
             var boss_row = buffer_read(buf, buffer_u8);
+            var random_seed = buffer_read(buf, buffer_s32);
 	
             global.network.client_able = true;
 			var boss_index = asset_get_index(object_name);
@@ -350,6 +351,7 @@ function parse_network_message(buf, _sock) {
             new_boss.hp = hp_val;
             new_boss.maxhp = maxhp_val;
             new_boss.grid_row = boss_row;
+            new_boss.random_seed = random_seed;
             obj_battle.boss_count++;
             show_debug_message("[解析] MSG_SPAWN_BOSS: ID=" + string(net_id) + " type=" + object_name + " HP=" + string(hp_val) + "/" + string(maxhp_val));
             break;
@@ -1227,7 +1229,7 @@ function send_message(socket, msg_id) {
             buffer_write(buf, buffer_string, argument[5]);
             break;
 
-        case MSG_SPAWN_BOSS:            // 参数: net_id(s32), x(f32), y(f32), object_name(string), hp(s32), maxhp(s32), row(u8)
+        case MSG_SPAWN_BOSS:            // 参数: net_id(s32), x(f32), y(f32), object_name(string), hp(s32), maxhp(s32), row(u8), random_seed(s32)
             buffer_write(buf, buffer_s32, argument[2]);
             buffer_write(buf, buffer_f32, argument[3]);
             buffer_write(buf, buffer_f32, argument[4]);
@@ -1235,6 +1237,7 @@ function send_message(socket, msg_id) {
             buffer_write(buf, buffer_s32, argument[6]);
             buffer_write(buf, buffer_s32, argument[7]);
             buffer_write(buf, buffer_u8, argument[8]);
+            buffer_write(buf, buffer_s32, argument[9]);
             break;
 
             

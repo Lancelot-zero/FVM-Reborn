@@ -47,6 +47,12 @@ if(ds_exists(card_list,ds_type_list)){
                 it.on_lava = true;
 				has_bubble = true;
 			}
+		}
+    }
+    for(var i=0;i<ds_list_size(card_list);i++){
+        var it = card_list[|i];
+		if(instance_exists(it))
+        {
 			with(it){
 				if (plant_type != "coffee" && !invincible && array_get_index(other.ignore_list,plant_id) == -1 && !(plant_id == "player" && hp <= 0.05*max_hp)){
 					other.non_undersea_card = true

@@ -1,18 +1,25 @@
 /// @function boss_random(boss_inst, min_val, max_val)
-/// @desc 确定性随机，两端用 net_id 做种子，保证联机同步
+/// @desc 确定性随机，两端用 random_seed 做种子，保证联机同步
 function boss_random(boss_inst, min_val, max_val) {
-    var _id = boss_inst.id;
-    var net_id = ds_map_exists(global.network.map_instance_id_net_id, _id)
-        ? global.network.map_instance_id_net_id[? _id]
-        : _id;
-    if (!variable_instance_exists(boss_inst, "random_count")) {
-        boss_inst.random_count = 0;
-    }
-	
-    var seed = int64(net_id) * 1103515245 + boss_inst.random_count;
+    var seed = int64(boss_inst.random_seed) * 1103515245 + boss_inst.random_count;
     boss_inst.random_count++;
     return min_val + (abs(seed) % (max_val - min_val + 1));
 }
+
+
+function boss_array_shuffle(boss_inst, skill_group_list){
+	var skill_group_list_new = variable_clone(skill_group_list); // GML 数组是引用，克隆后再洗，避免污染全局 skill_group_list
+	var group_len = array_length(skill_group_list_new);
+	for(var i=0;i<group_len;i++){
+		var d = boss_random(boss_inst,-group_len,group_len)
+		var j = (i+d+group_len)%group_len;
+		var temp_val = skill_group_list_new[j];
+		skill_group_list_new[j] = skill_group_list_new[i];
+		skill_group_list_new[i] = temp_val;
+	}
+    return skill_group_list_new;
+}
+
 
 function boss_init(){
 	boss_registry_init()
