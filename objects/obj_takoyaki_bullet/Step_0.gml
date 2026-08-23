@@ -119,7 +119,8 @@ if (instance_exists(target_enemy) && target_enemy.hp > 0  && can_hit(target_type
     }
 }
 
-image_angle =- timer * 18
+image_angle =- timer * 6
+
 if x > 2200 or y > 1200 or x < -200 or y < -200{
 	instance_destroy()
 }

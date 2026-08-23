@@ -52,7 +52,7 @@ if flash_value >0{
 	
 }
 if is_placed{
-	depth = calculate_plant_depth(grid_col, grid_row, "normal")
+	//depth = calculate_plant_depth(grid_col, grid_row, "normal")
 }
 else{
 	depth = -5000
