@@ -28,6 +28,9 @@ hpbar_inst = instance_create_depth(450,1040,-900,obj_boss_hpbar)
 hpbar_inst.target_boss = id
 hpbar_inst.boss_id = mouse_id
 
+
+step_ready = false;	frame_count = 0;
+
 if obj_battle.boss_count > 0{
 	hpbar_inst.y -= 40
 }

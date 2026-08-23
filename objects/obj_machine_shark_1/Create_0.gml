@@ -21,6 +21,9 @@ avaliable_pos = ds_list_create()
 awake_card_id_list = []
 target_coord = []
 
+
+step_ready = false;	frame_count = 0;
+
 hpbar_inst = instance_create_depth(450,1040,-900,obj_boss_hpbar)
 hpbar_inst.target_boss = id
 hpbar_inst.boss_id = mouse_id

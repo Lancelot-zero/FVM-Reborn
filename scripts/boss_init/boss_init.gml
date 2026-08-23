@@ -1,11 +1,14 @@
 /// @function boss_random(boss_inst, min_val, max_val)
 /// @desc 确定性随机，两端用 random_seed 做种子，保证联机同步
 function boss_random(boss_inst, min_val, max_val) {
-    var seed = int64(boss_inst.random_seed) * 1103515245 + boss_inst.random_count;
-    boss_inst.random_count++;
-    return min_val + (abs(seed) % (max_val - min_val + 1));
+    if (!variable_instance_exists(boss_inst, "rand_state")) {
+        boss_inst.rand_state = int64(boss_inst.random_seed);
+    }
+	
+    boss_inst.rand_state = (boss_inst.rand_state * 1103515245 + 12345) & 0x7FFFFFFF;
+    var res = (boss_inst.rand_state >> 1) & 0x7FFF;
+	return res %(max_val-min_val+1) +min_val
 }
-
 
 function boss_array_shuffle(boss_inst, skill_group_list){
 	var skill_group_list_new = variable_clone(skill_group_list); // GML 数组是引用，克隆后再洗，避免污染全局 skill_group_list
