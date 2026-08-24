@@ -510,18 +510,34 @@ function parse_network_message(buf, _sock) {
                 if (variable_struct_exists(_props, "timer")) {
                     var _sv_t = _props[$ "timer"];
                     with (_inst) step_ready = true;
-                    while (_inst.timer < _sv_t) {
-                        with (_inst) event_perform(ev_step, ev_step_normal);
-                    }
-                    with (_inst) step_ready = false;
+					bak_is_paused = global.is_paused
+					global.is_paused = false;
+				    try {
+				        while (_inst.timer < _sv_t) {
+							var _timer = _inst.timer; 
+				            with (_inst) event_perform(ev_step, ev_step_normal);
+							if(_timer==_inst.timer)break;//死循环
+				        }
+				    } finally {
+				        global.is_paused = bak_is_paused;
+				        with (_inst) step_ready = false;
+				    }
                 }
                 if (variable_struct_exists(_props, "skill_timer") && variable_instance_exists(_inst, "skill_timer")) {
                     var _sv_st = _props[$ "skill_timer"];
                     with (_inst) step_ready = true;
-                    while (_inst.skill_timer < _sv_st) {
-                        with (_inst) event_perform(ev_step, ev_step_normal);
-                    }
-                    with (_inst) step_ready = false;
+					bak_is_paused = global.is_paused
+					global.is_paused = false;
+				      try {
+				          while (_inst.skill_timer < _sv_st) {
+							  var _timer = _inst.skill_timer; 
+				              with (_inst) event_perform(ev_step, ev_step_normal);
+							  if(_timer==_inst.skill_timer)break;//死循环
+				          }
+				      } finally {
+				          global.is_paused = bak_is_paused;
+				          with (_inst) step_ready = false;
+				      }
                 }
                 var _keys = struct_get_names(_props);
                 for (var _k = 0; _k < array_length(_keys); _k++) {
@@ -805,7 +821,6 @@ function parse_network_message(buf, _sock) {
 					}
 				}
 			}else{
-
 				instance_create_depth(room_width/2,room_height/2,-3001,obj_game_over);
 				audio_play_sound(snd_lose,0,0);
 			}

@@ -1,6 +1,9 @@
 // Inherit the parent event
 event_inherited();
 
+if(global.network.mode=="client"){
+	exit;
+}
 if !is_derivative && shape == 2{
 	//临时关闭替换放置，防止叠加
 	var current_replace_option = global.replace_placement
