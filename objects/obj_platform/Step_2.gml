@@ -306,6 +306,13 @@ if (id == global._last_platform){
 // 渲染前以x/y为锚点，统一更新所有卡片的grid_col/grid_row和depth
 with (obj_card_parent) {
     if (variable_instance_exists(id, "plant_type")) {
+		
+		// 植物格子坐标跟随真实x,y来，保证游戏中的视觉正确性和敌人索敌的正确性，可能会操作和格子注册不一致的问题，目前感觉问题不大
+		// 植物的格子坐标会注册坐标慢半个单位的节奏
+		var grid_pos = get_grid_position_from_world(x, y)
+        grid_col = grid_pos.col
+        grid_row = grid_pos.row
+		
         var _type = plant_type
         if (object_index == obj_cotton_candy) _type = "lilypad"
 		if (object_index == obj_soda_bubble){
