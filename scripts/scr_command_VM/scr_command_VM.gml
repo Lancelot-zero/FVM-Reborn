@@ -2695,31 +2695,33 @@ function VM_MetaInfo() {
 /// @desc 打印当前地形网格（. = normal 陆地，W = water 水域，# = obstacle 障碍）
 /// @returns {String} 提示文案
 function VM_ShowTerrain() {
-    var _rows = min(global.grid_rows, array_length(global.grid_terrains));
-    var _cols = min(global.grid_cols, array_length(global.grid_terrains[0]));
-    shell_print("[VM] ==== terrain (" + string(_rows) + "x" + string(_cols) + ") ====");
-    shell_print("[VM] legend: . = normal(陆地)  W = water(水域)  # = obstacle(障碍)");
-    // 列号行（列超过 10 显示个位数）
-    var _header = "";
-    for (var _hc = 0; _hc < _cols; _hc++) {
-        _header += string(_hc mod 10);
-    }
-    shell_print("[VM]    " + _header);
-    for (var _r = 0; _r < _rows; _r++) {
-        var _line = "";
-        var _rc = min(global.grid_cols, array_length(global.grid_terrains[_r]));
-        for (var _c = 0; _c < _rc; _c++) {
-            var _t = global.grid_terrains[_r][_c].type;
-            if (_t == "water") {
-                _line += "W";
-            } else if (_t == "obstacle") {
-                _line += "#";
-            } else {
-                _line += ".";
-            }
-        }
-        shell_print("[VM] r" + string(_r) + "  " + _line);
-    }
+	try{
+	    var _rows = min(global.grid_rows, array_length(global.grid_terrains));
+	    var _cols = min(global.grid_cols, array_length(global.grid_terrains[0]));
+	    shell_print("[VM] ==== terrain (" + string(_rows) + "x" + string(_cols) + ") ====");
+	    shell_print("[VM] legend: n = normal(陆地)  w = water(水域)  o = obstacle(障碍)");
+	    // 列号行（列超过 10 显示个位数）
+	    var _header = "";
+	    for (var _hc = 0; _hc < _cols; _hc++) {
+	        _header += string(_hc mod 10);
+	    }
+	    shell_print("[VM]    " + _header);
+	    for (var _r = 0; _r < _rows; _r++) {
+	        var _line = "";
+	        var _rc = min(global.grid_cols, array_length(global.grid_terrains[_r]));
+	        for (var _c = 0; _c < _rc; _c++) {
+	            var _t = global.grid_terrains[_r][_c].type;
+	            if (_t == "water") {
+	                _line += "w";
+	            } else if (_t == "obstacle") {
+	                _line += "o";
+	            } else {
+	                _line += "n";
+	            }
+	        }
+	        shell_print("[VM] r" + string(_r) + "  " + _line);
+	    }
+	}
     return "已输出到控制台";
 }
 
