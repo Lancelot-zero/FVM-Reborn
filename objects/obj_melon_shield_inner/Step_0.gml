@@ -9,6 +9,8 @@ if instance_exists(parent_plant){
 	else{
 		image_index = 2
 	}
+	x = parent_plant.x
+	y = parent_plant.y
 	depth = parent_plant.depth+2
 }
 else{

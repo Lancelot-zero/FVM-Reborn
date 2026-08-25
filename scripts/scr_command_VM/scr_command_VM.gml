@@ -518,7 +518,7 @@ function VM_SetTerrain(col_addr, row_addr, type_addr) {
 /// @function VM_GetFlame()
 /// @return 当前火苗数量
 function VM_GetFlame() {
-    return global.flame;
+    return real(global.flame);
 }
 
 /// @function VM_ClearPlants(col, row)
@@ -781,13 +781,13 @@ function VM_RefreshPlatformSnapshots() {
 /// @function VM_GetWave()
 /// @return 当前波次
 function VM_GetWave() {
-    return global._VM_prev_wave;
+    return real(global._VM_prev_wave);
 }
 
 /// @function VM_GetSubwave()
 /// @return 当前子波
 function VM_GetSubwave() {
-    return global._VM_prev_subwave;
+    return real(global._VM_prev_subwave);
 }
 
 /// @function VM_GetLastBoss()
@@ -818,6 +818,24 @@ function VM_GetLastCreatedCard() {
 /// @return 最新销毁的卡片实例 ID
 function VM_GetLastDestroyedCard() {
     return VM_ClientWrapId(real(global._VM_last_destroyed_card));
+}
+
+/// @function VM_GetLastBossStateChangeId()
+/// @return 最新改变状态的 BOSS 实例 ID
+function VM_GetLastBossStateChangeId() {
+    return VM_ClientWrapId(real(global._VM_last_boss_state_change_id));
+}
+
+/// @function VM_GetLastBossOldState()
+/// @return 最新改变状态的 BOSS 的旧状态
+function VM_GetLastBossOldState() {
+    return real(global._VM_last_boss_old_state);
+}
+
+/// @function VM_GetLastBossNewState()
+/// @return 最新改变状态的 BOSS 的新状态
+function VM_GetLastBossNewState() {
+    return real(global._VM_last_boss_new_state);
 }
 
 /// @function VM_GetMouseX()
@@ -1563,10 +1581,15 @@ function VM_ApplyPlantLevel(inst_id_addr) {
 		if (is_undefined(_real)) return;
 		_inst = _real;
 	}
-	if (!instance_exists(_inst)) return;
-	if (global.network.mode == "client" && global._VM_sync_exec
-	    && ds_map_exists(global.network.map_instance_id_net_id, _inst)) return;
+
+	if (!instance_exists(_inst)&&_inst!=-1) return;
+	if (global.network.mode == "client" && global._VM_sync_exec && ds_map_exists(global.network.map_instance_id_net_id, _inst)) return;
 	network_apply_plant_level(_inst);
+	if(_inst==-1){
+		with(obj_card_parent){
+			network_apply_plant_level(id);
+		}
+	}
 	if (global.network.mode == "server") {
 		var _nid = ds_map_exists(global.network.map_instance_id_net_id, _inst) ? global.network.map_instance_id_net_id[? _inst] : -1;
 		if (_nid != -1) {
@@ -2113,7 +2136,7 @@ function VM_Execute(vm, buf, name) {
                             _mv[_dst] = _result;
                         } else {
                             _mt[_dst] = VM_TYPE_INT;
-                            _mv[_dst] = 0;
+                            _mv[_dst] = _result;
                         }
                     }
                     break;
@@ -2382,7 +2405,7 @@ function VM_Execute_debug(vm, buf, name) {
                             _mv[_dst] = _result;
                         } else {
                             _mt[_dst] = VM_TYPE_INT;
-                            _mv[_dst] = 0;
+                            _mv[_dst] = _result;
                         }
                     }
                     break;
@@ -2755,6 +2778,7 @@ global._VM_MOUSE_RIGHT       = undefined;
 global._VM_KEY_PRESSED       = undefined;
 global._VM_BUTTON_CLICKED    = undefined;
 global._VM_CARD_PREVIEW_PICKED = undefined;
+global._VM_BOSS_STATE_CHANGE = undefined;
 global._VM_last_clicked_button = -1;
 global._VM_FRAME             = undefined;
 global._VM_TIMER_5f          = undefined;
@@ -2855,6 +2879,12 @@ function VM_HandleNotify(json) {
         case "subwave_end":
             if (buffer_exists(global._VM_SUBWAVE_END)) VM_Execute(global.__vm, global._VM_SUBWAVE_END, "_VM_SUBWAVE_END");
             break;
+        case "boss_state_change":
+            if (!is_undefined(_data[$ "id"]))  global._VM_last_boss_state_change_id = _data[$ "id"];
+            if (!is_undefined(_data[$ "old"])) global._VM_last_boss_old_state = _data[$ "old"];
+            if (!is_undefined(_data[$ "new"])) global._VM_last_boss_new_state = _data[$ "new"];
+            if (buffer_exists(global._VM_BOSS_STATE_CHANGE)) VM_Execute(global.__vm, global._VM_BOSS_STATE_CHANGE, "_VM_BOSS_STATE_CHANGE");
+            break;
         case "call":
         {
             var _func = ds_map_find_value(global._VM_remote_funcs, _data[$ "func"]);
@@ -2892,6 +2922,9 @@ global._VM_last_created_enemy = -1;
 global._VM_last_killed_enemy  = -1;
 global._VM_last_created_card  = -1;
 global._VM_last_destroyed_card = -1;
+global._VM_last_boss_state_change_id = -1;
+global._VM_last_boss_old_state = -1;
+global._VM_last_boss_new_state = -1;
 global._VM_create_counter = 100000;
 global._VM_id_to_real      = ds_map_create();  // VM_id → 真实 instance id
 global._VM_real_to_vm_id   = ds_map_create();  // 真实 instance id → VM_id (客户端反向)
@@ -2976,6 +3009,9 @@ VM_RegisterFunction(global.__vm, VM_GetCardSlotCount); // 72
 VM_RegisterFunction(global.__vm, VM_GetPreviewCard);   // 73
 VM_RegisterFunction(global.__vm, VM_AliasSprite);      // 74
 VM_RegisterFunction(global.__vm, VM_LoadSpriteFrames_Ex); // 75
+VM_RegisterFunction(global.__vm, VM_GetLastBossStateChangeId); // 76
+VM_RegisterFunction(global.__vm, VM_GetLastBossOldState);      // 77
+VM_RegisterFunction(global.__vm, VM_GetLastBossNewState);      // 78
 ds_map_add(global._VM_remote_funcs, "VM_SwapPlants", VM_SwapPlants);
 ds_map_add(global._VM_remote_funcs, "VM_SwapPlantRects", VM_SwapPlantRects);
 ds_map_add(global._VM_remote_funcs, "VM_CompactColumn", VM_CompactColumn);
@@ -3015,6 +3051,7 @@ function VM_InitRoomEntry(buf) {
 	global._VM_KEY_PRESSED       = undefined;
 	global._VM_BUTTON_CLICKED    = undefined;
 	global._VM_CARD_PREVIEW_PICKED = undefined;
+	global._VM_BOSS_STATE_CHANGE = undefined;
 	global._VM_last_clicked_button = -1;
     global._VM_TIMER_5f          = undefined;
     global._VM_TIMER_10f         = undefined;
@@ -3046,6 +3083,9 @@ function VM_InitRoomEntry(buf) {
     global._VM_last_created_card  = -1;
     global._VM_last_destroyed_card = -1;
     global._VM_last_idle_platform = -1;
+    global._VM_last_boss_state_change_id = -1;
+    global._VM_last_boss_old_state = -1;
+    global._VM_last_boss_new_state = -1;
     global._VM_create_counter = 100000;
     global._VM_spawn_cats = true;
     ds_map_clear(global._VM_id_to_real);
@@ -3181,6 +3221,9 @@ function VM_InitRoomEntry(buf) {
                 break;
             case "_VM_CARD_PREVIEW_PICKED":
                 global._VM_CARD_PREVIEW_PICKED = _bc_buf;
+                break;
+            case "_VM_BOSS_STATE_CHANGE":
+                global._VM_BOSS_STATE_CHANGE = _bc_buf;
                 break;
             default:
                 buffer_delete(_bc_buf);

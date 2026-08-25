@@ -80,6 +80,7 @@ if (wave == 0) {
 | `_VM_ENEMY_SPAWNED` | 敌人出现，用 `VM_GetLastCreatedEnemy()` 拿实例 |
 | `_VM_ENEMY_KILLED` | 敌人死亡，用 `VM_GetLastKilledEnemy()` 拿实例 |
 | `_VM_ENEMY_DAMAGED` | 敌人受伤 |
+| `_VM_BOSS_STATE_CHANGE` | BOSS 状态改变，用 `VM_GetLastBossStateChangeId()` / `VM_GetLastBossOldState()` / `VM_GetLastBossNewState()` 拿实例与新旧状态 |
 | `_VM_PLAYER_DAMAGED` | 玩家受伤 |
 | `_VM_PLATFORM_IDLE_END` | 平台空闲结束，用 `VM_GetLastIdlePlatform()` 拿实例 |
 | `_VM_MOUSE_LEFT` | 鼠标左键按下（单帧） |
@@ -145,7 +146,7 @@ if (wave == 0) {
 | `VM_SetProp(实例ID, "属性名", 值)` | 改实例属性，联机同步 |
 | `VM_SetCardProp(列,行,"卡名","属性",值)` | 按格子和卡名改属性。`"all"`=全部 |
 | `VM_SetEnemyProp("类型","属性",值)` | 按敌人类型改属性。`"all"`=全部（跳过 BOSS） |
-| `VM_ApplyPlantLevel(实例ID)` | 改完 `current_level`/`skill`/`shape` 后调用，刷新数值 |
+| `VM_ApplyPlantLevel(实例ID)` | 改完 `current_level`/`skill`/`shape` 后调用，刷新数值。`-1`=全部植物 |
 
 **平台属性：**
 
@@ -225,6 +226,10 @@ if (wave == 0) {
 | `VM_GetLastDestroyedCard()` | int | 最后销毁的卡片 ID |
 | `VM_GetLastIdlePlatform()` | int | 最后结束空闲的平台 ID |
 | `VM_GetLastClickedButton()` | int | 最后点击的按钮 ID，没有返回 -1 |
+| `VM_GetLastBossStateChangeId()` | int | 最后改变状态的 BOSS ID |
+| `VM_GetLastBossOldState()` | int | 最后改变状态的 BOSS 的旧状态 |
+| `VM_GetLastBossNewState()` | int | 最后改变状态的 BOSS 的新状态 |
+
 ### 鼠标与键盘
 
 | 函数 | 返回 | 说明 |

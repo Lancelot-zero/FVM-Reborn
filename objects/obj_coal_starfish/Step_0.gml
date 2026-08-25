@@ -10,7 +10,7 @@ if shape < 1{
 		var has_bubble = false
 		var has_seawater = false
 		
-		var card_list = ds_grid_get(global.grid_plants, col, row);
+		var card_list = ds_grid_get(global.grid_plants, grid_col,  grid_row);
 		if(ds_exists(card_list,ds_type_list)){
 		    for(var i=0;i<ds_list_size(card_list);i++){
 		        var it = card_list[|i];
@@ -87,5 +87,4 @@ if (has_enemy) {
     attack_timer = 0;
     state = CARD_STATE.IDLE;
 }
-
 

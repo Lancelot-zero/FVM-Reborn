@@ -91,6 +91,7 @@ static const std::vector<const char*> BLOCK_NAMES = {
     "_VM_TIMER_60f",
     "_VM_BUTTON_CLICKED",
     "_VM_CARD_PREVIEW_PICKED",
+    "_VM_BOSS_STATE_CHANGE",
 };
 
 // ============================================================
@@ -241,6 +242,9 @@ static std::vector<FuncDef> FUNC_DEFS = {
     {"VM_GetPreviewCard",        0,  {},  PT_STRING},                                   // 73 — 返回 PT_STRING 或 -1
     {"VM_AliasSprite",           2,  {PT_STRING, PT_STRING}},                           // 74
     {"VM_LoadSpriteFrames_Ex",   4,  {PT_STRING, PT_INT, PT_INT, PT_INT}},             // 75
+    {"VM_GetLastBossStateChangeId", 0},                                                 // 76
+    {"VM_GetLastBossOldState",      0},                                                 // 77
+    {"VM_GetLastBossNewState",      0},                                                 // 78
 };
 
 // ============================================================

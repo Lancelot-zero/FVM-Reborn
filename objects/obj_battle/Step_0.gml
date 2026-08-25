@@ -249,6 +249,8 @@ if wave_data.boss_wave && level_stage != "boss" && global.save_data.unlocked_ite
 	var boss_2_inst = undefined;
 	var enemy_row_2 = undefined;
 	var enemy_pos_2 = undefined;
+	global._VM_last_created_enemy = boss_inst.id;
+	if (buffer_exists(global._VM_ENEMY_SPAWNED)) VM_QueueHook(global._VM_ENEMY_SPAWNED, "enemy", boss_inst.id);
 	boss_count ++
 	if is_real(global.level_file.version){
 		boss_inst.hp *= wave_data.boss_1_hp_modify
@@ -260,6 +262,8 @@ if wave_data.boss_wave && level_stage != "boss" && global.save_data.unlocked_ite
 			boss_2_inst.hp *= wave_data.boss_2_hp_modify
 			boss_2_inst.maxhp *= wave_data.boss_2_hp_modify
 			boss_count ++
+			global._VM_last_created_enemy = boss_2_inst.id;
+			if (buffer_exists(global._VM_ENEMY_SPAWNED)) VM_QueueHook(global._VM_ENEMY_SPAWNED, "enemy", boss_2_inst.id);
 		}
 	}
 	
@@ -419,4 +423,16 @@ if (battle_time mod 30 == 0 && buffer_exists(global._VM_TIMER_30f)) {
 }
 if (battle_time mod 60 == 0 && buffer_exists(global._VM_TIMER_60f)) {
     VM_Execute(global.__vm, global._VM_TIMER_60f, "_VM_TIMER_60f");
+}
+
+with obj_enemy_parent{
+	if(is_boss==false)continue
+	if(pre_state==state)continue;
+	if (buffer_exists(global._VM_BOSS_STATE_CHANGE)) {
+		global._VM_last_boss_state_change_id = id
+		global._VM_last_boss_old_state = pre_state
+		global._VM_last_boss_new_state = state
+		VM_Execute(global.__vm, global._VM_BOSS_STATE_CHANGE, "_VM_BOSS_STATE_CHANGE");
+	}
+	pre_state = state
 }

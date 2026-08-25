@@ -24,6 +24,7 @@ state = CARD_STATE.IDLE
 timer = 0
 attack_timer = 0
 cycle = 0
+attack_cycle = -1
 first_produce = 0
 first_produce_delay = 0
 flame_produce = 0

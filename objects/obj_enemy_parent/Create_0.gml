@@ -71,3 +71,4 @@ _state_prev = state
 
 
 random_seed = irandom_range(0,4096)
+pre_state = -1 
