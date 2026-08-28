@@ -57,3 +57,5 @@ if shape >= 2 && attack_timer mod heal_wait == 0{
 if instance_exists(inner_inst){
 	inner_inst.depth = depth + 2
 }
+
+

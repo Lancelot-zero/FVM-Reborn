@@ -131,7 +131,9 @@ if timer < current_flash_speed - 1 {
 } else {
     switch (state) {
         case CARD_STATE.IDLE:
-            if image_index < idle_anim image_index++;
+            if (image_index < idle_anim){ 
+				image_index++
+			};
             else image_index = 0;
             break;
             

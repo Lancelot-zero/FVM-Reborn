@@ -12,6 +12,7 @@ event_user(0)
 
 inner_inst = instance_create_depth(x,y-18,depth+2,obj_melon_shield_inner)
 inner_inst.parent_plant = id
+inner_inst.dy = -18
 
 sprite_list = [get_load_sprite("spr_melon_shield_outer_1"),get_load_sprite("spr_melon_shield_outer_2"),get_load_sprite("spr_melon_shield_outer_3")]
 if shape == 1{
@@ -22,6 +23,7 @@ if shape == 2{
 	sprite_list = [get_load_sprite("spr_melon_shield_2_outer_1"),get_load_sprite("spr_melon_shield_2_outer_2"),get_load_sprite("spr_melon_shield_2_outer_3")]
 	inner_inst.sprite_index = get_load_sprite("spr_melon_shield_inner_3")
 	inner_inst.y -= 5
+	inner_inst.dy -= 5
 }
 sprite_index = sprite_list[0]
 
@@ -38,8 +40,10 @@ if(variable_instance_get(id, "_net_card_equipped_attire_id")  == noone){
 		inner_inst.sprite_index = inner_spr_list[shape]
 		if card_equipped_attire_id(plant_id) == "melon_virgo"{
 			inner_inst.y = y - 42
+			inner_inst.dy = -42
 			if shape == 0{
 				inner_inst.y += 4
+				inner_inst.dy += 4
 			}
 		}
 	}
@@ -54,8 +58,10 @@ if(variable_instance_get(id, "_net_card_equipped_attire_id")  == noone){
 		inner_inst.sprite_index = inner_spr_list[shape]
 		if card_equipped_attire_id(plant_id) == "melon_virgo"{
 			inner_inst.y = y - 42
+			inner_inst.dy = -42
 			if shape == 0{
 				inner_inst.y += 4
+				inner_inst.dy += 4
 			}
 		}
 }
