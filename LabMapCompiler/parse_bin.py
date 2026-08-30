@@ -112,7 +112,9 @@ def parse_bin(path):
 
             elif op == 16:  # JMP ip
                 ip, off = read_s32(data, off)
-                print(f"{indent}[{pos:04x}] JMP   goto {ip:04x}")
+                # 回跳 = while 循环尾跳回条件重算（或 continue 目标）
+                tag = "  <- loop back-edge" if ip < pos else ""
+                print(f"{indent}[{pos:04x}] JMP   goto {ip:04x}{tag}")
 
             elif op == 17:  # HALT
                 print(f"{indent}[{pos:04x}] HALT")

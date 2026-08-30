@@ -1,0 +1,44 @@
+// ============================================================
+// while / break / continue 正向测试
+// 覆盖：基础 while、if 内 continue、嵌套 while + break（只跳内层）、
+//       复合表达式条件
+// ============================================================
+
+_VM_BATTLE_START {
+// ① 基础 while + continue
+i = 0
+count = 0
+while (i < 3)
+{
+    i = i + 1
+    if (i == 2)
+    {
+        continue
+    }
+    count = count + 1
+}
+
+// ② 嵌套 while + break（只跳出内层，外层继续；再靠外层 break 退出）
+j = 0
+inner = 0
+while (j < 10)
+{
+    j = j + 1
+    while (j < 100)
+    {
+        inner = inner + 1
+        break
+    }
+    if (j == 2)
+    {
+        break
+    }
+}
+
+// ③ 复合表达式条件
+k = 0
+while (k + 1 < 5)
+{
+    k = k + 2
+}
+}

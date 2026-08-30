@@ -388,7 +388,7 @@ for line in lines:
         removed_audio += 1
         continue
     # 压缩格式
-    line.replace('"compressFormat":"custom","customOptions":"BCN -u4"','"compressFormat":"bz2","customOptions":""')
+    line=line.replace('"compressFormat":"custom","customOptions":"BCN -u4"','"compressFormat":"bz2","customOptions":""')
     new_lines.append(line)
 
 with open('FVM-reborn.yyp', 'w', encoding='utf-8') as f:

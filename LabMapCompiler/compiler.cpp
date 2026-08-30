@@ -179,6 +179,7 @@ private:
     map<int, int> slot_type_;     // 槽位 → 类型 (MEM_INT/MEM_FLOAT/MEM_STRING)
     map<int, string> slot_str_;   // 槽位 → 字面量字符串值（仅字面量槽位有）
     int paren_ = 0;               // 第一遍收集时的括号层级（参数/条件边界判定）；表达式一律单行，不允许跨行
+    int loop_depth_ = 0;          // 循环嵌套层级（第一遍 break/continue 的“在循环内”校验）
 
     // ---- 常量检测：同一变量 ≥2 处被赋完全相同且纯字面量的值 → 常量 ----
     //   · 单个字面量（可带负号）→ 常量传播：名字直接替换成池槽，不占变量槽
@@ -198,6 +199,14 @@ private:
     vector<string> const_names_;
     ByteBuf const_buf_;       // _VM_CONST_INIT 块字节码（复合常量 COPY 部分，最后插到 blocks_[0]）
     ByteBuf scratch_buf_;     // 常量重复定义点丢弃字节码用
+
+    // ---- while 循环上下文栈：break/continue 跳转指令的修补点 ----
+    struct LoopCtx {
+        int start_ip;               // 条件字节码起点（回跳与 continue 目标）
+        vector<int> break_patches;  // 各 break 处 OP_JMP 操作数偏移
+        vector<int> cont_patches;   // 各 continue 处 OP_JMP 操作数偏移
+    };
+    vector<LoopCtx> loops_;
 
     // ---- 字面量池：每个不同的裸字面量分配一个常驻槽，在 _VM_CONST_INIT 中统一初始化，
     //      之后任何引用直接传池槽（VM 参数槽只读前提） ----
@@ -239,7 +248,8 @@ private:
         return (ta == MEM_FLOAT || tb == MEM_FLOAT) ? MEM_FLOAT : MEM_INT;
     }
     bool is_keyword(const string& s) {
-        return s == "if" || s == "elif" || s == "else" || s == "halt" || s == "exit";
+        return s == "if" || s == "elif" || s == "else" || s == "halt" || s == "exit" ||
+               s == "while" || s == "break" || s == "continue";
     }
 
     // ========== Tokenizer ==========
@@ -535,6 +545,19 @@ private:
             string name = cur_.str_val;
             if (name == "halt" || name == "exit") { next(); check_eol(start_line); return; }  // exit 与 halt 同义
             if (name == "if") { collect_if(); return; }
+            if (name == "while") { collect_while(); return; }
+            if (name == "break") {
+                if (loop_depth_ == 0) error(start_line, "'break' outside of a loop");
+                next();
+                check_eol(start_line);
+                return;
+            }
+            if (name == "continue") {
+                if (loop_depth_ == 0) error(start_line, "'continue' outside of a loop");
+                next();
+                check_eol(start_line);
+                return;
+            }
             if (name == "elif") { error(cur_.line, "'elif' without matching if"); next(); return; }
             if (name == "else") { error(cur_.line, "'else' without matching if"); next(); return; }
             if (find_block(name) >= 0) { error(cur_.line, "block '" + name + "' must be at top level"); next(); return; }
@@ -604,6 +627,23 @@ private:
         }
         if (!check(TK_EOF) && !check(TK_RBRACE) && cur_.line == brace_line)
             error(cur_.line, "unexpected token after if/else block — start a new line or use ;");
+    }
+
+    void collect_while() {
+        next();
+        if (!expect(TK_LPAREN, "(")) return;
+        paren_++;
+        collect_expr(nullptr, nullptr, nullptr);
+        paren_--;
+        if (!expect(TK_RPAREN, ")")) return;
+        if (!expect(TK_LBRACE, "{ (while body must use braces)")) return;
+        loop_depth_++;
+        while (!check(TK_RBRACE) && !check(TK_EOF)) collect_statement();
+        loop_depth_--;
+        int brace_line = cur_.line;
+        if (!match(TK_RBRACE)) { error(cur_.line, "missing } in while body"); return; }
+        if (!check(TK_EOF) && !check(TK_RBRACE) && cur_.line == brace_line)
+            error(cur_.line, "unexpected token after while block — start a new line or use ;");
     }
 
     // 收集表达式 token：字符串入池、标识符入变量表、输出指纹/类型/单字面量信息
@@ -812,6 +852,18 @@ private:
                 gen_if();
                 return;
             }
+            if (name == "while") {
+                gen_while();
+                return;
+            }
+            if (name == "break") {
+                gen_break(start_line);
+                return;
+            }
+            if (name == "continue") {
+                gen_continue(start_line);
+                return;
+            }
             if (name == "elif") {
                 error(cur_.line, "'elif' without matching if");
                 next();
@@ -961,6 +1013,80 @@ private:
         if (jmp_patch >= 0) {
             cur_buf_->patch_s32(jmp_patch, cur_buf_->tell());
         }
+    }
+
+    // ========== while 循环（含 break/continue） ==========
+    void gen_while() {
+        next();
+        if (!expect(TK_LPAREN, "(")) return;
+
+        // 条件字节码在循环内部：每次迭代重新求值（回跳与 continue 均指向这里）。
+        // 条件为裸变量/池槽时无字节码，loop_start 即 OP_IF 本身，语义同样正确。
+        int loop_start = cur_buf_->tell();
+        int cond_slot = gen_expr();
+        if (!expect(TK_RPAREN, ")")) return;
+        if (!expect(TK_LBRACE, "{ (while body must use braces)")) return;
+
+        cur_buf_->u8(OP_IF);
+        cur_buf_->s32(cond_slot);
+        int body_patch = cur_buf_->tell(); cur_buf_->s32(0);
+        int end_patch  = cur_buf_->tell(); cur_buf_->s32(0);
+        int ip_body = cur_buf_->tell();  // 条件为真时进入循环体
+
+        LoopCtx ctx;
+        ctx.start_ip = loop_start;
+        loops_.push_back(ctx);
+
+        while (!check(TK_RBRACE) && !check(TK_EOF)) gen_statement();
+        int brace_line = cur_.line;
+        if (!match(TK_RBRACE)) {
+            loops_.pop_back();
+            error(cur_.line, "missing } in while body");
+            return;
+        }
+
+        // 循环尾无条件跳回条件重算
+        cur_buf_->u8(OP_JMP);
+        cur_buf_->s32(loop_start);
+
+        int ip_end = cur_buf_->tell();  // 循环出口（break 目标）
+        cur_buf_->patch_s32(body_patch, ip_body);
+        cur_buf_->patch_s32(end_patch, ip_end);
+
+        // 修补本层循环体内记录的 break / continue（嵌套循环已在其内部自行修补并出栈）
+        LoopCtx done = loops_.back();
+        loops_.pop_back();
+        for (int p : done.break_patches) cur_buf_->patch_s32(p, ip_end);
+        for (int p : done.cont_patches)  cur_buf_->patch_s32(p, loop_start);
+
+        if (!check(TK_EOF) && !check(TK_RBRACE) && cur_.line == brace_line)
+            error(cur_.line, "unexpected token after while block — start a new line or use ;");
+    }
+
+    void gen_break(int start_line) {
+        if (loops_.empty()) {
+            error(start_line, "'break' outside of a loop");
+            next();
+            return;
+        }
+        cur_buf_->u8(OP_JMP);
+        loops_.back().break_patches.push_back(cur_buf_->tell());
+        cur_buf_->s32(0);  // 占位，循环编译结束时回填出口地址
+        next();
+        check_eol(start_line);
+    }
+
+    void gen_continue(int start_line) {
+        if (loops_.empty()) {
+            error(start_line, "'continue' outside of a loop");
+            next();
+            return;
+        }
+        cur_buf_->u8(OP_JMP);
+        loops_.back().cont_patches.push_back(cur_buf_->tell());
+        cur_buf_->s32(0);  // 占位，循环编译结束时回填条件重算地址
+        next();
+        check_eol(start_line);
     }
 
     // ========== 表达式 — 返回结果槽位 ==========

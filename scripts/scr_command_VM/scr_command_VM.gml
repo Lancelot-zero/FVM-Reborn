@@ -1516,7 +1516,6 @@ function VM_SpawnPlantsRandom(x_addr, y_addr, w_addr, h_addr,
 			if (_level != -1) _props[$ "current_level"] = _level;
 			if (_skill != -1) _props[$ "skill"] = _skill;
 			if (_shape != -1) _props[$ "shape"] = _shape;
-			_props[$ "sprite_index"] = _card_data[? "sprite"];
 			var _plant = spawn_plant(_c, _r, _card_data[? "obj"], _props);
 			if (_plant >= 0) {
 				network_apply_plant_level(_plant);
@@ -1808,7 +1807,7 @@ function VM_SpawnPlant(card_id_addr, col_addr, row_addr, shape_addr, level_addr,
 	if(level!=-1)_props[$ "current_level"] =level;
 	if(skill!=-1)_props[$ "skill"] =skill;
 	if(shape!=-1)_props[$ "shape"] =shape;
-	_props[$ "sprite_index"] = _card_data[? "sprite"];
+	//_props[$ "sprite_index"] = _card_data[? "sprite"];
 
     // 批量生成：col=-1 整列所有行，row=-1 整行所有列
     var _batch = (col == -1 || row == -1);
