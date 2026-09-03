@@ -41,3 +41,5 @@ scrollbar_x = 0
 scrollbar_y = 0
 scrollbar_w = 17
 scrollbar_h = 0
+
+global.room_battle_front = true

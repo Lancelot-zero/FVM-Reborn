@@ -184,4 +184,6 @@ global.boss_spawn_sync_list = [
 	obj_machine_bomb_mouse_bullet,
 	// 护甲飞片
 	obj_enemy_armor,
+	// 战斗进度条
+	obj_level_progress_bar
 ];

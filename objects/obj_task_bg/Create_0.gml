@@ -75,3 +75,5 @@ function refresh_task_list(){
 		}
 	}
 }
+
+global.room_battle_front = true

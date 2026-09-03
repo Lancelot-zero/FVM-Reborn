@@ -211,7 +211,7 @@ function package_character(plant_inst){
 			_eq.health_gem_increase = 0;
 		}
 
-		
+	
 		if get_gem_index("power_gem")!= -1{ _eq.power_gem_level = get_gem_level("power_gem"); }
 		if get_gem_index("gale_gem")!= -1{ _eq.gale_gem_level = get_gem_level("gale_gem"); }
 		if get_gem_index("produce_gem")!= -1{ _eq.produce_gem_level = get_gem_level("produce_gem"); } 

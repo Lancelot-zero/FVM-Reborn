@@ -1,3 +1,19 @@
+
+
+var bak_battle_level_stage =  obj_battle.level_stage
+var bak_battle_current_subwave =  obj_battle.current_subwave
+var bak_battle_current_wave =  obj_battle.current_wave
+var bak_battle_total_wave =  obj_battle.total_wave
+if(global.network.mode == "client"){
+	obj_battle.level_stage = client_obj_battle_level_stage
+	obj_battle.current_subwave = client_obj_battle_current_subwave
+	obj_battle.current_wave = client_obj_battle_current_wave
+	obj_battle.total_wave = client_obj_battle_total_wave
+	level_stage = client_level_stage // 直接覆盖
+	elite_wave = client_elite_wave // 直接覆盖
+	
+}
+
 if obj_battle.level_stage == "boss"{
 	exit
 }
@@ -70,8 +86,13 @@ draw_set_valign(fa_middle)
 draw_set_halign(fa_left)
 
 var level_text = global.level_data.name
-draw_text(x-250,y-42,level_text)
 
+var bak_difficulty = global.difficulty
+if(global.network.mode == "client"){
+	global.difficulty = client_difficulty
+}
+
+draw_text(x-250,y-42,level_text)
 var diff_text = "美味"
 if global.difficulty == 0{
 	diff_text = "美味"
@@ -91,3 +112,34 @@ else if global.difficulty == 3{
 }
 
 draw_text(x-230+string_width(level_text),y-42,diff_text)
+
+
+
+if(global.network.mode == "client"){
+	global.difficulty = bak_difficulty
+	obj_battle.level_stage = bak_battle_level_stage
+	obj_battle.current_subwave = bak_battle_current_subwave
+	obj_battle.current_wave = bak_battle_current_wave
+	obj_battle.total_wave = bak_battle_total_wave
+}
+
+if(global.network.mode == "server"){
+	var _net_id = global.network.map_instance_id_net_id[? id];
+	var _ps = { 
+		client_level_stage:level_stage,
+		client_difficulty:global.difficulty,
+		client_obj_battle_level_stage: obj_battle.level_stage, 
+		client_obj_battle_current_subwave:obj_battle.current_subwave,
+		client_obj_battle_current_wave:obj_battle.current_wave,
+		client_obj_battle_total_wave:obj_battle.total_wave,
+		client_level_stage:level_stage,
+		client_elite_wave:elite_wave};
+	var _props = json_stringify(_ps);
+	var _cl = global.network.connected_clients;
+	
+    var _list = global.network.connected_clients;
+	for (var _j = 0; _j < array_length(_cl); _j++) {
+		send_message(_list[_j], MSG_MODIFY_PROP, _net_id, _props);
+	}
+}
+

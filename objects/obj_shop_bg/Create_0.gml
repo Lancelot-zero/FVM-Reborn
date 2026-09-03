@@ -167,3 +167,6 @@ function shop_list_recharge(){
 		}
 	}
 }
+
+
+global.room_battle_front = true

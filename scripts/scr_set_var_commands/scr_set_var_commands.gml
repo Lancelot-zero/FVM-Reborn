@@ -187,7 +187,7 @@ function spawn_plant(col, row, plant_obj, props) {
 						}
 					}
 		
-					var _sw_name_id = _eq[$ "secondary_weapon"] ?? "";
+					var _sw_name_id = _eq[$ "secondary_weapon_id"] ?? "";
 					if (_sw_name_id != "") {
 						var s_inst = instance_create_depth(_plant.x,_plant.y,_plant.depth,obj_player_shield)
 						s_inst.parent_player = _plant.id
@@ -206,7 +206,7 @@ function spawn_plant(col, row, plant_obj, props) {
 							s_inst.cycle = gem_info.cycle[gem_level] * 60
 							s_inst.flame_produce = gem_info.flame_value[gem_level]
 							s_inst.first_produce_delay = gem_info.first_produce_delay * 60
-							s_inst.first_produce =produce_gem_level
+							s_inst.first_produce =gem_level
 							s_inst.produce_gem = true
 						}
 

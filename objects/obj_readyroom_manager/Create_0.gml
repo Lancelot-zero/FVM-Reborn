@@ -7,6 +7,15 @@ global.menu_screen = false
 instance_create_depth(1700,883,-2,obj_battlestart_button)
 readyroom_music = mus_readyroom
 
+// 创建在屏幕外面
+instance_create_depth(-1000,0,1200,obj_player_info_ui)
+// 创建菜单栏
+instance_create_depth(room_width-210,room_height,-1,obj_player_menu_bg)
+
+global.room_battle_front = false
+
+
+
 ds_list_clear(global.selected_deck);
 deck_ensure_size();
 //for(var i = 0;i < 21;i++){
@@ -32,14 +41,14 @@ deck_first_slot_index = 0
 selected_custom_deck = 0
 
 for(var i = 1; i < 7;i++){
-	var inst = instance_create_depth(x+680+150*i,y+218,depth-5,obj_deck_select_btn)
+	var inst = instance_create_depth(x+680+150*i,y+218,depth-1,obj_deck_select_btn)
 	inst.deck_index = i
 }
-instance_create_depth(x+1735,y+215,depth-5,obj_deck_clear_btn)
+instance_create_depth(x+1735,y+215,depth-1,obj_deck_clear_btn)
 
-var prev_btn = instance_create_depth(x+1745,y+105,depth-5,obj_readyroom_slot_btn)
+var prev_btn = instance_create_depth(x+1745,y+105,depth-1,obj_readyroom_slot_btn)
 prev_btn.type = "prev"
-var next_btn = instance_create_depth(x+1745,y+155,depth-5,obj_readyroom_slot_btn)
+var next_btn = instance_create_depth(x+1745,y+155,depth-1,obj_readyroom_slot_btn)
 next_btn.type = "next"
 
 //统计敌人和BOSS类型

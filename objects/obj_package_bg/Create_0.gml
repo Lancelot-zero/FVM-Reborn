@@ -40,3 +40,7 @@ hover_weapon_index = -1
 hover_gem_index = -1
 hover_material_index = -1
 view_max_shapes = 0
+
+global.room_battle_front = true
+
+

@@ -1,3 +1,7 @@
+if global.room_battle_front == true{
+	exit;
+}
+
 if hover_card_index != -1 && !is_submenu_open{
 	var _max_slot = global.save_data.unlocked_items.max_slot;
 	if (global._VM_max_slots >= 0 && global._VM_max_slots < _max_slot) {

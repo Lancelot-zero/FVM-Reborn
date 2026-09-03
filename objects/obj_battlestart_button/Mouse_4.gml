@@ -1,3 +1,8 @@
+if global.room_battle_front == true{
+	exit;
+}
+
+
 if on_click and !obj_readyroom_manager.is_submenu_open{
 	if deck_slot_count() > 0{
 		button_pushed = true
